@@ -1,0 +1,12 @@
+C:\Users\Shweta61750\source\repos\Insolvency\InsolvencyService\inss.individualinsolvencyregister\INSS.EIIR.Web\bin\Debug\net6.0\INSS.EIIR.Web.deps.json
+C:\Users\Shweta61750\source\repos\Insolvency\InsolvencyService\inss.individualinsolvencyregister\INSS.EIIR.Web\bin\Debug\net6.0\INSS.EIIR.Web.dll
+C:\Users\Shweta61750\source\repos\Insolvency\InsolvencyService\inss.individualinsolvencyregister\INSS.EIIR.Web\bin\Debug\net6.0\INSS.EIIR.Web.pdb
+C:\Users\Shweta61750\source\repos\Insolvency\InsolvencyService\inss.individualinsolvencyregister\INSS.EIIR.Web\obj\Debug\net6.0\INSS.EIIR.Web.csproj.AssemblyReference.cache
+C:\Users\Shweta61750\source\repos\Insolvency\InsolvencyService\inss.individualinsolvencyregister\INSS.EIIR.Web\obj\Debug\net6.0\INSS.EIIR.Web.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Shweta61750\source\repos\Insolvency\InsolvencyService\inss.individualinsolvencyregister\INSS.EIIR.Web\obj\Debug\net6.0\INSS.EIIR.Web.AssemblyInfoInputs.cache
+C:\Users\Shweta61750\source\repos\Insolvency\InsolvencyService\inss.individualinsolvencyregister\INSS.EIIR.Web\obj\Debug\net6.0\INSS.EIIR.Web.AssemblyInfo.cs
+C:\Users\Shweta61750\source\repos\Insolvency\InsolvencyService\inss.individualinsolvencyregister\INSS.EIIR.Web\obj\Debug\net6.0\INSS.EIIR.Web.csproj.CoreCompileInputs.cache
+C:\Users\Shweta61750\source\repos\Insolvency\InsolvencyService\inss.individualinsolvencyregister\INSS.EIIR.Web\obj\Debug\net6.0\INSS.EIIR.Web.dll
+C:\Users\Shweta61750\source\repos\Insolvency\InsolvencyService\inss.individualinsolvencyregister\INSS.EIIR.Web\obj\Debug\net6.0\refint\INSS.EIIR.Web.dll
+C:\Users\Shweta61750\source\repos\Insolvency\InsolvencyService\inss.individualinsolvencyregister\INSS.EIIR.Web\obj\Debug\net6.0\INSS.EIIR.Web.pdb
+C:\Users\Shweta61750\source\repos\Insolvency\InsolvencyService\inss.individualinsolvencyregister\INSS.EIIR.Web\obj\Debug\net6.0\ref\INSS.EIIR.Web.dll
