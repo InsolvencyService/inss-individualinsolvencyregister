@@ -1,0 +1,12 @@
+{
+  "profiles": {
+    "INSS.EIIR.Web": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "applicationUrl": "https://localhost:57813;http://localhost:57814"
+    }
+  }
+}
