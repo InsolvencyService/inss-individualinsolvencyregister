@@ -249,5 +249,7 @@ target/
 *.iml
 
 
+appsettings.*
 
-
+# Azure Functions localsettings file
+local.settings.json
