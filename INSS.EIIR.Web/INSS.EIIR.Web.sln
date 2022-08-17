@@ -9,8 +9,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "INSS.EIIR.Web.UnitTest", ".
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{7555A9EC-591D-4F02-AF5A-B140A16BE611}"
 	ProjectSection(SolutionItems) = preProject
-		TextFile1.gitignore = TextFile1.gitignore
+		..\.gitignore = ..\.gitignore
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "INSS.EIIR.SearchIndexer", "..\INSS.EIIR.SearchIndexer\INSS.EIIR.SearchIndexer.csproj", "{1B6D80CB-CCF5-4EA5-925D-8F7EB7CABAA1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "INSS.EIIR.Data", "..\INSS.EIIR.Data\INSS.EIIR.Data.csproj", "{3941038F-84A8-4533-9863-38D6F0AD96B0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -26,6 +30,14 @@ Global
 		{352CC7C2-96DF-4180-8E0F-D2ED19D6162C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{352CC7C2-96DF-4180-8E0F-D2ED19D6162C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{352CC7C2-96DF-4180-8E0F-D2ED19D6162C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1B6D80CB-CCF5-4EA5-925D-8F7EB7CABAA1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1B6D80CB-CCF5-4EA5-925D-8F7EB7CABAA1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1B6D80CB-CCF5-4EA5-925D-8F7EB7CABAA1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1B6D80CB-CCF5-4EA5-925D-8F7EB7CABAA1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3941038F-84A8-4533-9863-38D6F0AD96B0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3941038F-84A8-4533-9863-38D6F0AD96B0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3941038F-84A8-4533-9863-38D6F0AD96B0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3941038F-84A8-4533-9863-38D6F0AD96B0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

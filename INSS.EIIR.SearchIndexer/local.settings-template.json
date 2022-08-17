@@ -1,0 +1,13 @@
+{
+  "IsEncrypted": false,
+  "Values": {
+    "AzureWebJobsStorage": "UseDevelopmentStorage=true",
+    "FUNCTIONS_WORKER_RUNTIME": "dotnet",
+
+    "iirwebdbContextConnectionString": "Data Source=[iirwebdb db connction string]",
+
+    "OpenApi__Version": "v3",
+    "OpenApi__DocVersion": "1.0.0",
+    "OpenApi__DocTitle": "Swagger EIIR Services"
+  }
+}
