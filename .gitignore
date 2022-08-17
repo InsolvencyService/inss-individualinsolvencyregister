@@ -237,8 +237,8 @@ FakesAssemblies/
 .vscode
 config.js
 private_key.pem
-/bin
-/obj
+bin/
+obj/
 
 # Logs
 logs
