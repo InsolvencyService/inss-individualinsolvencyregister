@@ -1,20 +1,21 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using INSS.EIIR.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace INSS.EIIR.Data.Models
 {
-    public partial class iirwebdbContext : DbContext
+    public partial class EIIRContext : DbContext
     {
         private readonly string? _connectionString;
 
-        public iirwebdbContext()
+        public EIIRContext()
         { }
 
-        public iirwebdbContext(string? connectionString)
+        public EIIRContext(string? connectionString)
         {
             _connectionString = connectionString; 
         }
 
-        public iirwebdbContext(DbContextOptions<iirwebdbContext> options)
+        public EIIRContext(DbContextOptions<EIIRContext> options)
             : base(options)
         { }
 
@@ -54,6 +55,8 @@ namespace INSS.EIIR.Data.Models
         public virtual DbSet<Visit> Visits { get; set; } = null!;
         public virtual DbSet<VisitsArchived> VisitsArchiveds { get; set; } = null!;
         public virtual DbSet<WebMessage> WebMessages { get; set; } = null!;
+
+        public virtual DbSet<SearchResult> SearchResults { get; set; } = null!;
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -2617,6 +2620,16 @@ namespace INSS.EIIR.Data.Models
                     .IsUnicode(false)
                     .HasColumnName("message");
             });
+
+            modelBuilder.Entity<SearchResult>(entity =>
+            {
+                entity.HasNoKey();
+
+                entity.Property(e => e.DateOfBirth).HasColumnName("Date of Birth");
+
+                entity.Property(e => e.DateOfOrder).HasColumnName("Date of Order");
+            });
+
 
             OnModelCreatingPartial(modelBuilder);
         }

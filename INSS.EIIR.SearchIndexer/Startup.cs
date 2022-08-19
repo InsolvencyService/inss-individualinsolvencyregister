@@ -1,6 +1,12 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
+using Azure;
+using Azure.Search.Documents.Indexes;
 using INSS.EIIR.Data.Models;
+using INSS.EIIR.DataAccess;
+using INSS.EIIR.Interfaces.DataAccess;
+using INSS.EIIR.Interfaces.SearchIndexer;
+using INSS.EIIR.SearchIndexer.Services;
 using Microsoft.Azure.Functions.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -13,22 +19,34 @@ namespace INSS.EIIR.SearchIndexer
     {
         public override void Configure(IFunctionsHostBuilder builder)
         {
-            var config = builder.GetContext().Configuration;
-
             //builder.Services.AddApplicationInsightsTelemetry();
 
             builder.Services.AddHttpClient();
             builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
-            builder.Services.AddTransient((s) =>
+            builder.Services.AddTransient(_ =>
             {
                 var connectionString = Environment.GetEnvironmentVariable("iirwebdbContextConnectionString");
-                return new iirwebdbContext(connectionString);
+                return new EIIRContext(connectionString);
             });
 
-            //builder.Services.AddTransient<IAuthBodyService, AuthBodyService>();
-            //builder.Services.AddTransient<IInsolvencyPractitionerService, InsolvencyPractitionerService>();
-            //builder.Services.AddTransient<IWebMessageService, WebMessageService>();
+            builder.Services.AddTransient(_ =>
+            {
+                var searchServiceUrl = Environment.GetEnvironmentVariable("EIIRIndexUrl");
+                var adminApiKey = Environment.GetEnvironmentVariable("EIIRApiKey");
+
+                return CreateSearchServiceClient(searchServiceUrl, adminApiKey);
+            });
+
+            builder.Services.AddTransient<IIndexService, IndexService>();
+            builder.Services.AddTransient<IIndividualRepository, IndividualRepository>();
+            builder.Services.AddTransient<ISearchDataProvider, SearchDataProvider>();
+        }
+
+        private static SearchIndexClient CreateSearchServiceClient(string searchServiceUrl, string adminApiKey)
+        {
+            var serviceClient = new SearchIndexClient(new Uri(searchServiceUrl), new AzureKeyCredential(adminApiKey));
+            return serviceClient;
         }
     }
 }

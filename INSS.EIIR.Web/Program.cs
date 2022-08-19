@@ -3,7 +3,7 @@ using AspNetCore.SEOHelper;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddControllersWithViews();
+ConfigureServices(builder.Services);
 
 var app = builder.Build();
 
@@ -29,3 +29,9 @@ app.MapControllerRoute(
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.Run();
+
+
+void ConfigureServices(IServiceCollection services)
+{
+    services.AddControllersWithViews();
+}
