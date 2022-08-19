@@ -3,7 +3,7 @@ using INSS.EIIR.Interfaces.SearchIndexer;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Logging;
 
-namespace INSS.EIIR.SearchIndexer.Functions
+namespace INSS.EIIR.Functions
 {
     public class RebuildIndexes
     {

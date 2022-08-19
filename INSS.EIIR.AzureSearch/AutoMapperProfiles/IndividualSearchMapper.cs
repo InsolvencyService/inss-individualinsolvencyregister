@@ -1,10 +1,10 @@
 ﻿using AutoMapper;
+using INSS.EIIR.AzureSearch.IndexModels;
 using INSS.EIIR.Models;
-using INSS.EIIR.SearchIndexer.IndexModels;
 
-namespace INSS.EIIR.SearchIndexer.AutoMapperProfiles;
+namespace INSS.EIIR.AzureSearch.AutoMapperProfiles;
 
-public class IndividualSearchMapper :Profile
+public class IndividualSearchMapper : Profile
 {
     public IndividualSearchMapper()
     {

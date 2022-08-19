@@ -1,9 +1,8 @@
-﻿using System.Collections.Generic;
-using INSS.EIIR.Interfaces.DataAccess;
+﻿using INSS.EIIR.Interfaces.DataAccess;
 using INSS.EIIR.Interfaces.SearchIndexer;
 using INSS.EIIR.Models;
 
-namespace INSS.EIIR.SearchIndexer.Services;
+namespace INSS.EIIR.Services;
 
 public class SearchDataProvider : ISearchDataProvider
 {

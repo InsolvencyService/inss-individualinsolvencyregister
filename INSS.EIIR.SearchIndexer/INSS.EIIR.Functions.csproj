@@ -1,9 +1,10 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
     <AzureFunctionsVersion>v4</AzureFunctionsVersion>
   </PropertyGroup>
   <ItemGroup>
+	  <PackageReference Include="AspNetCore.SEOHelper" Version="1.0.1" />
 	  <PackageReference Include="AutoMapper" Version="11.0.1" />
 	  <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="11.0.0" />
 	  <PackageReference Include="Azure.Search.Documents" Version="11.3.0" />
@@ -16,10 +17,12 @@
 	  <PackageReference Include="Microsoft.NET.Sdk.Functions" Version="4.1.1" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\INSS.EIIR.AzureSearch\INSS.EIIR.AzureSearch.csproj" />
     <ProjectReference Include="..\INSS.EIIR.DataAccess\INSS.EIIR.DataAccess.csproj" />
     <ProjectReference Include="..\INSS.EIIR.Data\INSS.EIIR.Data.csproj" />
     <ProjectReference Include="..\INSS.EIIR.Interfaces\INSS.EIIR.Interfaces.csproj" />
     <ProjectReference Include="..\INSS.EIIR.Models\INSS.EIIR.Models.csproj" />
+    <ProjectReference Include="..\INSS.EIIR.Services\INSS.EIIR.Services.csproj" />
   </ItemGroup>
   <ItemGroup>
     <None Update="host.json">
@@ -29,9 +32,5 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <CopyToPublishDirectory>Never</CopyToPublishDirectory>
     </None>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="IndexModels\" />
-    <Folder Include="AutoMapperProfiles\" />
   </ItemGroup>
 </Project>

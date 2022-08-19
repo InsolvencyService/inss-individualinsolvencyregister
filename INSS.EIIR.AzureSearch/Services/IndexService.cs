@@ -1,8 +1,8 @@
-﻿using Azure.Search.Documents.Indexes.Models;
-using Azure.Search.Documents.Indexes;
+﻿using Azure.Search.Documents.Indexes;
+using Azure.Search.Documents.Indexes.Models;
 using INSS.EIIR.Interfaces.SearchIndexer;
 
-namespace INSS.EIIR.SearchIndexer.Services;
+namespace INSS.EIIR.AzureSearch.Services;
 
 public class IndexService : IIndexService
 {

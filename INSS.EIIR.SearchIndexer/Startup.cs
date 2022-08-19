@@ -2,17 +2,19 @@
 using System.Diagnostics.CodeAnalysis;
 using Azure;
 using Azure.Search.Documents.Indexes;
+using INSS.EIIR.AzureSearch.Services;
 using INSS.EIIR.Data.Models;
 using INSS.EIIR.DataAccess;
+using INSS.EIIR.Functions;
 using INSS.EIIR.Interfaces.DataAccess;
 using INSS.EIIR.Interfaces.SearchIndexer;
-using INSS.EIIR.SearchIndexer.Services;
+using INSS.EIIR.Services;
 using Microsoft.Azure.Functions.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
 
-[assembly: FunctionsStartup(typeof(INSS.EIIR.SearchIndexer.Startup))]
+[assembly: FunctionsStartup(typeof(Startup))]
 
-namespace INSS.EIIR.SearchIndexer
+namespace INSS.EIIR.Functions
 {
     [ExcludeFromCodeCoverage]
     public class Startup : FunctionsStartup
