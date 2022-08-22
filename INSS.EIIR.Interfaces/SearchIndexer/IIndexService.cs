@@ -2,5 +2,7 @@
 
 public interface IIndexService
 {
-    void CreateIndex<T>(string indexName);
+    void CreateIndex();
+
+    void PopulateIndex();
 }

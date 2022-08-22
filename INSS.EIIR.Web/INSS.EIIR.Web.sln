@@ -28,7 +28,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{DAB23EC1
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "INSS.EIIR.DataAccess.Tests", "..\INSS.EIIR.DataAccess.Tests\INSS.EIIR.DataAccess.Tests.csproj", "{7D1A2CF4-BBC8-4F7B-ACE2-A56E6FFE29E4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "INSS.EIIR.AzureSearch", "..\INSS.EIIR.AzureSearch\INSS.EIIR.AzureSearch.csproj", "{08F79BD0-ED62-4DC7-8724-92E66B82D124}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "INSS.EIIR.AzureSearch", "..\INSS.EIIR.AzureSearch\INSS.EIIR.AzureSearch.csproj", "{08F79BD0-ED62-4DC7-8724-92E66B82D124}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "INSS.EIIR.Services.Tests", "..\INSS.EIIR.Services.Tests\INSS.EIIR.Services.Tests.csproj", "{574A90AD-687A-43C9-BED4-21A571D4C161}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "INSS.EIIR.AzureSearch.Tests", "..\INSS.EIIR.AzureSearch.Tests\INSS.EIIR.AzureSearch.Tests.csproj", "{9192DB36-EAE1-482A-99F7-88BF2315F56C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -76,12 +80,22 @@ Global
 		{08F79BD0-ED62-4DC7-8724-92E66B82D124}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{08F79BD0-ED62-4DC7-8724-92E66B82D124}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{08F79BD0-ED62-4DC7-8724-92E66B82D124}.Release|Any CPU.Build.0 = Release|Any CPU
+		{574A90AD-687A-43C9-BED4-21A571D4C161}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{574A90AD-687A-43C9-BED4-21A571D4C161}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{574A90AD-687A-43C9-BED4-21A571D4C161}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{574A90AD-687A-43C9-BED4-21A571D4C161}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9192DB36-EAE1-482A-99F7-88BF2315F56C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9192DB36-EAE1-482A-99F7-88BF2315F56C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9192DB36-EAE1-482A-99F7-88BF2315F56C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9192DB36-EAE1-482A-99F7-88BF2315F56C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{7D1A2CF4-BBC8-4F7B-ACE2-A56E6FFE29E4} = {DAB23EC1-D19D-41BB-A148-20BA1913508B}
+		{574A90AD-687A-43C9-BED4-21A571D4C161} = {DAB23EC1-D19D-41BB-A148-20BA1913508B}
+		{9192DB36-EAE1-482A-99F7-88BF2315F56C} = {DAB23EC1-D19D-41BB-A148-20BA1913508B}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {6BA0DD0F-AA99-4A09-AB01-971BA60E5FE4}
