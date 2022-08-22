@@ -8,15 +8,17 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="INSS.EIIR.ResponseModels\**" />
     <Compile Remove="Views\NewFolder\**" />
+    <Content Remove="INSS.EIIR.ResponseModels\**" />
     <Content Remove="Views\NewFolder\**" />
+    <EmbeddedResource Remove="INSS.EIIR.ResponseModels\**" />
     <EmbeddedResource Remove="Views\NewFolder\**" />
+    <None Remove="INSS.EIIR.ResponseModels\**" />
     <None Remove="Views\NewFolder\**" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="INSS.EIIR.Data\Models\" />
-    <Folder Include="INSS.EIIR.ResponseModels\" />
     <Folder Include="Properties\" />
   </ItemGroup>
 
