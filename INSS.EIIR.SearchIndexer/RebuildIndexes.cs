@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using INSS.EIIR.Interfaces.SearchIndexer;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Logging;
@@ -16,14 +17,14 @@ namespace INSS.EIIR.Functions
         }
 
         [FunctionName("RebuildIndexes")]
-        public void Run([TimerTrigger("0 0 6 * * *")] TimerInfo myTimer, ILogger log)
+        public async Task Run([TimerTrigger("0 0 6 * * *")] TimerInfo myTimer, ILogger log)
         {
             log.LogInformation($"C# Timer trigger function executed at: {DateTime.Now}");
 
             foreach (var indexService in _indexServices)
             {
                 indexService.CreateIndex();
-                indexService.PopulateIndex();
+                await indexService.PopulateIndexAsync();
             }
         }
     }

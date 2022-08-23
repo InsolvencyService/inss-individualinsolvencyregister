@@ -11,7 +11,7 @@ namespace INSS.EIIR.AzureSearch.Services;
 
 public class SearchIndexService : IIndexService
 {
-    private const string IndexName = "IndividualSearch";
+    private const string IndexName = "individual_search";
     private const int PageSize = 2000;
 
     private readonly SearchIndexClient _searchClient;
@@ -39,10 +39,10 @@ public class SearchIndexService : IIndexService
         _searchClient.CreateOrUpdateIndex(definition);
     }
 
-    public void PopulateIndex()
+    public async Task PopulateIndexAsync()
     {
         var data = _searchDataProvider.GetIndividualSearchData();
-
+        
         var indexData = _mapper.Map<IEnumerable<SearchResult>, IEnumerable<IndividualSearch>>(data).ToList();
 
         var pages = indexData.Count / PageSize;
@@ -58,19 +58,18 @@ public class SearchIndexService : IIndexService
                 .Skip(i * PageSize)
                 .Take(PageSize);
 
-            IndexBatch(i, dataBatch);
+            await IndexBatchAsync(i, dataBatch);
         }
     }
 
     [ExcludeFromCodeCoverage]
-    private void IndexBatch(int page, IEnumerable<IndividualSearch> data)
+    private async Task IndexBatchAsync(int page, IEnumerable<IndividualSearch> data)
     {
-        var batch = IndexDocumentsBatch.Create(IndexDocumentsAction.MergeOrUpload(data));
-
         try
         {
             var uploaderClient = _searchClient.GetSearchClient(IndexName);
-            IndexDocumentsResult result = uploaderClient.IndexDocuments(batch, null, CancellationToken.None);
+
+            IndexDocumentsResult result = await uploaderClient.MergeOrUploadDocumentsAsync(data);
 
             Thread.Sleep(2000);
         }

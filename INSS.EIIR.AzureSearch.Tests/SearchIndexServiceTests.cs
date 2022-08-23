@@ -14,7 +14,7 @@ namespace INSS.EIIR.AzureSearch.Tests
     public class SearchIndexServiceTests
     {
         [Fact]
-        public void PopulateIndex()
+        public async Task PopulateIndex_Calls_Correct_Services()
         {
             //Arrange
             var rawData = GetData().ToList();
@@ -33,25 +33,25 @@ namespace INSS.EIIR.AzureSearch.Tests
             var indexingResultMock = new Mock<Azure.Response<IndexDocumentsResult>>();
             var indexerMock = new Mock<SearchClient>();
             indexerMock
-                .Setup(m => m.IndexDocuments(It.IsAny<IndexDocumentsBatch<IEnumerable<IndividualSearch>>>(), null, CancellationToken.None))
-                .Returns(indexingResultMock.Object);
+                .Setup(m => m.MergeOrUploadDocumentsAsync(mappedData, null, default(CancellationToken)))
+                .ReturnsAsync(indexingResultMock.Object);
             
             var indexClientMock = new Mock<SearchIndexClient>();
             indexClientMock
-                .Setup(m => m.GetSearchClient("IndividualSearch"))
+                .Setup(m => m.GetSearchClient("individual_search"))
                 .Returns(indexerMock.Object);
             
             var service = GetService(indexClientMock.Object, mapperMock.Object, dataProviderMock.Object);
 
             //Act
-            service.PopulateIndex();
+            await service.PopulateIndexAsync();
 
             //Assert
             dataProviderMock.Verify(m => m.GetIndividualSearchData(string.Empty, string.Empty), Times.Once);
             mapperMock.Verify(m => m.Map<IEnumerable<SearchResult>, IEnumerable<IndividualSearch>>(rawData), Times.Once);
 
-            indexClientMock.Verify(m => m.GetSearchClient("IndividualSearch"), Times.Once);
-            indexerMock.Verify(m => m.IndexDocuments(It.IsAny<IndexDocumentsBatch<IEnumerable<IndividualSearch>>>(), null, CancellationToken.None), Times.Once);
+            indexClientMock.Verify(m => m.GetSearchClient("individual_search"), Times.Once);
+            indexerMock.Verify(m => m.MergeOrUploadDocumentsAsync(mappedData, null, default(CancellationToken)), Times.Once);
 
         }
 

@@ -4,5 +4,5 @@ public interface IIndexService
 {
     void CreateIndex();
 
-    void PopulateIndex();
+    Task PopulateIndexAsync();
 }
