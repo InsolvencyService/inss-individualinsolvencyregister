@@ -55,12 +55,12 @@ namespace INSS.EIIR.AzureSearch.Tests
 
         }
 
-        private SearchIndexService GetService(
+        private IndividualSearchIndexService GetService(
             SearchIndexClient indexClient,
             IMapper mapper,
             ISearchDataProvider searchDataProvider)
         {
-            return new SearchIndexService(indexClient, mapper, searchDataProvider);
+            return new IndividualSearchIndexService(indexClient, mapper, searchDataProvider);
         }
 
         private IEnumerable<SearchResult> GetData()

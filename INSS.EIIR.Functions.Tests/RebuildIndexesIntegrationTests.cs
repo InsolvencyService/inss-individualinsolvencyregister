@@ -64,7 +64,7 @@ namespace INSS.EIIR.Functions.Tests
 
             return new List<IIndexService>
             {
-                new SearchIndexService(CreateSearchServiceClient(), mapper, dataProvider)
+                new IndividualSearchIndexService(CreateSearchServiceClient(), mapper, dataProvider)
             };
         }
 
