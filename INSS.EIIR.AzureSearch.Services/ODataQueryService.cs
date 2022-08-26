@@ -2,5 +2,8 @@
 
 public class ODataQueryService
 {
-    
+    private const string Concatenation = " and ";
+
+
+    //loop through filters 
 }
