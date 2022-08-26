@@ -27,7 +27,7 @@ public class IndividualRepository : IIndividualRepository
             _context.Database.SetCommandTimeout(180);
 
             results = _context.SearchResults
-                .FromSqlRaw("exec getIndividualByCourt_ALL @Surname, @Forename", surname, forename)
+                .FromSqlRaw("exec getIndividualByName @Surname, @Forename", surname, forename)
                 .ToList();
         }
 

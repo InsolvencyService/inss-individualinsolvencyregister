@@ -9,9 +9,10 @@ using INSS.EIIR.Models;
 
 namespace INSS.EIIR.AzureSearch.Services;
 
-public class SearchIndexService : IIndexService
+public class SearchIndexService : BaseIndexService<IndividualSearch>
 {
-    private const string IndexName = "individual_search";
+    protected override string IndexName => "individual_search";
+
     private const int PageSize = 2000;
 
     private readonly SearchIndexClient _searchClient;
@@ -22,14 +23,14 @@ public class SearchIndexService : IIndexService
         SearchIndexClient searchClient,
         IMapper mapper,
         ISearchDataProvider searchDataProvider)
+        : base(searchClient)
     {
         _searchClient = searchClient;
         _mapper = mapper;
         _searchDataProvider = searchDataProvider;
     }
 
-    [ExcludeFromCodeCoverage]
-    public void CreateIndex()
+    public override async Task PopulateIndexAsync()
     {
         var fieldBuilder = new FieldBuilder();
         var searchFields = fieldBuilder.Build(typeof(IndividualSearch));

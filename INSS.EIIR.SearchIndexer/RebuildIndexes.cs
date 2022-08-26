@@ -23,7 +23,8 @@ namespace INSS.EIIR.Functions
 
             foreach (var indexService in _indexServices)
             {
-                indexService.CreateIndex();
+                await indexService.DeleteIndexAsync();
+                await indexService.CreateIndexAsync();
                 await indexService.PopulateIndexAsync();
             }
         }
