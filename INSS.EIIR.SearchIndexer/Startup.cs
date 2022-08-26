@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
+using System.Net.Http;
 using Azure;
 using Azure.Search.Documents.Indexes;
 using INSS.EIIR.AzureSearch.Services;
@@ -11,6 +12,8 @@ using INSS.EIIR.Interfaces.SearchIndexer;
 using INSS.EIIR.Services;
 using Microsoft.Azure.Functions.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
+using Polly;
+using Polly.Extensions.Http;
 
 [assembly: FunctionsStartup(typeof(Startup))]
 
@@ -40,7 +43,7 @@ namespace INSS.EIIR.Functions
                 return CreateSearchServiceClient(searchServiceUrl, adminApiKey);
             });
 
-            builder.Services.AddTransient<IIndexService, IndexService>();
+            builder.Services.AddTransient<IIndexService, SearchIndexService>();
             builder.Services.AddTransient<IIndividualRepository, IndividualRepository>();
             builder.Services.AddTransient<ISearchDataProvider, SearchDataProvider>();
         }
@@ -48,7 +51,20 @@ namespace INSS.EIIR.Functions
         private static SearchIndexClient CreateSearchServiceClient(string searchServiceUrl, string adminApiKey)
         {
             var serviceClient = new SearchIndexClient(new Uri(searchServiceUrl), new AzureKeyCredential(adminApiKey));
+
             return serviceClient;
+        }
+
+        private static IAsyncPolicy<HttpResponseMessage> GetRetryPolicy()
+        {
+            var jitter = new Random();
+
+            return HttpPolicyExtensions
+                .HandleTransientHttpError()
+                .OrResult(msg => msg.StatusCode == System.Net.HttpStatusCode.NotFound)
+                .WaitAndRetryAsync(3, retryAttempt =>
+                    TimeSpan.FromSeconds(Math.Pow(2, retryAttempt))
+                    + TimeSpan.FromMilliseconds(jitter.Next(0, 100)));
         }
     }
 }

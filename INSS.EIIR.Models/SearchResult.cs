@@ -33,7 +33,7 @@ public class SearchResult
 
     public DateTime? DateOfOrder { get; set; }
 
-    public int Year { get; set; }
+    public int? Year { get; set; }
 
     public string Type { get; set; }
 

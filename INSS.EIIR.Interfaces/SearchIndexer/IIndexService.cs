@@ -2,5 +2,9 @@
 
 public interface IIndexService
 {
-    void CreateIndex<T>(string indexName);
+    Task CreateIndexAsync();
+
+    Task DeleteIndexAsync();
+
+    Task PopulateIndexAsync();
 }
