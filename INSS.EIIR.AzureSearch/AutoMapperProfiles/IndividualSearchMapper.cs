@@ -8,6 +8,7 @@ public class IndividualSearchMapper : Profile
 {
     public IndividualSearchMapper()
     {
-        CreateMap<SearchResult, IndividualSearch>();
+        CreateMap<SearchResult, IndividualSearch>()
+            .ForMember(m => m.FamilyName, opt => opt.MapFrom(s => s.Surname));
     }
 }

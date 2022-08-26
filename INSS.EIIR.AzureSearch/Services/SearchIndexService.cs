@@ -1,5 +1,8 @@
-﻿using AutoMapper;
+﻿using System.Diagnostics.CodeAnalysis;
+using AutoMapper;
 using Azure.Search.Documents.Indexes;
+using Azure.Search.Documents.Indexes.Models;
+using Azure.Search.Documents.Models;
 using INSS.EIIR.AzureSearch.IndexModels;
 using INSS.EIIR.Interfaces.SearchIndexer;
 using INSS.EIIR.Models;
@@ -12,20 +15,32 @@ public class SearchIndexService : BaseIndexService<IndividualSearch>
 
     private const int PageSize = 2000;
 
+    private readonly SearchIndexClient _searchClient;
     private readonly IMapper _mapper;
     private readonly ISearchDataProvider _searchDataProvider;
 
     public SearchIndexService(
         SearchIndexClient searchClient,
         IMapper mapper,
-        ISearchDataProvider searchDataProvider) 
+        ISearchDataProvider searchDataProvider)
         : base(searchClient)
     {
+        _searchClient = searchClient;
         _mapper = mapper;
         _searchDataProvider = searchDataProvider;
     }
 
     public override async Task PopulateIndexAsync()
+    {
+        var fieldBuilder = new FieldBuilder();
+        var searchFields = fieldBuilder.Build(typeof(IndividualSearch));
+
+        var definition = new SearchIndex(IndexName, searchFields);
+
+        _searchClient.CreateOrUpdateIndex(definition);
+    }
+
+    public async Task PopulateIndexAsync()
     {
         var data = _searchDataProvider.GetIndividualSearchData();
         
@@ -45,6 +60,23 @@ public class SearchIndexService : BaseIndexService<IndividualSearch>
                 .Take(PageSize);
 
             await IndexBatchAsync(i, dataBatch);
+        }
+    }
+
+    [ExcludeFromCodeCoverage]
+    private async Task IndexBatchAsync(int page, IEnumerable<IndividualSearch> data)
+    {
+        try
+        {
+            var uploaderClient = _searchClient.GetSearchClient(IndexName);
+
+            IndexDocumentsResult result = await uploaderClient.MergeOrUploadDocumentsAsync(data);
+
+            Thread.Sleep(2000);
+        }
+        catch (Exception)
+        {
+            Console.WriteLine($"Failed to index page: {page}");
         }
     }
 }
