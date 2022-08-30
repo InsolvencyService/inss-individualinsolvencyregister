@@ -2,7 +2,7 @@
 
 namespace INSS.EIIR.AzureSearch.Services.ODataFilters;
 
-public class BaseFilter
+public abstract class BaseFilter
 {
     protected virtual string FilterODataString => string.Empty;
 

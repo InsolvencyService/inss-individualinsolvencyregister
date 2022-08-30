@@ -1,27 +1,33 @@
-﻿using Azure;
+﻿using AutoMapper;
+using Azure;
 using Azure.Search.Documents;
 using Azure.Search.Documents.Indexes;
 using Azure.Search.Documents.Models;
 using INSS.EIIR.Interfaces.AzureSearch;
 
-namespace INSS.EIIR.AzureSearch.Services;
+namespace INSS.EIIR.AzureSearch.Services.QueryServices;
 
 public abstract class BaseQueryService
 {
+    private readonly IMapper _mapper;
     private readonly SearchIndexClient _indexClient;
     private readonly ISearchTermFormattingService _searchTermFormattingService;
+
+    protected const string Concatenation = " and ";
 
     protected abstract string IndexName { get; }
 
     protected BaseQueryService(
+        IMapper mapper,
         SearchIndexClient indexClient,
         ISearchTermFormattingService searchTermFormattingService)
     {
+        _mapper = mapper;
         _indexClient = indexClient;
         _searchTermFormattingService = searchTermFormattingService;
     }
 
-    protected SearchOptions GetDefaultParameters()
+    protected SearchOptions GetDefaultSearchOptions()
     {
         return new SearchOptions
         {
@@ -37,17 +43,24 @@ public abstract class BaseQueryService
         return _searchTermFormattingService.FormatSearchTerm(searchTerm);
     }
 
-    public async Task<SearchResults<T>> SearchIndexAsync<T>(string searchTerm, SearchOptions options)
+    public async Task<IEnumerable<TR>> SearchIndexAsync<T, TR>(string searchTerm, SearchOptions options)
     {
         var searchClient = _indexClient.GetSearchClient(IndexName);
         var result = await searchClient.SearchAsync<T>(searchTerm, options);
 
-        return result;
+        var mappedResults = result.Value.GetResults().Select(r => r.Document)
+            .Select(d => _mapper.Map<T, TR>(d));
+
+        return mappedResults;
     }
 
-    public async Task<Response<T>> GetAsync<T>(string key)
+    public async Task<TR> GetAsync<T, TR>(string key)
     {
         var searchClient = _indexClient.GetSearchClient(IndexName);
-        return await searchClient.GetDocumentAsync<T>(key);
+        var result = await searchClient.GetDocumentAsync<T>(key);
+
+        var mappedResults = _mapper.Map<T, TR>(result);
+
+        return mappedResults;
     }
 }

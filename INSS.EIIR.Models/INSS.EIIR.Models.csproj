@@ -10,4 +10,8 @@
     <Folder Include="SearchModels\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Azure.Search.Documents" Version="11.3.0" />
+  </ItemGroup>
+
 </Project>

@@ -1,9 +1,9 @@
 ﻿using AutoMapper;
 using Azure.Search.Documents.Indexes;
-using INSS.EIIR.AzureSearch.IndexModels;
 using INSS.EIIR.AzureSearch.Services.Constants;
 using INSS.EIIR.Interfaces.SearchIndexer;
 using INSS.EIIR.Models;
+using INSS.EIIR.Models.IndexModels;
 
 namespace INSS.EIIR.AzureSearch.Services;
 
