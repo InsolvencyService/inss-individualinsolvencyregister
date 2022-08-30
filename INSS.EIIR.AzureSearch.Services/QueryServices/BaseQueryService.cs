@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using Azure;
 using Azure.Search.Documents;
 using Azure.Search.Documents.Indexes;
 using Azure.Search.Documents.Models;
@@ -12,6 +11,7 @@ public abstract class BaseQueryService
     private readonly IMapper _mapper;
     private readonly SearchIndexClient _indexClient;
     private readonly ISearchTermFormattingService _searchTermFormattingService;
+    private readonly ISearchCleaningService _searchCleaningService;
 
     protected const string Concatenation = " and ";
 
@@ -20,11 +20,13 @@ public abstract class BaseQueryService
     protected BaseQueryService(
         IMapper mapper,
         SearchIndexClient indexClient,
-        ISearchTermFormattingService searchTermFormattingService)
+        ISearchTermFormattingService searchTermFormattingService,
+        ISearchCleaningService searchCleaningService)
     {
         _mapper = mapper;
         _indexClient = indexClient;
         _searchTermFormattingService = searchTermFormattingService;
+        _searchCleaningService = searchCleaningService;
     }
 
     protected SearchOptions GetDefaultSearchOptions()
@@ -43,8 +45,15 @@ public abstract class BaseQueryService
         return _searchTermFormattingService.FormatSearchTerm(searchTerm);
     }
 
+    protected string CleanSearchString(string searchTerm)
+    {
+        return _searchCleaningService.EscapeSearchSpecialCharacters(searchTerm);
+    }
+
     public async Task<IEnumerable<TR>> SearchIndexAsync<T, TR>(string searchTerm, SearchOptions options)
     {
+        searchTerm = FormatSearchTerm(CleanSearchString(searchTerm));
+
         var searchClient = _indexClient.GetSearchClient(IndexName);
         var result = await searchClient.SearchAsync<T>(searchTerm, options);
 

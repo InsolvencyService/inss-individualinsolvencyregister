@@ -1,10 +1,17 @@
 ﻿using System.Text;
+using INSS.EIIR.Interfaces.AzureSearch;
 
 namespace INSS.EIIR.AzureSearch.Services.ODataFilters;
 
 public abstract class BaseFilter
 {
+    private readonly ISearchCleaningService _searchCleaningService;
     protected virtual string FilterODataString => string.Empty;
+
+    public BaseFilter(ISearchCleaningService searchCleaningService)
+    {
+        _searchCleaningService = searchCleaningService;
+    }
 
     public string ApplyFilter(IList<string> searchFilter)
     {
@@ -28,6 +35,6 @@ public abstract class BaseFilter
 
         stringBuilder.Append(")");
 
-        return stringBuilder.ToString();
+        return _searchCleaningService.EscapeFilterSpecialCharacters(stringBuilder.ToString());
     }
 }

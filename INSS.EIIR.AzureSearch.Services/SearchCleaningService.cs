@@ -1,8 +1,9 @@
 ﻿using System.Text;
+using INSS.EIIR.Interfaces.AzureSearch;
 
 namespace INSS.EIIR.AzureSearch.Services;
 
-public class SearchCleaningService
+public class SearchCleaningService : ISearchCleaningService
 {
     private const string SearchEscapeCharacter = @"\";
 

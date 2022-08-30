@@ -3,9 +3,14 @@ using INSS.EIIR.Models.SearchModels;
 
 namespace INSS.EIIR.AzureSearch.Services.ODataFilters;
 
-public class IndiviualSearchCourtNameFilter : BaseFilter, IIndiviualSearchFilter
+public class IndividualSearchCourtNameFilter : BaseFilter, IIndiviualSearchFilter
 {
     protected override string FilterODataString => "CourtName eq '{0}'";
+
+    public IndividualSearchCourtNameFilter(ISearchCleaningService searchCleaningService)
+        : base(searchCleaningService)
+    {
+    }
 
     public string ApplyFilter(IndividualSearchModel searchModel)
     {

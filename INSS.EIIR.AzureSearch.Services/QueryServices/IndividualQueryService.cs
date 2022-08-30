@@ -18,8 +18,9 @@ public class IndividualQueryService : BaseQueryService, IIndividualQueryService
         IMapper mapper,
         SearchIndexClient indexClient,
         ISearchTermFormattingService searchTermFormattingService,
+        ISearchCleaningService searchCleaningService,
         IEnumerable<IIndiviualSearchFilter> filters) 
-        : base(mapper, indexClient, searchTermFormattingService)
+        : base(mapper, indexClient, searchTermFormattingService, searchCleaningService)
     {
         _filters = filters;
     }

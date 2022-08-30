@@ -19,28 +19,28 @@ public class SearchTermFormattingService : ISearchTermFormattingService
         return searchTerm.Trim();
     }
 
-    private bool HasTermWithPrefixedWildCard(string searchTerm)
+    private static bool HasTermWithPrefixedWildCard(string searchTerm)
     {
         return searchTerm.StartsWith("*") || searchTerm.Contains(" *");
     }
 
-    private string ConvertTermToRegularExpression(string searchTerm)
+    private static string ConvertTermToRegularExpression(string searchTerm)
     {
         var searchTermWords = GetSearchTermAsListOfWords(searchTerm);
 
-        searchTermWords = searchTermWords.Select(w => ConvertPrefixWildCardsToRegEx(w)).ToList();
+        searchTermWords = searchTermWords.Select(ConvertPrefixWildCardsToRegEx).ToList();
 
         return string.Join(" ", searchTermWords);
     }
 
-    private List<string> GetSearchTermAsListOfWords(string searchTerm)
+    private static List<string> GetSearchTermAsListOfWords(string searchTerm)
     {
         return searchTerm.Split(' ')
             .Where(w => !string.IsNullOrWhiteSpace(w))
             .Select(w => w.Trim()).ToList();
     }
 
-    private string ConvertPrefixWildCardsToRegEx(string searchWord)
+    private static string ConvertPrefixWildCardsToRegEx(string searchWord)
     {
         if (searchWord.StartsWith("*"))
         {
