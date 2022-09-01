@@ -1,4 +1,6 @@
 using AspNetCore.SEOHelper;
+using Microsoft.AspNetCore.Rewrite;
+using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -24,12 +26,16 @@ app.UseAuthorization();
 
 app.UseRobotsTxt(app.Environment.ContentRootPath);
 
+var options = new RewriteOptions()
+    .AddRedirect("security.txt$", @"https://security.insolvency.gov.uk/.well-known/security.txt");
+
+app.UseRewriter(options);
+
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.Run();
-
 
 void ConfigureServices(IServiceCollection services)
 {
