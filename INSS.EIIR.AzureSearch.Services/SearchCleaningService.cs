@@ -13,7 +13,7 @@ public class SearchCleaningService : ISearchCleaningService
     {
         if (string.IsNullOrWhiteSpace(term))
         {
-            return term;
+            return string.Empty;
         }
 
         var stringBuilder = new StringBuilder();
@@ -35,7 +35,7 @@ public class SearchCleaningService : ISearchCleaningService
     {
         if (string.IsNullOrWhiteSpace(term))
         {
-            return term;
+            return string.Empty;
         }
 
         return term.Replace("'", "''");

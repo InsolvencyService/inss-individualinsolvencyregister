@@ -42,9 +42,8 @@ public class IndividualQueryService : BaseQueryService, IIndividualQueryService
         foreach (var filter in _filters)
         {
             var filterString = filter.ApplyFilter(searchModel);
-            filterString += filterBuilder.Length == 0 ? string.Empty : Concatenation;
 
-            filterBuilder.Append(filterString);
+            filterBuilder.Append(filterBuilder.Length == 0 ? filterString : Concatenation + filterString);
         }
 
         return filterBuilder.ToString();

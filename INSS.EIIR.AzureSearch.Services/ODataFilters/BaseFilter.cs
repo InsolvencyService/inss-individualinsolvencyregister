@@ -8,7 +8,7 @@ public abstract class BaseFilter
     private readonly ISearchCleaningService _searchCleaningService;
     protected virtual string FilterODataString => string.Empty;
 
-    public BaseFilter(ISearchCleaningService searchCleaningService)
+    protected BaseFilter(ISearchCleaningService searchCleaningService)
     {
         _searchCleaningService = searchCleaningService;
     }

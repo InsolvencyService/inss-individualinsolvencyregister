@@ -4,7 +4,6 @@ using INSS.EIIR.AzureSearch.Services;
 using INSS.EIIR.AzureSearch.Services.ODataFilters;
 using INSS.EIIR.AzureSearch.Services.QueryServices;
 using INSS.EIIR.Interfaces.AzureSearch;
-using Microsoft.Extensions.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -31,7 +30,7 @@ app.Run();
 void ConfigureServices(IServiceCollection services)
 {
     // Add services to the container.
-    services.AddTransient<IIndividualQueryService, IndividualQueryService>();
+    services.AddTransient<IIndividualQueryService, INSS.EIIR.AzureSearch.Services.QueryServices.IndividualQueryService>();
     
     services.AddTransient<IIndiviualSearchFilter, IndividualSearchCourtFilter>();
     services.AddTransient<IIndiviualSearchFilter, IndividualSearchCourtNameFilter>();
