@@ -1,0 +1,21 @@
+{
+  "version": "1.0",
+  "defaultProvider": "filesystem",
+  "libraries": [
+    {
+      "provider": "filesystem",
+      "library": "node_modules/govuk-frontend/govuk/assets/fonts/",
+      "destination": "wwwroot/assets/fonts"
+    },
+    {
+      "provider": "filesystem",
+      "library": "node_modules/govuk-frontend/govuk/assets/images/",
+      "destination": "wwwroot/assets/images"
+    },
+    {
+      "provider": "filesystem",
+      "library": "node_modules/govuk-frontend/govuk/all.js",
+      "destination": "wwwroot/js/"
+    }
+  ]
+}
