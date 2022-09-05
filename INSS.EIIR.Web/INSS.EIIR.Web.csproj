@@ -35,4 +35,9 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.8" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\INSS.EIIR.Interfaces\INSS.EIIR.Interfaces.csproj" />
+    <ProjectReference Include="..\INSS.EIIR.Models\INSS.EIIR.Models.csproj" />
+  </ItemGroup>
+
 </Project>
