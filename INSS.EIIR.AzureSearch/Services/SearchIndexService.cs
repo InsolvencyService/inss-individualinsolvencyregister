@@ -30,7 +30,7 @@ public class SearchIndexService : BaseIndexService<IndividualSearch>
         _searchDataProvider = searchDataProvider;
     }
 
-    public override async Task PopulateIndexAsync()
+    public  async Task CreateOrUpdateIndex()
     {
         var fieldBuilder = new FieldBuilder();
         var searchFields = fieldBuilder.Build(typeof(IndividualSearch));
@@ -40,7 +40,7 @@ public class SearchIndexService : BaseIndexService<IndividualSearch>
         _searchClient.CreateOrUpdateIndex(definition);
     }
 
-    public async Task PopulateIndexAsync()
+    public override async Task PopulateIndexAsync()
     {
         var data = _searchDataProvider.GetIndividualSearchData();
         
