@@ -2,10 +2,10 @@
 using Azure.Search.Documents;
 using Azure.Search.Documents.Indexes;
 using Azure.Search.Documents.Models;
-using INSS.EIIR.AzureSearch.IndexModels;
 using INSS.EIIR.AzureSearch.Services;
 using INSS.EIIR.Interfaces.SearchIndexer;
 using INSS.EIIR.Models;
+using INSS.EIIR.Models.IndexModels;
 using Moq;
 using Xunit;
 
@@ -55,12 +55,12 @@ namespace INSS.EIIR.AzureSearch.Tests
 
         }
 
-        private SearchIndexService GetService(
+        private IndividualSearchIndexService GetService(
             SearchIndexClient indexClient,
             IMapper mapper,
             ISearchDataProvider searchDataProvider)
         {
-            return new SearchIndexService(indexClient, mapper, searchDataProvider);
+            return new IndividualSearchIndexService(indexClient, mapper, searchDataProvider);
         }
 
         private IEnumerable<SearchResult> GetData()

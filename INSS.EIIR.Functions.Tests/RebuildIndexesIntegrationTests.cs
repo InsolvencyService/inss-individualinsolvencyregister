@@ -11,8 +11,8 @@ using Moq;
 using INSS.EIIR.Data.Models;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Logging;
-using INSS.EIIR.AzureSearch.IndexModels;
 using INSS.EIIR.Models;
+using INSS.EIIR.Models.IndexModels;
 using Microsoft.Azure.WebJobs.Extensions.Timers;
 
 namespace INSS.EIIR.Functions.Tests
@@ -64,7 +64,7 @@ namespace INSS.EIIR.Functions.Tests
 
             return new List<IIndexService>
             {
-                new SearchIndexService(CreateSearchServiceClient(), mapper, dataProvider)
+                new IndividualSearchIndexService(CreateSearchServiceClient(), mapper, dataProvider)
             };
         }
 

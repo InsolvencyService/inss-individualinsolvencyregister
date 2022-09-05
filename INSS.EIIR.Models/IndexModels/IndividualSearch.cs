@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using Azure.Search.Documents.Indexes;
 
-namespace INSS.EIIR.AzureSearch.IndexModels;
+namespace INSS.EIIR.Models.IndexModels;
 
 [ExcludeFromCodeCoverage]
 public class IndividualSearch

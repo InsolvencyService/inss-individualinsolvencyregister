@@ -43,7 +43,7 @@ namespace INSS.EIIR.Functions
                 return CreateSearchServiceClient(searchServiceUrl, adminApiKey);
             });
 
-            builder.Services.AddTransient<IIndexService, SearchIndexService>();
+            builder.Services.AddTransient<IIndexService, IndividualSearchIndexService>();
             builder.Services.AddTransient<IIndividualRepository, IndividualRepository>();
             builder.Services.AddTransient<ISearchDataProvider, SearchDataProvider>();
         }

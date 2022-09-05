@@ -3,7 +3,7 @@ using System.Diagnostics.CodeAnalysis;
 using Azure.Search.Documents.Indexes;
 using INSS.EIIR.Interfaces.SearchIndexer;
 using Azure.Search.Documents.Models;
-using INSS.EIIR.AzureSearch.IndexModels;
+using INSS.EIIR.Models.IndexModels;
 
 namespace INSS.EIIR.AzureSearch.Services;
 

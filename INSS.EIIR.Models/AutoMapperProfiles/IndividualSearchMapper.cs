@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
-using INSS.EIIR.AzureSearch.IndexModels;
 using INSS.EIIR.Models;
+using INSS.EIIR.Models.IndexModels;
 
 namespace INSS.EIIR.AzureSearch.AutoMapperProfiles;
 
