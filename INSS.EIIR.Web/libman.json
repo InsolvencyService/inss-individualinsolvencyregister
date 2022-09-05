@@ -11,6 +11,11 @@
       "provider": "filesystem",
       "library": "node_modules/govuk-frontend/govuk/assets/images/",
       "destination": "wwwroot/assets/images"
+    },
+    {
+      "provider": "filesystem",
+      "library": "node_modules/govuk-frontend/govuk/all.js",
+      "destination": "wwwroot/js/"
     }
   ]
 }

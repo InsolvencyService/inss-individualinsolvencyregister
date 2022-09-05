@@ -253,3 +253,4 @@ appsettings.*
 
 # Azure Functions localsettings file
 local.settings.json
+/INSS.EIIR.Web/wwwroot/css/site.css
