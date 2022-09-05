@@ -16,33 +16,34 @@
     <link rel="apple-touch-icon" sizes="152x152" href="/assets/images/govuk-apple-touch-icon-152x152.png">
     <link rel="apple-touch-icon" href="/assets/images/govuk-apple-touch-icon.png">
 
-    <!--[if !IE 8]><!-->
     <link href="/css/site.css" rel="stylesheet">
-    <!--<![endif]-->
-    <!--[if IE 8]>
-      <link href="/css/all-ie8.css" rel="stylesheet">
-    <![endif]-->
-    <!--[if lt IE 9]>
-      <script src="/html5-shiv/html5shiv.js"></script>
-    <![endif]-->
-
 </head>
 
 <body class="govuk-template__body ">
-    <partial name="_header" />
+    <script>
+        document.body.className = ((document.body.className) ? document.body.className + ' js-enabled' : 'js-enabled');
+    </script>
+
+    @*<partial name="_CookieBanner" />*@
+
+    <a href="#main-content" class="govuk-skip-link" data-module="govuk-skip-link">Skip to main content</a>
+
+    <partial name="_Header" />
 
     <div class="govuk-width-container ">
+
+        <partial name="_Banner" />
+
         <main class="govuk-main-wrapper " id="main-content" role="main">
             @RenderBody()
         </main>
     </div>
 
-    <partial name="_footer" />
+    <partial name="_Footer" />
 
     <script src="/js/all.js"></script>
     <script>
         window.GOVUKFrontend.initAll()
-
     </script>
 
     @await RenderSectionAsync("Scripts", required: false)

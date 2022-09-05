@@ -1,10 +1,4 @@
-﻿<script>
-    document.body.className = ((document.body.className) ? document.body.className + ' js-enabled' : 'js-enabled');
-</script>
-
-<a href="#main-content" class="govuk-skip-link" data-module="govuk-skip-link">Skip to main content</a>
-
-<header class="govuk-header " role="banner" data-module="govuk-header">
+﻿<header class="govuk-header " role="banner" data-module="govuk-header">
     <div class="govuk-header__container govuk-width-container">
         <div class="govuk-header__logo">
             <a href="/" class="govuk-header__link govuk-header__link--homepage">
@@ -15,13 +9,21 @@
                     </svg>
                     <!--<![endif]-->
                     <!--[if IE 8]>
-                    <img src="/assets/images/govuk-logotype-crown.png" class="govuk-header__logotype-crown-fallback-image" width="36" height="32">
+                        <img src="/assets/images/govuk-logotype-crown.png" class="govuk-header__logotype-crown-fallback-image" width="36" height="32">
                     <![endif]-->
                     <span class="govuk-header__logotype-text">
                         GOV.UK
                     </span>
                 </span>
             </a>
+        </div>
+
+        <div class="govuk-header__content">
+            <a href="#" class="govuk-header__link govuk-header__service-name">
+                Service name
+            </a>
+
+            @*<partial name="_Navigation" />*@
         </div>
     </div>
 </header>
