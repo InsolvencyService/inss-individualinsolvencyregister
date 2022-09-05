@@ -21,8 +21,8 @@ namespace INSS.EIIR.AzureSearch.API.Controllers
             _queryService = queryService;
         }
 
-        [HttpGet(Name = "GetIndividuals")]
-        public async Task<IEnumerable<SearchResult>> GetAsync(IndividualSearchModel searchModel)
+        [HttpPost("individuals")]
+        public async Task<IEnumerable<SearchResult>> PostAsync([FromBody]IndividualSearchModel searchModel)
         {
             return await _queryService.SearchIndexAsync(searchModel);
         }
