@@ -22,7 +22,7 @@ parameters:
     default: 120
   - name: Searchindexer
     type: string
-    default: 'INSS.FIP.Searchindexer.zip'
+    default: 'INSS.EIIR.Searchindexer.zip'
 
 jobs:
   - deployment: 
