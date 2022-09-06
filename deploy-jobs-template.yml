@@ -95,7 +95,7 @@ jobs:
               targetType: 'filePath'
               filePath: $(System.DefaultWorkingDirectory)\powershell\InvokeRequestWithRetry.ps1
               arguments: > # Use this to avoid newline characters in multi-line string
-                -URI "https://func-${{ parameters.location }}-${{ lower(parameters.environment) }}-eiir-downloadservice.azurewebsites.net/api/health/ping"
+                -URI "https://func-${{ parameters.location }}-${{ lower(parameters.environment) }}-eiir-downloadservice.azurewebsites.net/"
                 -Method "${{ parameters.method }}"
                 -Retries ${{ parameters.retries }}
                 -SecondsDelay ${{ parameters.secondsDelay }}
