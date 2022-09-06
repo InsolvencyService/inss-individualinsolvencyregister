@@ -37,6 +37,7 @@ stages:
         displayName: 'Build Solution'
         inputs:
           command: 'build'
+          projects: 'INSS.EIIR.Searchindexer/INSS.EIIR*.csproj'
           arguments: '--configuration $(buildConfiguration)'        
 
       # - task: DotNetCoreCLI@2
