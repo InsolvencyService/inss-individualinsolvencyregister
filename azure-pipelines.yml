@@ -62,3 +62,13 @@ stages:
           targetPath: '$(Build.ArtifactStagingDirectory)' 
           artifactName: 'INSS.EIIR'
         condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
+
+- stage: DeployDev
+  displayName: 'Deploy to Dev'
+  condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
+  variables:
+    - group: EIIR-Dev
+  jobs:
+    - template: deploy-jobs-template.yml
+      parameters:
+        environment: 'Dev'
