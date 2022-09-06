@@ -26,12 +26,12 @@ stages:
         inputs:
           version: '6.0.x'
 
-      # - task: DotNetCoreCLI@2
-      #   displayName: NuGet Restore
-      #   inputs:
-      #     command: 'restore'
-      #     projects: '**/INSS.FIP.sln'
-      #     projects: 'INSS.EIIR.Searchindexer/INSS.FIP.sln'
+      - task: DotNetCoreCLI@2
+        displayName: NuGet Restore
+        inputs:
+          command: 'restore'
+          projects: '**/INSS.FIP.sln'
+          projects: 'INSS.EIIR.Searchindexer/INSS.FIP.sln'
   
       - task: DotNetCoreCLI@2
         displayName: 'Build Solution'
