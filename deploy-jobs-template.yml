@@ -23,6 +23,12 @@ parameters:
   - name: Searchindexer
     type: string
     default: 'INSS.EIIR.Searchindexer.zip'
+  - name: iirwebdbContextConnectionString
+    type: string
+  - name: EIIRIndexUrl
+    type: string
+  - name: EIIRKey
+    type: string
 
 jobs:
   - deployment: 
@@ -41,6 +47,10 @@ jobs:
               resourceGroupName: 'rg-${{ parameters.location }}-${{ lower(parameters.environment) }}-eiir'
               slotName: 'staging'
               package: '$(Pipeline.Workspace)/**/${{ parameters.Searchindexer }}'
+              appSettings: >
+                -iirwebdbContextConnectionString "${{ parameters.iirwebdbContextConnectionString }}"
+                -EIIRIndexUrl "${{ parameters.EIIRIndexUrl }}"
+                -EIIRKey "${{ parameters.EIIRKey }}"
 
 
           - task: AzureAppServiceManage@0
