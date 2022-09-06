@@ -66,8 +66,8 @@ stages:
 - stage: DeployDev
   displayName: 'Deploy to Dev'
   condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
-  variables:
-    - group: EIIR-Dev
+  # variables:
+  #   - group: EIIR-Dev
   jobs:
     - template: deploy-jobs-template.yml
       parameters:
