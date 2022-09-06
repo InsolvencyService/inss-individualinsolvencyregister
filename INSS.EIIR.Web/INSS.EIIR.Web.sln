@@ -5,11 +5,10 @@ VisualStudioVersion = 17.2.32526.322
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "INSS.EIIR.Web", "INSS.EIIR.Web.csproj", "{DBB5D1D6-679C-491C-B458-D1B85DD42188}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "INSS.EIIR.Web.UnitTest", "..\INSS.EIIR.Web.UnitTest\INSS.EIIR.Web.UnitTest.csproj", "{352CC7C2-96DF-4180-8E0F-D2ED19D6162C}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{7555A9EC-591D-4F02-AF5A-B140A16BE611}"
 	ProjectSection(SolutionItems) = preProject
 		..\.gitignore = ..\.gitignore
+		..\README.md = ..\README.md
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "INSS.EIIR.Functions", "..\INSS.EIIR.SearchIndexer\INSS.EIIR.Functions.csproj", "{1B6D80CB-CCF5-4EA5-925D-8F7EB7CABAA1}"
@@ -52,10 +51,6 @@ Global
 		{DBB5D1D6-679C-491C-B458-D1B85DD42188}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DBB5D1D6-679C-491C-B458-D1B85DD42188}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DBB5D1D6-679C-491C-B458-D1B85DD42188}.Release|Any CPU.Build.0 = Release|Any CPU
-		{352CC7C2-96DF-4180-8E0F-D2ED19D6162C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{352CC7C2-96DF-4180-8E0F-D2ED19D6162C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{352CC7C2-96DF-4180-8E0F-D2ED19D6162C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{352CC7C2-96DF-4180-8E0F-D2ED19D6162C}.Release|Any CPU.Build.0 = Release|Any CPU
 		{1B6D80CB-CCF5-4EA5-925D-8F7EB7CABAA1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{1B6D80CB-CCF5-4EA5-925D-8F7EB7CABAA1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1B6D80CB-CCF5-4EA5-925D-8F7EB7CABAA1}.Release|Any CPU.ActiveCfg = Release|Any CPU
