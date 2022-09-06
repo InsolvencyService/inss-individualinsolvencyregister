@@ -23,8 +23,6 @@ parameters:
   - name: Searchindexer
     type: string
     default: 'INSS.FIP.Searchindexer.zip'
-  - name: appInsightsConnectionString
-    type: string
 
 jobs:
   - deployment: 
