@@ -30,8 +30,8 @@ stages:
         displayName: NuGet Restore
         inputs:
           command: 'restore'
-          projects: '**/INSS.FIP.sln'
-          projects: 'INSS.EIIR.Searchindexer/INSS.FIP.sln'
+          # projects: '**/INSS.FIP.sln'
+          projects: 'INSS.EIIR.Searchindexer/INSS.EIIR*.csproj'
   
       - task: DotNetCoreCLI@2
         displayName: 'Build Solution'
