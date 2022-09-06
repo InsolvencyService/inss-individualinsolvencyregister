@@ -20,20 +20,6 @@ parameters:
   - name: timeoutSec
     type: number
     default: 120
-  - name: phaseBanner 
-    type: string
-  - name: environmentBannerText
-    type: string
-  - name: fipApiConnectorClientOptions__BaseAddress
-    type: string
-  - name: iirwebdbContextConnectionString
-    type: string
-  - name: openApi__Version
-    type: string
-  - name: openApi__DocVersion
-    type: string
-  - name: openApi__DocTitle
-    type: string
   - name: Searchindexer
     type: string
     default: 'INSS.FIP.Searchindexer.zip'
