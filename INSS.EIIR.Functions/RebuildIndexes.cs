@@ -23,9 +23,9 @@ namespace INSS.EIIR.Functions
 
             foreach (var indexService in _indexServices)
             {
-                await indexService.DeleteIndexAsync();
-                await indexService.CreateIndexAsync();
-                await indexService.PopulateIndexAsync();
+                await indexService.DeleteIndexAsync(log);
+                await indexService.CreateIndexAsync(log);
+                await indexService.PopulateIndexAsync(log);
             }
         }
     }

@@ -2,10 +2,10 @@ using AutoMapper;
 using Azure.Search.Documents.Indexes;
 using Azure;
 using INSS.EIIR.AzureSearch.API.Configuration;
-using INSS.EIIR.AzureSearch.AutoMapperProfiles;
 using INSS.EIIR.AzureSearch.Services;
 using INSS.EIIR.AzureSearch.Services.ODataFilters;
 using INSS.EIIR.Interfaces.AzureSearch;
+using INSS.EIIR.Models.AutoMapperProfiles;
 
 var builder = WebApplication.CreateBuilder(args);
 

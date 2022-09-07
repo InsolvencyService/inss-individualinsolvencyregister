@@ -34,9 +34,9 @@
   <ItemGroup>
     <ProjectReference Include="..\INSS.EIIR.AzureSearch\INSS.EIIR.AzureSearch.csproj" />
     <ProjectReference Include="..\INSS.EIIR.DataAccess\INSS.EIIR.DataAccess.csproj" />
+    <ProjectReference Include="..\INSS.EIIR.Functions\INSS.EIIR.Functions.csproj" />
     <ProjectReference Include="..\INSS.EIIR.Interfaces\INSS.EIIR.Interfaces.csproj" />
     <ProjectReference Include="..\INSS.EIIR.Models\INSS.EIIR.Models.csproj" />
-    <ProjectReference Include="..\INSS.EIIR.SearchIndexer\INSS.EIIR.Functions.csproj" />
   </ItemGroup>
 
 </Project>

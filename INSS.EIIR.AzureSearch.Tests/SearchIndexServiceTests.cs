@@ -6,6 +6,7 @@ using INSS.EIIR.AzureSearch.Services;
 using INSS.EIIR.Interfaces.SearchIndexer;
 using INSS.EIIR.Models;
 using INSS.EIIR.Models.IndexModels;
+using Microsoft.Extensions.Logging;
 using Moq;
 using Xunit;
 
@@ -44,7 +45,7 @@ namespace INSS.EIIR.AzureSearch.Tests
             var service = GetService(indexClientMock.Object, mapperMock.Object, dataProviderMock.Object);
 
             //Act
-            await service.PopulateIndexAsync();
+            await service.PopulateIndexAsync(Mock.Of<ILogger>());
 
             //Assert
             dataProviderMock.Verify(m => m.GetIndividualSearchData(string.Empty, string.Empty), Times.Once);
