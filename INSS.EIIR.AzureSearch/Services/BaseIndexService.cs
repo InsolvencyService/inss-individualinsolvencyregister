@@ -4,6 +4,7 @@ using Azure.Search.Documents.Indexes;
 using INSS.EIIR.Interfaces.SearchIndexer;
 using Azure.Search.Documents.Models;
 using INSS.EIIR.Models.IndexModels;
+using Microsoft.Extensions.Logging;
 
 namespace INSS.EIIR.AzureSearch.Services;
 
@@ -20,27 +21,46 @@ public abstract class BaseIndexService<T> : IIndexService
     }
 
     [ExcludeFromCodeCoverage]
-    public async Task CreateIndexAsync()
+    public async Task CreateIndexAsync(ILogger logger)
     {
+
         var fieldBuilder = new FieldBuilder();
         var searchFields = fieldBuilder.Build(typeof(T));
 
         var definition = new SearchIndex(IndexName, searchFields);
 
-        await _searchClient.CreateOrUpdateIndexAsync(definition);
+        try
+        {
+            await _searchClient.CreateOrUpdateIndexAsync(definition);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, $"Failed to create index {IndexName}");
+        }
     }
 
     [ExcludeFromCodeCoverage]
-    public async Task DeleteIndexAsync()
+    public async Task DeleteIndexAsync(ILogger logger)
     {
-        var index = await _searchClient.GetIndexAsync(IndexName);
-        await _searchClient.DeleteIndexAsync(index);
+        try
+        {
+            var index = await _searchClient.GetIndexAsync(IndexName);
+
+            if (index != null)
+            {
+                await _searchClient.DeleteIndexAsync(index);
+            }
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, $"Failed to delete index {IndexName}");
+        }
     }
 
-    public abstract Task PopulateIndexAsync();
+    public abstract Task PopulateIndexAsync(ILogger logger);
 
     [ExcludeFromCodeCoverage]
-    protected async Task IndexBatchAsync(int page, IEnumerable<IndividualSearch> data)
+    protected async Task IndexBatchAsync(int page, IEnumerable<IndividualSearch> data, ILogger logger)
     {
         try
         {
@@ -50,9 +70,9 @@ public abstract class BaseIndexService<T> : IIndexService
 
             Thread.Sleep(2000);
         }
-        catch (Exception)
+        catch (Exception ex)
         {
-            Console.WriteLine($"Failed to index page: {page}");
+            logger.LogError(ex, $"Failed to index page: {page}");
         }
     }
 }

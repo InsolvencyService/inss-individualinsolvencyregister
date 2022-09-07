@@ -1,10 +1,12 @@
-﻿namespace INSS.EIIR.Interfaces.SearchIndexer;
+﻿using Microsoft.Extensions.Logging;
+
+namespace INSS.EIIR.Interfaces.SearchIndexer;
 
 public interface IIndexService
 {
-    Task CreateIndexAsync();
+    Task CreateIndexAsync(ILogger logger);
 
-    Task DeleteIndexAsync();
+    Task DeleteIndexAsync(ILogger logger);
 
-    Task PopulateIndexAsync();
+    Task PopulateIndexAsync(ILogger logger);
 }
