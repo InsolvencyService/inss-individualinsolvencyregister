@@ -24,7 +24,7 @@ public class IndividualRepository : IIndividualRepository
             var surname = new SqlParameter("@Surname", lastName);
             var forename = new SqlParameter("@Forename", firstName);
 
-            _context.Database.SetCommandTimeout(180);
+            _context.Database.SetCommandTimeout(600);
 
             results = _context.SearchResults
                 .FromSqlRaw("exec getIndividualByName @Surname, @Forename", surname, forename)
