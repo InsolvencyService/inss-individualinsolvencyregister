@@ -27,7 +27,7 @@ parameters:
     type: string
   - name: EIIRIndexUrl
     type: string
-  - name: EIIRKey
+  - name: EIIRApiKey
     type: string
 
 jobs:
@@ -50,7 +50,7 @@ jobs:
               appSettings: >
                 -iirwebdbContextConnectionString "${{ parameters.iirwebdbContextConnectionString }}"
                 -EIIRIndexUrl "${{ parameters.EIIRIndexUrl }}"
-                -EIIRKey "${{ parameters.EIIRKey }}"
+                -EIIRApiKey "${{ parameters.EIIRApiKey }}"
 
 
           - task: AzureAppServiceManage@0

@@ -74,5 +74,5 @@ stages:
         environment: 'Dev'
         iirwebdbContextConnectionString: $(iirwebdbContextConnectionString)
         EIIRIndexUrl: $(EIIRIndexUrl)
-        EIIRKey: $(EIIRKey)
+        EIIRApiKey: $(EIIRApiKey)
 
