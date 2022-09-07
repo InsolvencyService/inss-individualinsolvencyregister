@@ -31,13 +31,13 @@ stages:
         inputs:
           command: 'restore'
           # projects: '**/INSS.FIP.sln'
-          projects: 'INSS.EIIR.Services/INSS.EIIR*.csproj'
+          projects: 'INSS.EIIR.Functions/INSS.EIIR*.csproj'
   
       - task: DotNetCoreCLI@2
         displayName: 'Build Solution'
         inputs:
           command: 'build'
-          projects: 'INSS.EIIR.Services/INSS.EIIR*.csproj'
+          projects: 'INSS.EIIR.Functions/INSS.EIIR*.csproj'
           arguments: '--configuration $(buildConfiguration)'        
 
       # - task: DotNetCoreCLI@2
@@ -53,7 +53,7 @@ stages:
           command: 'publish'
           publishWebProjects: false
           # projects: '**/*.csproj'
-          projects: 'INSS.EIIR.Services/*.csproj'
+          projects: 'INSS.EIIR.Functions/*.csproj'
           arguments: '--configuration $(BuildConfiguration) --output $(Build.ArtifactStagingDirectory)'
 
       - task: PublishPipelineArtifact@1
