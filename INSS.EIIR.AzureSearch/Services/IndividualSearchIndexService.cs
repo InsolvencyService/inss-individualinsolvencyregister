@@ -4,6 +4,7 @@ using INSS.EIIR.AzureSearch.Services.Constants;
 using INSS.EIIR.Interfaces.SearchIndexer;
 using INSS.EIIR.Models;
 using INSS.EIIR.Models.IndexModels;
+using Microsoft.Extensions.Logging;
 
 namespace INSS.EIIR.AzureSearch.Services;
 
@@ -26,10 +27,12 @@ public class IndividualSearchIndexService : BaseIndexService<IndividualSearch>
         _searchDataProvider = searchDataProvider;
     }
 
-    public override async Task PopulateIndexAsync()
+    public override async Task PopulateIndexAsync(ILogger logger)
     {
+        logger.LogDebug("Get Data from GetIndividualSearchData()");
         var data = _searchDataProvider.GetIndividualSearchData();
-        
+
+        logger.LogDebug("Map Data");
         var indexData = _mapper.Map<IEnumerable<SearchResult>, IEnumerable<IndividualSearch>>(data).ToList();
 
         var pages = indexData.Count / PageSize;
@@ -39,13 +42,14 @@ public class IndividualSearchIndexService : BaseIndexService<IndividualSearch>
             pages += 1;
         }
 
+        logger.LogDebug("Loop through pages and index batch");
         for (var i = 0; i < pages; i++)
         {
             var dataBatch = indexData
                 .Skip(i * PageSize)
                 .Take(PageSize);
 
-            await IndexBatchAsync(i, dataBatch);
+            await IndexBatchAsync(i, dataBatch, logger);
         }
     }
 }

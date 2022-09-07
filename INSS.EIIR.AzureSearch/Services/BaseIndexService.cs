@@ -4,7 +4,7 @@ using Azure.Search.Documents.Indexes;
 using INSS.EIIR.Interfaces.SearchIndexer;
 using Azure.Search.Documents.Models;
 using INSS.EIIR.Models.IndexModels;
-using Azure;
+using Microsoft.Extensions.Logging;
 
 namespace INSS.EIIR.AzureSearch.Services;
 
@@ -21,7 +21,7 @@ public abstract class BaseIndexService<T> : IIndexService
     }
 
     [ExcludeFromCodeCoverage]
-    public async Task CreateIndexAsync()
+    public async Task CreateIndexAsync(ILogger logger)
     {
 
         var fieldBuilder = new FieldBuilder();
@@ -33,14 +33,14 @@ public abstract class BaseIndexService<T> : IIndexService
         {
             await _searchClient.CreateOrUpdateIndexAsync(definition);
         }
-        catch (Exception)
+        catch (Exception ex)
         {
-            Console.WriteLine($"Failed to create index {IndexName}");
+            logger.LogError(ex, $"Failed to create index {IndexName}");
         }
     }
 
     [ExcludeFromCodeCoverage]
-    public async Task DeleteIndexAsync()
+    public async Task DeleteIndexAsync(ILogger logger)
     {
         try
         {
@@ -51,16 +51,16 @@ public abstract class BaseIndexService<T> : IIndexService
                 await _searchClient.DeleteIndexAsync(index);
             }
         }
-        catch (Exception)
+        catch (Exception ex)
         {
-            Console.WriteLine($"Failed to delete index {IndexName}");
+            logger.LogError(ex, $"Failed to delete index {IndexName}");
         }
     }
 
-    public abstract Task PopulateIndexAsync();
+    public abstract Task PopulateIndexAsync(ILogger logger);
 
     [ExcludeFromCodeCoverage]
-    protected async Task IndexBatchAsync(int page, IEnumerable<IndividualSearch> data)
+    protected async Task IndexBatchAsync(int page, IEnumerable<IndividualSearch> data, ILogger logger)
     {
         try
         {
@@ -70,9 +70,9 @@ public abstract class BaseIndexService<T> : IIndexService
 
             Thread.Sleep(2000);
         }
-        catch (Exception)
+        catch (Exception ex)
         {
-            Console.WriteLine($"Failed to index page: {page}");
+            logger.LogError(ex, $"Failed to index page: {page}");
         }
     }
 }
