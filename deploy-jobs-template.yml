@@ -22,7 +22,7 @@ parameters:
     default: 120
   - name: Searchindexer
     type: string
-    default: 'INSS.EIIR.Searchindexer.zip'
+    default: 'INSS.EIIR.Services.zip'
   - name: iirwebdbContextConnectionString
     type: string
   - name: EIIRIndexUrl
