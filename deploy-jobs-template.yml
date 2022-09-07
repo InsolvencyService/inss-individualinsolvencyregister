@@ -22,12 +22,12 @@ parameters:
     default: 120
   - name: Searchindexer
     type: string
-    default: 'INSS.EIIR.Searchindexer.zip'
+    default: 'INSS.EIIR.Functions.zip'
   - name: iirwebdbContextConnectionString
     type: string
   - name: EIIRIndexUrl
     type: string
-  - name: EIIRKey
+  - name: EIIRApiKey
     type: string
 
 jobs:
@@ -50,7 +50,7 @@ jobs:
               appSettings: >
                 -iirwebdbContextConnectionString "${{ parameters.iirwebdbContextConnectionString }}"
                 -EIIRIndexUrl "${{ parameters.EIIRIndexUrl }}"
-                -EIIRKey "${{ parameters.EIIRKey }}"
+                -EIIRApiKey "${{ parameters.EIIRApiKey }}"
 
 
           - task: AzureAppServiceManage@0
