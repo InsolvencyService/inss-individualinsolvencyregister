@@ -1,0 +1,112 @@
+parameters:
+  - name: environment
+    type: string
+    default: Dev
+  - name: location
+    type: string
+    default: 'uksouth'
+  - name: azureSubscription
+    type: string
+    default: 'AppServicesDevOps-NonProd'
+  - name: method
+    type: string
+    default: 'GET'
+  - name: retries
+    type: number
+    default: 5
+  - name: secondsDelay
+    type: number
+    default: 10
+  - name: timeoutSec
+    type: number
+    default: 120
+  - name: Searchindexer
+    type: string
+    default: 'INSS.EIIR.Searchindexer.zip'
+  - name: iirwebdbContextConnectionString
+    type: string
+  - name: EIIRIndexUrl
+    type: string
+  - name: EIIRKey
+    type: string
+
+jobs:
+  - deployment: 
+    environment: ${{ parameters.environment }}
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - task: AzureFunctionApp@1
+            displayName: Azure Function App Deploy
+            inputs:
+              azureSubscription: ${{ parameters.azureSubscription }}
+              appType: 'functionApp'
+              appName: 'func-${{ parameters.location }}-${{ lower(parameters.environment) }}-eiir-downloadservice'
+              deployToSlotOrASE: true
+              resourceGroupName: 'rg-${{ parameters.location }}-${{ lower(parameters.environment) }}-eiir'
+              slotName: 'staging'
+              package: '$(Pipeline.Workspace)/**/${{ parameters.Searchindexer }}'
+              appSettings: >
+                -iirwebdbContextConnectionString "${{ parameters.iirwebdbContextConnectionString }}"
+                -EIIRIndexUrl "${{ parameters.EIIRIndexUrl }}"
+                -EIIRKey "${{ parameters.EIIRKey }}"
+
+
+          - task: AzureAppServiceManage@0
+            displayName: Start Staging Slot
+            inputs:
+              azureSubscription: ${{ parameters.azureSubscription }}
+              Action: 'Start Azure App Service'
+              WebAppName: 'func-${{ parameters.location }}-${{ lower(parameters.environment) }}-eiir-downloadservice'
+              ResourceGroupName: 'rg-${{ parameters.location }}-${{ lower(parameters.environment) }}-eiir'              
+              SpecifySlotOrASE: true
+              Slot: 'staging'
+
+          - checkout: inss-devops-common-lib
+
+          - task: PowerShell@2
+            displayName: 'Performing Health Check - Staging'
+            inputs:
+              failOnStderr: true
+              targetType: 'filePath'
+              filePath: $(System.DefaultWorkingDirectory)\powershell\InvokeRequestWithRetry.ps1
+              arguments: > # Use this to avoid newline characters in multi-line string
+                -URI "https://func-${{ parameters.location }}-${{ lower(parameters.environment) }}-eiir-downloadservice-staging.azurewebsites.net/"
+                -Method "${{ parameters.method }}"
+                -Retries ${{ parameters.retries }}
+                -SecondsDelay ${{ parameters.secondsDelay }}
+                -TimeoutSec ${{ parameters.timeoutSec }}
+
+          - task: AzureAppServiceManage@0
+            displayName: Swap Staging Slot into Production
+            inputs:
+              azureSubscription: ${{ parameters.azureSubscription }}
+              Action: 'Swap Slots'
+              WebAppName: 'func-${{ parameters.location }}-${{ lower(parameters.environment) }}-eiir-downloadservice'
+              ResourceGroupName: 'rg-${{ parameters.location }}-${{ lower(parameters.environment) }}-eiir'
+              SourceSlot: 'staging'
+              SwapWithProduction: true
+
+          - task: PowerShell@2
+            displayName: 'Performing Health Check - Production'
+            inputs:
+              failOnStderr: true
+              targetType: 'filePath'
+              filePath: $(System.DefaultWorkingDirectory)\powershell\InvokeRequestWithRetry.ps1
+              arguments: > # Use this to avoid newline characters in multi-line string
+                -URI "https://func-${{ parameters.location }}-${{ lower(parameters.environment) }}-eiir-downloadservice.azurewebsites.net/"
+                -Method "${{ parameters.method }}"
+                -Retries ${{ parameters.retries }}
+                -SecondsDelay ${{ parameters.secondsDelay }}
+                -TimeoutSec ${{ parameters.timeoutSec }}
+
+          - task: AzureAppServiceManage@0
+            displayName: Stop Staging Slot
+            inputs:
+              azureSubscription: ${{ parameters.azureSubscription }}
+              Action: 'Stop Azure App Service'
+              WebAppName: 'func-${{ parameters.location }}-${{ lower(parameters.environment) }}-eiir-downloadservice'
+              ResourceGroupName: 'rg-${{ parameters.location }}-${{ lower(parameters.environment) }}-eiir'              
+              SpecifySlotOrASE: true
+              Slot: 'staging'
