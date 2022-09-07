@@ -9,9 +9,6 @@ public class IndividualSearch
     [SearchableField(IsSortable = true, IsKey = true)]
     public string CaseNumber { get; set; }
 
-    [SearchableField(IsSortable = true, IsKey = true)]
-    public string IndividualNumber { get; set; }
-
     [SearchableField(IsSortable = true)]
     public string FirstName { get; set; }
 
