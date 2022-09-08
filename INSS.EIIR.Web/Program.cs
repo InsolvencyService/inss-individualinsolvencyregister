@@ -1,6 +1,5 @@
 using AspNetCore.SEOHelper;
 using Microsoft.AspNetCore.Rewrite;
-using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,7 +11,20 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
-    app.UseExceptionHandler("/Home/Error");
+    app.Use(async (ctx, next) =>
+    {
+        await next();
+
+        if (ctx.Response.StatusCode == 404 && !ctx.Response.HasStarted)
+        {
+            var originalPath = ctx.Request.Path.Value ?? "unknown";
+            ctx.Items["originalPath"] = originalPath;
+            ctx.Request.Path = "/Errors/NotFound";
+            await next();
+        }
+    });
+
+    app.UseExceptionHandler("/Errors");
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
