@@ -7,6 +7,17 @@
     <OutputType>Exe</OutputType>
   </PropertyGroup>
 
+  <Target Name="Install NPM modules" BeforeTargets="CoreCompile" Inputs="package-lock.json" Outputs="node_modules/.install-stamp">
+    <Exec Command="npm ci" Condition="'$(OS)' != 'Windows_NT'" />
+    <Exec Command="npm install" Condition="'$(OS)' == 'Windows_NT'" />
+    <Touch Files="node_modules/.install-stamp" AlwaysCreate="true" />
+  </Target>
+
+  <Target Name="Compile SCSS" BeforeTargets="CopyFilesToOutputDirectory">
+    <Exec Command="npm run build:css" />
+    <Copy SourceFiles="$(ProjectDir)wwwroot/css/site.css" DestinationFolder="$(PublishDir)wwwroot/css" />
+  </Target>
+
   <ItemGroup>
     <Compile Remove="INSS.EIIR.ResponseModels\**" />
     <Compile Remove="Views\NewFolder\**" />
@@ -16,6 +27,8 @@
     <EmbeddedResource Remove="Views\NewFolder\**" />
     <None Remove="INSS.EIIR.ResponseModels\**" />
     <None Remove="Views\NewFolder\**" />
+    <Content Remove="wwwroot\css\site.css" />
+    <Content Remove="wwwroot\css\site.css" />
   </ItemGroup>
 
   <ItemGroup>
@@ -30,8 +43,6 @@
 
   <ItemGroup>
     <PackageReference Include="AspNetCore.SEOHelper" Version="1.0.1" />
-    <PackageReference Include="BuildBundlerMinifier" Version="3.2.449" />
-    <PackageReference Include="BuildWebCompiler" Version="1.12.405" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.8" />
   </ItemGroup>
 
