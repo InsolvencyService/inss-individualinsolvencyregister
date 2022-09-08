@@ -1,15 +1,12 @@
-﻿using INSS.EIIR.Web.Models;
-using Microsoft.AspNetCore.Mvc;
-using System.Diagnostics;
+﻿using Microsoft.AspNetCore.Mvc;
 
 namespace INSS.EIIR.Web.Controllers
 {
     public class ErrorsController : Controller
     {
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Index()
         {
-            return View("Error", new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            return View();
         }
 
         public new IActionResult NotFound()
