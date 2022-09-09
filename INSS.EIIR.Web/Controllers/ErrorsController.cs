@@ -4,13 +4,20 @@ namespace INSS.EIIR.Web.Controllers
 {
     public class ErrorsController : Controller
     {
-        public IActionResult Index()
+        [Route("/errors/{statusCode?}")]
+        public IActionResult Index(int? statusCode)
         {
-            return View();
-        }
+            if (statusCode != null)
+            {
+                switch (statusCode.Value)
+                {
+                    case 404:
+                        return View("NotFound");
+                    case 503:
+                        return View("Maintenance");
+                }
+            }
 
-        public new IActionResult NotFound()
-        {
             return View();
         }
     }
