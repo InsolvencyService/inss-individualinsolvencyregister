@@ -4,10 +4,10 @@
     "AzureWebJobsStorage": "UseDevelopmentStorage=true",
     "FUNCTIONS_WORKER_RUNTIME": "dotnet",
 
-    "iirwebdbContextConnectionString": "Data Source=[iirwebdb db connction string]",
+    "iirwebdbContextConnectionString": "__iirwebdbContextConnectionString__",
 
-    "EIIRIndexUrl": "",
-    "EIIRKey": "",
+    "EIIRIndexUrl": "__EIIRIndexUrl__",
+    "EIIRKey": "__EIIRKey__",
 
     "OpenApi__Version": "v3",
     "OpenApi__DocVersion": "1.0.0",

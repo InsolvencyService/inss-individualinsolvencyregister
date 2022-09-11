@@ -19,10 +19,6 @@
   </Target>
 
   <ItemGroup>
-    <Content Remove="wwwroot\css\site.css" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Folder Include="Properties\" />
     <Folder Include="wwwroot\minified\" />
     <Folder Include="wwwroot\assets\" />
