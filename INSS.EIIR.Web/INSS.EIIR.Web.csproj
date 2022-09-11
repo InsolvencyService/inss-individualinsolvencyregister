@@ -19,16 +19,6 @@
   </Target>
 
   <ItemGroup>
-    <Compile Remove="INSS.EIIR.ResponseModels\**" />
-    <Compile Remove="Views\NewFolder\**" />
-    <Content Remove="INSS.EIIR.ResponseModels\**" />
-    <Content Remove="Views\NewFolder\**" />
-    <EmbeddedResource Remove="INSS.EIIR.ResponseModels\**" />
-    <EmbeddedResource Remove="Views\NewFolder\**" />
-    <None Remove="INSS.EIIR.ResponseModels\**" />
-    <None Remove="Views\NewFolder\**" />
-    <Content Remove="wwwroot\css\site.css" />
-    <Content Remove="wwwroot\css\site.css" />
     <Content Remove="wwwroot\css\site.css" />
   </ItemGroup>
 
