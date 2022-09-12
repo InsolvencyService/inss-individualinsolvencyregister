@@ -8,7 +8,6 @@
 
   <ItemGroup>
     <Folder Include="DataAccess\" />
-    <Folder Include="AzureSearch\" />
   </ItemGroup>
 
   <ItemGroup>
