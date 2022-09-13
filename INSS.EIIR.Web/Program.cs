@@ -1,4 +1,5 @@
 using AspNetCore.SEOHelper;
+using INSS.EIIR.Web;
 using Microsoft.AspNetCore.Rewrite;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -40,4 +41,10 @@ app.Run();
 void ConfigureServices(IServiceCollection services)
 {
     services.AddControllersWithViews();
+
+#if DEBUG
+    services.AddHostedService(sp => new NpmWatchHostedService(
+        enabled: sp.GetRequiredService<IWebHostEnvironment>().IsDevelopment(),
+        logger: sp.GetRequiredService<ILogger<NpmWatchHostedService>>()));
+#endif
 }
