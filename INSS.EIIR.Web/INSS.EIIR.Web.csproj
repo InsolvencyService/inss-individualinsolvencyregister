@@ -15,7 +15,6 @@
 
   <Target Name="Compile SCSS" BeforeTargets="CopyFilesToOutputDirectory">
     <Exec Command="npm run build:css" />
-    <Copy SourceFiles="$(ProjectDir)wwwroot/css/site.css" DestinationFolder="$(PublishDir)wwwroot/css" />
   </Target>
 
   <ItemGroup>
@@ -38,4 +37,10 @@
     <ProjectReference Include="..\INSS.EIIR.Models\INSS.EIIR.Models.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Remove="wwwroot\css\site.css" />
+    <Content Remove="wwwroot\css\site.css" />
+    <Content Remove="wwwroot\css\site.css" />
+    <Content Remove="wwwroot\css\site.css.map" />
+  </ItemGroup>
 </Project>
