@@ -1,5 +1,5 @@
 ﻿using INSS.EIIR.Interfaces.DataAccess;
-using INSS.EIIR.Interfaces.SearchIndexer;
+using INSS.EIIR.Interfaces.Services;
 using INSS.EIIR.Models;
 
 namespace INSS.EIIR.Services;

@@ -3,7 +3,6 @@ using Azure.Search.Documents.Indexes;
 using Azure;
 using INSS.EIIR.AzureSearch.Services;
 using INSS.EIIR.DataAccess;
-using INSS.EIIR.Interfaces.SearchIndexer;
 using INSS.EIIR.Services;
 using Xunit;
 using Microsoft.Extensions.Configuration;
@@ -14,6 +13,7 @@ using Microsoft.Extensions.Logging;
 using INSS.EIIR.Models;
 using INSS.EIIR.Models.IndexModels;
 using Microsoft.Azure.WebJobs.Extensions.Timers;
+using INSS.EIIR.Interfaces.AzureSearch;
 
 namespace INSS.EIIR.Functions.Tests
 {
