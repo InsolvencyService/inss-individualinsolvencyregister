@@ -104,4 +104,10 @@ void ConfigureServices(IServiceCollection services)
 static bool IsAdminContext(RedirectContext<CookieAuthenticationOptions> context)
 {
     return context.Request.Path.StartsWithSegments($"/{Role.Admin}");
+
+#if DEBUG
+    services.AddHostedService(sp => new NpmWatchHostedService(
+        enabled: sp.GetRequiredService<IWebHostEnvironment>().IsDevelopment(),
+        logger: sp.GetRequiredService<ILogger<NpmWatchHostedService>>()));
+#endif
 }
