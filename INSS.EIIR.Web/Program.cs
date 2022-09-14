@@ -77,7 +77,7 @@ void ConfigureServices(IServiceCollection services)
 
     services.AddAntiforgery(options =>
     {
-        // Set Cookie properties using CookieBuilder properties†.
+        // Set Cookie properties using CookieBuilder propertiesâ€ .
         options.FormFieldName = "AntiforgeryFieldname";
         options.HeaderName = "X-CSRF-TOKEN-HEADERNAME";
         options.SuppressXFrameOptionsHeader = false;
@@ -104,10 +104,4 @@ void ConfigureServices(IServiceCollection services)
 static bool IsAdminContext(RedirectContext<CookieAuthenticationOptions> context)
 {
     return context.Request.Path.StartsWithSegments($"/{Role.Admin}");
-
-#if DEBUG
-    services.AddHostedService(sp => new NpmWatchHostedService(
-        enabled: sp.GetRequiredService<IWebHostEnvironment>().IsDevelopment(),
-        logger: sp.GetRequiredService<ILogger<NpmWatchHostedService>>()));
-#endif
 }
