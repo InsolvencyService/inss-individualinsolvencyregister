@@ -1,6 +1,10 @@
-﻿namespace INSS.EIIR.Interfaces.DataAccess;
+﻿using INSS.EIIR.Models.Authentication;
+
+namespace INSS.EIIR.Interfaces.DataAccess;
 
 public interface IAccountRepository
 {
-    bool AdminAccountIsValid(string username, string password);
+    User GetAdminUser(string username, string password);
+
+    User GetSubscriberUser(string username, string password);
 }

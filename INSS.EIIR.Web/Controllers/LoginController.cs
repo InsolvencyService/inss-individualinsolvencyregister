@@ -1,7 +1,7 @@
 ﻿using System.Security.Claims;
 using INSS.EIIR.Interfaces.Services;
+using INSS.EIIR.Models.Authentication;
 using INSS.EIIR.Web.Constants;
-using INSS.EIIR.Web.Models;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
@@ -17,33 +17,62 @@ namespace INSS.EIIR.Web.Controllers
             _authenticationProvider = authenticationProvider;
         }
 
-        public IActionResult Index()
+        [HttpGet("Admin")]
+        public IActionResult AdminLogin()
         {
-            return View();
+            return View("Admin");
         }
 
-        [HttpPost("Login")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> LoginAsync(User user)
+        [HttpGet("Subscriber")]
+        public IActionResult SubscriberLogin()
         {
-            var validUser = _authenticationProvider.AdminAccountIsValid(user.UserName, user.Password);
+            return View("Subscriber");
+        }
 
-            if (validUser)
+        [HttpPost("AdminLogin")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AdminLoginAsync(User user)
+        {
+            var validUser = _authenticationProvider.GetAdminUser(user.UserName, user.Password);
+
+            if (validUser == null)
             {
-                await Authenticate(user , Roles.Admin);
-
-                return RedirectToAction("Index", "DataExtract", new { area = AreaNames.Admin });
+                return View("Admin", user);
             }
 
-            return View("Index", user);
+            await Authenticate(validUser);
+
+            return RedirectToAction("Index", "DataExtract", new { area = AreaNames.Admin });
+
         }
 
-        private async Task Authenticate(User user, string role)
+        [HttpPost("SubscriberLogin")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> SubscriberLoginAsync(User user)
+        {
+            var validUser = _authenticationProvider.GetSubscriberUser(user.UserName, user.Password);
+
+            if (validUser == null)
+            {
+                return View("Subscriber", user);
+            }
+
+            await Authenticate(validUser);
+
+            return RedirectToAction("Index", "Home", new { area = AreaNames.Subscribers }); ;
+        }
+
+        public async Task Logout()
+        {
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+        }
+
+        private async Task Authenticate(User user)
         {
             var claims = new List<Claim>
             {
                 new(ClaimTypes.Name, user.UserName),
-                new(ClaimTypes.Role, role),
+                new(ClaimTypes.Role, user.UserRole)
             };
 
             var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);

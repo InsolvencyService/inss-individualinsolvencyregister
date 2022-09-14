@@ -3,9 +3,12 @@ using INSS.EIIR.Data.Models;
 using INSS.EIIR.DataAccess;
 using INSS.EIIR.Interfaces.DataAccess;
 using INSS.EIIR.Interfaces.Services;
+using INSS.EIIR.Models.Constants;
 using INSS.EIIR.Services;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Rewrite;
+using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -55,8 +58,21 @@ void ConfigureServices(IServiceCollection services)
         .AddCookie(authenticationOptions =>
         {
             authenticationOptions.Cookie.Name = "SessionCookie";
-            authenticationOptions.LoginPath = "/Login/Index";
             authenticationOptions.SlidingExpiration = true;
+
+            authenticationOptions.Events.OnRedirectToLogin = context =>
+            {
+                if (IsAdminContext(context))
+                {
+                    context.Response.Redirect("/Login/Index/AdminLogin");
+                }
+                else
+                {
+                    context.Response.Redirect("/Login/Index/SubscriberLogin");
+                }
+
+                return Task.CompletedTask;
+            };
         });
 
     services.AddAntiforgery(options =>
@@ -83,4 +99,9 @@ void ConfigureServices(IServiceCollection services)
 
     services.AddTransient<IAuthenticationProvider, AuthenticationProvider>();
     services.AddTransient<IAccountRepository, AccountRepository>();
+}
+
+static bool IsAdminContext(RedirectContext<CookieAuthenticationOptions> context)
+{
+    return context.Request.Path.StartsWithSegments($"/{Role.Admin}");
 }

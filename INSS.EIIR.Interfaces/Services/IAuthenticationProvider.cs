@@ -1,6 +1,10 @@
-﻿namespace INSS.EIIR.Interfaces.Services;
+﻿using INSS.EIIR.Models.Authentication;
+
+namespace INSS.EIIR.Interfaces.Services;
 
 public interface IAuthenticationProvider
 {
-    bool AdminAccountIsValid(string username, string password);
+    User GetAdminUser(string username, string password);
+
+    User GetSubscriberUser(string username, string password);
 }

@@ -1,4 +1,4 @@
-﻿@model INSS.EIIR.Web.Models.User
+﻿@model INSS.EIIR.Models.Authentication.User
 
 @{
     ViewData["Title"] = "Admin login – Search the Individual Insolvency Register";
@@ -11,7 +11,7 @@
             Admin login
         </h1>
         
-        <form asp-action="" method="post">
+        <form asp-action="AdminLogin" method="post">
             @Html.AntiForgeryToken()
 
             <fieldset class="govuk-fieldset">

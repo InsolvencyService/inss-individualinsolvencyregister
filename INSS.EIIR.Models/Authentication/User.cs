@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace INSS.EIIR.Web.Models;
+namespace INSS.EIIR.Models.Authentication;
 
 public class User
 {
@@ -10,4 +10,6 @@ public class User
     [Required]
     [DataType(DataType.Password)]
     public string Password { get; set; }
+
+    public string UserRole { get; set; }
 }
