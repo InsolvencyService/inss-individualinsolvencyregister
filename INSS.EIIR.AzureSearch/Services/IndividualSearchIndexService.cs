@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using Azure.Search.Documents.Indexes;
 using INSS.EIIR.AzureSearch.Services.Constants;
-using INSS.EIIR.Interfaces.SearchIndexer;
+using INSS.EIIR.Interfaces.Services;
 using INSS.EIIR.Models;
 using INSS.EIIR.Models.IndexModels;
 using Microsoft.Extensions.Logging;

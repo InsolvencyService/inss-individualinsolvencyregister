@@ -1,10 +1,10 @@
 ﻿using Azure.Search.Documents.Indexes.Models;
 using System.Diagnostics.CodeAnalysis;
 using Azure.Search.Documents.Indexes;
-using INSS.EIIR.Interfaces.SearchIndexer;
 using Azure.Search.Documents.Models;
 using INSS.EIIR.Models.IndexModels;
 using Microsoft.Extensions.Logging;
+using INSS.EIIR.Interfaces.AzureSearch;
 
 namespace INSS.EIIR.AzureSearch.Services;
 

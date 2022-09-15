@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using INSS.EIIR.Interfaces.SearchIndexer;
+using INSS.EIIR.Interfaces.AzureSearch;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Logging;
 

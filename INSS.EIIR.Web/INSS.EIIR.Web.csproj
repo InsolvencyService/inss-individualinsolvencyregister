@@ -3,23 +3,21 @@
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
     <OutputType>Exe</OutputType>
   </PropertyGroup>
 
-  <ItemGroup>
-    <Compile Remove="INSS.EIIR.ResponseModels\**" />
-    <Compile Remove="Views\NewFolder\**" />
-    <Content Remove="INSS.EIIR.ResponseModels\**" />
-    <Content Remove="Views\NewFolder\**" />
-    <EmbeddedResource Remove="INSS.EIIR.ResponseModels\**" />
-    <EmbeddedResource Remove="Views\NewFolder\**" />
-    <None Remove="INSS.EIIR.ResponseModels\**" />
-    <None Remove="Views\NewFolder\**" />
-    <None Remove="Views\Subscriber\" />
-  </ItemGroup>
+  <Target Name="Install NPM modules" BeforeTargets="CoreCompile" Inputs="package-lock.json" Outputs="node_modules/.install-stamp">
+    <Exec Command="npm ci" Condition="'$(OS)' != 'Windows_NT'" />
+    <Exec Command="npm install" Condition="'$(OS)' == 'Windows_NT'" />
+    <Touch Files="node_modules/.install-stamp" AlwaysCreate="true" />
+  </Target>
+
+  <Target Name="Compile SCSS" BeforeTargets="CopyFilesToOutputDirectory">
+    <Exec Command="npm run build:css" />
+  </Target>
 
   <ItemGroup>
+    <Folder Include="Models\" />
     <Folder Include="Properties\" />
     <Folder Include="wwwroot\minified\" />
     <Folder Include="wwwroot\assets\" />
@@ -32,13 +30,20 @@
 
   <ItemGroup>
     <PackageReference Include="AspNetCore.SEOHelper" Version="1.0.1" />
-    <PackageReference Include="BuildBundlerMinifier" Version="3.2.449" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.8" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\INSS.EIIR.DataAccess\INSS.EIIR.DataAccess.csproj" />
     <ProjectReference Include="..\INSS.EIIR.Interfaces\INSS.EIIR.Interfaces.csproj" />
     <ProjectReference Include="..\INSS.EIIR.Models\INSS.EIIR.Models.csproj" />
+    <ProjectReference Include="..\INSS.EIIR.Services\INSS.EIIR.Services.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Remove="wwwroot\css\site.css" />
+    <Content Remove="wwwroot\css\site.css" />
+    <Content Remove="wwwroot\css\site.css" />
+    <Content Remove="wwwroot\css\site.css.map" />
+  </ItemGroup>
 </Project>

@@ -1,6 +1,6 @@
 ﻿using INSS.EIIR.Models;
 
-namespace INSS.EIIR.Interfaces.SearchIndexer;
+namespace INSS.EIIR.Interfaces.Services;
 
 public interface ISearchDataProvider
 {

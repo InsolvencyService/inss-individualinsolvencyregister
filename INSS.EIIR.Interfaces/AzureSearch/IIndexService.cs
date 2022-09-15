@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 
-namespace INSS.EIIR.Interfaces.SearchIndexer;
+namespace INSS.EIIR.Interfaces.AzureSearch;
 
 public interface IIndexService
 {
