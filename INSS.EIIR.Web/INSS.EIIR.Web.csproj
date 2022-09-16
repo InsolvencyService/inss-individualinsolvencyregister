@@ -17,10 +17,10 @@
   </Target>
 
   <ItemGroup>
-    <Compile Remove="Models\**" />
-    <Content Remove="Models\**" />
-    <EmbeddedResource Remove="Models\**" />
-    <None Remove="Models\**" />
+    <Folder Include="Properties\" />
+    <Folder Include="wwwroot\minified\" />
+    <Folder Include="wwwroot\assets\" />
+    <Folder Include="Views\Subscriber\" />
   </ItemGroup>
 
   <ItemGroup>
