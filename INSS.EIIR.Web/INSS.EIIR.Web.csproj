@@ -21,6 +21,7 @@
     <Folder Include="Properties\" />
     <Folder Include="wwwroot\minified\" />
     <Folder Include="wwwroot\assets\" />
+    <Folder Include="Views\Subscriber\" />
   </ItemGroup>
 
   <ItemGroup>
