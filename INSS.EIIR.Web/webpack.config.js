@@ -15,6 +15,8 @@ module.exports = {
 
     context: path.resolve(__dirname, 'wwwroot'),
 
+    stats: { warnings: false },
+
     // Webpack needs to know where to start the bundling process,
     // so we define the Sass file under '/scss' directory
     // and the script file under '/js' directory
@@ -88,39 +90,30 @@ module.exports = {
             },
             {
                 test: /\.(png|jpe?g|gif)$/,
-                use: [
-                    {
-                        loader: 'file-loader',
-                        options: {
-                            emitFile: false,
-                            name: '[name].[ext]',
-                            publicPath: './assets/images'                            
-                        }
-                    }
-                ]
+                type: 'asset/resource',
+                generator: {
+                    filename: './images/[name][ext]',
+                }
             },
             {
                 test: /\.(woff|woff2|eot|ttf|otf)$/,
-                use: [
-                    {
-                        loader: 'file-loader',
-                        options: {
-                            emitFile: false,
-                            name: '[name].[ext]',
-                            publicPath: './assets/fonts'
-                        }
-                    }
-                ]
+                type: 'asset/resource',
+                generator: {
+                    filename: './fonts/[name][ext]',
+                }
             }
         ]
     },
     optimization: {
         minimize: true,
-        minimizer: [new TerserPlugin()],
+        minimizer: [new TerserPlugin({
+            extractComments: false
+        })],
+        
     },
     plugins: [
         new MiniCssExtractPlugin({
-            filename: devMode ? './[name].css' : './dist/minified/[name].min.css',
+            filename: devMode ? './[name].css' : './minified/[name].min.css',
             chunkFilename: "[name].css"
         })
     ]

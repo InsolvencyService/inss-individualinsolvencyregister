@@ -13,14 +13,14 @@
   font-family: "GDS Transport";
   font-style: normal;
   font-weight: normal;
-  src: url(../../279d0eb55e360153e70b.woff2) format("woff2"), url(../../de63f7a7c3e75489d362.woff) format("woff");
+  src: url(../.././fonts/light-94a07e06a1-v2.woff2) format("woff2"), url(../.././fonts/light-f591b13f7d-v2.woff) format("woff");
   font-display: fallback;
 }
 @font-face {
   font-family: "GDS Transport";
   font-style: normal;
   font-weight: bold;
-  src: url(../../5e22222d58699ca2a2f3.woff2) format("woff2"), url(../../b7e6c26ed2af1878a201.woff) format("woff");
+  src: url(../.././fonts/bold-b542beb274-v2.woff2) format("woff2"), url(../.././fonts/bold-affa96571d-v2.woff) format("woff");
   font-display: fallback;
 }
 @media print {
@@ -3383,7 +3383,7 @@ x:-moz-any-link {
   display: inline-block;
   min-width: 125px;
   padding-top: 112px;
-  background-image: url(../../4d48a940e596de4e7d58.png);
+  background-image: url(../.././images/govuk-crest.png);
   background-repeat: no-repeat;
   background-position: 50% 0%;
   background-size: 125px 102px;
@@ -3392,7 +3392,7 @@ x:-moz-any-link {
 }
 @media only screen and (-webkit-min-device-pixel-ratio: 2), only screen and (min-resolution: 192dpi), only screen and (min-resolution: 2dppx) {
   .govuk-footer__copyright-logo {
-    background-image: url(../../42d2522bee51669fe375.png);
+    background-image: url(../.././images/govuk-crest-2x.png);
   }
 }
 
