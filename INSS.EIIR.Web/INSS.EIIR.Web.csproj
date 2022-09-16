@@ -17,14 +17,17 @@
   </Target>
 
   <ItemGroup>
-    <Folder Include="Models\" />
-    <Folder Include="Properties\" />
-    <Folder Include="wwwroot\minified\" />
-    <Folder Include="wwwroot\assets\" />
+    <Compile Remove="Models\**" />
+    <Content Remove="Models\**" />
+    <EmbeddedResource Remove="Models\**" />
+    <None Remove="Models\**" />
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="wwwroot\js\site.js" />
+    <Folder Include="Properties\" />
+    <Folder Include="wwwroot\assets\" />
+    <Folder Include="wwwroot\dist\" />
+    <Folder Include="wwwroot\dist\minified\" />
   </ItemGroup>
 
   <ItemGroup>
@@ -37,12 +40,5 @@
     <ProjectReference Include="..\INSS.EIIR.Interfaces\INSS.EIIR.Interfaces.csproj" />
     <ProjectReference Include="..\INSS.EIIR.Models\INSS.EIIR.Models.csproj" />
     <ProjectReference Include="..\INSS.EIIR.Services\INSS.EIIR.Services.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Remove="wwwroot\css\site.css" />
-    <Content Remove="wwwroot\css\site.css" />
-    <Content Remove="wwwroot\css\site.css" />
-    <Content Remove="wwwroot\css\site.css.map" />
   </ItemGroup>
 </Project>
