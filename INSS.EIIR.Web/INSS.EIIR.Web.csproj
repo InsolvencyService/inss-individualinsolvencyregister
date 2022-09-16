@@ -10,8 +10,6 @@
     <Folder Include="Properties\" />
     <Folder Include="wwwroot\assets\" />
     <Folder Include="Views\Subscriber\" />
-    <Folder Include="wwwroot\fonts\" />
-    <Folder Include="wwwroot\images\" />
   </ItemGroup>
 
   <ItemGroup>
