@@ -31,7 +31,7 @@ namespace INSS.EIIR.Functions
 
             var results = RunQueries(SearchClient);
             var extractReport = EiirDailyExtractSerializer.SerializeToXml(results);
-            await EiirUpload.UploadBlob(extractReport);
+            await EiirUpload.UploadBlob(extractReport , context);
 
             string responseMessage = "Extract Triggered Successfully!";
             log.LogInformation(responseMessage);

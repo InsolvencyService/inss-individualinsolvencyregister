@@ -30,7 +30,7 @@ namespace INSS.EIIR.Functions
             return searchClient;
         }
 
-        private static IConfigurationRoot GetConfig(ExecutionContext context)
+        public  static IConfigurationRoot GetConfig(ExecutionContext context)
         {
             return new ConfigurationBuilder()
                            .SetBasePath(context.FunctionAppDirectory)

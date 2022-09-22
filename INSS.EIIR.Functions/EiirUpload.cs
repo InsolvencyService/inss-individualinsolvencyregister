@@ -1,5 +1,6 @@
 ﻿using Azure.Storage.Blobs;
 using INSS.EIIR.Models.ExtractModels;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.IO;
 using System.IO.Compression;
@@ -9,10 +10,11 @@ namespace INSS.EIIR.Functions
 {
     public static class EiirUpload
     {
-        public  static async Task UploadBlob(ReportDetails extract)
+        public  static async Task UploadBlob(ReportDetails extract , Microsoft.Azure.WebJobs.ExecutionContext context)
         {
+            IConfigurationRoot config = EiirDailyExtractHelpers.GetConfig(context);
 
-            var blobServiceClient = new BlobServiceClient("DefaultEndpointsProtocol = https; AccountName = stuksouthdeveiir; AccountKey = CRvs0OLcGWTwzdnCFMLkR2Os / EupysgMzHXGGsHQtiY0Wh2RO8iV19OilM6KRv2w3Z + 3VoJKzEMp + AStbksnSw ==; EndpointSuffix = core.windows.net");
+            var blobServiceClient = new BlobServiceClient(config["connectionString"]);
             string containerName = "EiirRDailyExtracts";
 
             BlobContainerClient containerClient = await blobServiceClient.CreateBlobContainerAsync(containerName);
