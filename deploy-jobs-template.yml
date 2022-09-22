@@ -51,7 +51,7 @@ jobs:
                 inputs:
                   azureSubscription: ${{ parameters.azureSubscription }}
                   appType: 'functionApp'
-                  appName: 'func-${{ parameters.location }}-${{ lower(parameters.environment) }}-eiir-downloadservice'
+                  appName: 'func-${{ parameters.location }}-${{ lower(parameters.environment) }}-eiir-searchservice'
                   deployToSlotOrASE: true
                   resourceGroupName: 'rg-${{ parameters.location }}-${{ lower(parameters.environment) }}-eiir'
                   slotName: 'staging'
@@ -67,7 +67,7 @@ jobs:
                 inputs:
                   azureSubscription: ${{ parameters.azureSubscription }}
                   Action: 'Start Azure App Service'
-                  WebAppName: 'func-${{ parameters.location }}-${{ lower(parameters.environment) }}-eiir-downloadservice'
+                  WebAppName: 'func-${{ parameters.location }}-${{ lower(parameters.environment) }}-eiir-searchservice'
                   ResourceGroupName: 'rg-${{ parameters.location }}-${{ lower(parameters.environment) }}-eiir'              
                   SpecifySlotOrASE: true
                   Slot: 'staging'
@@ -81,7 +81,7 @@ jobs:
                   targetType: 'filePath'
                   filePath: $(System.DefaultWorkingDirectory)\powershell\InvokeRequestWithRetry.ps1
                   arguments: > # Use this to avoid newline characters in multi-line string
-                    -URI "https://func-${{ parameters.location }}-${{ lower(parameters.environment) }}-eiir-downloadservice-staging.azurewebsites.net/"
+                    -URI "https://func-${{ parameters.location }}-${{ lower(parameters.environment) }}-eiir-searchservice-staging.azurewebsites.net/"
                     -Method "${{ parameters.method }}"
                     -Retries ${{ parameters.retries }}
                     -SecondsDelay ${{ parameters.secondsDelay }}
@@ -92,7 +92,7 @@ jobs:
                 inputs:
                   azureSubscription: ${{ parameters.azureSubscription }}
                   Action: 'Swap Slots'
-                  WebAppName: 'func-${{ parameters.location }}-${{ lower(parameters.environment) }}-eiir-downloadservice'
+                  WebAppName: 'func-${{ parameters.location }}-${{ lower(parameters.environment) }}-eiir-searchservice'
                   ResourceGroupName: 'rg-${{ parameters.location }}-${{ lower(parameters.environment) }}-eiir'
                   SourceSlot: 'staging'
                   SwapWithProduction: true
@@ -104,7 +104,7 @@ jobs:
                   targetType: 'filePath'
                   filePath: $(System.DefaultWorkingDirectory)\powershell\InvokeRequestWithRetry.ps1
                   arguments: > # Use this to avoid newline characters in multi-line string
-                    -URI "https://func-${{ parameters.location }}-${{ lower(parameters.environment) }}-eiir-downloadservice.azurewebsites.net/"
+                    -URI "https://func-${{ parameters.location }}-${{ lower(parameters.environment) }}-eiir-searchservice.azurewebsites.net/"
                     -Method "${{ parameters.method }}"
                     -Retries ${{ parameters.retries }}
                     -SecondsDelay ${{ parameters.secondsDelay }}
@@ -115,7 +115,7 @@ jobs:
                 inputs:
                   azureSubscription: ${{ parameters.azureSubscription }}
                   Action: 'Stop Azure App Service'
-                  WebAppName: 'func-${{ parameters.location }}-${{ lower(parameters.environment) }}-eiir-downloadservice'
+                  WebAppName: 'func-${{ parameters.location }}-${{ lower(parameters.environment) }}-eiir-searchservice'
                   ResourceGroupName: 'rg-${{ parameters.location }}-${{ lower(parameters.environment) }}-eiir'              
                   SpecifySlotOrASE: true
                   Slot: 'staging'
@@ -199,5 +199,3 @@ jobs:
                   ResourceGroupName: 'rg-${{ parameters.location }}-${{ lower(parameters.environment) }}-eiir'              
                   SpecifySlotOrASE: true
                   Slot: 'staging'
-
-                  Server=tcp:sql-uksouth-dev-fip.database.windows.net,1433;Initial Catalog=sqldb-uksouth-dev-fip;Persist Security Info=False;User ID=devlogin;Password=B4H4Siw8rDmp;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;
