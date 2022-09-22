@@ -120,7 +120,6 @@ jobs:
                   SpecifySlotOrASE: true
                   Slot: 'staging'
 
-jobs:
   - deployment:
     displayName: Deploy Search Service function
     environment: ${{ parameters.environment }}
