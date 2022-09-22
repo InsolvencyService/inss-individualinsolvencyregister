@@ -3,12 +3,12 @@
     <TargetFramework>net6.0</TargetFramework>
     <AzureFunctionsVersion>v4</AzureFunctionsVersion>
   </PropertyGroup>
-  <ItemGroup>
+  <!-- <ItemGroup>
     <None Remove="Appsettings.json" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="appsettings.json" />
-  </ItemGroup>
+  </ItemGroup> -->
   <ItemGroup>
 	  <PackageReference Include="AspNetCore.SEOHelper" Version="1.0.1" />
 	  <PackageReference Include="AutoMapper" Version="11.0.1" />
