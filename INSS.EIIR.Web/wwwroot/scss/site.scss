@@ -1,1 +1,7 @@
-﻿@import "../../node_modules/govuk-frontend/govuk/all";
+﻿$govuk-assets-path: '/assets/';
+
+@import "node_modules/govuk-frontend/govuk/all";
+
+.test {
+    display : block;
+}

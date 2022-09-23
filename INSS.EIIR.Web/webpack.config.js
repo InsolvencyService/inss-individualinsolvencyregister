@@ -104,6 +104,13 @@ module.exports = {
             }
         ]
     },
+    optimization: {
+        minimize: true,
+        minimizer: [new TerserPlugin({
+            extractComments: false
+        })],
+        
+    },
     plugins: [
         new MiniCssExtractPlugin({
             filename: devMode ? './[name].css' : './minified/[name].min.css',
