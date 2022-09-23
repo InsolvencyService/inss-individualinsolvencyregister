@@ -9,7 +9,6 @@ using Joonasw.AspNetCore.SecurityHeaders;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Rewrite;
-using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -63,6 +62,8 @@ app.UseCsp(csp =>
         .ToSelf();
 });
 
+app.UseCors();
+
 var options = new RewriteOptions()
     .AddRedirect("security.txt$", @"https://security.insolvency.gov.uk/.well-known/security.txt");
 
@@ -81,6 +82,8 @@ app.Run();
 void ConfigureServices(IServiceCollection services)
 {
     services.AddCsp(nonceByteAmount: 32);
+
+    services.AddCors();
 
     services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
         .AddCookie(authenticationOptions =>
