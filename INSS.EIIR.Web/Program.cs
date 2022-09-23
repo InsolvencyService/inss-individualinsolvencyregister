@@ -5,6 +5,7 @@ using INSS.EIIR.Interfaces.DataAccess;
 using INSS.EIIR.Interfaces.Services;
 using INSS.EIIR.Models.Constants;
 using INSS.EIIR.Services;
+using Joonasw.AspNetCore.SecurityHeaders;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Rewrite;
@@ -37,6 +38,31 @@ app.UseAuthorization();
 
 app.UseRobotsTxt(app.Environment.ContentRootPath);
 
+app.UseCsp(csp =>
+{
+    csp.ByDefaultAllow.FromNowhere();
+
+    csp.AllowScripts
+        .FromSelf()
+        .AddNonce();
+    csp.AllowStyles
+        .FromSelf();
+    csp.AllowFonts
+        .FromSelf();
+    csp.AllowImages
+        .FromSelf();
+
+    if (app.Environment.IsDevelopment())
+    {
+        //Allows hot-reload script to work in dev only
+        csp.AllowConnections
+            .To("wss:");
+    }
+
+    csp.AllowConnections
+        .ToSelf();
+});
+
 var options = new RewriteOptions()
     .AddRedirect("security.txt$", @"https://security.insolvency.gov.uk/.well-known/security.txt");
 
@@ -54,6 +80,8 @@ app.Run();
 
 void ConfigureServices(IServiceCollection services)
 {
+    services.AddCsp(nonceByteAmount: 32);
+
     services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
         .AddCookie(authenticationOptions =>
         {
