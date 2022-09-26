@@ -116,11 +116,7 @@ void ConfigureServices(IServiceCollection services)
 
     services.AddControllersWithViews();
 
-    var configuration = new ConfigurationBuilder()
-        .SetBasePath(Directory.GetCurrentDirectory())
-        .AddJsonFile("appsettings.json");
-
-    var config = configuration.Build();
+    var config = builder.Configuration;
 
     builder.Services.AddTransient(_ =>
     {
