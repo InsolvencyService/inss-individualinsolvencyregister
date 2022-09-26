@@ -141,6 +141,9 @@ jobs:
                   resourceGroupName: 'rg-${{ parameters.location }}-${{ lower(parameters.environment) }}-eiir'
                   slotName: 'staging'
                   package: '$(Pipeline.Workspace)/**/${{ parameters.appZipFile }}'
+                  appSettings: >
+                    -iirwebdbContextConnectionString "${{ parameters.iirwebdbContextConnectionString }}"
+
 
               - task: AzureAppServiceManage@0
                 displayName: Start Staging Slot
