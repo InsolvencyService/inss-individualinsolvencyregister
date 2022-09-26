@@ -22,6 +22,7 @@ module.exports = {
     // and the script file under '/js' directory
     entry: {
         './dist/js/site': './js/site.js',
+        './dist/js/all': './js/all.js',
         './dist/css/site': ['./scss/site.scss']
     },
     // This is where we define the path where Webpack will place
