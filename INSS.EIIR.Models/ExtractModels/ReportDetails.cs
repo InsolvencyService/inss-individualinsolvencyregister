@@ -21,6 +21,6 @@ namespace INSS.EIIR.Models.ExtractModels
 		public string Disclaimer { get; set; }
 
 		[XmlElement(ElementName = "ReportRequest")]
-		public IList<ReportRequest> ReportRequest { get; set; }
+		public List<ReportRequest> ReportRequest { get; set; }
 	}
 }
