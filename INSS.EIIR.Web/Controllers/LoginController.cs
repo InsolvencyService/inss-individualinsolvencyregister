@@ -30,7 +30,7 @@ namespace INSS.EIIR.Web.Controllers
         }
 
         [HttpPost("AdminLogin")]
-        [ValidateAntiForgeryToken]
+        //[ValidateAntiForgeryToken]
         public async Task<IActionResult> AdminLoginAsync(User user)
         {
             var validUser = _authenticationProvider.GetAdminUser(user.UserName, user.Password);
