@@ -20,7 +20,7 @@
 </head>
 
 <body class="govuk-template__body ">
-    <script>
+    <script asp-add-nonce="true">
         document.body.className = ((document.body.className) ? document.body.className + ' js-enabled' : 'js-enabled');
     </script>
 
@@ -41,12 +41,10 @@
 
     <partial name="_Footer" />
 
-    <script src="/dist/js/all.js"></script>
-    <script>
+    <script src="/js/all.js"></script>
+    <script asp-add-nonce="true">
         window.GOVUKFrontend.initAll()
     </script>
-
-    @await RenderSectionAsync("Scripts", required: false)
 </body>
 
 </html>
