@@ -15,10 +15,6 @@ namespace INSS.EIIR.Web.Controllers
                         return View("NotFound");
                     case 503:
                         return View("Maintenance");
-                    case 500.30:
-                        return View("Index");
-                    case 500:
-                        return View("Index");
                 }
             }
 

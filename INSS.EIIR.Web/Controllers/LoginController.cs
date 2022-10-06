@@ -18,15 +18,9 @@ namespace INSS.EIIR.Web.Controllers
         }
 
         [HttpGet("Admin")]
-        public IActionResult AdminLogin()
+        public IActionResult Admin()
         {
             return View("Admin");
-        }
-
-        [HttpGet("Subscriber")]
-        public IActionResult SubscriberLogin()
-        {
-            return View("Subscriber");
         }
 
         [HttpPost("AdminLogin")]
@@ -44,22 +38,6 @@ namespace INSS.EIIR.Web.Controllers
 
             return RedirectToAction("Index", "DataExtract", new { area = AreaNames.Admin });
 
-        }
-
-        [HttpPost("SubscriberLogin")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> SubscriberLoginAsync(User user)
-        {
-            var validUser = _authenticationProvider.GetSubscriberUser(user.UserName, user.Password);
-
-            if (validUser == null)
-            {
-                return View("Subscriber", user);
-            }
-
-            await Authenticate(validUser);
-
-            return RedirectToAction("Index", "Home", new { area = AreaNames.Subscribers }); ;
         }
 
         public async Task Logout()
