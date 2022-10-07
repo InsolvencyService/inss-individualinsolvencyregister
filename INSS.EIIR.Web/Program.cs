@@ -95,11 +95,7 @@ void ConfigureServices(IServiceCollection services)
             {
                 if (IsAdminContext(context))
                 {
-                    context.Response.Redirect("/Login/Index/AdminLogin");
-                }
-                else
-                {
-                    context.Response.Redirect("/Login/Index/SubscriberLogin");
+                    context.Response.Redirect("/Admin");
                 }
 
                 return Task.CompletedTask;

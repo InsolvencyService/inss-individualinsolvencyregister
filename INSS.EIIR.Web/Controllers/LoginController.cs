@@ -18,19 +18,13 @@ namespace INSS.EIIR.Web.Controllers
         }
 
         [HttpGet("Admin")]
-        public IActionResult AdminLogin()
+        public IActionResult Admin()
         {
             return View("Admin");
         }
 
-        [HttpGet("Subscriber")]
-        public IActionResult SubscriberLogin()
-        {
-            return View("Subscriber");
-        }
-
         [HttpPost("AdminLogin")]
-        [ValidateAntiForgeryToken]
+        //[ValidateAntiForgeryToken]
         public async Task<IActionResult> AdminLoginAsync(User user)
         {
             var validUser = _authenticationProvider.GetAdminUser(user.UserName, user.Password);
@@ -46,25 +40,11 @@ namespace INSS.EIIR.Web.Controllers
 
         }
 
-        [HttpPost("SubscriberLogin")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> SubscriberLoginAsync(User user)
-        {
-            var validUser = _authenticationProvider.GetSubscriberUser(user.UserName, user.Password);
-
-            if (validUser == null)
-            {
-                return View("Subscriber", user);
-            }
-
-            await Authenticate(validUser);
-
-            return RedirectToAction("Index", "Home", new { area = AreaNames.Subscribers }); ;
-        }
-
-        public async Task Logout()
+        public async Task<IActionResult> Logout()
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+
+            return RedirectToAction("Admin");
         }
 
         private async Task Authenticate(User user)

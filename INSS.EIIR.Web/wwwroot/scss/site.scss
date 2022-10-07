@@ -2,6 +2,7 @@
 
 @import "node_modules/govuk-frontend/govuk/all";
 
-.test {
-    display : block;
+.right_navigation {
+    display: inline-block;
+    float: right;
 }
