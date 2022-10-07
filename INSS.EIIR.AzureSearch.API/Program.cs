@@ -6,6 +6,10 @@ using INSS.EIIR.AzureSearch.Services;
 using INSS.EIIR.AzureSearch.Services.ODataFilters;
 using INSS.EIIR.Interfaces.AzureSearch;
 using INSS.EIIR.Models.AutoMapperProfiles;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using Newtonsoft.Json;
+using INSS.EIIR.Models.HealthModels;
+using INSS.EIIR.Data.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -29,6 +33,26 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
+
+app.UseHealthChecks("/health", new HealthCheckOptions
+{
+    ResponseWriter = async (context, report) =>
+    {
+        context.Response.ContentType = "application/json";
+        var response = new HealthCheckReponse
+        {
+            Status = report.Status.ToString(),
+            HealthChecks = report.Entries.Select(x => new IndividualHealthCheckResponse
+            {
+                Component = x.Key,
+                Status = x.Value.Status.ToString(),
+                Description = x.Value.Description
+            }),
+            HealthCheckDuration = report.TotalDuration
+        };
+        await context.Response.WriteAsync(JsonConvert.SerializeObject(response));
+    }
+});
 
 
 void ConfigureServices(IServiceCollection services)
@@ -67,6 +91,10 @@ void ConfigureServices(IServiceCollection services)
     // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
     services.AddEndpointsApiExplorer();
     services.AddSwaggerGen();
+    services.AddHealthChecks();
+    services.AddHealthChecks().AddDbContextCheck<EIIRContext>();
+    services.AddHealthChecks().AddUrlGroup(new Uri("DRO_API_HEALTH_ENDPOINT"));
+
 }
 
 static SearchIndexClient CreateSearchServiceClient(string searchServiceUrl, string adminApiKey)
