@@ -40,9 +40,11 @@ namespace INSS.EIIR.Web.Controllers
 
         }
 
-        public async Task Logout()
+        public async Task<IActionResult> Logout()
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+
+            return RedirectToAction("Admin");
         }
 
         private async Task Authenticate(User user)

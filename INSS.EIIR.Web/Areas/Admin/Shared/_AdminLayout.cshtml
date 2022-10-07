@@ -28,18 +28,18 @@
 
     <a href="#main-content" class="govuk-skip-link" data-module="govuk-skip-link">Skip to main content</a>
 
-    <partial name="_Header" />
+    <partial name="~/Areas/Admin/Shared/_AdminHeader.cshtml" />
 
     <div class="govuk-width-container ">
 
-        <partial name="_Banner" />
+        <partial name="~/Areas/Admin/Shared/_AdminBanner.cshtml" />
 
         <main class="govuk-main-wrapper " id="main-content" role="main">
             @RenderBody()
         </main>
     </div>
 
-    <partial name="_Footer" />
+    <partial name="~/Areas/Admin/Shared/_AdminFooter.cshtml" />
 
     <script src="/js/all.js"></script>
     <script asp-add-nonce="true">
