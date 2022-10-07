@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Newtonsoft.Json;
 using INSS.EIIR.Models.HealthModels;
 using INSS.EIIR.Data.Models;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -54,6 +55,19 @@ app.UseHealthChecks("/health", new HealthCheckOptions
     }
 });
 
+app.UseHealthChecks("/ping", new HealthCheckOptions
+{
+    ResponseWriter = async (context, report) =>
+    {
+        context.Response.ContentType = "application/json";
+        var response = new HealthCheckReponse
+        {
+            Status = report.Status.ToString(),
+            
+        };
+        await context.Response.WriteAsync(JsonConvert.SerializeObject(response));
+    }
+});
 
 void ConfigureServices(IServiceCollection services)
 {
@@ -91,9 +105,8 @@ void ConfigureServices(IServiceCollection services)
     // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
     services.AddEndpointsApiExplorer();
     services.AddSwaggerGen();
-    services.AddHealthChecks();
-    services.AddHealthChecks().AddDbContextCheck<EIIRContext>();
-    services.AddHealthChecks().AddUrlGroup(new Uri("DRO_API_HEALTH_ENDPOINT"));
+    services.AddHealthChecks().AddCheck("ping", () => new HealthCheckResult(HealthStatus.Healthy, "Healthy"), new string[] { "200" }).AddDbContextCheck<EIIRContext>().AddUrlGroup(new Uri("DRO_API_HEALTH_ENDPOINT"));
+
 
 }
 
