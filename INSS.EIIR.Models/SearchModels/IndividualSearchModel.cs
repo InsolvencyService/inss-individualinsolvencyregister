@@ -2,6 +2,14 @@
 
 public class IndividualSearchModel
 {
+    public IndividualSearchModel()
+    {
+        Courts = Enumerable.Empty<string>().ToList();
+        CourtNames = Enumerable.Empty<string>().ToList();
+        InsolvencyTypes = Enumerable.Empty<string>().ToList();
+        InsolvencyServiceOffices = Enumerable.Empty<string>().ToList();
+    }
+
 
     //searchable fields
     public string SearchTerm { get; set; }
