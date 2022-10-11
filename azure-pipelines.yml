@@ -1,5 +1,5 @@
 trigger:
-- release/*
+- develop
   
 pool:
   vmImage: windows-latest
@@ -94,8 +94,8 @@ stages:
         iirwebdbContextConnectionString: $(iirwebdbContextConnectionString)
         EIIRIndexUrl: $(EIIRIndexUrl)
         EIIRApiKey: $(EIIRApiKey)
-        deployWebapp: ${{ parameters.deployWebapp }}
-        deployfuncapp: ${{ parameters.deployfuncapp }}
+        deployWebapp: true
+        deployfuncapp: true
 
 - stage: DeploySit
   displayName: 'Deploy to Sit'
