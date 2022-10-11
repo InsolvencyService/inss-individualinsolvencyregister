@@ -12,6 +12,7 @@ namespace INSS.EIIR.AzureSearch.Services.QueryServices;
 public class IndividualQueryService : BaseQueryService, IIndividualQueryService
 {
     private readonly IEnumerable<IIndiviualSearchFilter> _filters;
+
     protected override string IndexName => SearchIndexes.IndividualSearch;
 
     public IndividualQueryService(

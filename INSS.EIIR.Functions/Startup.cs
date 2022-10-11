@@ -1,15 +1,19 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Net.Http;
+using AutoMapper;
 using Azure;
 using Azure.Search.Documents.Indexes;
 using INSS.EIIR.AzureSearch.Services;
+using INSS.EIIR.AzureSearch.Services.ODataFilters;
+using INSS.EIIR.AzureSearch.Services.QueryServices;
 using INSS.EIIR.Data.Models;
 using INSS.EIIR.DataAccess;
 using INSS.EIIR.Functions;
 using INSS.EIIR.Interfaces.AzureSearch;
 using INSS.EIIR.Interfaces.DataAccess;
 using INSS.EIIR.Interfaces.Services;
+using INSS.EIIR.Models.AutoMapperProfiles;
 using INSS.EIIR.Services;
 using Microsoft.Azure.Functions.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
@@ -30,6 +34,15 @@ namespace INSS.EIIR.Functions
             builder.Services.AddHttpClient();
             builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
+            // Auto Mapper Configurations
+            var mapperConfig = new MapperConfiguration(mc =>
+            {
+                mc.AddProfile(new IndividualSearchMapper());
+            });
+
+            var mapper = mapperConfig.CreateMapper();
+            builder.Services.AddSingleton(mapper);
+
             builder.Services.AddTransient(_ =>
             {
                 var connectionString = Environment.GetEnvironmentVariable("iirwebdbContextConnectionString");
@@ -46,7 +59,14 @@ namespace INSS.EIIR.Functions
 
             builder.Services.AddTransient<IIndexService, IndividualSearchIndexService>();
             builder.Services.AddTransient<IIndividualRepository, IndividualRepository>();
+            builder.Services.AddTransient<IIndividualQueryService, IndividualQueryService>();
             builder.Services.AddTransient<ISearchDataProvider, SearchDataProvider>();
+
+            builder.Services.AddTransient<IIndiviualSearchFilter, IndividualSearchCourtFilter>();
+            builder.Services.AddTransient<IIndiviualSearchFilter, IndividualSearchCourtNameFilter>();
+
+            builder.Services.AddTransient<ISearchTermFormattingService, SearchTermFormattingService>();
+            builder.Services.AddTransient<ISearchCleaningService, SearchCleaningService>();
         }
 
         private static SearchIndexClient CreateSearchServiceClient(string searchServiceUrl, string adminApiKey)

@@ -5,7 +5,7 @@ using INSS.EIIR.Interfaces.AzureSearch;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Logging;
 
-namespace INSS.EIIR.Functions
+namespace INSS.EIIR.Functions.Functions
 {
     public class RebuildIndexes
     {

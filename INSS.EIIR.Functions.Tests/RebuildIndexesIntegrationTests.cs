@@ -8,12 +8,13 @@ using Xunit;
 using Microsoft.Extensions.Configuration;
 using Moq;
 using INSS.EIIR.Data.Models;
+using INSS.EIIR.Functions.Functions;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Logging;
 using INSS.EIIR.Models;
-using INSS.EIIR.Models.IndexModels;
 using Microsoft.Azure.WebJobs.Extensions.Timers;
 using INSS.EIIR.Interfaces.AzureSearch;
+using IndividualSearch = INSS.EIIR.Models.IndexModels.IndividualSearch;
 
 namespace INSS.EIIR.Functions.Tests
 {
