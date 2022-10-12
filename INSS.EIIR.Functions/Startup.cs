@@ -3,6 +3,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Net.Http;
 using AutoMapper;
 using Azure;
+using Azure.Messaging.ServiceBus;
 using Azure.Search.Documents.Indexes;
 using INSS.EIIR.AzureSearch.Services;
 using INSS.EIIR.AzureSearch.Services.ODataFilters;
@@ -12,10 +13,15 @@ using INSS.EIIR.DataAccess;
 using INSS.EIIR.Functions;
 using INSS.EIIR.Interfaces.AzureSearch;
 using INSS.EIIR.Interfaces.DataAccess;
+using INSS.EIIR.Interfaces.Messaging;
 using INSS.EIIR.Interfaces.Services;
 using INSS.EIIR.Models.AutoMapperProfiles;
+using INSS.EIIR.Models.Configuration;
 using INSS.EIIR.Services;
 using Microsoft.Azure.Functions.Extensions.DependencyInjection;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Azure;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Polly;
 using Polly.Extensions.Http;
@@ -43,9 +49,20 @@ namespace INSS.EIIR.Functions
             var mapper = mapperConfig.CreateMapper();
             builder.Services.AddSingleton(mapper);
 
+            var connectionString = Environment.GetEnvironmentVariable("iirwebdbContextConnectionString");
+            if (string.IsNullOrEmpty(connectionString))
+                throw new ArgumentNullException("iirwebdbContextConnectionString connectionstring missing");
+
+            var serviceBusPubConnectionString = Environment.GetEnvironmentVariable("servicebus:publisherconnectionstring");
+            if (string.IsNullOrEmpty(serviceBusPubConnectionString))
+                throw new ArgumentNullException("servicebus:publisherconnectionstring is missing");
+
+            var serviceBusSubConnectionString = Environment.GetEnvironmentVariable("servicebus:subscriberconnectionstring");
+            if (string.IsNullOrEmpty(serviceBusSubConnectionString))
+                throw new ArgumentNullException("servicebus:subscriberconnectionstring is missing");
+
             builder.Services.AddTransient(_ =>
             {
-                var connectionString = Environment.GetEnvironmentVariable("iirwebdbContextConnectionString");
                 return new EIIRContext(connectionString);
             });
 
@@ -56,6 +73,50 @@ namespace INSS.EIIR.Functions
 
                 return CreateSearchServiceClient(searchServiceUrl, adminApiKey);
             });
+
+            builder.Services.AddDbContext<EIIRExtractContext>(options =>
+                options.UseSqlServer(connectionString));
+
+            var blobconnectionstring = Environment.GetEnvironmentVariable("blob:connectionstring");
+            if (string.IsNullOrEmpty(blobconnectionstring))
+                throw new ArgumentNullException("blob:connectionstring is missing");
+
+            builder.Services.AddOptions<DatabaseConfig>()
+               .Configure<IConfiguration>((settings, configuration) =>
+               {
+                   configuration.GetSection("database").Bind(settings);
+               });
+            builder.Services.AddOptions<BlobConfig>()
+               .Configure<IConfiguration>((settings, configuration) =>
+               {
+                   configuration.GetSection("blob").Bind(settings);
+               });
+            builder.Services.AddOptions<ServiceBusConfig>()
+               .Configure<IConfiguration>((settings, configuration) =>
+               {
+                   configuration.GetSection("servicebus").Bind(settings);
+               });
+            builder.Services.AddOptions<NotifyConfig>()
+                .Configure<IConfiguration>((settings, configuration) =>
+                {
+                    configuration.GetSection("notify").Bind(settings);
+                });
+
+            builder.Services.AddAzureClients(clientsBuilder =>
+            {
+                clientsBuilder.AddServiceBusClient(serviceBusPubConnectionString)
+                  .WithName("ServiceBusPublisher")
+                  .ConfigureOptions(options =>
+                  {
+                      options.TransportType = ServiceBusTransportType.AmqpWebSockets;
+                  });
+
+                clientsBuilder.AddBlobServiceClient(blobconnectionstring);
+            });
+            builder.Services.AddScoped<IServiceBusMessageSender, ServiceBusMessageSender>();
+            builder.Services.AddScoped<IExtractRepository, ExtractRepository>();
+            builder.Services.AddScoped<IExtractService, ExtractService>();
+
 
             builder.Services.AddTransient<IIndexService, IndividualSearchIndexService>();
             builder.Services.AddTransient<IIndividualRepository, IndividualRepository>();
