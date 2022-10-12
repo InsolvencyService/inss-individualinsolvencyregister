@@ -141,7 +141,7 @@ jobs:
                   resourceGroupName: 'rg-${{ parameters.location }}-${{ lower(parameters.environment) }}-eiir'
                   slotName: 'staging'
                   package: '$(Pipeline.Workspace)/**/${{ parameters.appZipFile }}'
-                  appSettings: >
+                  connectionStrings: >
                     -iirwebdbContextConnectionString "${{ parameters.iirwebdbContextConnectionString }}"
 
 
