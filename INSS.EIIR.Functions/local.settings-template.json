@@ -4,7 +4,7 @@
     "AzureWebJobsStorage": "UseDevelopmentStorage=true",
     "FUNCTIONS_WORKER_RUNTIME": "dotnet",
 
-    "iirwebdbContextConnectionString": "Server=(localdb)\\MSSQLLocalDB;Database=Fip;Trusted_Connection=True;MultipleActiveResultSets=true",
+    "iirwebdbContextConnectionString": "__iirwebdbContextConnectionString__",
 
     "EIIRIndexUrl": "__EIIRIndexUrl__",
     "EIIRKey": "__EIIRKey__",
