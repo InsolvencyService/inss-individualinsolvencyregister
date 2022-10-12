@@ -1,4 +1,4 @@
-﻿Feature: Tech Uplift Check
+﻿Feature: Tech Uplift
 	As an ODS user I Navigate to ODS Website
 	So I am able to successfully log in to the DRO website
 

@@ -33,6 +33,19 @@ namespace INSS.EIIR.QA.Automation.StepDefs
             EIIRHomePage.verifyEIIRHomePage();
         }
 
+        [Given(@"SOmething Happens")]
+        public void GivenSOmethingHappens()
+        {
+           //
+        }
+
+        [Then(@"again something happens")]
+        public void ThenAgainSomethingHappens()
+        {
+            //
+        }
+
+
 
 
     }

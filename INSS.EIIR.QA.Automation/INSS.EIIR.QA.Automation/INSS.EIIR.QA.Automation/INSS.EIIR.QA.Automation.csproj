@@ -33,9 +33,6 @@
 		<Compile Update="EnvironmentData.cs">
 		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Compile>
-		<Compile Update="Features\TechUplift.feature.cs">
-		  <DependentUpon>TechUplift.feature</DependentUpon>
-		</Compile>
 	  <Compile Update="UI Automation\Features\ODSLogin.feature.cs">
 	    <Visible>true</Visible>
 	    <DependentUpon>%(Filename)</DependentUpon>
