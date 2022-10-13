@@ -2630,7 +2630,6 @@ namespace INSS.EIIR.Data.Models
                 entity.Property(e => e.DateOfOrder).HasColumnName("Date of Order");
             });
 
-
             OnModelCreatingPartial(modelBuilder);
         }
 
