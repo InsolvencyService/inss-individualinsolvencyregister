@@ -40,15 +40,15 @@ namespace INSS.EIIR.Functions.Functions
                 extractJobServiceUrl);
 
             var httpResponseMessage = await httpClient.SendAsync(httpRequestMessage);
-
+            var responseMessage = await httpResponseMessage.Content.ReadAsStringAsync();
+           
             if (!httpResponseMessage.IsSuccessStatusCode)
             {
-                _logger.LogError($"ExtractJobScheduler failed to respond successfully on: {DateTime.Now}");
-                throw new Exception();
-            }
-            var responseMessage = await httpResponseMessage.Content.ReadAsStringAsync();
+                _logger.LogError(responseMessage);
+                throw new Exception(responseMessage);
+            }            
 
-            _logger.LogInformation($"{responseMessage}");
+            _logger.LogInformation(responseMessage);
         }
     }
 }

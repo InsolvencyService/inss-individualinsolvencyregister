@@ -43,7 +43,7 @@ namespace INSS.EIIR.Functions.Functions
             var today = DateOnly.FromDateTime(DateTime.Now);
 
             var extractjobqueueError = "ExtractjobTrigger missing configuration servicebus:extractjobqueue";
-            var xtractjobError = $"ExtractJob not found for today [{today}], snapshot has not run";
+            var extractjobError = $"ExtractJob not found for today [{today}], snapshot has not run";
             var snapshotError = $"Snapshot has not yet run today [{today}]";
 
             var extractJobQueue = Environment.GetEnvironmentVariable("servicebus:extractjobqueue");
@@ -56,8 +56,8 @@ namespace INSS.EIIR.Functions.Functions
             var extractJob = _eiirRepository.GetExtractAvailable();
             if (extractJob == null)
             {
-                _logger.LogError(xtractjobError);
-                return new BadRequestObjectResult(xtractjobError);
+                _logger.LogError(extractjobError);
+                return new BadRequestObjectResult(extractjobError);
             }
 
             if (extractJob.SnapshotCompleted?.ToLowerInvariant() == "n")

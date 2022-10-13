@@ -8,6 +8,7 @@ using Azure.Search.Documents.Indexes;
 using INSS.EIIR.AzureSearch.Services;
 using INSS.EIIR.AzureSearch.Services.ODataFilters;
 using INSS.EIIR.AzureSearch.Services.QueryServices;
+using INSS.EIIR.Data.AutoMapperProfiles;
 using INSS.EIIR.Data.Models;
 using INSS.EIIR.DataAccess;
 using INSS.EIIR.Functions;
@@ -44,6 +45,8 @@ namespace INSS.EIIR.Functions
             var mapperConfig = new MapperConfiguration(mc =>
             {
                 mc.AddProfile(new IndividualSearchMapper());
+                mc.AddProfile(new ExtractAvailableMapper());
+                mc.AddProfile(new SubscriberMapper());
             });
 
             var mapper = mapperConfig.CreateMapper();

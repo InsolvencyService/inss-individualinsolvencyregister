@@ -5,6 +5,8 @@ using Microsoft.Extensions.Options;
 using Microsoft.EntityFrameworkCore;
 using INSS.EIIR.Models.SubscriberModels;
 using INSS.EIIR.Models.ExtractModels;
+using AutoMapper;
+using INSS.EIIR.Models.IndexModels;
 
 namespace INSS.EIIR.DataAccess
 {
@@ -12,24 +14,22 @@ namespace INSS.EIIR.DataAccess
     {
         private readonly EIIRExtractContext _context;
         private readonly DatabaseConfig _databaseConfig;
+        private readonly IMapper _mapper;
 
         public ExtractRepository(
             EIIRExtractContext eiirExtractContext,
-            IOptions<DatabaseConfig> options)
+            IOptions<DatabaseConfig> options,
+            IMapper mapper)
         {
             _context = eiirExtractContext;
             _databaseConfig = options.Value;
+            _mapper = mapper;
         }
 
         public async Task<IList<Subscriber>> GetActiveSubscribers()
         {
-            var subscribers = new List<Subscriber>();
             var results = await _context.SubscriberAccounts.Where(x => x.AccountActive.ToLower() == "y").ToListAsync();
-
-            results.ForEach(x =>
-            {
-                subscribers.Add(new(x.SubscriberId, x.OrganisationName, x.AccountActive, x.SubscribedFrom, x.SubscribedTo));
-            });
+            var subscribers = _mapper.Map<IList<SubscriberAccount>, IList<Subscriber>>(results).ToList();
 
             return subscribers;
         }
@@ -40,25 +40,16 @@ namespace INSS.EIIR.DataAccess
             if (int.TryParse(subscriberId, out var subscriberIdInt))
             {
                 var result = await _context.SubscriberApplications.Where(x => x.SubscriberId == subscriberIdInt).FirstOrDefaultAsync();
-                if (result != null)
-                {
-                    subscriberDetail = new(result.SubscriberId, result.OrganisationName, result.ContactTitle, result.ContactForename, result.ContactSurname, result.ContactEmail);
-                }
+                subscriberDetail = _mapper.Map<SubscriberApplication, SubscriberDetail>(result);
             }
             return subscriberDetail;
         }
 
         public ExtractAvailable GetExtractAvailable()
         {
-            ExtractAvailable extractAvailabe = null;
             string sql = $"EXEC {_databaseConfig.GetExtractAvailableProcedure}";
             var result = _context.ExtractAvailability.FromSqlRaw(sql).AsEnumerable().FirstOrDefault();
-            if (result != null)
-            {
-                extractAvailabe = new(result.ExtractId, result.Currentdate, result.SnapshotCompleted, result.SnapshotDate,
-                    result.ExtractCompleted, result.ExtractDate, result.ExtractEntries, result.ExtractBanks, result.ExtractIvas, result.NewCases,
-                    result.NewBanks, result.NewIvas, result.ExtractFilename, result.DownloadLink, result.DownloadZiplink, result.ExtractDros, result.NewDros);
-            }
+            ExtractAvailable extractAvailabe = _mapper.Map<ExtractAvailabilitySP, ExtractAvailable>(result);
 
             return extractAvailabe;
         }
