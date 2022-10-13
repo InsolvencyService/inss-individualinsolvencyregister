@@ -76,7 +76,8 @@ stages:
             **/INSS.EIIR*.csproj
             !**/INSS.EIIR*Tests.csproj
           arguments: '--configuration $(BuildConfiguration) --output $(Build.ArtifactStagingDirectory)'
-
+        env:
+          MSBUILDSINGLELOADCONTEXT: '1' 
       - task: PublishPipelineArtifact@1
         displayName: 'Publish Artifact'
         inputs:
