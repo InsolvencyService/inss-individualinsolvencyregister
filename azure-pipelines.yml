@@ -52,6 +52,8 @@ stages:
         inputs:
           command: 'build'
           # projects: '**/INSS.EIIR*.csproj'
+        env:
+          MSBUILDSINGLELOADCONTEXT: '1'
           projects: |
             **/INSS.EIIR*.csproj
             !**/INSS.EIIR*Tests.csproj
