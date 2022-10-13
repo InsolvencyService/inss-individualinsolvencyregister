@@ -52,12 +52,12 @@ stages:
         inputs:
           command: 'build'
           # projects: '**/INSS.EIIR*.csproj'
-        env:
-          MSBUILDSINGLELOADCONTEXT: '1'
           projects: |
             **/INSS.EIIR*.csproj
             !**/INSS.EIIR*Tests.csproj
-          arguments: '--configuration $(buildConfiguration)'        
+          arguments: '--configuration $(buildConfiguration)'
+        env:
+          MSBUILDSINGLELOADCONTEXT: '1'       
 
       # - task: DotNetCoreCLI@2
       #   displayName: 'Run Tests'
