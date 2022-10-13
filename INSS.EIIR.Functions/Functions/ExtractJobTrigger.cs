@@ -42,25 +42,28 @@ namespace INSS.EIIR.Functions.Functions
 
             var today = DateOnly.FromDateTime(DateTime.Now);
 
+            var extractjobqueueError = "ExtractjobTrigger missing configuration servicebus:extractjobqueue";
+            var xtractjobError = $"ExtractJob not found for today [{today}], snapshot has not run";
+            var snapshotError = $"Snapshot has not yet run today [{today}]";
+
             var extractJobQueue = Environment.GetEnvironmentVariable("servicebus:extractjobqueue");
             if (string.IsNullOrEmpty(extractJobQueue))
             {
-                _logger.LogError("ExtractjobTrigger missing configuration servicebus:extractjobqueue");
-                return new BadRequestObjectResult("ExtractjobTrigger missing configuration servicebus:extractjobqueue");
+                _logger.LogError(extractjobqueueError);
+                return new BadRequestObjectResult(extractjobqueueError);
             }
 
-            // 1. Query Extract jobs table and check if extract created for today
-            var extractJob = _eiirRepository.GetExtractAvailability();
+            var extractJob = _eiirRepository.GetExtractAvailable();
             if (extractJob == null)
             {
-                _logger.LogError($"ExtractJob not found for today [{today}], snapshot has not run", today);
-                return new BadRequestObjectResult($"ExtractJob not found for today [{today}], snapshot has not run");
+                _logger.LogError(xtractjobError);
+                return new BadRequestObjectResult(xtractjobError);
             }
 
             if (extractJob.SnapshotCompleted?.ToLowerInvariant() == "n")
             {
-                _logger.LogError($"Snapshot has not yet run today [{today}]", today);
-                return new BadRequestObjectResult($"Snapshot has not yet run today [{today}]");
+                _logger.LogError(snapshotError);
+                return new BadRequestObjectResult(snapshotError);
             }
 
             if (extractJob.ExtractCompleted?.ToLowerInvariant() == "y")
@@ -68,7 +71,6 @@ namespace INSS.EIIR.Functions.Functions
                 return new OkObjectResult($"Subscriber xml / zip file creation has already ran successfully on [{today}]");
             }
 
-            // 2. Create service bus message and send
             var message = new ExtractJobMessage
             {
                 ExtractId = extractJob.ExtractId,

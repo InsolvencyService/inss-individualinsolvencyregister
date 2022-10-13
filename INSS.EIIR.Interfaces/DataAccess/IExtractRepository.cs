@@ -1,12 +1,13 @@
-﻿using INSS.EIIR.Data.Models;
+﻿using INSS.EIIR.Models.ExtractModels;
+using INSS.EIIR.Models.SubscriberModels;
 
 namespace INSS.EIIR.Interfaces.DataAccess
 {
     public interface IExtractRepository
     {
-        ExtractAvailabilitySP GetExtractAvailability();
-        void UpdateExtractAvailability();
-        Task<IList<SubscriberAccount>> GetActiveSubscribers();
-        Task<SubscriberApplication> GetSubscriberDetails(string subscriberId);
+        ExtractAvailable GetExtractAvailable();
+        void UpdateExtractAvailable();
+        Task<IList<Subscriber>> GetActiveSubscribers();
+        Task<SubscriberDetail> GetSubscriberDetails(string subscriberId);
     }
 }

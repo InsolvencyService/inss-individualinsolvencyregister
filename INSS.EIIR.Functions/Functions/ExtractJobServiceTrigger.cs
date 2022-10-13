@@ -33,17 +33,17 @@ namespace INSS.EIIR.Functions.Functions
 
             try
             {
-                // 1. Generate the subscriber file
                 await _extractService.GenerateSubscriberFile(message.ExtractFilename);
 
-                // 2. Update Extract Job table to set extract completed to true
-                _eiirRepository.UpdateExtractAvailability();
+                _eiirRepository.UpdateExtractAvailable();
+                
                 _logger.LogInformation($"ExtractJobServiceTrigger ran succssfully on: {now} xml/zip file created with name: {message.ExtractFilename}");
             }
             catch (Exception ex)
             {
-                _logger.LogError($"ExtractJobServiceTrigger failed on: {now} with : {ex}");
-                throw new Exception($"ExtractJobServiceTrigger failed on: {now} with : {ex}");
+                var error = $"ExtractJobServiceTrigger failed on: {now} with : {ex}";
+                _logger.LogError(error);
+                throw new Exception(error);
             }
         }
     }

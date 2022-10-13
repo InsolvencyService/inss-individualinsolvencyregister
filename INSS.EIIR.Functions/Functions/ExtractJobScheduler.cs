@@ -25,17 +25,19 @@ namespace INSS.EIIR.Functions.Functions
             _logger.LogInformation($"ExtractJobScheduler function executed at: {DateTime.Now}");
             _logger.LogInformation($"Next ExtractJobScheduler scheduled for: {myTimer.ScheduleStatus.Next}");
 
-            var extractjobserviceurl = Environment.GetEnvironmentVariable("extractjobserviceurl");
-            if (string.IsNullOrEmpty(extractjobserviceurl))
+            var jobServiceUrlError = "Extract Job Service Url is missing";
+
+            var extractJobServiceUrl = Environment.GetEnvironmentVariable("extractjobserviceurl");
+            if (string.IsNullOrEmpty(extractJobServiceUrl))
             {
-                _logger.LogError("Extract Job Service Url is missing");
-                throw new Exception("Extract Job Service Url is missing");
+                _logger.LogError(jobServiceUrlError);
+                throw new Exception(jobServiceUrlError);
             }
 
             var httpClient = _httpClientFactory.CreateClient();
             var httpRequestMessage = new HttpRequestMessage(
                 HttpMethod.Post,
-                extractjobserviceurl);
+                extractJobServiceUrl);
 
             var httpResponseMessage = await httpClient.SendAsync(httpRequestMessage);
 

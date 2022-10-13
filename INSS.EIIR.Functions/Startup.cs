@@ -116,6 +116,8 @@ namespace INSS.EIIR.Functions
             builder.Services.AddScoped<IServiceBusMessageSender, ServiceBusMessageSender>();
             builder.Services.AddScoped<IExtractRepository, ExtractRepository>();
             builder.Services.AddScoped<IExtractService, ExtractService>();
+            builder.Services.AddScoped<ISubscriberService, SubscriberService>();
+            builder.Services.AddScoped<INotificationService, NotificationService>();
 
 
             builder.Services.AddTransient<IIndexService, IndividualSearchIndexService>();
