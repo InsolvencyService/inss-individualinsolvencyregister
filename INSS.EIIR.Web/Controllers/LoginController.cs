@@ -27,17 +27,22 @@ namespace INSS.EIIR.Web.Controllers
         //[ValidateAntiForgeryToken]
         public async Task<IActionResult> AdminLoginAsync(User user)
         {
+            if (user == null || !ModelState.IsValid)
+            {
+                return View("Admin", user);
+            }
+            
             var validUser = _authenticationProvider.GetAdminUser(user.UserName, user.Password);
 
             if (validUser == null)
             {
+                ModelState.AddModelError("InvalidUser", string.Empty);
                 return View("Admin", user);
             }
 
             await Authenticate(validUser);
 
             return RedirectToAction("Index", "DataExtract", new { area = AreaNames.Admin });
-
         }
 
         public async Task<IActionResult> Logout()
