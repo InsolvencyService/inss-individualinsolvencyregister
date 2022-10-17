@@ -1,8 +1,7 @@
 ﻿using System;
 using System.IO;
 
-
-namespace INSS.EIIR.QA.Automation.TestFramework.TestSupport
+namespace TestFramework.TestFramework.Hooks
 {
     public class FileHelper
     {
