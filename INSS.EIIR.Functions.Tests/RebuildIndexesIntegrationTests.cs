@@ -1,19 +1,19 @@
 ﻿using AutoMapper;
-using Azure.Search.Documents.Indexes;
 using Azure;
+using Azure.Search.Documents.Indexes;
 using INSS.EIIR.AzureSearch.Services;
-using INSS.EIIR.DataAccess;
-using INSS.EIIR.Services;
-using Xunit;
-using Microsoft.Extensions.Configuration;
-using Moq;
 using INSS.EIIR.Data.Models;
+using INSS.EIIR.DataAccess;
 using INSS.EIIR.Functions.Functions;
-using Microsoft.Azure.WebJobs;
-using Microsoft.Extensions.Logging;
-using INSS.EIIR.Models;
-using Microsoft.Azure.WebJobs.Extensions.Timers;
 using INSS.EIIR.Interfaces.AzureSearch;
+using INSS.EIIR.Models;
+using INSS.EIIR.Services;
+using Microsoft.Azure.WebJobs;
+using Microsoft.Azure.WebJobs.Extensions.Timers;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
+using Moq;
+using Xunit;
 using IndividualSearch = INSS.EIIR.Models.IndexModels.IndividualSearch;
 
 namespace INSS.EIIR.Functions.Tests
