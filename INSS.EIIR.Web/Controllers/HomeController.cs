@@ -25,5 +25,10 @@ namespace INSS.EIIR.Web.Controllers
         {
             return View();
         }
+
+        public IActionResult Accessibility()
+        {
+            return View();
+        }
     }
 }
