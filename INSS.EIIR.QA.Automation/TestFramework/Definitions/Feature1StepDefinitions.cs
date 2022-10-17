@@ -1,8 +1,8 @@
 using System;
 using TechTalk.SpecFlow;
-using TestFramework.TestFramework.Hooks;
+using INSS.EIIR.QA.Automation.TestFramework.Hooks;
 
-namespace TestFramework
+namespace INSS.EIIR.QA.Automation
 {
     [Binding]
     public class Feature1StepDefinitions : Base

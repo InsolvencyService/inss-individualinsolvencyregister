@@ -10,7 +10,7 @@
 // ------------------------------------------------------------------------------
 #region Designer generated code
 #pragma warning disable
-namespace TestFramework.TestFramework.Features
+namespace INSS.EIIR.QA.Automation.TestFramework.Features
 {
     using TechTalk.SpecFlow;
     using System;

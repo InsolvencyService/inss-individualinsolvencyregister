@@ -8,7 +8,7 @@ using OpenQA.Selenium;
 using OpenQA.Selenium.Interactions;
 using OpenQA.Selenium.Support.UI;
 
-namespace TestFramework.Hooks
+namespace INSS.EIIR.QA.Automation.Hooks
 
 {
     public static class WebDriverExtension
