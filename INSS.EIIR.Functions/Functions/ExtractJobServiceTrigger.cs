@@ -6,45 +6,44 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Threading.Tasks;
 
-namespace INSS.EIIR.Functions.Functions
+namespace INSS.EIIR.Functions.Functions;
+
+public class ExtractJobServiceTrigger
 {
-    public class ExtractJobServiceTrigger
+    private readonly ILogger<ExtractJobServiceTrigger> _logger;
+    private readonly IExtractRepository _eiirRepository;
+    private readonly IExtractDataProvider _extractService;
+
+    public ExtractJobServiceTrigger(
+        ILogger<ExtractJobServiceTrigger> log,
+        IExtractRepository eiirRepository,
+        IExtractDataProvider extractService)
     {
-        private readonly ILogger<ExtractJobServiceTrigger> _logger;
-        private readonly IExtractRepository _eiirRepository;
-        private readonly IExtractService _extractService;
+        _logger = log;
+        _eiirRepository = eiirRepository;
+        _extractService = extractService;
+    }
 
-        public ExtractJobServiceTrigger(
-            ILogger<ExtractJobServiceTrigger> log,
-            IExtractRepository eiirRepository,
-            IExtractService extractService)
+    [FunctionName("ExtractJobServiceTrigger")]
+    public async Task Run([ServiceBusTrigger("%servicebusextractjobqueue%", Connection = "servicebussubscriberconnectionstring")] ExtractJobMessage message)
+    {
+        var now = DateTime.Now;
+
+        _logger.LogInformation($"ExtractJobServiceTrigger received message: {message} on {now}");
+
+        try
         {
-            _logger = log;
-            _eiirRepository = eiirRepository;
-            _extractService = extractService;
+            await _extractService.GenerateSubscriberFile(message.ExtractFilename);
+
+            _eiirRepository.UpdateExtractAvailable();
+            
+            _logger.LogInformation($"ExtractJobServiceTrigger ran succssfully on: {now} xml/zip file created with name: {message.ExtractFilename}");
         }
-
-        [FunctionName("ExtractJobServiceTrigger")]
-        public async Task Run([ServiceBusTrigger("%servicebus:extractjobqueue%", Connection = "servicebus:subscriberconnectionstring")] ExtractJobMessage message)
+        catch (Exception ex)
         {
-            var now = DateTime.Now;
-
-            _logger.LogInformation($"ExtractJobServiceTrigger received message: {message} on {now}");
-
-            try
-            {
-                await _extractService.GenerateSubscriberFile(message.ExtractFilename);
-
-                _eiirRepository.UpdateExtractAvailable();
-                
-                _logger.LogInformation($"ExtractJobServiceTrigger ran succssfully on: {now} xml/zip file created with name: {message.ExtractFilename}");
-            }
-            catch (Exception ex)
-            {
-                var error = $"ExtractJobServiceTrigger failed on: {now} with : {ex}";
-                _logger.LogError(error);
-                throw new Exception(error);
-            }
+            var error = $"ExtractJobServiceTrigger failed on: {now} with : {ex}";
+            _logger.LogError(error);
+            throw new Exception(error);
         }
     }
 }

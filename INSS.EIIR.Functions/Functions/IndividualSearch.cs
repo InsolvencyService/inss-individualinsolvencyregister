@@ -34,7 +34,7 @@ namespace INSS.EIIR.Functions.Functions
         }
 
         [FunctionName("IndividualSearch")]
-        [OpenApiOperation(operationId: "Run", tags: new[] { "name" })]
+        [OpenApiOperation(operationId: "Run", tags: new[] { "Search" })]
         [OpenApiSecurity("function_key", SecuritySchemeType.ApiKey, Name = "code", In = OpenApiSecurityLocationType.Query)]
         [OpenApiParameter(name: "SearchModel", In = ParameterLocation.Header, Required = true, Type = typeof(IndividualSearchModel), Description = "The SearchModel parameter")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "text/plain", bodyType: typeof(string), Description = "The OK response")]
