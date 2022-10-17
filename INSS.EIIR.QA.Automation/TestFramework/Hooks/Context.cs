@@ -1,11 +1,11 @@
 ﻿using System;
 using OpenQA.Selenium;
 using BoDi;
-using TestFramework.browserHelperFactory;
+using INSS.EIIR.QA.Automation.browserHelperFactory;
 using RestSharp;
 
 
-namespace TestFramework.Hooks
+namespace INSS.EIIR.QA.Automation.Hooks
 {
     public class Context
     {

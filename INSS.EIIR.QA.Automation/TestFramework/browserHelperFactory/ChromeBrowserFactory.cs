@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace TestFramework.browserHelperFactory
+namespace INSS.EIIR.QA.Automation.browserHelperFactory
 {
     public class ChromeBrowserFactory
     {

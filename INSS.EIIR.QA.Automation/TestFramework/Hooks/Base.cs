@@ -1,9 +1,9 @@
 ﻿using System;
 using OpenQA.Selenium;
 using TechTalk.SpecFlow;
-using TestFramework.TestFramework.Hooks;
+using INSS.EIIR.QA.Automation.TestFramework.Hooks;
 
-namespace TestFramework.TestFramework.Hooks
+namespace INSS.EIIR.QA.Automation.TestFramework.Hooks
 {
     [Binding]
     public class Base

@@ -7,7 +7,7 @@ using OpenQA.Selenium.Edge;
 using OpenQA.Selenium.Firefox;
 using OpenQA.Selenium.IE;
 
-namespace TestFramework.TestFramework.Hooks;
+namespace INSS.EIIR.QA.Automation.TestFramework.Hooks;
 
 public static class WebDriverFactory
 {
