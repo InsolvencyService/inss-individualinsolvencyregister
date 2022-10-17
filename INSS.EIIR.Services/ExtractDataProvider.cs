@@ -31,7 +31,7 @@ public class ExtractDataProvider : IExtractDataProvider
         var blobContainerName = Environment.GetEnvironmentVariable("blobcontainername");
         if (string.IsNullOrEmpty(blobContainerName))
         {
-            throw new Exception("ExtractDataProvider missing blobcontainername configurqation");
+            throw new Exception("ExtractDataProvider missing blobcontainername configuration");
         }
 
         _containerClient = _blobServiceClient.GetBlobContainerClient(blobContainerName);
