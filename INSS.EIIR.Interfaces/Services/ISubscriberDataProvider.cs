@@ -6,7 +6,7 @@ namespace INSS.EIIR.Interfaces.Services;
 public interface ISubscriberDataProvider
 {
     Task<Subscriber> GetSubscriberByIdAsync(string subscriberId);
-    Task<IEnumerable<Subscriber>> GetSubscribersAsync(PagingParameters pagingParameters);
-    Task<IEnumerable<Subscriber>> GetActiveSubscribersAsync(PagingParameters pagingParameters);
-    Task<IEnumerable<Subscriber>> GetInActiveSubscribersAsync(PagingParameters pagingParameters);
+    Task<SubscriberWithPaging> GetSubscribersAsync(PagingParameters pagingParameters);
+    Task<SubscriberWithPaging> GetActiveSubscribersAsync(PagingParameters pagingParameters);
+    Task<SubscriberWithPaging> GetInActiveSubscribersAsync(PagingParameters pagingParameters);
 }
