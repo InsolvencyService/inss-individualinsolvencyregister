@@ -58,7 +58,7 @@ jobs:
                     -blobcontainername "$(blobcontainername)"
                     -extractjobserviceurl "$(extractjobserviceurl)"
                     -extractjobtimercron "$(extractjobtimercron)"
-                    -servicebussubscriberconnectionstring "$(servicebussubscriberconnectionstring)"
+                    -servicebus__subscriberconnectionstring "$(servicebus__subscriberconnectionstring)"
                     -servicebusextractjobqueue "$(servicebusextractjobqueue)"
                     -notify__subscriberEmailTemplateId "$(notify__subscriberEmailTemplateId)"
                     -database__databuffersize "$(database__databuffersize)"
