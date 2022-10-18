@@ -94,9 +94,9 @@ stages:
     - template: deploy-jobs-template.yml
       parameters:
         environment: 'Dev'
-        iirwebdbContextConnectionString: $(iirwebdbContextConnectionString)
-        EIIRIndexUrl: $(EIIRIndexUrl)
-        EIIRApiKey: $(EIIRApiKey)
+        # iirwebdbContextConnectionString: $(iirwebdbContextConnectionString)
+        # EIIRIndexUrl: $(EIIRIndexUrl)
+        # EIIRApiKey: $(EIIRApiKey)
         deployWebapp: true
         deployfuncapp: true
 
@@ -109,9 +109,9 @@ stages:
     - template: deploy-jobs-template.yml
       parameters:
         environment: 'Sit'
-        iirwebdbContextConnectionString: $(iirwebdbContextConnectionString)
-        EIIRIndexUrl: $(EIIRIndexUrl)
-        EIIRApiKey: $(EIIRApiKey)
+        # iirwebdbContextConnectionString: $(iirwebdbContextConnectionString)
+        # EIIRIndexUrl: $(EIIRIndexUrl)
+        # EIIRApiKey: $(EIIRApiKey)
         deployWebapp: ${{ parameters.deployWebapp }}
         deployfuncapp: ${{ parameters.deployfuncapp }}
 
@@ -124,9 +124,9 @@ stages:
     - template: deploy-jobs-template.yml
       parameters:
         environment: 'PreProd'
-        iirwebdbContextConnectionString: $(iirwebdbContextConnectionString)
-        EIIRIndexUrl: $(EIIRIndexUrl)
-        EIIRApiKey: $(EIIRApiKey)
+        # iirwebdbContextConnectionString: $(iirwebdbContextConnectionString)
+        # EIIRIndexUrl: $(EIIRIndexUrl)
+        # EIIRApiKey: $(EIIRApiKey)
         deployWebapp: ${{ parameters.deployWebapp }}
         deployfuncapp: ${{ parameters.deployfuncapp }}
 

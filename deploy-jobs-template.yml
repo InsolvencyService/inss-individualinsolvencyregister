@@ -23,12 +23,6 @@ parameters:
   - name: Searchindexer
     type: string
     default: 'INSS.EIIR.Functions.zip'
-  - name: iirwebdbContextConnectionString
-    type: string
-  - name: EIIRIndexUrl
-    type: string
-  - name: EIIRApiKey
-    type: string
   - name: appZipFile
     type: string
     default: 'INSS.EIIR.WEB.zip'
@@ -60,7 +54,20 @@ jobs:
                     -iirwebdbContextConnectionString "${{ parameters.iirwebdbContextConnectionString }}"
                     -EIIRIndexUrl "${{ parameters.EIIRIndexUrl }}"
                     -EIIRApiKey "${{ parameters.EIIRApiKey }}"
-
+                    -blobconnectionstring "${{ parameters.blobconnectionstring }}"
+                    -blobcontainername "${{ parameters.blobcontainername }}"
+                    -extractjobserviceurl "${{ parameters.extractjobserviceurl }}"
+                    -extractjobtimercron "${{ parameters.extractjobserviceurl }}"
+                    -servicebussubscriberconnectionstring  "${{ parameters.extractjobserviceurl }}"
+                    -servicebusextractjobqueue  "${{ parameters.extractjobserviceurl }}"
+                    -notify__subscriberEmailTemplateId  "${{ parameters.notify__subscriberEmailTemplateId }}"
+                    -database__databuffersize  "${{ parameters.database__databuffersize }}"
+                    -database__updateextractavailableprocedure  "${{ parameters.database__updateextractavailableprocedure }}"
+                    -database__getextractavailableprocedure  "${{ parameters.database__getextractavailableprocedure }}"
+                    -database__getxmldataprocedure  "${{ parameters.database__getxmldataprocedure }}"
+                    -database__commandtimeout  "${{ parameters.database__commandtimeout }}"
+                    -database__connectionstring  "${{ parameters.database__connectionstring }}"
+                    -servicebus__publisherconnectionstring  "${{ parameters.servicebus__publisherconnectionstring }}"
 
               - task: AzureAppServiceManage@0
                 displayName: Start Staging Slot
