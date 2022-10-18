@@ -1,4 +1,5 @@
 using INSS.EIIR.Interfaces.Services;
+using INSS.EIIR.Models.Configuration;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Logging;
 using System;
@@ -28,7 +29,7 @@ public class ExtractJobNotificationTrigger
         string message = $"ExtractJobNotificationTrigger Blob trigger function triggered for blob\n Name: {name}  \n with uri:{uri.AbsoluteUri}";
         _logger.LogInformation(message);
 
-        var activeSubscribers = await _subscriberService.GetActiveSubscribersAsync();
+        var activeSubscribers = await _subscriberService.GetActiveSubscribersAsync(new PagingParameters() { PageSize = 1000 });
 
         await _notificationService.ScheduleSubscriberNotificationAsync(activeSubscribers);
     }

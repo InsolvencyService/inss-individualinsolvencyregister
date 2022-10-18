@@ -62,7 +62,7 @@ namespace INSS.EIIR.Functions.Tests
             Assert.IsType<OkObjectResult>(response);
 
         }
-
+       
         [Fact]
         public async Task Subscriber_GetActiveSubscribers_Returns_OkResult()
         {
@@ -86,8 +86,12 @@ namespace INSS.EIIR.Functions.Tests
             //Arrange
             var logger = Mock.Of<ILogger<Subscriber>>();
             var subscriberFunc = new Subscriber(logger, _subscriberDataProvider);
+            var paramsDictionary = new Dictionary<string, StringValues>
+            {
+                { "id", "12345" }
+            };
 
-            Mock<HttpRequest> mockRequest = CreateMockGetWithParamRequest("12345");
+            Mock<HttpRequest> mockRequest = CreateMockGetWithParamRequest(paramsDictionary);
 
             //Act
             var response = await subscriberFunc.GetSubscriberById(mockRequest.Object) as OkObjectResult;
@@ -124,19 +128,14 @@ namespace INSS.EIIR.Functions.Tests
             return mockRequest;
         }
 
-        private static Mock<HttpRequest> CreateMockGetWithParamRequest(string queryParam)
+        private static Mock<HttpRequest> CreateMockGetWithParamRequest(Dictionary<string, StringValues> paramsDictionary)
         {
             var ms = new MemoryStream();
             var sw = new StreamWriter(ms);
 
             var mockRequest = new Mock<HttpRequest>();
             mockRequest.Setup(x => x.Body).Returns(ms);
-
-            var paramsDictionary = new Dictionary<string, StringValues>
-            {
-                { "id", queryParam }
-            };
-
+            
             mockRequest.Setup(i => i.Query).Returns(new QueryCollection(paramsDictionary));
     
             return mockRequest;

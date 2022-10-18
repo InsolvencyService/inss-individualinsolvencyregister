@@ -1,4 +1,5 @@
-﻿using INSS.EIIR.Models.SubscriberModels;
+﻿using INSS.EIIR.Models.Configuration;
+using INSS.EIIR.Models.SubscriberModels;
 
 namespace INSS.EIIR.Interfaces.DataAccess;
 

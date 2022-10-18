@@ -3,7 +3,6 @@ using INSS.EIIR.Data.Models;
 using INSS.EIIR.Interfaces.DataAccess;
 using INSS.EIIR.Models.SubscriberModels;
 using Microsoft.EntityFrameworkCore;
-using System.Security.Cryptography.X509Certificates;
 
 namespace INSS.EIIR.DataAccess;
 
@@ -28,12 +27,9 @@ public class SubscriberRepository : ISubscriberRepository
         {
 
             var results = await (from sa in _context.SubscriberAccounts
+                                 orderby sa.SubscriberId
                                  join apps in _context.SubscriberApplications
                                    on new { Id = sa.SubscriberId } equals new { Id = apps.SubscriberId.ToString() }
-                                   //join se in _context.SubscriberContacts
-                                   //   on sa.SubscriberId equals se.SubscriberId into contacts
-                                   //from sc in contacts
-                                   //select new { SubscriberAccounts = sa, SubscriberApplications = apps, SubscriberContacts = sc }).ToListAsync();
                                  select new { SubscriberAccounts = sa, SubscriberApplications = apps }).ToListAsync();
 
             var contacts = await _context.SubscriberContacts.ToListAsync();
@@ -65,8 +61,6 @@ public class SubscriberRepository : ISubscriberRepository
         var result = await (from sa in _context.SubscriberAccounts.Where(s => s.SubscriberId.Equals(subscriberId))
                              join apps in _context.SubscriberApplications
                                on new { Id = sa.SubscriberId } equals new { Id = apps.SubscriberId.ToString() }
-                               //join se in _context.SubscriberContacts
-                               //  on sa.SubscriberId equals se.SubscriberId.ToString()
                             select new { SubscriberAccount = sa, SubscriberApplication = apps }).FirstOrDefaultAsync();
 
         var contacts = await _context.SubscriberContacts.Where(x => x.SubscriberId == subscriberId).ToListAsync();
