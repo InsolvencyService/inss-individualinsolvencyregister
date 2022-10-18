@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using INSS.EIIR.Models.Home;
+using INSS.EIIR.Web.Helper;
+using Microsoft.AspNetCore.Mvc;
 
 namespace INSS.EIIR.Web.Controllers
 {
@@ -18,17 +20,32 @@ namespace INSS.EIIR.Web.Controllers
 
         public IActionResult Privacy()
         {
-            return View();
+            var contentViewModel = new StaticContent()
+            {
+                Breadcrumbs = BreadcrumbBuilder.BuildBreadcrumbs(),
+            };
+
+            return View(contentViewModel);
         }
 
         public IActionResult TermsAndConditions()
         {
-            return View();
+            var contentViewModel = new StaticContent()
+            {
+                Breadcrumbs = BreadcrumbBuilder.BuildBreadcrumbs(),
+            };
+
+            return View(contentViewModel);
         }
 
         public IActionResult Accessibility()
         {
-            return View();
+            var contentViewModel = new StaticContent()
+            {
+                Breadcrumbs = BreadcrumbBuilder.BuildBreadcrumbs(),
+            };
+
+            return View(contentViewModel);
         }
     }
 }
