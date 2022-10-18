@@ -1,14 +1,15 @@
 ﻿using INSS.EIIR.Models.Breadcrumb;
+using INSS.EIIR.Web.Constants;
 
 namespace INSS.EIIR.Web.Helper
 {
     public static class BreadcrumbBuilder
     {
-        public static IList<BreadcrumbLink> BuildBreadcrumbs(bool showSearch = false, bool showResults = false, bool showIp = false, int? ipNumber = default, string? ipName = default)
+        public static IList<BreadcrumbLink> BuildBreadcrumbs(bool showSearch = false, bool isAdmin = false)
         {
             // add home link in by default
             var breadcrumbs = new List<BreadcrumbLink> {
-                new BreadcrumbLink{ Text = "Home", Href = "/" },
+                new BreadcrumbLink{ Text = "Home", Href = isAdmin ? "/" : string.Concat("/", AreaNames.Admin) },
             };
 
             // commendted out the FIP implementation for the moment.
@@ -30,5 +31,6 @@ namespace INSS.EIIR.Web.Helper
 
             return breadcrumbs;
         }
-    }
+
+     }
 }

@@ -33,6 +33,11 @@
     <div class="govuk-width-container ">
 
         <partial name="~/Areas/Admin/Shared/_AdminBanner.cshtml" />
+        @if (IsSectionDefined("Breadcrumb"))
+        {
+            @await RenderSectionAsync("Breadcrumb", required: false)
+        }
+
 
         <main class="govuk-main-wrapper " id="main-content" role="main">
             @RenderBody()
