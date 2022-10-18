@@ -2,8 +2,8 @@
 using Azure.Search.Documents.Indexes;
 using INSS.EIIR.AzureSearch.Services.Constants;
 using INSS.EIIR.Interfaces.Services;
-using INSS.EIIR.Models;
 using INSS.EIIR.Models.IndexModels;
+using INSS.EIIR.Models.SearchModels;
 using Microsoft.Extensions.Logging;
 
 namespace INSS.EIIR.AzureSearch.Services;

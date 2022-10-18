@@ -10,7 +10,8 @@ public class IndividualSearchModel
         InsolvencyServiceOffices = Enumerable.Empty<string>().ToList();
     }
 
-
+    public int Page { get; set; }
+    
     //searchable fields
     public string SearchTerm { get; set; }
 

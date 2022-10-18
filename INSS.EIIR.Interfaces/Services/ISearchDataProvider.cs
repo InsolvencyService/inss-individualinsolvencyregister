@@ -1,4 +1,4 @@
-﻿using INSS.EIIR.Models;
+﻿using INSS.EIIR.Models.SearchModels;
 
 namespace INSS.EIIR.Interfaces.Services;
 
