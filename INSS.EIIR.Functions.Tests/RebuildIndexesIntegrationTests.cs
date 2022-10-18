@@ -1,11 +1,17 @@
 ﻿using AutoMapper;
-using Azure.Search.Documents.Indexes;
 using Azure;
+using Azure.Search.Documents.Indexes;
 using INSS.EIIR.AzureSearch.Services;
+using INSS.EIIR.Data.Models;
 using INSS.EIIR.DataAccess;
+using INSS.EIIR.Functions.Functions;
+using INSS.EIIR.Interfaces.AzureSearch;
+using INSS.EIIR.Models;
 using INSS.EIIR.Services;
-using Xunit;
+using Microsoft.Azure.WebJobs;
+using Microsoft.Azure.WebJobs.Extensions.Timers;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using Moq;
 using INSS.EIIR.Data.Models;
 using INSS.EIIR.Functions.Functions;
@@ -15,6 +21,7 @@ using Microsoft.Azure.WebJobs.Extensions.Timers;
 using INSS.EIIR.Interfaces.AzureSearch;
 using IndividualSearch = INSS.EIIR.Models.IndexModels.IndividualSearch;
 using INSS.EIIR.Models.SearchModels;
+using Xunit;
 
 namespace INSS.EIIR.Functions.Tests
 {
@@ -52,9 +59,9 @@ namespace INSS.EIIR.Functions.Tests
                 .Setup(m => m.Map<IEnumerable<SearchResult>, IEnumerable<IndividualSearch>>(It.IsAny<IEnumerable<SearchResult>>()))
                 .Returns(mappedData);
 
-            //var service = new RebuildIndexes(GetIndexServices(mapperMock.Object));
+            var service = new RebuildIndexes(GetIndexServices(mapperMock.Object));
 
-            //await service.Run(timerInfo, loggerMock.Object);
+            await service.Run(timerInfo, loggerMock.Object);
         }
 
         private IEnumerable<IIndexService> GetIndexServices(IMapper mapper)

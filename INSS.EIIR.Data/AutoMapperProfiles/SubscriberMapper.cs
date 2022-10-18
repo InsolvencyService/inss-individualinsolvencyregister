@@ -10,5 +10,6 @@ public class SubscriberMapper : Profile
     {
         CreateMap<SubscriberAccount, Subscriber>();
         CreateMap<SubscriberApplication, SubscriberDetail>();
+        CreateMap<SubscriberContact, SubscriberEmailContact>();
     }
 }

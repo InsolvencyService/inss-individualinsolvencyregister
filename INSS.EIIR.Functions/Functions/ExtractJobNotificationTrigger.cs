@@ -1,33 +1,36 @@
-//using INSS.EIIR.Interfaces.Services;
-//using Microsoft.Azure.WebJobs;
-//using Microsoft.Extensions.Logging;
-//using System;
-//using System.Threading.Tasks;
+using INSS.EIIR.Interfaces.Services;
+using INSS.EIIR.Models.Configuration;
+using Microsoft.Azure.WebJobs;
+using Microsoft.Extensions.Logging;
+using System;
+using System.Threading.Tasks;
 
-//namespace INSS.EIIR.Functions.Functions
-//{
-//    public class ExtractJobNotificationTrigger
-//    {
-//        private readonly ILogger<ExtractJobNotificationTrigger> _logger;
-//        private readonly ISubscriberService _subscriberService;
+namespace INSS.EIIR.Functions.Functions;
 
-//        public ExtractJobNotificationTrigger(
-//            ILogger<ExtractJobNotificationTrigger> log,
-//            ISubscriberService subscriberService)
-//        {
-//            _logger = log;
-//            _subscriberService = subscriberService;
-//        }
+public class ExtractJobNotificationTrigger
+{
+    private readonly ILogger<ExtractJobNotificationTrigger> _logger;
+    private readonly ISubscriberDataProvider _subscriberService;
+    private readonly INotificationService _notificationService;
 
-//        [FunctionName("ExtractJobNotificationTrigger")]
-//        public async Task Run([BlobTrigger("%blob:containername%/{name}.zip", Connection = "blob:connectionstring")] byte[] myBlob, string name, Uri uri)
-//        {
-//            string message = $"ExtractJobNotificationTrigger Blob trigger function triggered for blob\n Name: {name}  \n with uri:{uri.AbsoluteUri}";
-//            _logger.LogInformation(message);
+    public ExtractJobNotificationTrigger(
+        ILogger<ExtractJobNotificationTrigger> log,
+        ISubscriberDataProvider subscriberService,
+        INotificationService notificationService)
+    {
+        _logger = log;
+        _subscriberService = subscriberService;
+        _notificationService = notificationService;
+    }
 
-//            var activeSubscribers = await _subscriberService.GetActiveSubscribersAsync();
+    [FunctionName("ExtractJobNotificationTrigger")]
+    public async Task Run([BlobTrigger("%blobcontainername%/{name}.zip", Connection = "blobconnectionstring")] byte[] myBlob, string name, Uri uri)
+    {
+        string message = $"ExtractJobNotificationTrigger Blob trigger function triggered for blob\n Name: {name}  \n with uri:{uri.AbsoluteUri}";
+        _logger.LogInformation(message);
 
-//            await _subscriberService.ScheduleSubscriberNotificationAsync(activeSubscribers);
-//        }
-//    }
-//}
+        var activeSubscribers = await _subscriberService.GetActiveSubscribersAsync(new PagingParameters() { PageSize = 1000 });
+
+        await _notificationService.ScheduleSubscriberNotificationAsync(activeSubscribers.Subscribers);
+    }
+}

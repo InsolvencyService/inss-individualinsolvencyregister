@@ -40,9 +40,8 @@ public class IndividualQueryService : BaseQueryService, IIndividualQueryService
         {
             
             Results = result.Skip((searchModel.Page - 1) * PageSize).Take(PageSize).ToList(),
-            Paging = new PagingModel{
-                ResultCount = result.Count,
-                Page = searchModel.Page,
+            Paging = new PagingModel(result.Count, searchModel.Page)
+            {
                 TotalPages = (int)Math.Ceiling((double)((decimal)result.Count / PageSize))
             }
         };

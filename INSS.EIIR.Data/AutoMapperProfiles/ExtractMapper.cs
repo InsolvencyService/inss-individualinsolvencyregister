@@ -4,9 +4,9 @@ using INSS.EIIR.Models.ExtractModels;
 
 namespace INSS.EIIR.Models.AutoMapperProfiles;
 
-public class ExtractAvailableMapper : Profile
+public class ExtractMapper : Profile
 {
-    public ExtractAvailableMapper()
+    public ExtractMapper()
     {
 
         CreateMap<ExtractAvailabilitySP, ExtractAvailable>();
