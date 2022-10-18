@@ -1,0 +1,211 @@
+﻿@model INSS.EIIR.Models.SubscriberModels.SubscriberProfile
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <h1 class="govuk-heading-l govuk-!-margin-bottom-8">
+            Subscriber details
+        </h1>
+
+        <div class="govuk-warning-text">
+            <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
+            <strong class="govuk-warning-text__text">
+                <span class="govuk-warning-text__assistive">Warning</span>
+                This subscription ends in @Model.DaysToEndSubscription days.
+            </strong>
+        </div>
+
+        <h2 class="govuk-heading-m">Company or organsation</h2>
+
+        <dl class="govuk-summary-list govuk-!-margin-bottom-9">
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                    Name
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    @Model.CompanyName
+                </dd>
+                <dd class="govuk-summary-list__actions">
+                    <a class="govuk-link govuk-link--no-visited-state" href="subscriber-profile-page-1-change-profile">
+                        Change<span class="govuk-visually-hidden"> name</span>
+                    </a>
+                </dd>
+            </div>
+        </dl>
+
+        <h2 class="govuk-heading-m">Main contact</h2>
+
+        <dl class="govuk-summary-list govuk-!-margin-bottom-9">
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                    Full name
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    @Model.ContactFullName
+                </dd>
+                <dd class="govuk-summary-list__actions">
+                    <a class="govuk-link govuk-link--no-visited-state" href="subscriber-profile-page-1-change-profile">
+                        Change<span class="govuk-visually-hidden"> full name</span>
+                    </a>
+                </dd>
+            </div>
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                    Address
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    @Model.Address1<br>@Model.Address2<br>@Model.City<br>@Model.Postcode
+                </dd>
+                <dd class="govuk-summary-list__actions">
+                    <a class="govuk-link govuk-link--no-visited-state" href="subscriber-profile-page-1-change-profile">
+                        Change<span class="govuk-visually-hidden"> address</span>
+                    </a>
+                </dd>
+            </div>
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                    Email address
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    <p class="govuk-body">@Model.EmailAddress</p>
+                </dd>
+                <dd class="govuk-summary-list__actions">
+                    <a class="govuk-link govuk-link--no-visited-state" href="subscriber-profile-page-1-change-profile">
+                        Change<span class="govuk-visually-hidden"> email address</span>
+                    </a>
+                </dd>
+            </div>
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                    Telephone number
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    <p class="govuk-body">@Model.TelephoneNumber</p>
+                </dd>
+                <dd class="govuk-summary-list__actions">
+                    <a class="govuk-link govuk-link--no-visited-state" href="subscriber-profile-page-1-change-profile">
+                        Change<span class="govuk-visually-hidden"> email address</span>
+                    </a>
+                </dd>
+            </div>
+        </dl>
+
+        <h2 class="govuk-heading-m govuk-!-margin-bottom-6">Subscription</h2>
+        <dl class="govuk-summary-list govuk-!-margin-bottom-9">
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                    Application submitted date
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    @Model.ApplicationSubmittedDate
+                </dd>
+                <dd class="govuk-summary-list__actions">
+                    <a class="govuk-link govuk-link--no-visited-state" href="subscriber-profile-page-1-change-profile">
+                        Change<span class="govuk-visually-hidden"> name</span>
+                    </a>
+                </dd>
+            </div>
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                    Start date
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    @Model.SubscriptionStartDate
+                </dd>
+                <dd class="govuk-summary-list__actions">
+                    <a class="govuk-link govuk-link--no-visited-state" href="subscriber-profile-page-1-change-profile">
+                        Change<span class="govuk-visually-hidden"> type</span>
+                    </a>
+                </dd>
+            </div>
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                    End date
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    @Model.SubscriptionEndDate
+                </dd>
+                <dd class="govuk-summary-list__actions">
+                    <a class="govuk-link govuk-link--no-visited-state" href="subscriber-profile-page-1-change-profile">
+                        Change<span class="govuk-visually-hidden"> website</span>
+                    </a>
+                </dd>
+            </div>
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                    Status
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    @Model.SubscriptionStatus
+                </dd>
+                <dd class="govuk-summary-list__actions">
+                    <a class="govuk-link govuk-link--no-visited-state" href="subscriber-profile-page-1-change-profile">
+                        Change<span class="govuk-visually-hidden"> website</span>
+                    </a>
+                </dd>
+            </div>
+        </dl>
+
+        <h2 class="govuk-heading-m">Data extract emails</h2>
+
+        <p class="govuk-body">The data extract will be sent to these email addresses.</p>
+
+        <div class="govuk-inset-text">
+            There must be at least <strong>1</strong> data extract email address per subscriber, with a maximum of <strong>3</strong>.
+        </div>
+
+        <dl class="govuk-summary-list">
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                    Email address 1
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    @Model.SubscriptionEmailAddress1
+                </dd>
+                <dd class="govuk-summary-list__actions">
+                    <a class="govuk-link govuk-link--no-visited-state" href="subscriber-profile-page-1-change-profile">
+                        Change<span class="govuk-visually-hidden"> michael.cain@uk.experian.com</span>
+                    </a>
+                </dd>
+            </div>
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                    Email address 2
+                </dt>
+                <dt class="govuk-summary-list__value">
+                    @Model.SubscriptionEmailAddress2
+                </dt>
+                <dd class="govuk-summary-list__actions">
+                    <a class="govuk-link govuk-link--no-visited-state" href="subscriber-profile-page-1-change-profile">
+                        Change or remove<span class="govuk-visually-hidden"> jeremy.winter@uk.experian.com</span>
+                    </a>
+                </dd>
+            </div>
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                    Email address 3
+                </dt>
+                <dt class="govuk-summary-list__value">
+                    @Model.SubscriptionEmailAddress3
+                </dt>
+                <dd class="govuk-summary-list__actions">
+                    <a class="govuk-link govuk-link--no-visited-state" href="subscriber-profile-page-1-change-profile">
+                        Add<span class="govuk-visually-hidden"> jeremy.winter@uk.experian.com</span>
+                    </a>
+                </dd>
+            </div>
+        </dl>
+
+        <form action="admin-area" method="post" novalidate="">
+            <br>
+            <br>
+
+            <button class="govuk-button" data-module="govuk-button">
+                Return to admin area
+            </button>
+
+        </form>
+        <p>
+            <a class="govuk-link govuk-link--no-visited-state" href="subscriber-list-page">View another subscriber</a>
+        </p>
+    </div>
+</div>

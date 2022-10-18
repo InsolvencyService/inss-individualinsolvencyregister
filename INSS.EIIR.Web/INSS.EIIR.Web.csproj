@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <None Remove="robots.txt" />
+    <None Remove="Areas\Admin\Views\Subscriber\" />
   </ItemGroup>
 
   <ItemGroup>
@@ -20,6 +21,7 @@
     <Folder Include="Properties\" />
     <Folder Include="wwwroot\assets\" />
     <Folder Include="Views\Subscriber\" />
+    <Folder Include="Areas\Admin\Views\Subscriber\" />
   </ItemGroup>
 
   <ItemGroup>
