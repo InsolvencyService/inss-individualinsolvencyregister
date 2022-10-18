@@ -3,7 +3,6 @@ using INSS.EIIR.Interfaces.Services;
 using INSS.EIIR.Models.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using System.Runtime.CompilerServices;
 
 namespace INSS.EIIR.Services
 {

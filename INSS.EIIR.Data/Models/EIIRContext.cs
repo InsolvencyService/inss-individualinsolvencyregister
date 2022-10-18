@@ -1,4 +1,4 @@
-﻿using INSS.EIIR.Models;
+﻿using INSS.EIIR.Models.SearchModels;
 using Microsoft.EntityFrameworkCore;
 
 namespace INSS.EIIR.Data.Models

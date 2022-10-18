@@ -1,6 +1,6 @@
 ﻿using FluentAssertions;
 using INSS.EIIR.Interfaces.DataAccess;
-using INSS.EIIR.Models;
+using INSS.EIIR.Models.SearchModels;
 using Moq;
 using Xunit;
 

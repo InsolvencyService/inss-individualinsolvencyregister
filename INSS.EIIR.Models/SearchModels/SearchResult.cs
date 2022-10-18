@@ -1,16 +1,16 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 
-namespace INSS.EIIR.Models;
+namespace INSS.EIIR.Models.SearchModels;
 
 [ExcludeFromCodeCoverage]
 public class SearchResult
 {
     public string Title { get; set; }
-    
+
     public string FirstName { get; set; }
 
-    public string Surname { get; set; } 
-    
+    public string Surname { get; set; }
+
     public int CaseNo { get; set; }
 
     public int IndivNo { get; set; }

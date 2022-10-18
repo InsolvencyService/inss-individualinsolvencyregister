@@ -8,7 +8,6 @@ using INSS.EIIR.AzureSearch.Services.Constants;
 using INSS.EIIR.AzureSearch.Services.ODataFilters;
 using INSS.EIIR.AzureSearch.Services.QueryServices;
 using INSS.EIIR.Interfaces.AzureSearch;
-using INSS.EIIR.Models;
 using INSS.EIIR.Models.IndexModels;
 using INSS.EIIR.Models.SearchModels;
 using Moq;
@@ -76,10 +75,10 @@ public class IndividualQueryServiceIntegrationTests
 
         var service = new IndividualQueryService(mapperMock.Object, indexClientMock.Object, formattingServiceMock.Object, cleaningServiceMock.Object, GetFilters(cleaningServiceMock.Object));
 
-        var result  = (await service.SearchIndexAsync(searchModel)).ToList();
+        var result  = (await service.SearchIndexAsync(searchModel));
 
-        result.Count.Should().Be(1);
-        result.First().CaseNo.Should().Be(12345);
+        result.Results.Count.Should().Be(1);
+        result.Results.First().CaseNo.Should().Be(12345);
     }
 
     private IEnumerable<IIndiviualSearchFilter> GetFilters(ISearchCleaningService cleaningSer4viceMock)

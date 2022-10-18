@@ -13,6 +13,8 @@ public class IndividualQueryService : BaseQueryService, IIndividualQueryService
 {
     private readonly IEnumerable<IIndiviualSearchFilter> _filters;
 
+    private const int PageSize = 10;
+
     protected override string IndexName => SearchIndexes.IndividualSearch;
 
     public IndividualQueryService(
@@ -26,15 +28,26 @@ public class IndividualQueryService : BaseQueryService, IIndividualQueryService
         _filters = filters;
     }
 
-    public async Task<IEnumerable<SearchResult>> SearchIndexAsync(IndividualSearchModel searchModel)
+    public async Task<SearchResults> SearchIndexAsync(IndividualSearchModel searchModel)
     {
         var options = GetDefaultSearchOptions();
 
         options.Filter = GetFilter(searchModel);
 
-        var result = await SearchIndexAsync<IndividualSearch, SearchResult>(searchModel.SearchTerm, options);
+        var result = (await SearchIndexAsync<IndividualSearch, SearchResult>(searchModel.SearchTerm, options)).ToList();
 
-        return result;
+        var results = new SearchResults
+        {
+            
+            Results = result.Skip((searchModel.Page - 1) * PageSize).Take(PageSize).ToList(),
+            Paging = new PagingModel{
+                ResultCount = result.Count,
+                Page = searchModel.Page,
+                TotalPages = (int)Math.Ceiling((double)((decimal)result.Count / PageSize))
+            }
+        };
+
+        return results;
     }
 
     private string GetFilter(IndividualSearchModel searchModel)
