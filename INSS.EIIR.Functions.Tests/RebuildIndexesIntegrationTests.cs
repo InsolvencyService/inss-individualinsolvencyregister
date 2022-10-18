@@ -13,8 +13,15 @@ using Microsoft.Azure.WebJobs.Extensions.Timers;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Moq;
-using Xunit;
+using INSS.EIIR.Data.Models;
+using INSS.EIIR.Functions.Functions;
+using Microsoft.Azure.WebJobs;
+using Microsoft.Extensions.Logging;
+using Microsoft.Azure.WebJobs.Extensions.Timers;
+using INSS.EIIR.Interfaces.AzureSearch;
 using IndividualSearch = INSS.EIIR.Models.IndexModels.IndividualSearch;
+using INSS.EIIR.Models.SearchModels;
+using Xunit;
 
 namespace INSS.EIIR.Functions.Tests
 {

@@ -13,13 +13,22 @@ public class SubscriberDataProvider : ISubscriberDataProvider
         _subscriberRepository = subscriberRepository;
     }
 
-    public async Task<IEnumerable<Subscriber>> GetSubscribersAsync(PagingParameters pagingParameters)
+    public async Task<SubscriberWithPaging> GetSubscribersAsync(PagingParameters pagingParameters)
     {
         var skip = (pagingParameters.PageNumber - 1) * pagingParameters.PageSize;
 
-        return (await _subscriberRepository.GetSubscribersAsync())
-                            .Skip(skip)
-                            .Take(pagingParameters.PageSize);
+        var totalSubscribers = await _subscriberRepository.GetSubscribersAsync();
+        var pagedSubscribers = totalSubscribers
+                                .Skip(skip)
+                                .Take(pagingParameters.PageSize);
+
+        var response = new SubscriberWithPaging
+        {
+            Paging = new Models.PagingModel(totalSubscribers.Count(), pagingParameters.PageNumber, pagingParameters.PageSize),
+            Subscribers = pagedSubscribers
+        };
+
+        return response;
     }
 
     public async Task<Subscriber> GetSubscriberByIdAsync(string subscriberId)
@@ -27,23 +36,40 @@ public class SubscriberDataProvider : ISubscriberDataProvider
         return await _subscriberRepository.GetSubscriberByIdAsync(subscriberId);
     }
 
-    public async Task<IEnumerable<Subscriber>> GetActiveSubscribersAsync(PagingParameters pagingParameters)
+    public async Task<SubscriberWithPaging> GetActiveSubscribersAsync(PagingParameters pagingParameters)
     {
         var skip = (pagingParameters.PageNumber - 1) * pagingParameters.PageSize;
 
-        return (await _subscriberRepository.GetSubscribersAsync())
-                        .Where(s => s.SubscribedFrom <= DateTime.Today && s.SubscribedTo >= DateTime.Today)
-                        .Skip(skip)
-                        .Take(pagingParameters.PageSize);
+        var totalSubscribers = await _subscriberRepository.GetSubscribersAsync();
+        var pagedSubscribers = totalSubscribers
+                                .Where(s => s.SubscribedFrom <= DateTime.Today && s.SubscribedTo >= DateTime.Today)
+                                .Skip(skip)
+                                .Take(pagingParameters.PageSize);
+
+        var response = new SubscriberWithPaging
+        {
+            Paging = new Models.PagingModel(totalSubscribers.Count(), pagingParameters.PageNumber, pagingParameters.PageSize),
+            Subscribers = pagedSubscribers
+        };
+
+        return response;
     }
 
-    public async Task<IEnumerable<Subscriber>> GetInActiveSubscribersAsync(PagingParameters pagingParameters)
+    public async Task<SubscriberWithPaging> GetInActiveSubscribersAsync(PagingParameters pagingParameters)
     {
         var skip = (pagingParameters.PageNumber - 1) * pagingParameters.PageSize;
 
-        return (await _subscriberRepository.GetSubscribersAsync())
-                        .Where(s => s.SubscribedTo < DateTime.Today)
-                        .Skip(skip)
-                        .Take(pagingParameters.PageSize);
+        var totalSubscribers = await _subscriberRepository.GetSubscribersAsync();
+        var pagedSubscribers = totalSubscribers
+                                .Where(s => s.SubscribedTo < DateTime.Today)
+                                .Skip(skip)
+                                .Take(pagingParameters.PageSize);
+        var response = new SubscriberWithPaging
+        {
+            Paging = new Models.PagingModel(totalSubscribers.Count(), pagingParameters.PageNumber, pagingParameters.PageSize),
+            Subscribers = pagedSubscribers
+        };
+
+        return response;
     }
 }
