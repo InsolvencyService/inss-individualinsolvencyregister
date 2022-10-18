@@ -149,7 +149,7 @@ jobs:
                   slotName: 'staging'
                   package: '$(Pipeline.Workspace)/**/${{ parameters.appZipFile }}'
                   appSettings: >
-                    -ConnectionStrings__iirwebdbContextConnectionString "${{ parameters.iirwebdbContextConnectionString }}"
+                    -ConnectionStrings__iirwebdbContextConnectionString "$(iirwebdbContextConnectionString)"
 
 
               - task: AzureAppServiceManage@0
