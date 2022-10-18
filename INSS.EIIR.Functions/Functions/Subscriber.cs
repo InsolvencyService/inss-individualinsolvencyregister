@@ -1,4 +1,5 @@
 using INSS.EIIR.Interfaces.Services;
+using INSS.EIIR.Models.Configuration;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
@@ -7,6 +8,7 @@ using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Attributes;
 using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Enums;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using Newtonsoft.Json;
 using System.Net;
 using System.Threading.Tasks;
 
@@ -28,13 +30,15 @@ public class Subscriber
     [FunctionName("Subscriber")]
     [OpenApiOperation(operationId: "Run", tags: new[] { "Subscriber" })]
     [OpenApiSecurity("function_key", SecuritySchemeType.ApiKey, Name = "code", In = OpenApiSecurityLocationType.Query)]
+    [OpenApiParameter(name: "PagingModel", In = ParameterLocation.Query, Required = false, Type = typeof(PagingParameters), Description = "The Paging Model")]
     [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "text/plain", bodyType: typeof(string), Description = "The list of active and inactive subscribers")]
     public async Task<IActionResult> GetSubscribers(
         [HttpTrigger(AuthorizationLevel.Function, "get", Route = "subscribers")] HttpRequest req)
     {
-        _logger.LogInformation("Subscriber trigger function retreiving all subscribers.");
+        _logger.LogInformation("Subscriber trigger function retrieving all subscribers.");
 
-        var subscribers = await _subscriberDataProvider.GetSubscribersAsync();
+        var pagingParameters = GetPagingParameters(req);
+        var subscribers = await _subscriberDataProvider.GetSubscribersAsync(pagingParameters);
 
         return new OkObjectResult(subscribers);
     }
@@ -55,7 +59,7 @@ public class Subscriber
             return new BadRequestObjectResult(error);
         }
 
-        _logger.LogInformation($"Subsciber trigger function retreiving subscriber details for subscriber Id {id}.");
+        _logger.LogInformation($"Subsciber trigger function retrieving subscriber details for subscriber Id {id}.");
         
         var subscribers = await _subscriberDataProvider.GetSubscriberByIdAsync(id);
 
@@ -65,13 +69,15 @@ public class Subscriber
     [FunctionName("active-subscribers")]
     [OpenApiOperation(operationId: "Run", tags: new[] { "Subscriber" })]
     [OpenApiSecurity("function_key", SecuritySchemeType.ApiKey, Name = "code", In = OpenApiSecurityLocationType.Query)]
+    [OpenApiParameter(name: "PagingModel", In = ParameterLocation.Query, Required = false, Type = typeof(PagingParameters), Description = "The Paging Model")]
     [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "text/plain", bodyType: typeof(string), Description = "The list of active subscribers")]
     public async Task<IActionResult> GetActiveSubscribers(
         [HttpTrigger(AuthorizationLevel.Function, "get", Route = "subscribers/active")] HttpRequest req)
     {
-        _logger.LogInformation("Subscriber trigger function retreiving active subscribers.");
+        _logger.LogInformation("Subscriber trigger function retrieving active subscribers.");
 
-        var subscribers = await _subscriberDataProvider.GetActiveSubscribersAsync();
+        var pagingParameters = GetPagingParameters(req);
+        var subscribers = await _subscriberDataProvider.GetActiveSubscribersAsync(pagingParameters);
 
         return new OkObjectResult(subscribers);
     }
@@ -79,15 +85,29 @@ public class Subscriber
     [FunctionName("inactive-subscribers")]
     [OpenApiOperation(operationId: "Run", tags: new[] { "Subscriber" })]
     [OpenApiSecurity("function_key", SecuritySchemeType.ApiKey, Name = "code", In = OpenApiSecurityLocationType.Query)]
+    [OpenApiParameter(name: "PagingModel", In = ParameterLocation.Query, Required = false, Type = typeof(PagingParameters), Description = "The Paging Model")]
     [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "text/plain", bodyType: typeof(string), Description = "The list of inactive subscribers")]
     public async Task<IActionResult> GetInactiveSubscribers(
         [HttpTrigger(AuthorizationLevel.Function, "get", Route = "subscribers/inactive")] HttpRequest req)
     {
-        _logger.LogInformation("Subscriber trigger function retreiving inactive subscribers.");
+        _logger.LogInformation("Subscriber trigger function retrieving inactive subscribers.");
 
-        var subscribers = await _subscriberDataProvider.GetInActiveSubscribersAsync();
+        var pagingParameters = GetPagingParameters(req);
+        var subscribers = await _subscriberDataProvider.GetInActiveSubscribersAsync(pagingParameters);
 
         return new OkObjectResult(subscribers);
+    }
+
+    private PagingParameters GetPagingParameters(HttpRequest request)
+    {
+        PagingParameters pagingParameters = new PagingParameters();
+        if (!string.IsNullOrEmpty(request?.Query?["PagingModel"]))
+        {
+            pagingParameters = JsonConvert.DeserializeObject<PagingParameters>(request?.Query["PagingModel"]);
+            var info = $"Subscriber trigger function: Paging model parameters {pagingParameters}.";
+            _logger.LogInformation(info);
+        }
+        return pagingParameters;
     }
 }
 
