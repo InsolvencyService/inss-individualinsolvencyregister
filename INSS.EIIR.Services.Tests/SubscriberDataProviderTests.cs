@@ -27,7 +27,7 @@ namespace INSS.EIIR.Services.Tests
 
             var service = new SubscriberDataProvider(repositoryMock.Object);
 
-            var result = (await service.GetSubscribersAsync(pagingModel)).ToList();
+            var result = (await service.GetSubscribersAsync(pagingModel)).Subscribers.ToList();
 
             repositoryMock.Verify(m => m.GetSubscribersAsync(), Times.Once);
 
@@ -51,7 +51,7 @@ namespace INSS.EIIR.Services.Tests
 
             var service = new SubscriberDataProvider(repositoryMock.Object);
 
-            var result = (await service.GetActiveSubscribersAsync(pagingModel)).ToList();
+            var result = (await service.GetActiveSubscribersAsync(pagingModel)).Subscribers.ToList();
 
             repositoryMock.Verify(m => m.GetSubscribersAsync(), Times.Once);
 
@@ -77,7 +77,7 @@ namespace INSS.EIIR.Services.Tests
 
             var service = new SubscriberDataProvider(repositoryMock.Object);
 
-            var result = (await service.GetInActiveSubscribersAsync(pagingModel)).ToList();
+            var result = (await service.GetInActiveSubscribersAsync(pagingModel)).Subscribers.ToList();
 
             repositoryMock.Verify(m => m.GetSubscribersAsync(), Times.Once);
 
