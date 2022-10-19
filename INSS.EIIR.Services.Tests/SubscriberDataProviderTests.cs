@@ -88,6 +88,37 @@ namespace INSS.EIIR.Services.Tests
             result.First().SubscribedTo.Should().BeBefore(new DateTime(2022, 10, 18));
         }
 
+        [Fact]
+        public async Task Create_Subscriber()
+        {
+            var data = new CreateUpdateSubscriber();
+            var repositoryMock = new Mock<ISubscriberRepository>();
+            
+            repositoryMock.Setup(m => m.CreateSubscriberAsync(data));
+
+            var service = new SubscriberDataProvider(repositoryMock.Object);
+
+            await service.CreateSubscriberAsync(data);
+
+            repositoryMock.Verify(m => m.CreateSubscriberAsync(data), Times.Once);
+        }
+
+        [Fact]
+        public async Task Update_Subscriber()
+        {
+            var subscriberId = "12345";
+            var data = new CreateUpdateSubscriber();
+            var repositoryMock = new Mock<ISubscriberRepository>();
+
+            repositoryMock.Setup(m => m.UpdateSubscriberAsync(subscriberId, data));
+
+            var service = new SubscriberDataProvider(repositoryMock.Object);
+
+            await service.UpdateSubscriberAsync(subscriberId, data);
+
+            repositoryMock.Verify(m => m.UpdateSubscriberAsync(subscriberId, data), Times.Once);
+        }
+
         private static IEnumerable<Subscriber> GetAllSubscribers()
         {
             return new List<Subscriber>
