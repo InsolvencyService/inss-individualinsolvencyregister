@@ -36,6 +36,16 @@ namespace INSS.EIIR.Web.Areas.Admin.Controllers
 
             return View(subscriber);
         }
+
+        [Area(AreaNames.Admin)]
+        [Route(AreaNames.Admin + "/subscriber/{subscriberId}/change-profile")]
+        [Authorize(Roles = Role.Admin)]
+        public async Task<IActionResult> ChangeProfile(int subscriberId)
+        {
+            var subscriber = await _subscriberDataProvider.GetSubscriberByIdAsync($"{subscriberId}");
+
+            return View(subscriber);
+        }
     }
 }
 

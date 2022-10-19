@@ -1,0 +1,273 @@
+﻿@model INSS.EIIR.Models.SubscriberModels.Subscriber
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+        <form action="subscriber-profile-page-1" method="post" novalidate="">
+
+            <h1 class="govuk-heading-l govuk-!-margin-bottom-8">
+                Update subscriber details
+            </h1>
+
+            <fieldset class="govuk-fieldset">
+                <div class="govuk-form-group">
+                    <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+                        <h2 class="govuk-fieldset__heading">
+                            Company or organisation
+                        </h2>
+                    </legend>
+                    <label class="govuk-label" for="organisation">
+                        Name
+                    </label>
+                    <input class="govuk-input" id="organisation" name="organisation" type="text" autocomplete="organisation" value="Experian">
+                </div>
+                <div class="govuk-form-group">
+                    <label class="govuk-label" for="type">
+                        Type
+                    </label>
+                    <select class="govuk-select" id="type" name="type">
+                        <option value="published">Select</option>
+                        <option value="updated" selected="">Credit reference agency</option>
+                        <option value="views">Credit card issuer</option>
+                        <option value="comments">Bank or Building society</option>
+                        <option value="updated">Mortgage provider</option>
+                        <option value="views">Government department</option>
+                        <option value="comments">Financial services</option>
+                        <option value="comments">Debt recovery agents</option>
+                        <option value="published">Other</option>
+                    </select>
+                </div>
+            </fieldset>
+
+            <fieldset class="govuk-fieldset">
+                <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+                    <h2 class="govuk-fieldset__heading">
+                        Main contact
+                    </h2>
+                </legend>
+                <div class="govuk-form-group">
+                    <label class="govuk-label" for="first-name">
+                        Full name
+                    </label>
+                    <input class="govuk-input" id="first-name" name="first-name" type="text" autocomplete="first-name" value="Joe Bloggs">
+                </div>
+                <div class="govuk-form-group">
+                    <label class="govuk-label" for="address-line-1">
+                        Address line 1
+                    </label>
+                    <input class="govuk-input" id="address-line-1" name="address-line-1" type="text" autocomplete="address-line-1" value="Newenham House">
+                </div>
+                <div class="govuk-form-group">
+                    <label class="govuk-label" for="address-line-2">
+                        Address line 2 (optional)
+                    </label>
+                    <input class="govuk-input govuk-!-width-full" id="address-line-2" name="address-line-2" type="text" autocomplete="address-line-2" value="Northern Cross, Malahide Road">
+                </div>
+                <div class="govuk-form-group">
+                    <label class="govuk-label" for="city">
+                        Town or city
+                    </label>
+                    <input class="govuk-input govuk-!-width-two-thirds" id="city" name="city" type="text" autocomplete="city" value="Dublin 17">
+                </div>
+                <div class="govuk-form-group">
+                    <label class="govuk-label" for="postcode">
+                        Postcode
+                    </label>
+                    <input class="govuk-input govuk-input--width-10" id="postcode" name="postcode" type="text" autocomplete="postcode" value="D17 AY61">
+                </div>
+                <div class="govuk-form-group">
+                    <label class="govuk-label" for="email-address">
+                        Email address
+                    </label>
+                    <input class="govuk-input" id="email-address" name="email-address" type="text" autocomplete="email-address" value="joe.bloggs@experianplc.com">
+                </div>
+                <div class="govuk-form-group govuk-!-margin-bottom-8">
+                    <label class="govuk-label" for="telephone">
+                        Telephone number
+                    </label>
+                    <input class="govuk-input govuk-input--width-20" id="telephone" name="telephone" type="text" autocomplete="telephone" value="+44 (0) 344 481 8000">
+                </div>
+            </fieldset>
+
+            <h2 class="govuk-heading-m govuk-!-margin-bottom-4">
+                Subscription
+            </h2>
+
+            <fieldset class="govuk-fieldset" role="group" aria-describedby="application-date-hint">
+                <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
+                    <h3 class="govuk-fieldset__heading">
+                        Application submitted date
+                    </h3>
+                </legend>
+                <div class="govuk-date-input" id="application-date">
+                    <div class="govuk-date-input__item">
+                        <div class="govuk-form-group">
+                            <label class="govuk-label govuk-date-input__label" for="application-day">
+                                Day
+                            </label>
+                            <input class="govuk-input govuk-date-input__input govuk-input--width-2" id="application-day" name="application-day" type="text" inputmode="numeric" value="12">
+                        </div>
+                    </div>
+                    <div class="govuk-date-input__item">
+                        <div class="govuk-form-group">
+                            <label class="govuk-label govuk-date-input__label" for="application-month">
+                                Month
+                            </label>
+                            <input class="govuk-input govuk-date-input__input govuk-input--width-2" id="application-month" name="application-month" type="text" inputmode="numeric" value="12">
+                        </div>
+                    </div>
+                    <div class="govuk-date-input__item">
+                        <div class="govuk-form-group">
+                            <label class="govuk-label govuk-date-input__label" for="passport-issued-year">
+                                Year
+                            </label>
+                            <input class="govuk-input govuk-date-input__input govuk-input--width-4" id="application-year" name="application-year" type="text" inputmode="numeric" value="2005">
+                        </div>
+                    </div>
+                </div>
+
+            </fieldset>
+
+
+
+            <fieldset class="govuk-fieldset" role="group" aria-describedby="start-date">
+                <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
+                    <h2 class="govuk-fieldset__heading">
+                        Start date
+                    </h2>
+                </legend>
+                <div class="govuk-date-input" id="start-date">
+                    <div class="govuk-date-input__item">
+                        <div class="govuk-form-group">
+                            <label class="govuk-label govuk-date-input__label" for="start-day">
+                                Day
+                            </label>
+                            <input class="govuk-input govuk-date-input__input govuk-input--width-2" id="start-day" name="start-day" type="text" inputmode="numeric" value="12">
+                        </div>
+                    </div>
+                    <div class="govuk-date-input__item">
+                        <div class="govuk-form-group">
+                            <label class="govuk-label govuk-date-input__label" for="start-month">
+                                Month
+                            </label>
+                            <input class="govuk-input govuk-date-input__input govuk-input--width-2" id="start-month" name="start-month" type="text" inputmode="numeric" value="12">
+                        </div>
+                    </div>
+                    <div class="govuk-date-input__item">
+                        <div class="govuk-form-group">
+                            <label class="govuk-label govuk-date-input__label" for="start-year">
+                                Year
+                            </label>
+                            <input class="govuk-input govuk-date-input__input govuk-input--width-4" id="start-year" name="start-year" type="text" inputmode="numeric" value="2005">
+                        </div>
+                    </div>
+                </div>
+
+            </fieldset>
+
+
+            <fieldset class="govuk-fieldset" role="group" aria-describedby="end-date">
+                <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
+                    <h3 class="govuk-fieldset__heading">
+                        End date
+                    </h3>
+                </legend>
+                <div class="govuk-date-input" id="end-date">
+                    <div class="govuk-date-input__item">
+                        <div class="govuk-form-group">
+                            <label class="govuk-label govuk-date-input__label" for="end-day">
+                                Day
+                            </label>
+                            <input class="govuk-input govuk-date-input__input govuk-input--width-2" id="end-day" name="end-day" type="text" inputmode="numeric" value="12">
+                        </div>
+                    </div>
+                    <div class="govuk-date-input__item">
+                        <div class="govuk-form-group">
+                            <label class="govuk-label govuk-date-input__label" for="end-month">
+                                Month
+                            </label>
+                            <input class="govuk-input govuk-date-input__input govuk-input--width-2" id="end-month" name="end-month" type="text" inputmode="numeric" value="08">
+                        </div>
+                    </div>
+                    <div class="govuk-date-input__item">
+                        <div class="govuk-form-group">
+                            <label class="govuk-label govuk-date-input__label" for="end-year">
+                                Year
+                            </label>
+                            <input class="govuk-input govuk-date-input__input govuk-input--width-4" id="end-year" name="end-year" type="text" inputmode="numeric" value="2003">
+                        </div>
+                    </div>
+                </div>
+
+            </fieldset>
+
+            <div class="govuk-form-group">
+                <fieldset class="govuk-fieldset" aria-describedby="subscription-state-hint">
+                    <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
+                        <h3 class="govuk-fieldset__heading">
+                            Status
+                        </h3>
+                    </legend>
+                    <div data-module="govuk-radios">
+                        <div class="govuk-radios__item">
+                            <input class="govuk-radios__input" id="subscription-state" name="subscription-state" type="radio" value="active" checked="checked">
+                            <label class="govuk-label govuk-radios__label" for="subscription-state">
+                                Active
+                            </label>
+                        </div>
+                        <div class="govuk-radios__item">
+                            <input class="govuk-radios__input" id="subscription-state-2" name="subscription-state" type="radio" value="inactive">
+                            <label class="govuk-label govuk-radios__label" for="subscription-state-2">
+                                Inactive
+                            </label>
+                        </div>
+                    </div>
+
+                </fieldset>
+            </div>
+
+
+            <fieldset class="govuk-fieldset">
+                <legend class="govuk-fieldset__legend govuk-fieldset__legend--m govuk-!-margin-bottom-4">
+                    <h2 class="govuk-fieldset__heading">
+                        Data extract emails
+                    </h2>
+                </legend>
+
+                <p class="govuk-body">The data extract will be sent to these email addresses.</p>
+
+                <div class="govuk-inset-text">
+                    There must be at least <strong>1</strong> data extract email address per subscriber, with a maximum of <strong>3</strong>.
+                </div>
+
+                <div class="govuk-form-group">
+                    <label class="govuk-label" for="email-1">
+                        Email address 1
+                    </label>
+                    <input class="govuk-input govuk-input--width-20" id="email-1" name="email-1" type="email" spellcheck="false" aria-describedby="email-hint" autocomplete="email" value="michael.cain@uk.experian.com">
+                </div>
+                <div class="govuk-form-group">
+                    <label class="govuk-label" for="email-2">
+                        Email address 2
+                    </label>
+                    <input class="govuk-input govuk-input--width-20" id="email-2" name="email-2" type="email" spellcheck="false" aria-describedby="email-hint" autocomplete="email" value="	jeremy.winter@uk.experian.com">
+                </div>
+                <div class="govuk-form-group">
+                    <label class="govuk-label" for="email-3">
+                        Email address 3
+                    </label>
+                    <input class="govuk-input govuk-input--width-20" id="email-3" name="email-3" type="email" spellcheck="false" aria-describedby="email-hint" autocomplete="email">
+                </div>
+            </fieldset>
+
+            <br>
+
+
+            <button class="govuk-button" data-module="govuk-button">
+                Save and return to subscriber
+            </button>
+
+        </form>
+
+    </div>
+</div>
