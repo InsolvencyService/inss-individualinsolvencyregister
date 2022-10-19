@@ -1,4 +1,6 @@
 using AspNetCore.SEOHelper;
+using AutoMapper;
+using INSS.EIIR.Data.AutoMapperProfiles;
 using INSS.EIIR.Data.Models;
 using INSS.EIIR.DataAccess;
 using INSS.EIIR.Interfaces.DataAccess;
@@ -122,6 +124,17 @@ void ConfigureServices(IServiceCollection services)
 
     services.AddTransient<IAuthenticationProvider, AuthenticationProvider>();
     services.AddTransient<IAccountRepository, AccountRepository>();
+    services.AddTransient<ISubscriberDataProvider, SubscriberDataProvider>();
+    services.AddTransient<ISubscriberRepository, SubscriberRepository>();
+
+    // Auto Mapper Configurations
+    var mapperConfig = new MapperConfiguration(mc =>
+    {
+        mc.AddProfile(new SubscriberMapper());
+    });
+
+    var mapper = mapperConfig.CreateMapper();
+    builder.Services.AddSingleton(mapper);
 }
 
 static bool IsAdminContext(RedirectContext<CookieAuthenticationOptions> context)

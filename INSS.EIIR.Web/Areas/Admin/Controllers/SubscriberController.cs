@@ -14,11 +14,11 @@ namespace INSS.EIIR.Web.Areas.Admin.Controllers
 {
     public class SubscriberController : Controller
     {
-        private readonly ISubscriberService _subscriberService;
+        private readonly ISubscriberDataProvider _subscriberDataProvider;
 
-        public SubscriberController(ISubscriberService subscriberService)
+        public SubscriberController(ISubscriberDataProvider subscriberDataProvider)
         {
-            _subscriberService = subscriberService;
+            _subscriberDataProvider = subscriberDataProvider;
         }
 
         // GET: /<controller>/
@@ -30,11 +30,11 @@ namespace INSS.EIIR.Web.Areas.Admin.Controllers
         [Area(AreaNames.Admin)]
         [Route(AreaNames.Admin + "/subscriber/{subscriberId}")]
         [Authorize(Roles = Role.Admin)]
-        public IActionResult Profile(int subscriberId)
+        public async Task<IActionResult> Profile(int subscriberId)
         {
-            var subscriber = _subscriberService.GetSubscriber(subscriberId);
+            var subscriber = await _subscriberDataProvider.GetSubscriberByIdAsync($"{subscriberId}");
 
-            return View();
+            return View(subscriber);
         }
     }
 }

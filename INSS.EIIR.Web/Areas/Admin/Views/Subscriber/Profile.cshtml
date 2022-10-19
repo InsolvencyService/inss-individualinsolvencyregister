@@ -1,4 +1,4 @@
-﻿@model INSS.EIIR.Models.SubscriberModels.SubscriberProfile
+﻿@model INSS.EIIR.Models.SubscriberModels.Subscriber
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
@@ -6,13 +6,16 @@
             Subscriber details
         </h1>
 
-        <div class="govuk-warning-text">
-            <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
-            <strong class="govuk-warning-text__text">
-                <span class="govuk-warning-text__assistive">Warning</span>
-                This subscription ends in @Model.DaysToEndSubscription days.
-            </strong>
-        </div>
+        @if (@Model.SubscribedTo.HasValue)
+            {
+            <div class="govuk-warning-text">
+                <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
+                <strong class="govuk-warning-text__text">
+                    <span class="govuk-warning-text__assistive">Warning</span>
+                    This subscription ends in @Model.SubscribedTo.Value.Subtract(DateTime.Today).Days days.
+                </strong>
+            </div>
+            }
 
         <h2 class="govuk-heading-m">Company or organsation</h2>
 
@@ -22,10 +25,10 @@
                     Name
                 </dt>
                 <dd class="govuk-summary-list__value">
-                    @Model.CompanyName
+                    @Model.OrganisationName
                 </dd>
                 <dd class="govuk-summary-list__actions">
-                    <a class="govuk-link govuk-link--no-visited-state" href="subscriber-profile-page-1-change-profile">
+                    <a class="govuk-link govuk-link--no-visited-state" href="change-profile/@(Model.SubscriberId)#OrganisationName">
                         Change<span class="govuk-visually-hidden"> name</span>
                     </a>
                 </dd>
@@ -40,10 +43,10 @@
                     Full name
                 </dt>
                 <dd class="govuk-summary-list__value">
-                    @Model.ContactFullName
+                    @String.Join(' ', Model.SubscriberDetails.ContactTitle, Model.SubscriberDetails.ContactForename, Model.SubscriberDetails.ContactSurname)
                 </dd>
                 <dd class="govuk-summary-list__actions">
-                    <a class="govuk-link govuk-link--no-visited-state" href="subscriber-profile-page-1-change-profile">
+                    <a class="govuk-link govuk-link--no-visited-state" href="change-profile/@(Model.SubscriberId)#ContactTitle">
                         Change<span class="govuk-visually-hidden"> full name</span>
                     </a>
                 </dd>
@@ -53,10 +56,18 @@
                     Address
                 </dt>
                 <dd class="govuk-summary-list__value">
-                    @Model.Address1<br>@Model.Address2<br>@Model.City<br>@Model.Postcode
+                    @Model.SubscriberDetails.ContactAddress1
+                    <br />
+                    @Model.SubscriberDetails.ContactAddress2
+                    <br />
+                    @Model.SubscriberDetails.ContactCity
+                    <br />
+                    @Model.SubscriberDetails.ContactCountry
+                    <br />
+                    @Model.SubscriberDetails.ContactPostcode
                 </dd>
                 <dd class="govuk-summary-list__actions">
-                    <a class="govuk-link govuk-link--no-visited-state" href="subscriber-profile-page-1-change-profile">
+                    <a class="govuk-link govuk-link--no-visited-state" href="change-profile/@(Model.SubscriberId)#ContactAddress1">
                         Change<span class="govuk-visually-hidden"> address</span>
                     </a>
                 </dd>
@@ -66,10 +77,10 @@
                     Email address
                 </dt>
                 <dd class="govuk-summary-list__value">
-                    <p class="govuk-body">@Model.EmailAddress</p>
+                    <p class="govuk-body">@Model.SubscriberDetails.ContactEmail</p>
                 </dd>
                 <dd class="govuk-summary-list__actions">
-                    <a class="govuk-link govuk-link--no-visited-state" href="subscriber-profile-page-1-change-profile">
+                    <a class="govuk-link govuk-link--no-visited-state" href="change-profile/@(Model.SubscriberId)#ContactEmail">
                         Change<span class="govuk-visually-hidden"> email address</span>
                     </a>
                 </dd>
@@ -79,11 +90,11 @@
                     Telephone number
                 </dt>
                 <dd class="govuk-summary-list__value">
-                    <p class="govuk-body">@Model.TelephoneNumber</p>
+                    <p class="govuk-body">@Model.SubscriberDetails.ContactTelephone</p>
                 </dd>
                 <dd class="govuk-summary-list__actions">
-                    <a class="govuk-link govuk-link--no-visited-state" href="subscriber-profile-page-1-change-profile">
-                        Change<span class="govuk-visually-hidden"> email address</span>
+                    <a class="govuk-link govuk-link--no-visited-state" href="change-profile/@(Model.SubscriberId)#ContactTelephone">
+                        Change<span class="govuk-visually-hidden"> telephone</span>
                     </a>
                 </dd>
             </div>
@@ -96,11 +107,11 @@
                     Application submitted date
                 </dt>
                 <dd class="govuk-summary-list__value">
-                    @Model.ApplicationSubmittedDate
+                    @Model.AuthorisedDate
                 </dd>
                 <dd class="govuk-summary-list__actions">
-                    <a class="govuk-link govuk-link--no-visited-state" href="subscriber-profile-page-1-change-profile">
-                        Change<span class="govuk-visually-hidden"> name</span>
+                    <a class="govuk-link govuk-link--no-visited-state" href="change-profile/@(Model.SubscriberId)#AuthorisedDate">
+                        Change<span class="govuk-visually-hidden"> date</span>
                     </a>
                 </dd>
             </div>
@@ -109,10 +120,10 @@
                     Start date
                 </dt>
                 <dd class="govuk-summary-list__value">
-                    @Model.SubscriptionStartDate
+                    @(Model.SubscribedFrom.HasValue ? Model.SubscribedFrom.Value.ToString("dd MMMM yyyy") : "")
                 </dd>
                 <dd class="govuk-summary-list__actions">
-                    <a class="govuk-link govuk-link--no-visited-state" href="subscriber-profile-page-1-change-profile">
+                    <a class="govuk-link govuk-link--no-visited-state" href="change-profile/@(Model.SubscriberId)#SubscribedFrom">
                         Change<span class="govuk-visually-hidden"> type</span>
                     </a>
                 </dd>
@@ -122,10 +133,10 @@
                     End date
                 </dt>
                 <dd class="govuk-summary-list__value">
-                    @Model.SubscriptionEndDate
+                    @(Model.SubscribedTo.HasValue ? Model.SubscribedTo.Value.ToString("dd MMMM yyyy") : "")
                 </dd>
                 <dd class="govuk-summary-list__actions">
-                    <a class="govuk-link govuk-link--no-visited-state" href="subscriber-profile-page-1-change-profile">
+                    <a class="govuk-link govuk-link--no-visited-state" href="change-profile/@(Model.SubscriberId)#SubscribedTo">
                         Change<span class="govuk-visually-hidden"> website</span>
                     </a>
                 </dd>
@@ -135,11 +146,11 @@
                     Status
                 </dt>
                 <dd class="govuk-summary-list__value">
-                    @Model.SubscriptionStatus
+                    @(Model.AccountActive.Equals("Y") ? "Active" : "Inactive")
                 </dd>
                 <dd class="govuk-summary-list__actions">
-                    <a class="govuk-link govuk-link--no-visited-state" href="subscriber-profile-page-1-change-profile">
-                        Change<span class="govuk-visually-hidden"> website</span>
+                    <a class="govuk-link govuk-link--no-visited-state" href="change-profile/@(Model.SubscriberId)#Status">
+                        Change<span class="govuk-visually-hidden"> status</span>
                     </a>
                 </dd>
             </div>
@@ -154,45 +165,40 @@
         </div>
 
         <dl class="govuk-summary-list">
+            @for (var index = 0; index < @Model.EmailContacts.Count(); index++)
+            {
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">
+                        Email address @(index + 1)
+                    </dt>
+                    <dd class="govuk-summary-list__value">
+                        @Model.EmailContacts[index].EmailAddress
+                    </dd>
+                    <dd class="govuk-summary-list__actions">
+                        <a class="govuk-link govuk-link--no-visited-state" href="change-profile/@(Model.SubscriberId)#EmailAddress@(index + 1)">
+                            @(index == 0 ? "Change" : "Change or remove")
+                            <span class="govuk-visually-hidden"> @Model.EmailContacts[index].EmailAddress</span>
+                        </a>
+                    </dd>
+                </div>
+            }
+
+            @if (Model.EmailContacts.Count() < 3)
+                {
             <div class="govuk-summary-list__row">
                 <dt class="govuk-summary-list__key">
-                    Email address 1
-                </dt>
-                <dd class="govuk-summary-list__value">
-                    @Model.SubscriptionEmailAddress1
-                </dd>
-                <dd class="govuk-summary-list__actions">
-                    <a class="govuk-link govuk-link--no-visited-state" href="subscriber-profile-page-1-change-profile">
-                        Change<span class="govuk-visually-hidden"> michael.cain@uk.experian.com</span>
-                    </a>
-                </dd>
-            </div>
-            <div class="govuk-summary-list__row">
-                <dt class="govuk-summary-list__key">
-                    Email address 2
+                    Email address @(Model.EmailContacts.Count() + 1)
                 </dt>
                 <dt class="govuk-summary-list__value">
-                    @Model.SubscriptionEmailAddress2
+                    
                 </dt>
                 <dd class="govuk-summary-list__actions">
-                    <a class="govuk-link govuk-link--no-visited-state" href="subscriber-profile-page-1-change-profile">
-                        Change or remove<span class="govuk-visually-hidden"> jeremy.winter@uk.experian.com</span>
+                    <a class="govuk-link govuk-link--no-visited-state" href="change-profile/@(Model.SubscriberId)#EmailAddress@(Model.EmailContacts.Count() + 1)">
+                        Add<span class="govuk-visually-hidden"></span>
                     </a>
                 </dd>
             </div>
-            <div class="govuk-summary-list__row">
-                <dt class="govuk-summary-list__key">
-                    Email address 3
-                </dt>
-                <dt class="govuk-summary-list__value">
-                    @Model.SubscriptionEmailAddress3
-                </dt>
-                <dd class="govuk-summary-list__actions">
-                    <a class="govuk-link govuk-link--no-visited-state" href="subscriber-profile-page-1-change-profile">
-                        Add<span class="govuk-visually-hidden"> jeremy.winter@uk.experian.com</span>
-                    </a>
-                </dd>
-            </div>
+                }
         </dl>
 
         <form action="admin-area" method="post" novalidate="">
