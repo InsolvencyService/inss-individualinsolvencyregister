@@ -66,7 +66,7 @@ jobs:
                     -database__connectionstring "$(database__connectionstring)"
                     -servicebus__publisherconnectionstring "$(servicebus__publisherconnectionstring)"
                     -servicebus__notifyqueue "$(servicebus__notifyqueue)"
-                    -servicebus__subscriberconnectionstring "$(servicebus__subscriberconnectionstring)"
+                    -servicebussubscriberconnectionstring "$(servicebus__subscriberconnectionstring)"
                     -servicebusextractjobqueue "$(servicebusextractjobqueue)"
 
               - task: AzureAppServiceManage@0
