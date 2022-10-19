@@ -129,7 +129,7 @@ public class Subscriber
     [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(Models.SubscriberModels.CreateUpdateSubscriber), Description = "The subscriber details to edit", Required = true)]
     [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "text/json", bodyType: typeof(string), Description = "Subscriber details to update")]
     public async Task<IActionResult> UpdateSubscriber(
-    [HttpTrigger(AuthorizationLevel.Function, "post", Route = "subscribers/update")] HttpRequest req)
+    [HttpTrigger(AuthorizationLevel.Function, "put", Route = "subscribers/update")] HttpRequest req)
     {
         string subscriberId = req.Query["id"];
         if (string.IsNullOrEmpty(subscriberId))
