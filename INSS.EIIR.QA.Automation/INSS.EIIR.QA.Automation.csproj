@@ -35,9 +35,6 @@
 		<PackageReference Include="SpecFlow.Tools.MsBuild.Generation" Version="3.9.50" />
 	</ItemGroup>
   <ItemGroup>
-    <Folder Include="TestFramework\Features\" />
-  </ItemGroup>
-  <ItemGroup>
     <None Update="appsettings.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
