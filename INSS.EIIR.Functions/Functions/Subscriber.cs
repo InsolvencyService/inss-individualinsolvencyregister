@@ -111,7 +111,7 @@ public class Subscriber
         if (!string.IsNullOrEmpty(json))
         {
             var subscriberDetails = JsonConvert.DeserializeObject<Models.SubscriberModels.CreateUpdateSubscriber>(json);
-            _logger.LogInformation($"Subsciber trigger function retrieving subscriber details {json}");
+            _logger.LogInformation($"Subsciber trigger function Adding subscriber details {json}");
 
             await _subscriberDataProvider.CreateSubscriberAsync(subscriberDetails);
 
@@ -143,7 +143,7 @@ public class Subscriber
         if (!string.IsNullOrEmpty(json))
         {
             var subscriberDetails = JsonConvert.DeserializeObject<Models.SubscriberModels.CreateUpdateSubscriber>(json);
-            _logger.LogInformation($"Subsciber trigger function retrieving subscriber details {json}");
+            _logger.LogInformation($"Update Subsciber trigger function for subscriber details {json}");
 
             await _subscriberDataProvider.UpdateSubscriberAsync(subscriberId, subscriberDetails);
 
