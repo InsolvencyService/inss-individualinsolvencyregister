@@ -16,19 +16,13 @@ parameters:
     default: 5
   - name: secondsDelay
     type: number
-    default: 10
+    default: 20
   - name: timeoutSec
     type: number
     default: 120
   - name: Searchindexer
     type: string
     default: 'INSS.EIIR.Functions.zip'
-  - name: iirwebdbContextConnectionString
-    type: string
-  - name: EIIRIndexUrl
-    type: string
-  - name: EIIRApiKey
-    type: string
   - name: appZipFile
     type: string
     default: 'INSS.EIIR.WEB.zip'
@@ -57,10 +51,23 @@ jobs:
                   slotName: 'staging'
                   package: '$(Pipeline.Workspace)/**/${{ parameters.Searchindexer }}'
                   appSettings: >
-                    -iirwebdbContextConnectionString "${{ parameters.iirwebdbContextConnectionString }}"
-                    -EIIRIndexUrl "${{ parameters.EIIRIndexUrl }}"
-                    -EIIRApiKey "${{ parameters.EIIRApiKey }}"
-
+                    -EIIRIndexUrl "$(EIIRIndexUrl)"
+                    -EIIRApiKey "$(EIIRApiKey)"
+                    -blobconnectionstring "$(blobconnectionstring)"
+                    -blobcontainername "$(blobcontainername)"
+                    -extractjobserviceurl "$(extractjobserviceurl)"
+                    -extractjobtimercron "$(extractjobtimercron)"
+                    -notify__subscriberEmailTemplateId "$(notify__subscriberEmailTemplateId)"
+                    -database__databuffersize "$(database__databuffersize)"
+                    -database__updateextractavailableprocedure "$(database__updateextractavailableprocedure)"
+                    -database__getextractavailableprocedure "$(database__getextractavailableprocedure)"
+                    -database__getxmldataprocedure "$(database__getxmldataprocedure)"
+                    -database__commandtimeout "$(database__commandtimeout)"
+                    -database__connectionstring "$(database__connectionstring)"
+                    -servicebus__publisherconnectionstring "$(servicebus__publisherconnectionstring)"
+                    -servicebus__notifyqueue "$(servicebus__notifyqueue)"
+                    -servicebussubscriberconnectionstring "$(servicebus__subscriberconnectionstring)"
+                    -servicebusextractjobqueue "$(servicebusextractjobqueue)"
 
               - task: AzureAppServiceManage@0
                 displayName: Start Staging Slot
@@ -142,7 +149,7 @@ jobs:
                   slotName: 'staging'
                   package: '$(Pipeline.Workspace)/**/${{ parameters.appZipFile }}'
                   appSettings: >
-                    -ConnectionStrings__iirwebdbContextConnectionString "${{ parameters.iirwebdbContextConnectionString }}"
+                    -ConnectionStrings__iirwebdbContextConnectionString "$(iirwebdbContextConnectionString)"
 
 
               - task: AzureAppServiceManage@0

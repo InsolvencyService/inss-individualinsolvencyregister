@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using INSS.EIIR.Models.IndexModels;
+using INSS.EIIR.Models.SearchModels;
 
 namespace INSS.EIIR.Models.AutoMapperProfiles;
 

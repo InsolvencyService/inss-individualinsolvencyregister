@@ -1,6 +1,13 @@
-﻿@{
-ViewData["Title"] = "Accessibility";
+﻿@model INSS.EIIR.Models.Home.StaticContent
+
+@{
+    ViewData["Title"] = "Accessibility statement";
 }
+
+@section Breadcrumb {
+    <partial name="_Breadcrumb" for=Breadcrumbs />
+}
+
 <div class="govuk-grid-row">
    <div class="govuk-grid-column-two-thirds">
       <h1 class="govuk-heading-l">Accessibility statement</h1>
