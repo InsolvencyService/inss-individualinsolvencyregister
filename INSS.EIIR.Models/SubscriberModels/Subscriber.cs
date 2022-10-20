@@ -1,8 +1,5 @@
 ﻿namespace INSS.EIIR.Models.SubscriberModels
 {
-
-   
-
     public class Subscriber
     {
         public string SubscriberId { get; set; } = null!;
