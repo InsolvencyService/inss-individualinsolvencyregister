@@ -72,4 +72,14 @@ public class SubscriberDataProvider : ISubscriberDataProvider
 
         return response;
     }
+
+    public async Task CreateSubscriberAsync(CreateUpdateSubscriber subscriber)
+    {
+        await _subscriberRepository.CreateSubscriberAsync(subscriber);
+    }
+
+    public async Task UpdateSubscriberAsync(string subscriberId, CreateUpdateSubscriber subscriber)
+    {
+        await _subscriberRepository.UpdateSubscriberAsync(subscriberId, subscriber);
+    }
 }

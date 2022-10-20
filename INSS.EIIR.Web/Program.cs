@@ -1,12 +1,17 @@
 using AspNetCore.SEOHelper;
 using AutoMapper;
 using INSS.EIIR.Data.AutoMapperProfiles;
+using Flurl.Http;
 using INSS.EIIR.Data.Models;
 using INSS.EIIR.DataAccess;
 using INSS.EIIR.Interfaces.DataAccess;
 using INSS.EIIR.Interfaces.Services;
+using INSS.EIIR.Interfaces.Web.Services;
+using INSS.EIIR.Models.Configuration;
 using INSS.EIIR.Models.Constants;
 using INSS.EIIR.Services;
+using INSS.EIIR.Web.Configuration;
+using INSS.EIIR.Web.Services;
 using Joonasw.AspNetCore.SecurityHeaders;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -114,7 +119,18 @@ void ConfigureServices(IServiceCollection services)
 
     services.AddControllersWithViews();
 
+    FlurlHttp.Configure(settings =>
+    {
+        settings.HttpClientFactory = new PollyHttpClientFactory();
+    });
+
     var config = builder.Configuration;
+
+    builder.Services.AddOptions<ApiSettings>()
+        .Configure<IConfiguration>((settings, configuration) =>
+        {
+            configuration.GetSection("ApiSettings").Bind(settings);
+        });
 
     builder.Services.AddTransient(_ =>
     {
@@ -135,6 +151,9 @@ void ConfigureServices(IServiceCollection services)
 
     var mapper = mapperConfig.CreateMapper();
     builder.Services.AddSingleton(mapper);
+
+    services.AddTransient<IClientService, ClientService>();
+    services.AddTransient<IIndividualSearch, IndividualSearch>();
 }
 
 static bool IsAdminContext(RedirectContext<CookieAuthenticationOptions> context)

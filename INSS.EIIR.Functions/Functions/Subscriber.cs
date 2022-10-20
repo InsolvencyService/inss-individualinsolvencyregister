@@ -1,3 +1,4 @@
+using Azure.Core;
 using INSS.EIIR.Interfaces.Services;
 using INSS.EIIR.Models.Configuration;
 using Microsoft.AspNetCore.Http;
@@ -96,6 +97,61 @@ public class Subscriber
         var subscribers = await _subscriberDataProvider.GetInActiveSubscribersAsync(pagingParameters);
 
         return new OkObjectResult(subscribers);
+    }
+
+    [FunctionName("subscriber-create")]
+    [OpenApiOperation(operationId: "Run", tags: new[] { "Subscriber" })]
+    [OpenApiSecurity("function_key", SecuritySchemeType.ApiKey, Name = "code", In = OpenApiSecurityLocationType.Query)]
+    [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(Models.SubscriberModels.CreateUpdateSubscriber), Description = "The subscriber details to create", Required = true)]
+    [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "text/json", bodyType: typeof(string), Description = "Subscriber details for new subscriber")]
+    public async Task<IActionResult> CreateSubscriber(
+        [HttpTrigger(AuthorizationLevel.Function, "post", Route = "subscribers/create")] HttpRequest req)
+    {
+        string json = await req.ReadAsStringAsync();
+        if (!string.IsNullOrEmpty(json))
+        {
+            var subscriberDetails = JsonConvert.DeserializeObject<Models.SubscriberModels.CreateUpdateSubscriber>(json);
+            _logger.LogInformation($"Subsciber trigger function Adding subscriber details {json}");
+
+            await _subscriberDataProvider.CreateSubscriberAsync(subscriberDetails);
+
+            return new OkObjectResult($"New subscriber added for subscriber details {json}");
+        }
+        var error = "Create Subscriber function missing subscriber details.";
+        _logger.LogError(error);
+        return new BadRequestObjectResult(error);
+    }
+
+    [FunctionName("subscriber-update")]
+    [OpenApiOperation(operationId: "Run", tags: new[] { "Subscriber" })]
+    [OpenApiSecurity("function_key", SecuritySchemeType.ApiKey, Name = "code", In = OpenApiSecurityLocationType.Query)]
+    [OpenApiParameter(name: "id", In = ParameterLocation.Query, Required = true, Type = typeof(string), Description = "The subscriber Id")]
+    [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(Models.SubscriberModels.CreateUpdateSubscriber), Description = "The subscriber details to edit", Required = true)]
+    [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "text/json", bodyType: typeof(string), Description = "Subscriber details to update")]
+    public async Task<IActionResult> UpdateSubscriber(
+    [HttpTrigger(AuthorizationLevel.Function, "put", Route = "subscribers/update")] HttpRequest req)
+    {
+        string subscriberId = req.Query["id"];
+        if (string.IsNullOrEmpty(subscriberId))
+        {
+            var subscriberIdIError = "Subscriber trigger function: missing query parameter subscriber Id is required.";
+            _logger.LogError(subscriberIdIError);
+            return new BadRequestObjectResult(subscriberIdIError);
+        }
+
+        string json = await req.ReadAsStringAsync();
+        if (!string.IsNullOrEmpty(json))
+        {
+            var subscriberDetails = JsonConvert.DeserializeObject<Models.SubscriberModels.CreateUpdateSubscriber>(json);
+            _logger.LogInformation($"Update Subsciber trigger function for subscriber details {json}");
+
+            await _subscriberDataProvider.UpdateSubscriberAsync(subscriberId, subscriberDetails);
+
+            return new OkObjectResult($"Subscriber updated for subscriber details {json}");
+        }
+        var error = "Update Subscriber function missing subscriber details.";
+        _logger.LogError(error);
+        return new BadRequestObjectResult(error);
     }
 
     private PagingParameters GetPagingParameters(HttpRequest request)

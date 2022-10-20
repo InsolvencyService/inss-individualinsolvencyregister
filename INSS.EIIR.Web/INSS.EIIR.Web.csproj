@@ -34,6 +34,7 @@
     <PackageReference Include="Joonasw.AspNetCore.SecurityHeaders" Version="4.0.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.8" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="6.0.10" />
+    <PackageReference Include="Polly.Extensions.Http" Version="3.0.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -41,5 +42,6 @@
     <ProjectReference Include="..\INSS.EIIR.Interfaces\INSS.EIIR.Interfaces.csproj" />
     <ProjectReference Include="..\INSS.EIIR.Models\INSS.EIIR.Models.csproj" />
     <ProjectReference Include="..\INSS.EIIR.Services\INSS.EIIR.Services.csproj" />
+    <ProjectReference Include="..\INSS.EIIR.Web.Services\INSS.EIIR.Web.Services.csproj" />
   </ItemGroup>
 </Project>

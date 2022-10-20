@@ -13,4 +13,8 @@
     <ProjectReference Include="..\INSS.EIIR.Models\INSS.EIIR.Models.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Web.Services\" />
+  </ItemGroup>
+
 </Project>
