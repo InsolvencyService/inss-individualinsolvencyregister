@@ -1,10 +1,7 @@
 using AspNetCore.SEOHelper;
-<<<<<<< HEAD
 using AutoMapper;
 using INSS.EIIR.Data.AutoMapperProfiles;
-=======
 using Flurl.Http;
->>>>>>> develop
 using INSS.EIIR.Data.Models;
 using INSS.EIIR.DataAccess;
 using INSS.EIIR.Interfaces.DataAccess;
@@ -143,7 +140,6 @@ void ConfigureServices(IServiceCollection services)
 
     services.AddTransient<IAuthenticationProvider, AuthenticationProvider>();
     services.AddTransient<IAccountRepository, AccountRepository>();
-<<<<<<< HEAD
     services.AddTransient<ISubscriberDataProvider, SubscriberDataProvider>();
     services.AddTransient<ISubscriberRepository, SubscriberRepository>();
 
@@ -155,11 +151,9 @@ void ConfigureServices(IServiceCollection services)
 
     var mapper = mapperConfig.CreateMapper();
     builder.Services.AddSingleton(mapper);
-=======
 
     services.AddTransient<IClientService, ClientService>();
     services.AddTransient<IIndividualSearch, IndividualSearch>();
->>>>>>> develop
 }
 
 static bool IsAdminContext(RedirectContext<CookieAuthenticationOptions> context)
