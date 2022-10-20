@@ -3,7 +3,7 @@
     "INSS.EIIR.Web": {
       "commandName": "Project",
       "launchBrowser": true,
-      "applicationUrl": "http://localhost:6367",
+      "applicationUrl": "http://localhost:25823",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
