@@ -7,6 +7,8 @@ namespace INSS.EIIR.Web.Controllers
         [Route("/errors/{statusCode?}")]
         public IActionResult Index(double? statusCode)
         {
+            Response.StatusCode = 200;
+
             if (statusCode != null)
             {
                 switch (statusCode.Value)
