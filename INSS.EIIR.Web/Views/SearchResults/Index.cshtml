@@ -31,7 +31,7 @@
 
                 <p class="govuk-body">Select a <span class="govuk-!-font-weight-bold">Name</span> link to view the relevant report.</p>
 
-                <table class="govuk-table" style="margin-top: 40px; margin-bottom: 60px;">
+                <table class="govuk-table">
                     <thead class="govuk-table__head">
                     <tr class="govuk-table__row">
                         <th scope="col" class="govuk-table__header">Name</th>
@@ -46,7 +46,7 @@
                         var name = $"{individual.FirstName} {individual.Surname}";
                         <tr class="govuk-table__row">
                             <td class="govuk-table__cell"><a class="govuk-link--no-visited-state" href="#">@name</a></td>
-                            <td class="govuk-table__cell">@individual.DateOfBirth</td>
+                            <td class="govuk-table__cell">@individual.DateOfBirth?.ToString("dd/MM/yyyy")</td>
                             <td class="govuk-table__cell"></td>
                         </tr>
                     }
