@@ -115,6 +115,19 @@ stages:
         deployWebapp: ${{ parameters.deployWebapp }}
         deployfuncapp: ${{ parameters.deployfuncapp }}
 
+- stage: RunIntTest-Sit
+  displayName: 'Run Integration test in Sit'
+  condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
+  variables:
+    - group: EIIR-Sit
+  jobs:
+      - task: DotNetCoreCLI@2
+        displayName: 'Run Tests'
+        inputs:
+          command: test
+          projects: '**/INSS.EIIR.QA*.csproj'
+          arguments: '--configuration $(buildConfiguration) --collect "Code coverage"'
+
 - stage: DeployPreProd
   displayName: 'Deploy to PreProd'
   condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
