@@ -33,6 +33,9 @@
     <div class="govuk-width-container ">
 
         <partial name="_Banner" />
+        @if (IsSectionDefined("Breadcrumb"))
+        {
+            @await RenderSectionAsync("Breadcrumb", required: false)        }
 
         <main class="govuk-main-wrapper " id="main-content" role="main">
             @RenderBody()

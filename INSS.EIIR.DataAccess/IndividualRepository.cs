@@ -1,6 +1,6 @@
 ﻿using INSS.EIIR.Data.Models;
 using INSS.EIIR.Interfaces.DataAccess;
-using INSS.EIIR.Models;
+using INSS.EIIR.Models.SearchModels;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 

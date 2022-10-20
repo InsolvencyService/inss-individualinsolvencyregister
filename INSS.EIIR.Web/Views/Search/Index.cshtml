@@ -1,0 +1,69 @@
+﻿@{
+    ViewData["Title"] = "";
+}
+
+<a asp-action="Index" asp-controller="Home" class="govuk-back-link">Back</a>
+
+<main class="govuk-main-wrapper govuk-main-wrapper--auto-spacing" id="main-content" role="main">
+
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <h1 class="govuk-heading-l">
+                Search the Individual Insolvency Register
+            </h1>
+        </div>
+        <div class="govuk-grid-column-one-third">
+        </div>
+    </div>
+
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+
+            <p class="govuk-body">You can search using an individual's name or trading name.</p>
+            
+            <form asp-action="Search">
+
+                <div class="govuk-form-group">
+                    <input class="govuk-input govuk-input--width-30" id="searchTerm" name="searchTerm" type="text" spellcheck="false" aria-describedby="search">
+                </div>
+
+                <button class="govuk-button" type="submit">
+                    Search
+                </button>
+            </form>
+
+        </div>
+
+        <div class="govuk-grid-column-one-third">
+
+            <aside class="app-related-items" role="complementary">
+                <h2 class="govuk-heading-m" id="subsection-title">
+                    Related content
+                </h2>
+                <nav role="navigation" aria-labelledby="subsection-title">
+                    <ul class="govuk-list govuk-!-font-size-16">
+                        <li>
+                            <a class="govuk-link--no-visited-state" href="https://www.gov.uk/get-help-insolvency-service">
+                                Get help from the Insolvency Service
+                            </a>
+                        </li>
+                        <li>
+                            <a class="govuk-link--no-visited-state" href="https://www.gov.uk/browse/tax/court-claims-debt-bankruptcy">
+                                Find out more about bankruptcy and insolvency
+                            </a>
+                        </li>
+                        <li>
+                            <a class="govuk-link--no-visited-state" href="https://www.insolvencydirect.bis.gov.uk/eiir/IIRFeedbackPage.asp">
+                                Give feedback about the Individual Insolvency Register
+                            </a>
+                        </li>
+
+                    </ul>
+                </nav>
+            </aside>
+
+        </div>
+
+    </div>
+
+</main>
