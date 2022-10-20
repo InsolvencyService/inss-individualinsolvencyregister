@@ -18,12 +18,9 @@ public class ClientService : IClientService
 
     public async Task<TResult> PostAsync<TContent, TResult>(string url, TContent content)
     {
-        FlurlHttp.ConfigureClient(
-            _settings.BaseUrl, 
-            cli => cli.HttpClient.DefaultRequestHeaders.Add("x-functions-key", _settings.ApiKey));
-
         return await _settings.BaseUrl
             .AppendPathSegment(url)
+            .WithHeader("x-functions-key", _settings.ApiKey)
             .PostJsonAsync(content)
             .ReceiveJson<TResult>();
     }
