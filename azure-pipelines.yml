@@ -100,21 +100,6 @@ stages:
         deployWebapp: true
         deployfuncapp: true
 
-- stage: DeploySit
-  displayName: 'Deploy to Sit'
-  condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
-  variables:
-    - group: EIIR-Sit
-  jobs:
-    - template: deploy-jobs-template.yml
-      parameters:
-        environment: 'Sit'
-        iirwebdbContextConnectionString: $(iirwebdbContextConnectionString)
-        EIIRIndexUrl: $(EIIRIndexUrl)
-        EIIRApiKey: $(EIIRApiKey)
-        deployWebapp: ${{ parameters.deployWebapp }}
-        deployfuncapp: ${{ parameters.deployfuncapp }}
-
 - stage: RunIntTest-Sit
   displayName: 'Run Integration test in Sit'
   condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
