@@ -1,0 +1,64 @@
+﻿@model INSS.EIIR.Models.SearchModels.SearchResults
+
+@{
+    ViewData["Title"] = "View subscribers";
+}
+
+<a asp-controller="ViewSubscribers" asp-action="Index" class="govuk-back-link">Back</a>
+
+<main class="govuk-main-wrapper govuk-main-wrapper--auto-spacing" id="main-content" role="main">
+
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+
+            <h1 class="govuk-heading-l">
+                Search results
+            </h1>
+            <br>
+
+            <div class="govuk-grid-column-one-third"></div>
+        </div>
+    </div>
+
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-full">
+            
+            @if (Model != null && Model.Results.Any())
+            {
+                <p class="govuk-body">
+                   Select the relevant subscriber link to view and update their details.
+                </p>
+
+               
+                <table class="govuk-table" style="margin-top: 40px; margin-bottom: 60px;">
+                    <thead class="govuk-table__head">
+                    <tr class="govuk-table__row">
+                        <th scope="col" class="govuk-table__header">Subscriber ID</th>
+                        <th scope="col" class="govuk-table__header">Company or organisation name</th>
+                       
+                    </tr>
+                    </thead>
+                    <tbody class="govuk-table__body">
+
+                    @foreach (var subscriber in Model.Results)
+                    {
+                      <tr class="govuk-table__row">
+                            <td class="govuk-table__cell"><a class="govuk-link--no-visited-state" href="#">@subscriber.Id</a></td>
+                       </tr>
+                       <tr class="govuk-table__row">
+                            <td class="govuk-table__cell"><a class="govuk-link--no-visited-state" href="#">@subscriber.CompanyName</a></td>
+                       </tr>
+                    }
+
+                    </tbody>
+                </table>
+
+                @if (Model.Paging.ResultCount > Model.Results.Count)
+                {
+                    <partial name="_Paging" model="@Model.Paging" />
+                }
+            }
+        </div>
+    </div>
+
+</main>
