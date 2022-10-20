@@ -1,0 +1,76 @@
+trigger:
+  branches:
+    include:
+    - develop
+    
+pool:
+  name: Azure Pipelines
+  vmImage: 'windows-latest'
+  demands:
+  - msbuild
+  - visualstudio
+
+variables:
+  SolutionName: 'TestFramework'
+  AzureArtifactsFeed: 'test-framework'
+  BuildSolution: $(SolutionName).sln
+  BuildPlatform: 'any cpu'
+  BuildConfiguration: 'release'
+  UnitTestFilter: '**\$(BuildConfiguration)\**\*.UnitTests.dll'
+
+name: 1.0$(Rev:.r)
+
+stages:
+- stage: Build
+  displayName: Build, Test, Analyze, Pack Nuget
+    
+  jobs:
+  - job: BuildDotNetNuget
+    displayName: Build DotNet Nuget
+
+    steps:
+    - checkout: self
+
+    - task: NuGetToolInstaller@0
+      displayName: Use NuGet latest
+
+    - task: NuGetCommand@2
+      displayName: NuGet restore
+      inputs:
+        solution: ${{ variables.BuildSolution }}
+
+    - task: VSBuild@1
+      displayName: Build solution ${{ variables.SolutionName }}
+      inputs:
+        solution: ${{ variables.BuildSolution }}
+        platform: ${{ variables.BuildPlatform }}
+        configuration: ${{ variables.BuildConfiguration }}
+
+    - task: VSTest@2
+      displayName: VsTest - testAssemblies
+      inputs:
+        testAssemblyVer2: >-
+          ${{ variables.UnitTestFilter }}
+  
+          !**\obj\**
+        platform: ${{ variables.BuildPlatform }}
+        configuration: ${{ variables.BuildConfiguration }}
+        codeCoverageEnabled: true
+
+    - task: NuGetCommand@2
+      displayName: NuGet pack ${{ variables.SolutionName }}
+      inputs:
+        command: pack
+        packagesToPack: ${{ variables.SolutionName }}.csproj
+        versioningScheme: byBuildNumber
+        configurationToPack: ${{ variables.BuildConfiguration }}
+
+    - task: NuGetCommand@2
+      displayName: NuGet push $(Build.BuildNumber)
+      condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/develop'))
+      inputs:
+        command: push
+        packagesToPush: '$(Build.ArtifactStagingDirectory)/**/*.nupkg;!$(Build.ArtifactStagingDirectory)/**/*.symbols.nupkg'
+        nuGetFeedType: 'internal'
+        publishVstsFeed: ${{ variables.AzureArtifactsFeed }}
+        allowPackageConflicts: true

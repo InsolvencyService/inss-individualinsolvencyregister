@@ -3,7 +3,7 @@ using TechTalk.SpecFlow;
 using OpenQA.Selenium;
 using INSS.EIIR.QA.Automation.StepDefs;
 using INSS.EIIR.QA.Automation.Helpers;
-using INSS.EIIR.QA.Automation.TestFramework.TestSupport;
+using INSS.EIIR.QA.Automation.TestFramework;
 using INSS.EIIR.QA.Automation.Pages;
 using NUnit.Framework;
 

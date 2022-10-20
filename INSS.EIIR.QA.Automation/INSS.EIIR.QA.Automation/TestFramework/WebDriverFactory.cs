@@ -8,7 +8,7 @@ using OpenQA.Selenium.Firefox;
 using OpenQA.Selenium.IE;
 
 
-namespace INSS.EIIR.QA.Automation.TestFramework.TestSupport
+namespace INSS.EIIR.QA.Automation.TestFramework
 {
     public static class WebDriverFactory
 

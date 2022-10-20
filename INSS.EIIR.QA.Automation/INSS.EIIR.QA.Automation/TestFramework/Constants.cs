@@ -1,6 +1,6 @@
 ﻿
 
-namespace INSS.EIIR.QA.Automation.TestFramework.TestSupport;
+namespace INSS.EIIR.QA.Automation.TestFramework;
 
 public static class Constants
 {    

@@ -2,7 +2,7 @@
 using System.IO;
 
 
-namespace INSS.EIIR.QA.Automation.TestFramework.TestSupport
+namespace INSS.EIIR.QA.Automation.TestFramework
 {
     public class FileHelper
     {

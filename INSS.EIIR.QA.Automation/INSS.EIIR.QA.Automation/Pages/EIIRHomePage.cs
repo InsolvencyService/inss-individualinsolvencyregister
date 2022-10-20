@@ -9,7 +9,7 @@ namespace INSS.EIIR.QA.Automation.Pages
     internal class EIIRHomePage : ElementHelper
     {
         private static string pageUrl { get; } = "https://app-uksouth-sit-eiir-web.azurewebsites.net/";
-        private static string pageTitle { get; } = "Home Page - INSS.EIIR.Web";
+        private static string pageTitle { get; } = "Individual Insolvency Register - INSS.EIIR.Web";
         private static string pageHeader { get; } = "Default page template";
 
         public static void verifyEIIRHomePage()
