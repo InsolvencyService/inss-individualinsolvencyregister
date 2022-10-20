@@ -150,6 +150,8 @@ jobs:
                   package: '$(Pipeline.Workspace)/**/${{ parameters.appZipFile }}'
                   appSettings: >
                     -ConnectionStrings__iirwebdbContextConnectionString "$(iirwebdbContextConnectionString)"
+                    -ApiSettings__ApiKey "$(webappApiKey)"
+                    -ApiSettings__BaseUrl "$(webappBaseUrl)"
 
 
               - task: AzureAppServiceManage@0
