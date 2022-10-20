@@ -1,6 +1,7 @@
 using System;
 using TechTalk.SpecFlow;
 using INSS.EIIR.QA.Automation.TestFramework.Hooks;
+using INSS.EIIR.QA.Automation.TestFramework.TestSupport;
 
 namespace INSS.EIIR.QA.Automation
 {
@@ -10,8 +11,7 @@ namespace INSS.EIIR.QA.Automation
         [Given(@"I Navigate to Amazon")]
         public void GivenINavigateToAmazon()
         {
-            string baseURL = "https://Amazon.co.uk/";
-            WebDriver.Navigate().GoToUrl(baseURL);
+          WebDriver.Navigate().GoToUrl(Constants.EIIRBaseUrl);
         }
 
         [When(@"I click on Login")]

@@ -21,7 +21,7 @@
 		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
 		<PackageReference Include="Newtonsoft.Json.Schema" Version="3.0.13" />
-		<PackageReference Include="NUnit" Version="3.12.0" />
+		<PackageReference Include="NUnit" Version="3.13.3" />
 		<PackageReference Include="NUnit3TestAdapter" Version="3.16.1">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -30,13 +30,14 @@
 		<PackageReference Include="Selenium.Support" Version="4.3.0" />
 		<PackageReference Include="Selenium.WebDriver" Version="4.3.0" />
 		<PackageReference Include="Selenium.WebDriver.ChromeDriver" Version="106.0.5249.6100" />
-		<PackageReference Include="SpecFlow.NUnit" Version="3.1.97" />
-		<PackageReference Include="SpecFlow.Tools.MsBuild.Generation" Version="3.1.97" />
+		<PackageReference Include="SpecFlow" Version="3.9.50" />
+		<PackageReference Include="SpecFlow.NUnit" Version="3.9.50" />
+		<PackageReference Include="SpecFlow.Tools.MsBuild.Generation" Version="3.9.50" />
 	</ItemGroup>
   <ItemGroup>
-    <Folder Include="TestFramework\Features\" />
-  </ItemGroup>
-  <ItemGroup>
+    <None Update="appsettings.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="appsettings.Debug.json">
       <IsTransformFile>true</IsTransformFile>
       <DependentUpon>appsettings.json</DependentUpon>
