@@ -1,4 +1,6 @@
 using AspNetCore.SEOHelper;
+using AutoMapper;
+using INSS.EIIR.Data.AutoMapperProfiles;
 using Flurl.Http;
 using INSS.EIIR.Data.Models;
 using INSS.EIIR.DataAccess;
@@ -138,6 +140,17 @@ void ConfigureServices(IServiceCollection services)
 
     services.AddTransient<IAuthenticationProvider, AuthenticationProvider>();
     services.AddTransient<IAccountRepository, AccountRepository>();
+    services.AddTransient<ISubscriberDataProvider, SubscriberDataProvider>();
+    services.AddTransient<ISubscriberRepository, SubscriberRepository>();
+
+    // Auto Mapper Configurations
+    var mapperConfig = new MapperConfiguration(mc =>
+    {
+        mc.AddProfile(new SubscriberMapper());
+    });
+
+    var mapper = mapperConfig.CreateMapper();
+    builder.Services.AddSingleton(mapper);
 
     services.AddTransient<IClientService, ClientService>();
     services.AddTransient<IIndividualSearch, IndividualSearch>();

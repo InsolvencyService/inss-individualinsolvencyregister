@@ -1,0 +1,78 @@
+﻿@model INSS.EIIR.Models.SubscriberModels.SubscriberWithPaging
+
+@{
+    ViewData["Title"] = "View subscribers";
+}
+
+@*<a asp-controller="ViewSubscribers" asp-action="Index" class="govuk-back-link">Back</a>*@
+
+<main class="govuk-main-wrapper govuk-main-wrapper--auto-spacing" id="main-content" role="main">
+
+    <div class="govuk-grid-row">
+
+        <div class="govuk-grid-column-one-third">
+
+            <fieldset class="govuk-fieldset" aria-describedby="status-hint">
+                <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                    <h1 class="govuk-fieldset__heading">
+                        Status
+                    </h1>
+                </legend>
+                <div class="govuk-checkboxes" data-module="govuk-checkboxes">
+                    <div class="govuk-checkboxes__item">
+                        <input class="govuk-checkboxes__input" id="Active" name="Active" type="checkbox" value="active">
+                        <label class="govuk-label govuk-checkboxes__label" for="Active">
+                            Active
+                        </label>
+                    </div>
+                    <div class="govuk-checkboxes__item">
+                        <input class="govuk-checkboxes__input" id="InActive" name="InActive" type="checkbox" value="inActive">
+                        <label class="govuk-label govuk-checkboxes__label" for="InActive">
+                            InActive
+                        </label>
+                    </div>
+                </div>
+            </fieldset>
+
+        </div>
+        <div class="govuk-grid-column-two-thirds">
+
+            @if (Model != null && Model.Subscribers.Any())
+            {
+                <p class="govuk-body">
+                    Select the relevant subscriber link to view and update their details.
+                </p>
+
+
+                <table class="govuk-table" style="margin-top: 40px; margin-bottom: 60px;">
+                    <thead class="govuk-table__head">
+                        <tr class="govuk-table__row">
+                            <th scope="col" class="govuk-table__header">Subscriber ID</th>
+                            <th scope="col" class="govuk-table__header">Company or organisation name</th>
+
+                        </tr>
+                    </thead>
+                    <tbody class="govuk-table__body">
+
+                        @foreach (var subscriber in Model.Subscribers)
+                        {
+                            <tr class="govuk-table__row">
+                                <td class="govuk-table__cell"><a class="govuk-link--no-visited-state" href="#">@subscriber.SubscriberId</a></td>
+                            </tr>
+                            <tr class="govuk-table__row">
+                                <td class="govuk-table__cell"><a class="govuk-link--no-visited-state" href="#">@subscriber.OrganisationName</a></td>
+                            </tr>
+                        }
+
+                    </tbody>
+                </table>
+
+                @if (Model.Paging.ResultCount > Model.Subscribers.Count)
+                {
+                    <partial name="_Paging" model="@Model.Paging" />
+                }
+            }
+        </div>
+    </div>
+
+</main>
