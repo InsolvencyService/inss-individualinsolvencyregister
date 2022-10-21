@@ -1,6 +1,7 @@
 using Azure.Core;
 using INSS.EIIR.Interfaces.Services;
 using INSS.EIIR.Models.Configuration;
+using INSS.EIIR.Models.SubscriberModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
@@ -32,7 +33,7 @@ public class Subscriber
     [OpenApiOperation(operationId: "Run", tags: new[] { "Subscriber" })]
     [OpenApiSecurity("function_key", SecuritySchemeType.ApiKey, Name = "code", In = OpenApiSecurityLocationType.Query)]
     [OpenApiParameter(name: "PagingModel", In = ParameterLocation.Query, Required = false, Type = typeof(PagingParameters), Description = "The Paging Model")]
-    [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "text/plain", bodyType: typeof(string), Description = "The list of active and inactive subscribers")]
+    [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "text/plain", bodyType: typeof(SubscriberWithPaging), Description = "A list of subscribers with the paging model")]
     public async Task<IActionResult> GetSubscribers(
         [HttpTrigger(AuthorizationLevel.Function, "get", Route = "subscribers")] HttpRequest req)
     {
@@ -71,7 +72,7 @@ public class Subscriber
     [OpenApiOperation(operationId: "Run", tags: new[] { "Subscriber" })]
     [OpenApiSecurity("function_key", SecuritySchemeType.ApiKey, Name = "code", In = OpenApiSecurityLocationType.Query)]
     [OpenApiParameter(name: "PagingModel", In = ParameterLocation.Query, Required = false, Type = typeof(PagingParameters), Description = "The Paging Model")]
-    [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "text/plain", bodyType: typeof(string), Description = "The list of active subscribers")]
+    [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "text/plain", bodyType: typeof(SubscriberWithPaging), Description = "A list of active subscribers with the paging model")]
     public async Task<IActionResult> GetActiveSubscribers(
         [HttpTrigger(AuthorizationLevel.Function, "get", Route = "subscribers/active")] HttpRequest req)
     {
@@ -87,7 +88,7 @@ public class Subscriber
     [OpenApiOperation(operationId: "Run", tags: new[] { "Subscriber" })]
     [OpenApiSecurity("function_key", SecuritySchemeType.ApiKey, Name = "code", In = OpenApiSecurityLocationType.Query)]
     [OpenApiParameter(name: "PagingModel", In = ParameterLocation.Query, Required = false, Type = typeof(PagingParameters), Description = "The Paging Model")]
-    [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "text/plain", bodyType: typeof(string), Description = "The list of inactive subscribers")]
+    [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "text/plain", bodyType: typeof(SubscriberWithPaging), Description = "A list of inactive subscribers with the paging model")]
     public async Task<IActionResult> GetInactiveSubscribers(
         [HttpTrigger(AuthorizationLevel.Function, "get", Route = "subscribers/inactive")] HttpRequest req)
     {
