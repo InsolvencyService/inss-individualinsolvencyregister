@@ -5,7 +5,7 @@ namespace INSS.EIIR.Web.Controllers
 {
     public class AdminViewSubscribersController : Controller
     {
-        public IActionResult ViewSubscibers()
+        public IActionResult Index()
         {
             return View();
         }
