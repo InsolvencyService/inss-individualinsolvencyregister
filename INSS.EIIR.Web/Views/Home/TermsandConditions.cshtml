@@ -1,7 +1,12 @@
-﻿@{
-    ViewData["Title"] = "Terms and Conditions";
+﻿@model INSS.EIIR.Models.Home.StaticContent
+
+@{
+    ViewData["Title"] = "Terms and conditions";
 }
 
+@section Breadcrumb {
+    <partial name="_Breadcrumb" for=Breadcrumbs />
+}
 
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">

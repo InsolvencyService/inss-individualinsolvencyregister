@@ -39,6 +39,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "INSS.EIIR.AzureSearch.Servi
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "INSS.EIIR.AzureSearch.Services.Tests", "..\INSS.EIIR.AzureSearch.Services.Tests\INSS.EIIR.AzureSearch.Services.Tests.csproj", "{18876872-7C5C-443D-9660-85C076157260}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "INSS.EIIR.Web.Services", "..\INSS.EIIR.Web.Services\INSS.EIIR.Web.Services.csproj", "{02AD1A96-B430-4A1F-B4A5-2D73EC3855B3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -101,6 +103,10 @@ Global
 		{18876872-7C5C-443D-9660-85C076157260}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{18876872-7C5C-443D-9660-85C076157260}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{18876872-7C5C-443D-9660-85C076157260}.Release|Any CPU.Build.0 = Release|Any CPU
+		{02AD1A96-B430-4A1F-B4A5-2D73EC3855B3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{02AD1A96-B430-4A1F-B4A5-2D73EC3855B3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{02AD1A96-B430-4A1F-B4A5-2D73EC3855B3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{02AD1A96-B430-4A1F-B4A5-2D73EC3855B3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

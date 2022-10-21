@@ -1,16 +1,24 @@
 using AspNetCore.SEOHelper;
+using AutoMapper;
+using INSS.EIIR.Data.AutoMapperProfiles;
+using Flurl.Http;
 using INSS.EIIR.Data.Models;
 using INSS.EIIR.DataAccess;
 using INSS.EIIR.Interfaces.DataAccess;
 using INSS.EIIR.Interfaces.Services;
+using INSS.EIIR.Interfaces.Web.Services;
+using INSS.EIIR.Models.Configuration;
 using INSS.EIIR.Models.Constants;
 using INSS.EIIR.Services;
+using INSS.EIIR.Web.Configuration;
+using INSS.EIIR.Web.Services;
 using Joonasw.AspNetCore.SecurityHeaders;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Rewrite;
 
 var builder = WebApplication.CreateBuilder(args);
+
 
 // Add services to the container.
 ConfigureServices(builder.Services);
@@ -69,6 +77,9 @@ var options = new RewriteOptions()
 
 app.UseRewriter(options);
 
+app.MapHealthChecks("/health");
+app.MapHealthChecks("/ping");
+
 app.MapControllerRoute(
     name: "areas",
     pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
@@ -112,9 +123,23 @@ void ConfigureServices(IServiceCollection services)
 
     services.AddControllersWithViews();
 
+    FlurlHttp.Configure(settings =>
+    {
+        settings.HttpClientFactory = new PollyHttpClientFactory();
+    });
+
     var config = builder.Configuration;
 
-    builder.Services.AddTransient(_ =>
+    builder.Services.AddOptions<ApiSettings>()
+        .Configure<IConfiguration>((settings, configuration) =>
+        {
+            configuration.GetSection("ApiSettings").Bind(settings);
+        });
+
+    var appUrl = config.GetConnectionString("DRO_API_HEALTH_ENDPOINT_HERE");
+    builder.Services.AddHealthChecks().AddUrlGroup(new Uri(appUrl));
+
+builder.Services.AddTransient(_ =>
     {
         var connectionString = config.GetConnectionString("iirwebdbContextConnectionString");
         return new EIIRContext(connectionString);
@@ -122,6 +147,20 @@ void ConfigureServices(IServiceCollection services)
 
     services.AddTransient<IAuthenticationProvider, AuthenticationProvider>();
     services.AddTransient<IAccountRepository, AccountRepository>();
+    services.AddTransient<ISubscriberDataProvider, SubscriberDataProvider>();
+    services.AddTransient<ISubscriberRepository, SubscriberRepository>();
+
+    // Auto Mapper Configurations
+    var mapperConfig = new MapperConfiguration(mc =>
+    {
+        mc.AddProfile(new SubscriberMapper());
+    });
+
+    var mapper = mapperConfig.CreateMapper();
+    builder.Services.AddSingleton(mapper);
+
+    services.AddTransient<IClientService, ClientService>();
+    services.AddTransient<IIndividualSearch, IndividualSearch>();
 }
 
 static bool IsAdminContext(RedirectContext<CookieAuthenticationOptions> context)

@@ -1,7 +1,4 @@
-﻿using System;
-using System.Diagnostics.CodeAnalysis;
-using System.Net.Http;
-using AutoMapper;
+﻿using AutoMapper;
 using Azure;
 using Azure.Messaging.ServiceBus;
 using Azure.Search.Documents.Indexes;
@@ -26,6 +23,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Polly;
 using Polly.Extensions.Http;
+using System;
+using System.Diagnostics.CodeAnalysis;
+using System.Net.Http;
 
 [assembly: FunctionsStartup(typeof(Startup))]
 
@@ -41,28 +41,25 @@ namespace INSS.EIIR.Functions
             builder.Services.AddHttpClient();
             builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
+            builder.Services.AddHealthChecks();
             // Auto Mapper Configurations
             var mapperConfig = new MapperConfiguration(mc =>
             {
                 mc.AddProfile(new IndividualSearchMapper());
-                mc.AddProfile(new ExtractAvailableMapper());
+                mc.AddProfile(new ExtractMapper());
                 mc.AddProfile(new SubscriberMapper());
             });
 
             var mapper = mapperConfig.CreateMapper();
             builder.Services.AddSingleton(mapper);
 
-            var connectionString = Environment.GetEnvironmentVariable("iirwebdbContextConnectionString");
+            var connectionString = Environment.GetEnvironmentVariable("database__connectionstring");
             if (string.IsNullOrEmpty(connectionString))
-                throw new ArgumentNullException("iirwebdbContextConnectionString connectionstring missing");
+                throw new ArgumentNullException("database__connectionstring missing");
 
-            var serviceBusPubConnectionString = Environment.GetEnvironmentVariable("servicebus:publisherconnectionstring");
+            var serviceBusPubConnectionString = Environment.GetEnvironmentVariable("servicebus__publisherconnectionstring");
             if (string.IsNullOrEmpty(serviceBusPubConnectionString))
-                throw new ArgumentNullException("servicebus:publisherconnectionstring is missing");
-
-            var serviceBusSubConnectionString = Environment.GetEnvironmentVariable("servicebus:subscriberconnectionstring");
-            if (string.IsNullOrEmpty(serviceBusSubConnectionString))
-                throw new ArgumentNullException("servicebus:subscriberconnectionstring is missing");
+                throw new ArgumentNullException("servicebus__publisherconnectionstring is missing");
 
             builder.Services.AddTransient(_ =>
             {
@@ -80,19 +77,14 @@ namespace INSS.EIIR.Functions
             builder.Services.AddDbContext<EIIRExtractContext>(options =>
                 options.UseSqlServer(connectionString));
 
-            var blobconnectionstring = Environment.GetEnvironmentVariable("blob:connectionstring");
+            var blobconnectionstring = Environment.GetEnvironmentVariable("blobconnectionstring");
             if (string.IsNullOrEmpty(blobconnectionstring))
-                throw new ArgumentNullException("blob:connectionstring is missing");
+                throw new ArgumentNullException("blobconnectionstring is missing");
 
             builder.Services.AddOptions<DatabaseConfig>()
                .Configure<IConfiguration>((settings, configuration) =>
                {
                    configuration.GetSection("database").Bind(settings);
-               });
-            builder.Services.AddOptions<BlobConfig>()
-               .Configure<IConfiguration>((settings, configuration) =>
-               {
-                   configuration.GetSection("blob").Bind(settings);
                });
             builder.Services.AddOptions<ServiceBusConfig>()
                .Configure<IConfiguration>((settings, configuration) =>
@@ -116,12 +108,13 @@ namespace INSS.EIIR.Functions
 
                 clientsBuilder.AddBlobServiceClient(blobconnectionstring);
             });
+
             builder.Services.AddScoped<IServiceBusMessageSender, ServiceBusMessageSender>();
             builder.Services.AddScoped<IExtractRepository, ExtractRepository>();
-            builder.Services.AddScoped<IExtractService, ExtractService>();
-            builder.Services.AddScoped<ISubscriberService, SubscriberService>();
+            builder.Services.AddScoped<ISubscriberRepository, SubscriberRepository>();
+            builder.Services.AddScoped<IExtractDataProvider, ExtractDataProvider>();
+            builder.Services.AddScoped<ISubscriberDataProvider, SubscriberDataProvider>();
             builder.Services.AddScoped<INotificationService, NotificationService>();
-
 
             builder.Services.AddTransient<IIndexService, IndividualSearchIndexService>();
             builder.Services.AddTransient<IIndividualRepository, IndividualRepository>();

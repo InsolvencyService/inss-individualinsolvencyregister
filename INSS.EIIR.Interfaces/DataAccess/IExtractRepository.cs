@@ -1,13 +1,12 @@
-﻿using INSS.EIIR.Models.ExtractModels;
-using INSS.EIIR.Models.SubscriberModels;
+﻿using INSS.EIIR.Models.Configuration;
+using INSS.EIIR.Models.ExtractModels;
 
-namespace INSS.EIIR.Interfaces.DataAccess
+namespace INSS.EIIR.Interfaces.DataAccess;
+
+public interface IExtractRepository
 {
-    public interface IExtractRepository
-    {
-        ExtractAvailable GetExtractAvailable();
-        void UpdateExtractAvailable();
-        Task<IList<Subscriber>> GetActiveSubscribers();
-        Task<SubscriberDetail> GetSubscriberDetails(string subscriberId);
-    }
+    Extract GetExtractAvailable();
+    void UpdateExtractAvailable();
+    Task<IEnumerable<Extract>> GetExtractsAsync(PagingParameters pagingParameters);
+    Task<int> GetTotalExtractsAsync();
 }
