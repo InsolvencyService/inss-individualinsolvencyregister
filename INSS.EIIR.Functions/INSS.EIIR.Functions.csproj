@@ -4,6 +4,7 @@
     <AzureFunctionsVersion>v4</AzureFunctionsVersion>
   </PropertyGroup>
   <ItemGroup>
+	  <PackageReference Include="AspNetCore.HealthChecks.Uris" Version="6.0.3" />
 	  <PackageReference Include="AspNetCore.SEOHelper" Version="1.0.1" />
 	  <PackageReference Include="AutoMapper" Version="11.0.1" />
 	  <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="11.0.0" />

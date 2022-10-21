@@ -3,15 +3,15 @@ using INSS.EIIR.Web.Constants;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
+
 namespace INSS.EIIR.Web.Areas.Admin.Controllers
 {
-    [Authorize(Roles = Role.Admin)]
     [Area(AreaNames.Admin)]
-    [Route(AreaNames.Admin + "/AdminHome")]
-    public class AdminHomeController : Controller
+    [Route(AreaNames.Admin + "/Subscribers")]
+    public class SubscribersController : Controller
     {
         [Authorize(Roles = Role.Admin)]
-        public IActionResult AdminHome()
+        public IActionResult Index()
         {
             return View();
         }

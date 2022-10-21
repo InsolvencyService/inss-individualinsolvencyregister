@@ -41,6 +41,7 @@ namespace INSS.EIIR.Functions
             builder.Services.AddHttpClient();
             builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
+            builder.Services.AddHealthChecks();
             // Auto Mapper Configurations
             var mapperConfig = new MapperConfiguration(mc =>
             {

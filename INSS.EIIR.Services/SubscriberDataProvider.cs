@@ -15,11 +15,9 @@ public class SubscriberDataProvider : ISubscriberDataProvider
 
     public async Task<SubscriberWithPaging> GetSubscribersAsync(PagingParameters pagingParameters)
     {
-        var skip = (pagingParameters.PageNumber - 1) * pagingParameters.PageSize;
-
         var totalSubscribers = await _subscriberRepository.GetSubscribersAsync();
         var pagedSubscribers = totalSubscribers
-                                .Skip(skip)
+                                .Skip(pagingParameters.Skip)
                                 .Take(pagingParameters.PageSize)
                                 .ToList();
 
@@ -39,12 +37,10 @@ public class SubscriberDataProvider : ISubscriberDataProvider
 
     public async Task<SubscriberWithPaging> GetActiveSubscribersAsync(PagingParameters pagingParameters)
     {
-        var skip = (pagingParameters.PageNumber - 1) * pagingParameters.PageSize;
-
         var totalSubscribers = await _subscriberRepository.GetSubscribersAsync();
         var pagedSubscribers = totalSubscribers
                                 .Where(s => s.SubscribedFrom <= DateTime.Today && s.SubscribedTo >= DateTime.Today)
-                                .Skip(skip)
+                                .Skip(pagingParameters.Skip)
                                 .Take(pagingParameters.PageSize)
                                 .ToList();
 
@@ -59,15 +55,12 @@ public class SubscriberDataProvider : ISubscriberDataProvider
 
     public async Task<SubscriberWithPaging> GetInActiveSubscribersAsync(PagingParameters pagingParameters)
     {
-        var skip = (pagingParameters.PageNumber - 1) * pagingParameters.PageSize;
-
         var totalSubscribers = await _subscriberRepository.GetSubscribersAsync();
         var pagedSubscribers = totalSubscribers
                                 .Where(s => s.SubscribedTo < DateTime.Today)
-                                .Skip(skip)
+                                .Skip(pagingParameters.Skip)
                                 .Take(pagingParameters.PageSize)
                                 .ToList();
-
         var response = new SubscriberWithPaging
         {
             Paging = new Models.PagingModel(totalSubscribers.Count(), pagingParameters.PageNumber, pagingParameters.PageSize),
