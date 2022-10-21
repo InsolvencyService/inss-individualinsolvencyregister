@@ -17,4 +17,13 @@ public class PagingParameters
             _pageSize = (value > maxPageSize) ? maxPageSize : value;
         }
     }
+
+    public int Skip
+    {
+        get 
+        {
+           return (PageNumber - 1) * PageSize;
+        
+        }
+    }
 }

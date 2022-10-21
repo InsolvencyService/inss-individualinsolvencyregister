@@ -1,7 +1,9 @@
 ﻿using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Specialized;
+using INSS.EIIR.Interfaces.DataAccess;
 using INSS.EIIR.Interfaces.Services;
 using INSS.EIIR.Models.Configuration;
+using INSS.EIIR.Models.ExtractModels;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -14,6 +16,7 @@ namespace INSS.EIIR.Services;
 public class ExtractDataProvider : IExtractDataProvider
 {
     private readonly ILogger _logger;
+    private readonly IExtractRepository _extractRepository;
     private readonly ArrayList _blockIDArrayList;
     private readonly DatabaseConfig _dbConfig;
     private readonly BlobServiceClient _blobServiceClient;
@@ -21,10 +24,12 @@ public class ExtractDataProvider : IExtractDataProvider
 
     public ExtractDataProvider(
         ILoggerFactory loggerFactory,
+        IExtractRepository extractRepository,
         IOptions<DatabaseConfig> dbOptions,
         BlobServiceClient blobServiceClient)
     {
         _logger = loggerFactory.CreateLogger<ExtractDataProvider>();
+        _extractRepository = extractRepository;
         _blockIDArrayList = new();
         _dbConfig = dbOptions.Value;
         _blobServiceClient = blobServiceClient;
@@ -120,5 +125,19 @@ public class ExtractDataProvider : IExtractDataProvider
         {
             _logger.LogError($"Error Create And Upload Zip: [{ex}]");
         }
+    }
+
+    public async Task<ExtractWithPaging> ListExtractsAsync(PagingParameters pagingParameters)
+    {
+        var totalRecords = await _extractRepository.GetTotalExtractsAsync();    
+        var results = await _extractRepository.GetExtractsAsync(pagingParameters);
+
+        var response = new ExtractWithPaging
+        {
+            Paging = new Models.PagingModel(totalRecords, pagingParameters.PageNumber, pagingParameters.PageSize),
+            Extracts = results,
+        };
+
+        return response;
     }
 }
