@@ -57,10 +57,15 @@
                         @foreach (var subscriber in Model.Subscribers)
                         {
                             <tr class="govuk-table__row">
-                                <td class="govuk-table__cell"><a class="govuk-link--no-visited-state" href="#">@subscriber.SubscriberId</a></td>
-                            </tr>
-                            <tr class="govuk-table__row">
-                                <td class="govuk-table__cell"><a class="govuk-link--no-visited-state" href="#">@subscriber.OrganisationName</a></td>
+                                <td class="govuk-table__cell">
+                                    <a class="govuk-link--no-visited-state" href="@($"/Admin/Subscriber/{subscriber.SubscriberId}")">
+                                        @subscriber.SubscriberId
+                                    </a>
+                                </td>
+                            
+                                <td class="govuk-table__cell">
+                                    @subscriber.OrganisationName
+                                </td>
                             </tr>
                         }
 

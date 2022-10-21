@@ -12,7 +12,7 @@
     var middleNumber = current < 4 ? 3 : current > total - 3 ? total - 2 : current;
     var rightNumber = current < 4 ? 4 : current > total - 3 ? total - 1 : current + 1;
 
-    var hrefRoot = $"/{Model.RootUrl}/{Model.SearchTerm}";
+    var hrefRoot = !string.IsNullOrEmpty(Model.SearchTerm) ? $"/{Model.RootUrl}/{Model.SearchTerm}" : $"/{Model.RootUrl}";
 }
 
 <nav class="govuk-pagination" role="navigation" aria-label="results">

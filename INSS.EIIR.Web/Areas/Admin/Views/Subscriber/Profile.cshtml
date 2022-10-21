@@ -6,7 +6,7 @@
             Subscriber details
         </h1>
 
-        @if (@Model.SubscribedTo.HasValue)
+        @if (Model != null && Model.SubscribedTo.HasValue)
             {
             <div class="govuk-warning-text">
                 <span class="govuk-warning-text__icon" aria-hidden="true">!</span>

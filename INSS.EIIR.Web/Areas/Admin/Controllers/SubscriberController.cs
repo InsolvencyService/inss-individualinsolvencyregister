@@ -18,7 +18,7 @@ namespace INSS.EIIR.Web.Areas.Admin.Controllers
             _subscriberDataProvider = subscriberDataProvider;
         }
 
-        [HttpGet("Subscriber/{page?}")]
+        [HttpGet(AreaNames.Admin + "/Subscribers/{page?}")]
         public async Task<IActionResult> Index(int page = 1)
         {
             var subscribers = await _subscriberDataProvider.GetSubscribersAsync(new PagingParameters
@@ -27,12 +27,12 @@ namespace INSS.EIIR.Web.Areas.Admin.Controllers
                 PageNumber = page
             });
 
-            subscribers.Paging.RootUrl = "Subscriber";
-
+            subscribers.Paging.RootUrl = "Admin/Subscribers";
+            
             return View(subscribers);
         }
 
-        [HttpPost("Subscriber/{subscriberId}")]
+        [HttpGet(AreaNames.Admin + "/Subscriber/{subscriberId}")]
         public async Task<IActionResult> Profile(int subscriberId)
         {
             var subscriber = await _subscriberDataProvider.GetSubscriberByIdAsync($"{subscriberId}");
