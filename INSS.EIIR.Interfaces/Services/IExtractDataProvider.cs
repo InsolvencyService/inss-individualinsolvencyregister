@@ -8,4 +8,7 @@ public interface IExtractDataProvider
     Task GenerateSubscriberFile(string filename);
 
     Task<ExtractWithPaging> ListExtractsAsync(PagingParameters pagingParameters);
+    Task<Extract> GetLatestExtractForDownload();
+
+    Task<byte[]> DownloadLatestExtractAsync(string blobName);
 }

@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using Azure.Storage.Blobs;
-using INSS.EIIR.Data.AutoMapperProfiles;
 using INSS.EIIR.Data.Models;
 using INSS.EIIR.DataAccess;
 using INSS.EIIR.Functions.Functions;
@@ -8,12 +7,10 @@ using INSS.EIIR.Models.AutoMapperProfiles;
 using INSS.EIIR.Models.Configuration;
 using INSS.EIIR.Services;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.Internal;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Microsoft.Extensions.Primitives;
 using Moq;
 using Xunit;
 
@@ -32,6 +29,7 @@ public class ExtractIntegrationTests
     public ExtractIntegrationTests()
     {
         Environment.SetEnvironmentVariable("blobcontainername", "eiirextractjobs");
+        Environment.SetEnvironmentVariable("blobconnectionstring", "UseDevelopmentStorage=true");
 
         MapperConfiguration mapperConfig = new MapperConfiguration(
          cfg =>
@@ -55,7 +53,6 @@ public class ExtractIntegrationTests
         _eiirExtractcontext = new EIIRExtractContext();
         _extractRepository = new ExtractRepository(_eiirExtractcontext, _context, dbOptions.Object, _mapper);
         _extractDataProvider = new ExtractDataProvider(logger.Object, _extractRepository, dbOptions.Object, blobServiceClient.Object);
-
     }
 
     [Fact]
@@ -63,7 +60,8 @@ public class ExtractIntegrationTests
     {
         //Arrange
         var logger = Mock.Of<ILogger<Extract>>();
-        var extractFunc = new Extract(logger, _extractDataProvider);
+        var subDataProvider = Mock.Of<SubscriberDataProvider>();
+        var extractFunc = new Extract(logger, subDataProvider, _extractDataProvider);
 
         Mock<HttpRequest> mockRequest = CreateMockRequest();
 

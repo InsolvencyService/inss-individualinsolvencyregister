@@ -18,14 +18,17 @@ namespace INSS.EIIR.Functions.Functions
     public class Extract
     {
         private readonly ILogger<Extract> _logger;
+        private readonly ISubscriberDataProvider _subscriberDataProvider;
         private readonly IExtractDataProvider _extractDataProvider;
 
-        public Extract(
+        public Extract(            
             ILogger<Extract> log,
+            ISubscriberDataProvider subscriberDataProvider,
             IExtractDataProvider extractDataProvider)
-        {
+        {            
             _logger = log;
-            _extractDataProvider = extractDataProvider; 
+            _subscriberDataProvider = subscriberDataProvider;
+            _extractDataProvider = extractDataProvider;
         }
 
         [FunctionName("extracts")]
@@ -42,6 +45,65 @@ namespace INSS.EIIR.Functions.Functions
             var extractFiles = await _extractDataProvider.ListExtractsAsync(pagingParameters);
 
             return new OkObjectResult(extractFiles);
+        }
+
+        [FunctionName("extract-download")]
+        [OpenApiOperation(operationId: "Run", tags: new[] { "Extract" })]
+        [OpenApiSecurity("function_key", SecuritySchemeType.ApiKey, Name = "code", In = OpenApiSecurityLocationType.Query)]
+        [OpenApiParameter(name: "subscriberId", In = ParameterLocation.Query, Required = true, Type = typeof(string), Description = "The subscriber Id")]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/octet-stream", bodyType: typeof(string), Description = "The latest extract zip file")]
+        public async Task<IActionResult> LatestExtract(
+            [HttpTrigger(AuthorizationLevel.Function, "get", Route = "eiir/{subscriberId}/downloads/latest")] HttpRequest req)
+        {
+            _logger.LogInformation("Extract function LatestExtract called, retrieving latest zip file.");
+
+            string subscriberId = req.Query["subscriberId"];
+            if (string.IsNullOrEmpty(subscriberId))
+            {
+                var error = "Extract function LatestExtract called: missing query parameter subscriber Id is required.";
+                _logger.LogError(error);
+                return new BadRequestObjectResult(error);
+            }
+
+            // 1. Get Subscriber and validate active
+            var isSubscriberActive = await _subscriberDataProvider.IsSubscriberActiveAsync(subscriberId);
+            if (isSubscriberActive == null)
+            {
+                var error = $"Extract function LatestExtract subscriber with {subscriberId} not found.";
+                _logger.LogError(error);
+                return new NotFoundObjectResult(error);
+            }
+            if (!isSubscriberActive.GetValueOrDefault(false))
+            {
+                var error = $"Extract function LatestExtract subscriber with {subscriberId} not found.";
+                _logger.LogError(error);
+                return new UnauthorizedResult();
+            }
+
+            // 2. Get the latest extract zip file name
+            var latestExtract = await _extractDataProvider.GetLatestExtractForDownload();
+            if (latestExtract == null)
+            {
+                var error = $"Extract function LatestExtract: Latest Subscriber file for download not found.";
+                _logger.LogError(error);
+                return new NotFoundObjectResult(error);
+            }
+
+            // 3. Download from blob
+            var latestFile = $"{latestExtract.ExtractFilename}.zip";
+
+            var extractBytes = await _extractDataProvider.DownloadLatestExtractAsync(latestFile);
+            var extractFileDownload = new FileContentResult(extractBytes, "application/octet-stream")
+            {
+                FileDownloadName = latestFile,
+            };
+
+            var SubscriberDownloadModel = new Models.SubscriberModels.SubscriberDownloadDetail() 
+                { ExtractId = latestExtract.ExtractId, ExtractZipDownload = latestExtract.DownloadZiplink, IPAddress = "", Server = "" };
+
+            await _subscriberDataProvider.CreateSubscriberDownload(subscriberId, SubscriberDownloadModel);
+
+            return extractFileDownload;
         }
 
         private PagingParameters GetPagingParameters(HttpRequest request)
