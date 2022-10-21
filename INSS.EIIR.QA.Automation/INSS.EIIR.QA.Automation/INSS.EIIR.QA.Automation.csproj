@@ -28,8 +28,9 @@
 		<PackageReference Include="Selenium.Support" Version="4.3.0" />
 		<PackageReference Include="Selenium.WebDriver" Version="4.3.0" />
 		<PackageReference Include="Selenium.WebDriver.ChromeDriver" Version="106.0.5249.6100" />
-		<PackageReference Include="SpecFlow.NUnit" Version="3.1.97" />
-		<PackageReference Include="SpecFlow.Tools.MsBuild.Generation" Version="3.1.97" />
+		<PackageReference Include="SpecFlow" Version="3.9.50" />
+		<PackageReference Include="SpecFlow.NUnit" Version="3.9.50" />
+		<PackageReference Include="SpecFlow.Tools.MsBuild.Generation" Version="3.9.50" />
 		<Compile Update="EnvironmentData.cs">
 		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Compile>
@@ -44,6 +45,9 @@
     <Folder Include="Utils\" />
   </ItemGroup>
   <ItemGroup>
+    <None Update="appsettings-template.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="appsettings.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
