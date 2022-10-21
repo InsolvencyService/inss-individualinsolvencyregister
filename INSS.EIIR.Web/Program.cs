@@ -1,4 +1,6 @@
 using AspNetCore.SEOHelper;
+using AutoMapper;
+using INSS.EIIR.Data.AutoMapperProfiles;
 using Flurl.Http;
 using INSS.EIIR.Data.Models;
 using INSS.EIIR.DataAccess;
@@ -16,6 +18,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Rewrite;
 
 var builder = WebApplication.CreateBuilder(args);
+
 
 // Add services to the container.
 ConfigureServices(builder.Services);
@@ -74,6 +77,9 @@ var options = new RewriteOptions()
 
 app.UseRewriter(options);
 
+app.MapHealthChecks("/health");
+app.MapHealthChecks("/ping");
+
 app.MapControllerRoute(
     name: "areas",
     pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
@@ -130,7 +136,10 @@ void ConfigureServices(IServiceCollection services)
             configuration.GetSection("ApiSettings").Bind(settings);
         });
 
-    builder.Services.AddTransient(_ =>
+    var appUrl = config.GetConnectionString("DRO_API_HEALTH_ENDPOINT_HERE");
+    builder.Services.AddHealthChecks().AddUrlGroup(new Uri(appUrl));
+
+builder.Services.AddTransient(_ =>
     {
         var connectionString = config.GetConnectionString("iirwebdbContextConnectionString");
         return new EIIRContext(connectionString);
@@ -138,6 +147,17 @@ void ConfigureServices(IServiceCollection services)
 
     services.AddTransient<IAuthenticationProvider, AuthenticationProvider>();
     services.AddTransient<IAccountRepository, AccountRepository>();
+    services.AddTransient<ISubscriberDataProvider, SubscriberDataProvider>();
+    services.AddTransient<ISubscriberRepository, SubscriberRepository>();
+
+    // Auto Mapper Configurations
+    var mapperConfig = new MapperConfiguration(mc =>
+    {
+        mc.AddProfile(new SubscriberMapper());
+    });
+
+    var mapper = mapperConfig.CreateMapper();
+    builder.Services.AddSingleton(mapper);
 
     services.AddTransient<IClientService, ClientService>();
     services.AddTransient<IIndividualSearch, IndividualSearch>();

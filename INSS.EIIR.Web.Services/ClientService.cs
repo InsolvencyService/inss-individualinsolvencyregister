@@ -20,6 +20,7 @@ public class ClientService : IClientService
     {
         return await _settings.BaseUrl
             .AppendPathSegment(url)
+            .WithHeader("x-functions-key", _settings.ApiKey)
             .PostJsonAsync(content)
             .ReceiveJson<TResult>();
     }

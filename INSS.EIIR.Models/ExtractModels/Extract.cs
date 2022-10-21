@@ -1,6 +1,6 @@
 ﻿namespace INSS.EIIR.Models.ExtractModels
 {
-    public class ExtractAvailable
+    public class Extract
     {    
         public int ExtractId { get; set; }
         public DateTime Currentdate { get; set; }
