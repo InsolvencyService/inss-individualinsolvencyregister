@@ -67,7 +67,6 @@ namespace INSS.EIIR.Functions.Functions
                 return new BadRequestObjectResult(error);
             }
 
-            // 1. Get Subscriber and validate active
             var isSubscriberActive = await _subscriberDataProvider.IsSubscriberActiveAsync(subscriberId);
             if (isSubscriberActive == null)
             {
@@ -82,7 +81,6 @@ namespace INSS.EIIR.Functions.Functions
                 return new ObjectResult(error) { StatusCode = (int)HttpStatusCode.Forbidden };
             }
 
-            // 2. Get the latest extract zip file name
             var latestExtract = await _extractDataProvider.GetLatestExtractForDownload();
             if (latestExtract == null)
             {
@@ -91,15 +89,11 @@ namespace INSS.EIIR.Functions.Functions
                 return new NotFoundObjectResult(error);
             }
 
-            // 3. Download from blob
             var latestFile = $"{latestExtract.ExtractFilename}.zip";
 
             var extractBytes = await _extractDataProvider.DownloadLatestExtractAsync(latestFile);
-            var extractFileDownload = new FileContentResult(extractBytes, "application/octet-stream")
-            {
-                FileDownloadName = latestFile,
-            };
-
+            
+            var extractFileDownload = new FileContentResult(extractBytes, "application/octet-stream") { FileDownloadName = latestFile };
             var SubscriberDownloadModel = new SubscriberDownloadDetail(latestExtract.ExtractId, latestExtract.DownloadZiplink, GetIPFromRequestHeaders(req), GetServerIP());
 
             await _subscriberDataProvider.CreateSubscriberDownload(subscriberId, SubscriberDownloadModel);
