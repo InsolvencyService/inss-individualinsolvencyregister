@@ -1,6 +1,7 @@
 using INSS.EIIR.Interfaces.Services;
 using INSS.EIIR.Models.Configuration;
 using INSS.EIIR.Models.ExtractModels;
+using INSS.EIIR.Models.SubscriberModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
@@ -10,6 +11,7 @@ using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Enums;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
+using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 
@@ -55,12 +57,12 @@ namespace INSS.EIIR.Functions.Functions
         public async Task<IActionResult> LatestExtract(
             [HttpTrigger(AuthorizationLevel.Function, "get", Route = "eiir/{subscriberId}/downloads/latest")] HttpRequest req)
         {
-            _logger.LogInformation("Extract function LatestExtract called, retrieving latest zip file.");
+            _logger.LogInformation("Extract function: Endpoint LatestExtract [ retrieving latest zip file.]");
 
             string subscriberId = req.Query["subscriberId"];
             if (string.IsNullOrEmpty(subscriberId))
             {
-                var error = "Extract function LatestExtract called: missing query parameter subscriber Id is required.";
+                var error = "Extract function: Endpoint LatestExtract [ missing query parameter subscriber Id is required.]";
                 _logger.LogError(error);
                 return new BadRequestObjectResult(error);
             }
@@ -69,22 +71,22 @@ namespace INSS.EIIR.Functions.Functions
             var isSubscriberActive = await _subscriberDataProvider.IsSubscriberActiveAsync(subscriberId);
             if (isSubscriberActive == null)
             {
-                var error = $"Extract function LatestExtract subscriber with {subscriberId} not found.";
+                var error = $"Extract function: Endpoint LatestExtract [ subscriber {subscriberId} not found.]";
                 _logger.LogError(error);
                 return new NotFoundObjectResult(error);
             }
             if (!isSubscriberActive.GetValueOrDefault(false))
             {
-                var error = $"Extract function LatestExtract subscriber with {subscriberId} not found.";
+                var error = $"Extract function: Endpoint LatestExtract [ subscriber {subscriberId} does not have an active subscription.]";
                 _logger.LogError(error);
-                return new UnauthorizedResult();
+                return new ObjectResult(error) { StatusCode = (int)HttpStatusCode.Forbidden };
             }
 
             // 2. Get the latest extract zip file name
             var latestExtract = await _extractDataProvider.GetLatestExtractForDownload();
             if (latestExtract == null)
             {
-                var error = $"Extract function LatestExtract: Latest Subscriber file for download not found.";
+                var error = $"Extract function: Endpoint LatestExtract [ Latest Subscriber file for download not found. ]";
                 _logger.LogError(error);
                 return new NotFoundObjectResult(error);
             }
@@ -98,24 +100,38 @@ namespace INSS.EIIR.Functions.Functions
                 FileDownloadName = latestFile,
             };
 
-            var SubscriberDownloadModel = new Models.SubscriberModels.SubscriberDownloadDetail() 
-                { ExtractId = latestExtract.ExtractId, ExtractZipDownload = latestExtract.DownloadZiplink, IPAddress = "", Server = "" };
+            var SubscriberDownloadModel = new SubscriberDownloadDetail(latestExtract.ExtractId, latestExtract.DownloadZiplink, GetIPFromRequestHeaders(req), GetServerIP());
 
             await _subscriberDataProvider.CreateSubscriberDownload(subscriberId, SubscriberDownloadModel);
+
+            _logger.LogInformation($"Extract function: Endpoint LatestExtract [ subscriber {subscriberId} has successfully downloaded zip file {latestFile}.]");
 
             return extractFileDownload;
         }
 
         private PagingParameters GetPagingParameters(HttpRequest request)
         {
-            PagingParameters pagingParameters = new PagingParameters();
+            PagingParameters pagingParameters = new();
             if (!string.IsNullOrEmpty(request?.Query?["PagingModel"]))
             {
                 pagingParameters = JsonConvert.DeserializeObject<PagingParameters>(request?.Query["PagingModel"]);
-                var info = $"Subscriber trigger function: Paging model parameters {pagingParameters}.";
+                var info = $"Extract function: Endpoint LatestExtract [ Paging model parameters {pagingParameters}.]";
                 _logger.LogInformation(info);
             }
             return pagingParameters;
+        }
+
+        private static string GetServerIP()
+        {
+            string host = Dns.GetHostName();
+
+            IPHostEntry ip = Dns.GetHostEntry(host);
+            return ip.AddressList[0].ToString();
+        }
+
+        private static string GetIPFromRequestHeaders(HttpRequest request)
+        {
+            return (request.Headers["X-Forwarded-For"].FirstOrDefault() ?? "").Split(new char[] { ':' }).FirstOrDefault();
         }
     }
 }

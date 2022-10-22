@@ -48,24 +48,30 @@ public class Subscriber
     [FunctionName("SubscriberById")]
     [OpenApiOperation(operationId: "Run", tags: new[] { "Subscriber" })]
     [OpenApiSecurity("function_key", SecuritySchemeType.ApiKey, Name = "code", In = OpenApiSecurityLocationType.Query)]
-    [OpenApiParameter(name: "id", In = ParameterLocation.Query, Required = true, Type = typeof(string), Description = "The subscriber Id")]
+    [OpenApiParameter(name: "subscriberId", In = ParameterLocation.Query, Required = true, Type = typeof(string), Description = "The subscriber Id")]
     [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "text/plain", bodyType: typeof(Models.SubscriberModels.Subscriber), Description = "Subscriber details for the Id specified")]
     public async Task<IActionResult> GetSubscriberById(
         [HttpTrigger(AuthorizationLevel.Function, "get", Route = "subscribers/{id}")] HttpRequest req)
     {
-        string id = req.Query["id"];
-        if (string.IsNullOrEmpty(id))
+        string subscriberId = req.Query["subscriberId"];
+        if (string.IsNullOrEmpty(subscriberId))
         {
             var error = "Subscriber trigger function: missing query parameter subscriber Id is required.";
             _logger.LogError(error);
             return new BadRequestObjectResult(error);
         }
 
-        _logger.LogInformation($"Subsciber trigger function retrieving subscriber details for subscriber Id {id}.");
+        _logger.LogInformation($"Subsciber trigger function retrieving subscriber details for subscriber Id {subscriberId}.");
         
-        var subscribers = await _subscriberDataProvider.GetSubscriberByIdAsync(id);
+        var subscriber = await _subscriberDataProvider.GetSubscriberByIdAsync(subscriberId);
+        if (subscriber == null)
+        {
+            var error = $"Subscriber function: Endpoint GetSubscriberById [ subscriber {subscriberId} not found.]";
+            _logger.LogError(error);
+            return new NotFoundObjectResult(error);
+        }
 
-        return new OkObjectResult(subscribers);
+        return new OkObjectResult(subscriber);
     }
 
     [FunctionName("active-subscribers")]
@@ -143,8 +149,8 @@ public class Subscriber
         string json = await req.ReadAsStringAsync();
         if (!string.IsNullOrEmpty(json))
         {
-            var subscriberDetails = JsonConvert.DeserializeObject<Models.SubscriberModels.CreateUpdateSubscriber>(json);
-            _logger.LogInformation($"Update Subsciber trigger function for subscriber details {json}");
+            var subscriberDetails = JsonConvert.DeserializeObject<CreateUpdateSubscriber>(json);
+            _logger.LogInformation($"Update Subscriber trigger function for subscriber details {json}");
 
             await _subscriberDataProvider.UpdateSubscriberAsync(subscriberId, subscriberDetails);
 

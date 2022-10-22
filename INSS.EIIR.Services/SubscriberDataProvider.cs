@@ -53,9 +53,9 @@ public class SubscriberDataProvider : ISubscriberDataProvider
 
     public async Task<SubscriberWithPaging> GetInActiveSubscribersAsync(PagingParameters pagingParameters)
     {
-        var totalSubscribers = (await _subscriberRepository.GetSubscribersAsync()).Where(s => s.SubscribedTo < DateTime.Today && s.AccountActive.ToUpperInvariant() == "N");
+        var totalSubscribers = (await _subscriberRepository.GetSubscribersAsync()).Where(s => s.SubscribedTo < DateTime.Today || s.AccountActive.ToUpperInvariant() == "N");
         var pagedSubscribers = totalSubscribers
-                                .Where(s => s.SubscribedTo < DateTime.Today && s.AccountActive.ToUpperInvariant() == "N")
+                                .Where(s => s.SubscribedTo < DateTime.Today || s.AccountActive.ToUpperInvariant() == "N")
                                 .Skip(pagingParameters.Skip)
                                 .Take(pagingParameters.PageSize);
         var response = new SubscriberWithPaging

@@ -3,6 +3,7 @@ using INSS.EIIR.Data.AutoMapperProfiles;
 using INSS.EIIR.Data.Models;
 using INSS.EIIR.DataAccess;
 using INSS.EIIR.Functions.Functions;
+using INSS.EIIR.Interfaces.DataAccess;
 using INSS.EIIR.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Internal;
@@ -85,12 +86,21 @@ namespace INSS.EIIR.Functions.Tests
         {
             //Arrange
             var logger = Mock.Of<ILogger<Subscriber>>();
-            var subscriberFunc = new Subscriber(logger, _subscriberDataProvider);
+            var expectedResult = new Models.SubscriberModels.Subscriber() { SubscriberId = "12345", AccountActive = "Y", SubscribedFrom = DateTime.Today.AddDays(-10), SubscribedTo = DateTime.Today.AddDays(10) };
+
+            var repositoryMock = new Mock<ISubscriberRepository>();
+            repositoryMock
+                .Setup(m => m.GetSubscriberByIdAsync("12345"))
+                .ReturnsAsync(expectedResult);
+
+            var subscriberDataProvider = new SubscriberDataProvider(repositoryMock.Object);
+            var subscriberFunc = new Subscriber(logger, subscriberDataProvider);
+
             var paramsDictionary = new Dictionary<string, StringValues>
             {
-                { "id", "12345" }
+                { "subscriberId", "12345" }
             };
-
+     
             Mock<HttpRequest> mockRequest = CreateMockGetWithParamRequest(paramsDictionary);
 
             //Act
@@ -98,6 +108,27 @@ namespace INSS.EIIR.Functions.Tests
 
             //Assert
             Assert.IsType<OkObjectResult>(response);
+        }
+
+        [Fact]
+        public async Task Subscriber_GetSubscriberById_Returns_NotFoundResult()
+        {
+            //Arrange
+            var logger = Mock.Of<ILogger<Subscriber>>();
+            var subscriberFunc = new Subscriber(logger, _subscriberDataProvider);
+
+            var paramsDictionary = new Dictionary<string, StringValues>
+            {
+                { "subscriberId", "12345" }
+            };
+
+            Mock<HttpRequest> mockRequest = CreateMockGetWithParamRequest(paramsDictionary);
+
+            //Act
+            var response = await subscriberFunc.GetSubscriberById(mockRequest.Object) as NotFoundObjectResult;
+
+            //Assert
+            Assert.IsType<NotFoundObjectResult>(response);
         }
 
         [Fact]

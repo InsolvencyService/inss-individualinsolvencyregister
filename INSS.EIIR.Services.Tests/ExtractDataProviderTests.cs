@@ -59,6 +59,48 @@ namespace INSS.EIIR.Services.Tests
             extracts.First().DownloadZiplink.Should().Contain("zip");
         }
 
+        [Fact]
+        public async Task GetLatestExtract_For_Download()
+        {
+            
+            var logger = new Mock<ILoggerFactory>();
+            var dbOptions = new Mock<IOptions<DatabaseConfig>>();
+            var blobServiceClient = new Mock<BlobServiceClient>();
+
+            var expectedResult = GetLatestExtract();
+            
+            var repositoryMock = new Mock<IExtractRepository>();
+            repositoryMock
+                .Setup(m => m.GetLatestExtractForDownload())
+                .ReturnsAsync(expectedResult);
+
+
+            var service = new ExtractDataProvider(logger.Object, repositoryMock.Object, dbOptions.Object, blobServiceClient.Object);
+            var result = await service.GetLatestExtractForDownload();
+
+            repositoryMock.Verify(m => m.GetLatestExtractForDownload(), Times.Once);
+
+            result.Should().Be(expectedResult);
+            result.ExtractId.Should().BeGreaterThan(0);
+            result.DownloadZiplink.Should().Contain("zip");
+
+        }
+
+        private static Extract GetLatestExtract()
+        {
+            return new Extract
+            {
+                ExtractId = 20221021,
+                SnapshotCompleted = "Y",
+                SnapshotDate = new DateTime(2022, 10, 21),
+                ExtractCompleted = "Y",
+                ExtractDate = new DateTime(2022, 10, 21),
+                ExtractFilename = "3CO5I3H7",
+                DownloadZiplink = "http://www.insolvency.gov.uk/eiir/3CO5I3H7.zip",
+                DownloadLink = "http://www.insolvency.gov.uk/eiir/3CO5I3H7.xml"
+            };
+        }
+
         private static IEnumerable<Extract> GetExtracts()
         {
             return new List<Extract>
