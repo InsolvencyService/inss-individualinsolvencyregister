@@ -120,7 +120,7 @@
                     Start date
                 </dt>
                 <dd class="govuk-summary-list__value">
-                    @(Model.SubscribedFrom.HasValue ? Model.SubscribedFrom.Value.ToString("dd MMMM yyyy") : "")
+                    @Model.SubscribedFrom?.ToString("dd MMMM yyyy")
                 </dd>
                 <dd class="govuk-summary-list__actions">
                     <a class="govuk-link govuk-link--no-visited-state" href="@(Model.SubscriberId)/change-profile#start-day">
@@ -133,7 +133,7 @@
                     End date
                 </dt>
                 <dd class="govuk-summary-list__value">
-                    @(Model.SubscribedTo.HasValue ? Model.SubscribedTo.Value.ToString("dd MMMM yyyy") : "")
+                    @Model.SubscribedTo?.ToString("dd MMMM yyyy")
                 </dd>
                 <dd class="govuk-summary-list__actions">
                     <a class="govuk-link govuk-link--no-visited-state" href="@(Model.SubscriberId)/change-profile#end-day">

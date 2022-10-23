@@ -19,7 +19,7 @@
                     <label class="govuk-label" for="organisation">
                         Name
                     </label>
-                    <input class="govuk-input" id="organisation" name="organisation" type="text" autocomplete="organisation" value="Experian">
+                    <input class="govuk-input" id="organisation" name="organisation" type="text" autocomplete="organisation" value="@Model.OrganisationName">
                 </div>
                 <div class="govuk-form-group">
                     <label class="govuk-label" for="type">
@@ -55,37 +55,37 @@
                     <label class="govuk-label" for="address-line-1">
                         Address line 1
                     </label>
-                    <input class="govuk-input" id="address-line-1" name="address-line-1" type="text" autocomplete="address-line-1" value="Newenham House">
+                    <input class="govuk-input" id="address-line-1" name="address-line-1" type="text" autocomplete="address-line-1" value="@Model.SubscriberDetails.ContactAddress1">
                 </div>
                 <div class="govuk-form-group">
                     <label class="govuk-label" for="address-line-2">
                         Address line 2 (optional)
                     </label>
-                    <input class="govuk-input govuk-!-width-full" id="address-line-2" name="address-line-2" type="text" autocomplete="address-line-2" value="Northern Cross, Malahide Road">
+                    <input class="govuk-input govuk-!-width-full" id="address-line-2" name="address-line-2" type="text" autocomplete="address-line-2" value="@Model.SubscriberDetails.ContactAddress2">
                 </div>
                 <div class="govuk-form-group">
                     <label class="govuk-label" for="city">
                         Town or city
                     </label>
-                    <input class="govuk-input govuk-!-width-two-thirds" id="city" name="city" type="text" autocomplete="city" value="Dublin 17">
+                    <input class="govuk-input govuk-!-width-two-thirds" id="city" name="city" type="text" autocomplete="city" value="@Model.SubscriberDetails.ContactCity">
                 </div>
                 <div class="govuk-form-group">
                     <label class="govuk-label" for="postcode">
                         Postcode
                     </label>
-                    <input class="govuk-input govuk-input--width-10" id="postcode" name="postcode" type="text" autocomplete="postcode" value="D17 AY61">
+                    <input class="govuk-input govuk-input--width-10" id="postcode" name="postcode" type="text" autocomplete="postcode" value="@Model.SubscriberDetails.ContactPostcode">
                 </div>
                 <div class="govuk-form-group">
                     <label class="govuk-label" for="email-address">
                         Email address
                     </label>
-                    <input class="govuk-input" id="email-address" name="email-address" type="text" autocomplete="email-address" value="joe.bloggs@experianplc.com">
+                    <input class="govuk-input" id="email-address" name="email-address" type="text" autocomplete="email-address" value="@Model.SubscriberDetails.ContactEmail">
                 </div>
                 <div class="govuk-form-group govuk-!-margin-bottom-8">
                     <label class="govuk-label" for="telephone">
                         Telephone number
                     </label>
-                    <input class="govuk-input govuk-input--width-20" id="telephone" name="telephone" type="text" autocomplete="telephone" value="+44 (0) 344 481 8000">
+                    <input class="govuk-input govuk-input--width-20" id="telephone" name="telephone" type="text" autocomplete="telephone" value="@Model.SubscriberDetails.ContactTelephone">
                 </div>
             </fieldset>
 
@@ -105,7 +105,7 @@
                             <label class="govuk-label govuk-date-input__label" for="application-day">
                                 Day
                             </label>
-                            <input class="govuk-input govuk-date-input__input govuk-input--width-2" id="application-day" name="application-day" type="text" inputmode="numeric" value="12">
+                            <input class="govuk-input govuk-date-input__input govuk-input--width-2" id="application-day" name="application-day" type="text" inputmode="numeric" value="@Model.AuthorisedDate?.Day">
                         </div>
                     </div>
                     <div class="govuk-date-input__item">
@@ -113,7 +113,7 @@
                             <label class="govuk-label govuk-date-input__label" for="application-month">
                                 Month
                             </label>
-                            <input class="govuk-input govuk-date-input__input govuk-input--width-2" id="application-month" name="application-month" type="text" inputmode="numeric" value="12">
+                            <input class="govuk-input govuk-date-input__input govuk-input--width-2" id="application-month" name="application-month" type="text" inputmode="numeric" value="@Model.AuthorisedDate?.Month">
                         </div>
                     </div>
                     <div class="govuk-date-input__item">
@@ -121,7 +121,7 @@
                             <label class="govuk-label govuk-date-input__label" for="passport-issued-year">
                                 Year
                             </label>
-                            <input class="govuk-input govuk-date-input__input govuk-input--width-4" id="application-year" name="application-year" type="text" inputmode="numeric" value="2005">
+                            <input class="govuk-input govuk-date-input__input govuk-input--width-4" id="application-year" name="application-year" type="text" inputmode="numeric" value="@Model.AuthorisedDate?.Year">
                         </div>
                     </div>
                 </div>
@@ -142,7 +142,7 @@
                             <label class="govuk-label govuk-date-input__label" for="start-day">
                                 Day
                             </label>
-                            <input class="govuk-input govuk-date-input__input govuk-input--width-2" id="start-day" name="start-day" type="text" inputmode="numeric" value="12">
+                            <input class="govuk-input govuk-date-input__input govuk-input--width-2" id="start-day" name="start-day" type="text" inputmode="numeric" value="@Model.SubscribedFrom?.Day">
                         </div>
                     </div>
                     <div class="govuk-date-input__item">
@@ -150,7 +150,7 @@
                             <label class="govuk-label govuk-date-input__label" for="start-month">
                                 Month
                             </label>
-                            <input class="govuk-input govuk-date-input__input govuk-input--width-2" id="start-month" name="start-month" type="text" inputmode="numeric" value="12">
+                            <input class="govuk-input govuk-date-input__input govuk-input--width-2" id="start-month" name="start-month" type="text" inputmode="numeric" value="@Model.SubscribedFrom?.Month">
                         </div>
                     </div>
                     <div class="govuk-date-input__item">
@@ -158,11 +158,10 @@
                             <label class="govuk-label govuk-date-input__label" for="start-year">
                                 Year
                             </label>
-                            <input class="govuk-input govuk-date-input__input govuk-input--width-4" id="start-year" name="start-year" type="text" inputmode="numeric" value="2005">
+                            <input class="govuk-input govuk-date-input__input govuk-input--width-4" id="start-year" name="start-year" type="text" inputmode="numeric" value="@Model.SubscribedFrom?.Year">
                         </div>
                     </div>
                 </div>
-
             </fieldset>
 
 
@@ -178,7 +177,7 @@
                             <label class="govuk-label govuk-date-input__label" for="end-day">
                                 Day
                             </label>
-                            <input class="govuk-input govuk-date-input__input govuk-input--width-2" id="end-day" name="end-day" type="text" inputmode="numeric" value="12">
+                            <input class="govuk-input govuk-date-input__input govuk-input--width-2" id="end-day" name="end-day" type="text" inputmode="numeric" value="@Model.SubscribedTo?.Day">
                         </div>
                     </div>
                     <div class="govuk-date-input__item">
@@ -186,7 +185,7 @@
                             <label class="govuk-label govuk-date-input__label" for="end-month">
                                 Month
                             </label>
-                            <input class="govuk-input govuk-date-input__input govuk-input--width-2" id="end-month" name="end-month" type="text" inputmode="numeric" value="08">
+                            <input class="govuk-input govuk-date-input__input govuk-input--width-2" id="end-month" name="end-month" type="text" inputmode="numeric" value="@Model.SubscribedTo?.Month">
                         </div>
                     </div>
                     <div class="govuk-date-input__item">
@@ -194,7 +193,7 @@
                             <label class="govuk-label govuk-date-input__label" for="end-year">
                                 Year
                             </label>
-                            <input class="govuk-input govuk-date-input__input govuk-input--width-4" id="end-year" name="end-year" type="text" inputmode="numeric" value="2003">
+                            <input class="govuk-input govuk-date-input__input govuk-input--width-4" id="end-year" name="end-year" type="text" inputmode="numeric" value="@Model.SubscribedTo?.Year">
                         </div>
                     </div>
                 </div>
