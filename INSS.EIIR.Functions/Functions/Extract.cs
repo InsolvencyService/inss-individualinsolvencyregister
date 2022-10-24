@@ -36,10 +36,10 @@ namespace INSS.EIIR.Functions.Functions
         [FunctionName("extracts")]
         [OpenApiOperation(operationId: "Run", tags: new[] { "Extract" })]
         [OpenApiSecurity("apikeyheader_auth", SecuritySchemeType.ApiKey, In = OpenApiSecurityLocationType.Header, Name = "x-functions-key")]
-        [OpenApiParameter(name: "PagingModel", In = ParameterLocation.Query, Required = false, Type = typeof(PagingParameters), Description = "The Paging Model")]
+        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(PagingParameters), Required = false, Description = "The Paging Model")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "text/plain", bodyType: typeof(ExtractWithPaging), Description = "A list of extracts with the paging model")]
         public async Task<IActionResult> ListExtracts(
-            [HttpTrigger(AuthorizationLevel.Function, "get", Route = "eiir/extracts")] HttpRequest req)
+            [HttpTrigger(AuthorizationLevel.Function, "post", Route = "eiir/extracts")] HttpRequest req)
         {
             _logger.LogInformation("Extract function ListExtracts called, retrieving all extracts.");
 
