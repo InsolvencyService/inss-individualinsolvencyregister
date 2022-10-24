@@ -69,6 +69,7 @@ jobs:
                     -servicebussubscriberconnectionstring "$(servicebus__subscriberconnectionstring)"
                     -servicebusextractjobqueue "$(servicebusextractjobqueue)"
                     -functionapikey "$(functionapikey)"
+                    -notify__connectionstring "$(notify__connectionstring)"
 
 
               - task: AzureAppServiceManage@0
