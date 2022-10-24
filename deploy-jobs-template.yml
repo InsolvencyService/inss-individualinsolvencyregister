@@ -68,6 +68,8 @@ jobs:
                     -servicebus__notifyqueue "$(servicebus__notifyqueue)"
                     -servicebussubscriberconnectionstring "$(servicebus__subscriberconnectionstring)"
                     -servicebusextractjobqueue "$(servicebusextractjobqueue)"
+                    -functionapikey "$(functionapikey)"
+
 
               - task: AzureAppServiceManage@0
                 displayName: Start Staging Slot
@@ -150,8 +152,8 @@ jobs:
                   package: '$(Pipeline.Workspace)/**/${{ parameters.appZipFile }}'
                   appSettings: >
                     -ConnectionStrings__iirwebdbContextConnectionString "$(iirwebdbContextConnectionString)"
-                    -ApiSettings__ApiKey "$(webappApiKey)"
-                    -ApiSettings__BaseUrl "$(webappBaseUrl)"
+                    -ApiSettings__ApiKey "$(functionapikey)"
+                    -ApiSettings__BaseUrl "$(functionBaseUrl)"
 
 
               - task: AzureAppServiceManage@0
