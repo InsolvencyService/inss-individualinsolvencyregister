@@ -27,6 +27,6 @@
     "blobcontainername": "__containername__",
     "extractjobserviceurl": "__extractjobserviceurl__",
     "extractjobtimercron": "__extractjobtimercron__",
-    "ApiSettings__ApiKey": "__ApiSettings__ApiKey__"
+    "functionapikey": "__functionapikey__"
   }
 }

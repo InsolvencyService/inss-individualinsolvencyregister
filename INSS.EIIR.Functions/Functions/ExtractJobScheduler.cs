@@ -32,7 +32,7 @@ public class ExtractJobScheduler
         var apiKeyError = "Extract Job Scheduler ApiKey is missing";
 
         var extractJobServiceUrl = Environment.GetEnvironmentVariable("extractjobserviceurl");
-        var apiKey = Environment.GetEnvironmentVariable("ApiSettings__ApiKey");
+        var apiKey = Environment.GetEnvironmentVariable("functionapikey");
 
         if (string.IsNullOrEmpty(extractJobServiceUrl))
         {
