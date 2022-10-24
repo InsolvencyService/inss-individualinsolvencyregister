@@ -21,6 +21,9 @@ public class ExtractDataProvider : IExtractDataProvider
     private readonly DatabaseConfig _dbConfig;
     private readonly BlobServiceClient _blobServiceClient;
     private readonly BlobContainerClient _containerClient;
+    private readonly string _blobContainerName;
+    private readonly string _blobConnectionString;
+
 
     public ExtractDataProvider(
         ILoggerFactory loggerFactory,
@@ -33,13 +36,18 @@ public class ExtractDataProvider : IExtractDataProvider
         _blockIDArrayList = new();
         _dbConfig = dbOptions.Value;
         _blobServiceClient = blobServiceClient;
-        var blobContainerName = Environment.GetEnvironmentVariable("blobcontainername");
-        if (string.IsNullOrEmpty(blobContainerName))
+        _blobContainerName = Environment.GetEnvironmentVariable("blobcontainername");
+        _blobConnectionString = Environment.GetEnvironmentVariable("blobconnectionstring");
+        if (string.IsNullOrEmpty(_blobContainerName))
         {
             throw new Exception("ExtractDataProvider missing blobcontainername configuration");
         }
+        if (string.IsNullOrEmpty(_blobConnectionString))
+        {
+            throw new Exception("ExtractDataProvider missing blobconnectionstring configuration");
+        }
 
-        _containerClient = _blobServiceClient.GetBlobContainerClient(blobContainerName);
+        _containerClient = _blobServiceClient.GetBlobContainerClient(_blobContainerName);
     }
     public async Task GenerateSubscriberFile(string filename)
     {
@@ -139,5 +147,19 @@ public class ExtractDataProvider : IExtractDataProvider
         };
 
         return response;
+    }
+
+    public async Task<byte[]> DownloadLatestExtractAsync(string blobName)
+    {
+        BlobClient blobClient = new(_blobConnectionString, _blobContainerName, blobName);
+        var downloadContent = await blobClient.DownloadAsync();
+        using MemoryStream ms = new();
+        await downloadContent.Value.Content.CopyToAsync(ms);
+        return ms.ToArray();
+    }
+
+    public async Task<Extract> GetLatestExtractForDownload()
+    {
+        return await _extractRepository.GetLatestExtractForDownload();
     }
 }
