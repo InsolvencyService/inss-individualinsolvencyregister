@@ -163,12 +163,15 @@ namespace INSS.EIIR.Functions.Tests
         {
             var ms = new MemoryStream();
             var sw = new StreamWriter(ms);
+            var headers = new Mock<IHeaderDictionary>();
+
+            headers.Setup(x => x["x-functions-key"]).Returns("mbhyhterkjopeNwshQ8y8jcZ5vCRBWKU8fY1fu-sSFX-AzFu1FZb0w==");
 
             var mockRequest = new Mock<HttpRequest>();
-            mockRequest.Setup(x => x.Body).Returns(ms);
-            
+            mockRequest.Setup(h => h.Headers).Returns(headers.Object);
             mockRequest.Setup(i => i.Query).Returns(new QueryCollection(paramsDictionary));
-    
+            mockRequest.Setup(x => x.Body).Returns(ms);
+                
             return mockRequest;
         }      
     }

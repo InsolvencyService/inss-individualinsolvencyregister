@@ -35,7 +35,7 @@ namespace INSS.EIIR.Functions.Functions
 
         [FunctionName("extracts")]
         [OpenApiOperation(operationId: "Run", tags: new[] { "Extract" })]
-        [OpenApiSecurity("function_key", SecuritySchemeType.ApiKey, Name = "code", In = OpenApiSecurityLocationType.Query)]
+        [OpenApiSecurity("apikeyheader_auth", SecuritySchemeType.ApiKey, In = OpenApiSecurityLocationType.Header, Name = "x-functions-key")]
         [OpenApiParameter(name: "PagingModel", In = ParameterLocation.Query, Required = false, Type = typeof(PagingParameters), Description = "The Paging Model")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "text/plain", bodyType: typeof(ExtractWithPaging), Description = "A list of extracts with the paging model")]
         public async Task<IActionResult> ListExtracts(
@@ -51,7 +51,7 @@ namespace INSS.EIIR.Functions.Functions
 
         [FunctionName("extract-download")]
         [OpenApiOperation(operationId: "Run", tags: new[] { "Extract" })]
-        [OpenApiSecurity("function_key", SecuritySchemeType.ApiKey, Name = "code", In = OpenApiSecurityLocationType.Query)]
+        [OpenApiSecurity("apikeyheader_auth", SecuritySchemeType.ApiKey, In = OpenApiSecurityLocationType.Header, Name = "x-functions-key")]
         [OpenApiParameter(name: "subscriberId", In = ParameterLocation.Query, Required = true, Type = typeof(string), Description = "The subscriber Id")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/octet-stream", bodyType: typeof(string), Description = "The latest extract zip file")]
         public async Task<IActionResult> LatestExtract(

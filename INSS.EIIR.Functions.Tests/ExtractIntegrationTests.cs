@@ -141,6 +141,7 @@ public class ExtractIntegrationTests
         var headers = new Mock<IHeaderDictionary>();
         
         headers.Setup(x => x["X-Forwarded-For"]).Returns("127.0.0.1");
+        headers.Setup(x => x["x-functions-key"]).Returns("mbhyhterkjopeNwshQ8y8jcZ5vCRBWKU8fY1fu-sSFX-AzFu1FZb0w==");
 
         var mockRequest = new Mock<HttpRequest>();
         mockRequest.Setup(h => h.Headers).Returns(headers.Object);

@@ -61,6 +61,10 @@ namespace INSS.EIIR.Functions
             if (string.IsNullOrEmpty(serviceBusPubConnectionString))
                 throw new ArgumentNullException("servicebus__publisherconnectionstring is missing");
 
+            var motifyConnectionString = Environment.GetEnvironmentVariable("notify__connectionstring");
+            if (string.IsNullOrEmpty(motifyConnectionString))
+                throw new ArgumentNullException("notify__connectionstring is missing");
+            
             builder.Services.AddTransient(_ =>
             {
                 return new EIIRContext(connectionString);
@@ -99,7 +103,7 @@ namespace INSS.EIIR.Functions
 
             builder.Services.AddAzureClients(clientsBuilder =>
             {
-                clientsBuilder.AddServiceBusClient(serviceBusPubConnectionString)
+                clientsBuilder.AddServiceBusClient(motifyConnectionString)
                   .WithName("ServiceBusPublisher")
                   .ConfigureOptions(options =>
                   {
