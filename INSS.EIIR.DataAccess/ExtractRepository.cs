@@ -61,4 +61,15 @@ public class ExtractRepository : IExtractRepository
         return totalExtracts;
     }
 
+    public async Task<Extract> GetLatestExtractForDownload()
+    {
+        var result = await _eiirContext.ExtractAvailabilities.OrderByDescending(x => x.ExtractId)
+                                                              .Where(x => x.ExtractCompleted.ToUpper() == "Y")                                                              
+                                                              .FirstOrDefaultAsync();
+
+        var extract = _mapper.Map<ExtractAvailability, Extract>(result);
+
+        return extract;
+    }
+
 }

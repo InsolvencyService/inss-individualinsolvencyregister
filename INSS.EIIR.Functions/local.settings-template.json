@@ -20,11 +20,13 @@
     "database__updateextractavailableprocedure": "__database:updateextractavailableprocedure__",
     "database__databuffersize": 8000000,
     "notify__subscriberEmailTemplateId": "__notify:subscriberEmailTemplateId__",
+    "notify__connectionstring": "__notify__connectionstring__",
     "servicebussubscriberconnectionstring": "__servicebus:subscriberconnectionstring__",
     "servicebusextractjobqueue": "__servicebus:extractjobqueue__",
     "blobconnectionstring": "UseDevelopmentStorage=true",
     "blobcontainername": "__containername__",
     "extractjobserviceurl": "__extractjobserviceurl__",
-    "extractjobtimercron": "__extractjobtimercron__"
+    "extractjobtimercron": "__extractjobtimercron__",
+    "functionapikey": "__functionapikey__"
   }
 }

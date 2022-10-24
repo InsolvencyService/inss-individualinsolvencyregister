@@ -8,5 +8,6 @@ public interface IExtractRepository
     Extract GetExtractAvailable();
     void UpdateExtractAvailable();
     Task<IEnumerable<Extract>> GetExtractsAsync(PagingParameters pagingParameters);
+    Task<Extract> GetLatestExtractForDownload();
     Task<int> GetTotalExtractsAsync();
 }
