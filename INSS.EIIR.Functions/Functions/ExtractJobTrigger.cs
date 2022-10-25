@@ -76,7 +76,7 @@ public class ExtractJobTrigger
             ExtractFilename = extractJob.ExtractFilename!,
         };
 
-        await _serviceBusMessageSender.SendMessageAsync(message, extractJobQueue);
+        await _serviceBusMessageSender.SendExtractJobMessageAsync(message, extractJobQueue);
 
         string responseMessage = $"This eiir subscriber file creation has been triggered at: {DateTime.Now}";
 

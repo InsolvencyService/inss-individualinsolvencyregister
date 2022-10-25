@@ -42,7 +42,7 @@ public class NotificationService : INotificationService
 
     public async Task CreateNotificationAsync<T>(T message, Dictionary<string, object> properties)
     {           
-        await _serviceBusMessageSender.SendMessageAsync(message, _serviceBusConfig.NotifyQueue, properties);
+        await _serviceBusMessageSender.SendNotifyMessageAsync(message, _serviceBusConfig.NotifyQueue, properties);
     }
 
     public async Task ScheduleSubscriberNotificationAsync(IEnumerable<Subscriber> subscribers)
