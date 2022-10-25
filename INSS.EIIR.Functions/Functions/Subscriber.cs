@@ -1,4 +1,3 @@
-using Azure.Core;
 using INSS.EIIR.Interfaces.Services;
 using INSS.EIIR.Models.Configuration;
 using INSS.EIIR.Models.SubscriberModels;
@@ -11,6 +10,7 @@ using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Enums;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
+using System.IO;
 using System.Net;
 using System.Threading.Tasks;
 
@@ -39,7 +39,7 @@ public class Subscriber
     {
         _logger.LogInformation("Subscriber trigger function retrieving all subscribers.");
 
-        var pagingParameters = GetPagingParameters(req);
+        var pagingParameters = await GetPagingParameters(req);
         var subscribers = await _subscriberDataProvider.GetSubscribersAsync(pagingParameters);
 
         return new OkObjectResult(subscribers);
@@ -84,7 +84,7 @@ public class Subscriber
     {
         _logger.LogInformation("Subscriber trigger function retrieving active subscribers.");
 
-        var pagingParameters = GetPagingParameters(req);
+        var pagingParameters = await GetPagingParameters(req);
         var subscribers = await _subscriberDataProvider.GetActiveSubscribersAsync(pagingParameters);
 
         return new OkObjectResult(subscribers);
@@ -100,7 +100,7 @@ public class Subscriber
     {
         _logger.LogInformation("Subscriber trigger function retrieving inactive subscribers.");
 
-        var pagingParameters = GetPagingParameters(req);
+        var pagingParameters = await GetPagingParameters(req);
         var subscribers = await _subscriberDataProvider.GetInActiveSubscribersAsync(pagingParameters);
 
         return new OkObjectResult(subscribers);
@@ -161,12 +161,13 @@ public class Subscriber
         return new BadRequestObjectResult(error);
     }
 
-    private PagingParameters GetPagingParameters(HttpRequest request)
+    private async Task<PagingParameters> GetPagingParameters(HttpRequest request)
     {
-        PagingParameters pagingParameters = new PagingParameters();
-        if (!string.IsNullOrEmpty(request?.Query?["PagingModel"]))
+        PagingParameters pagingParameters = new();
+        if (request?.Body.Length > 0)
         {
-            pagingParameters = JsonConvert.DeserializeObject<PagingParameters>(request?.Query["PagingModel"]);
+            var content = await new StreamReader(request.Body).ReadToEndAsync();
+            pagingParameters = JsonConvert.DeserializeObject<PagingParameters>(content);
             var info = $"Subscriber trigger function: Paging model parameters {pagingParameters}.";
             _logger.LogInformation(info);
         }

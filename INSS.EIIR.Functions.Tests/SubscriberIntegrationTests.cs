@@ -173,6 +173,6 @@ namespace INSS.EIIR.Functions.Tests
             mockRequest.Setup(x => x.Body).Returns(ms);
                 
             return mockRequest;
-        }      
+        }
     }
 }

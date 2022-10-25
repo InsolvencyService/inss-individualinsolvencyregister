@@ -11,6 +11,7 @@ using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Enums;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
@@ -43,7 +44,7 @@ namespace INSS.EIIR.Functions.Functions
         {
             _logger.LogInformation("Extract function ListExtracts called, retrieving all extracts.");
 
-            var pagingParameters = GetPagingParameters(req);
+            var pagingParameters = await GetPagingParameters(req);
             var extractFiles = await _extractDataProvider.ListExtractsAsync(pagingParameters);
 
             return new OkObjectResult(extractFiles);
@@ -103,13 +104,14 @@ namespace INSS.EIIR.Functions.Functions
             return extractFileDownload;
         }
 
-        private PagingParameters GetPagingParameters(HttpRequest request)
+        private async Task<PagingParameters> GetPagingParameters(HttpRequest request)
         {
             PagingParameters pagingParameters = new();
-            if (!string.IsNullOrEmpty(request?.Query?["PagingModel"]))
+            if (request?.Body.Length > 0)
             {
-                pagingParameters = JsonConvert.DeserializeObject<PagingParameters>(request?.Query["PagingModel"]);
-                var info = $"Extract function: Endpoint LatestExtract [ Paging model parameters {pagingParameters}.]";
+                var content = await new StreamReader(request.Body).ReadToEndAsync();
+                pagingParameters = JsonConvert.DeserializeObject<PagingParameters>(content);
+                var info = $"Subscriber trigger function: Paging model parameters {pagingParameters}.";
                 _logger.LogInformation(info);
             }
             return pagingParameters;
