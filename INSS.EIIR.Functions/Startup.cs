@@ -61,8 +61,8 @@ namespace INSS.EIIR.Functions
             if (string.IsNullOrEmpty(serviceBusPubConnectionString))
                 throw new ArgumentNullException("servicebus__publisherconnectionstring is missing");
 
-            var motifyConnectionString = Environment.GetEnvironmentVariable("notify__connectionstring");
-            if (string.IsNullOrEmpty(motifyConnectionString))
+            var notifyConnectionString = Environment.GetEnvironmentVariable("notify__connectionstring");
+            if (string.IsNullOrEmpty(notifyConnectionString))
                 throw new ArgumentNullException("notify__connectionstring is missing");
             
             builder.Services.AddTransient(_ =>
@@ -103,8 +103,15 @@ namespace INSS.EIIR.Functions
 
             builder.Services.AddAzureClients(clientsBuilder =>
             {
-                clientsBuilder.AddServiceBusClient(motifyConnectionString)
-                  .WithName("ServiceBusPublisher")
+                clientsBuilder.AddServiceBusClient(serviceBusPubConnectionString)
+                  .WithName("ServiceBusPublisher_ExtractJob")
+                  .ConfigureOptions(options =>
+                  {
+                      options.TransportType = ServiceBusTransportType.AmqpWebSockets;
+                  });
+
+                clientsBuilder.AddServiceBusClient(notifyConnectionString)
+                  .WithName("ServiceBusPublisher_Notify")
                   .ConfigureOptions(options =>
                   {
                       options.TransportType = ServiceBusTransportType.AmqpWebSockets;
