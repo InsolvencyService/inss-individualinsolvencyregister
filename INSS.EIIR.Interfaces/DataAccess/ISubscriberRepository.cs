@@ -11,4 +11,6 @@ public interface ISubscriberRepository
     Task CreateSubscriberAsync(CreateUpdateSubscriber subscriber);
 
     Task UpdateSubscriberAsync(string subscriberId, CreateUpdateSubscriber subscriber);
+
+    Task CreateSubscriberDownload(string subscriberId, SubscriberDownloadDetail subscriberDownload);
 }

@@ -41,6 +41,7 @@ namespace INSS.EIIR.Functions
             builder.Services.AddHttpClient();
             builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
+            builder.Services.AddHealthChecks();
             // Auto Mapper Configurations
             var mapperConfig = new MapperConfiguration(mc =>
             {
@@ -60,6 +61,10 @@ namespace INSS.EIIR.Functions
             if (string.IsNullOrEmpty(serviceBusPubConnectionString))
                 throw new ArgumentNullException("servicebus__publisherconnectionstring is missing");
 
+            var notifyConnectionString = Environment.GetEnvironmentVariable("notify__connectionstring");
+            if (string.IsNullOrEmpty(notifyConnectionString))
+                throw new ArgumentNullException("notify__connectionstring is missing");
+            
             builder.Services.AddTransient(_ =>
             {
                 return new EIIRContext(connectionString);
@@ -99,7 +104,14 @@ namespace INSS.EIIR.Functions
             builder.Services.AddAzureClients(clientsBuilder =>
             {
                 clientsBuilder.AddServiceBusClient(serviceBusPubConnectionString)
-                  .WithName("ServiceBusPublisher")
+                  .WithName("ServiceBusPublisher_ExtractJob")
+                  .ConfigureOptions(options =>
+                  {
+                      options.TransportType = ServiceBusTransportType.AmqpWebSockets;
+                  });
+
+                clientsBuilder.AddServiceBusClient(notifyConnectionString)
+                  .WithName("ServiceBusPublisher_Notify")
                   .ConfigureOptions(options =>
                   {
                       options.TransportType = ServiceBusTransportType.AmqpWebSockets;
