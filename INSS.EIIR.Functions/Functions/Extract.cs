@@ -11,6 +11,7 @@ using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Enums;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
@@ -36,14 +37,14 @@ namespace INSS.EIIR.Functions.Functions
         [FunctionName("extracts")]
         [OpenApiOperation(operationId: "Run", tags: new[] { "Extract" })]
         [OpenApiSecurity("apikeyheader_auth", SecuritySchemeType.ApiKey, In = OpenApiSecurityLocationType.Header, Name = "x-functions-key")]
-        [OpenApiParameter(name: "PagingModel", In = ParameterLocation.Query, Required = false, Type = typeof(PagingParameters), Description = "The Paging Model")]
+        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(PagingParameters), Required = false, Description = "The Paging Model")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "text/plain", bodyType: typeof(ExtractWithPaging), Description = "A list of extracts with the paging model")]
         public async Task<IActionResult> ListExtracts(
-            [HttpTrigger(AuthorizationLevel.Function, "get", Route = "eiir/extracts")] HttpRequest req)
+            [HttpTrigger(AuthorizationLevel.Function, "post", Route = "eiir/extracts")] HttpRequest req)
         {
             _logger.LogInformation("Extract function ListExtracts called, retrieving all extracts.");
 
-            var pagingParameters = GetPagingParameters(req);
+            var pagingParameters = await GetPagingParameters(req);
             var extractFiles = await _extractDataProvider.ListExtractsAsync(pagingParameters);
 
             return new OkObjectResult(extractFiles);
@@ -52,14 +53,13 @@ namespace INSS.EIIR.Functions.Functions
         [FunctionName("extract-download")]
         [OpenApiOperation(operationId: "Run", tags: new[] { "Extract" })]
         [OpenApiSecurity("apikeyheader_auth", SecuritySchemeType.ApiKey, In = OpenApiSecurityLocationType.Header, Name = "x-functions-key")]
-        [OpenApiParameter(name: "subscriberId", In = ParameterLocation.Query, Required = true, Type = typeof(string), Description = "The subscriber Id")]
+        [OpenApiParameter(name: "subscriberId", In = ParameterLocation.Path, Required = true, Type = typeof(string), Description = "The subscriber Id")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/octet-stream", bodyType: typeof(string), Description = "The latest extract zip file")]
         public async Task<IActionResult> LatestExtract(
-            [HttpTrigger(AuthorizationLevel.Function, "get", Route = "eiir/{subscriberId}/downloads/latest")] HttpRequest req)
+            [HttpTrigger(AuthorizationLevel.Function, "get", Route = "eiir/{subscriberId}/downloads/latest")] HttpRequest req, string subscriberId)
         {
             _logger.LogInformation("Extract function: Endpoint LatestExtract [ retrieving latest zip file.]");
 
-            string subscriberId = req.Query["subscriberId"];
             if (string.IsNullOrEmpty(subscriberId))
             {
                 var error = "Extract function: Endpoint LatestExtract [ missing query parameter subscriber Id is required.]";
@@ -103,13 +103,14 @@ namespace INSS.EIIR.Functions.Functions
             return extractFileDownload;
         }
 
-        private PagingParameters GetPagingParameters(HttpRequest request)
+        private async Task<PagingParameters> GetPagingParameters(HttpRequest request)
         {
             PagingParameters pagingParameters = new();
-            if (!string.IsNullOrEmpty(request?.Query?["PagingModel"]))
+            if (request?.Body.Length > 0)
             {
-                pagingParameters = JsonConvert.DeserializeObject<PagingParameters>(request?.Query["PagingModel"]);
-                var info = $"Extract function: Endpoint LatestExtract [ Paging model parameters {pagingParameters}.]";
+                var content = await new StreamReader(request.Body).ReadToEndAsync();
+                pagingParameters = JsonConvert.DeserializeObject<PagingParameters>(content);
+                var info = $"Subscriber trigger function: Paging model parameters {pagingParameters}.";
                 _logger.LogInformation(info);
             }
             return pagingParameters;
