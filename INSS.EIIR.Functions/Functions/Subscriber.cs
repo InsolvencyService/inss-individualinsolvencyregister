@@ -1,4 +1,3 @@
-using Azure.Core;
 using INSS.EIIR.Interfaces.Services;
 using INSS.EIIR.Models.Configuration;
 using INSS.EIIR.Models.SubscriberModels;

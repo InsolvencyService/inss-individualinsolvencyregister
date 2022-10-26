@@ -2,6 +2,8 @@
 
 @{
     ViewData["Title"] = "View subscribers";
+
+    var active = Model.Paging.Parameters ?? string.Empty;
 }
 
 @*<a asp-controller="ViewSubscribers" asp-action="Index" class="govuk-back-link">Back</a>*@
@@ -11,7 +13,7 @@
     <div class="govuk-grid-row">
 
         <div class="govuk-grid-column-one-third">
-
+            <input type="hidden" id="pageNumber" value="@Model.Paging.Page" />
             <fieldset class="govuk-fieldset" aria-describedby="status-hint">
                 <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
                     <h1 class="govuk-fieldset__heading">
@@ -20,13 +22,15 @@
                 </legend>
                 <div class="govuk-checkboxes" data-module="govuk-checkboxes">
                     <div class="govuk-checkboxes__item">
-                        <input class="govuk-checkboxes__input" id="Active" name="Active" type="checkbox" value="active">
+                        <input class="govuk-checkboxes__input" id="Active" name="Active" type="checkbox" value="active"
+                               @(active is "true" or "both" ? "checked=\"checked\"" : string.Empty)/>
                         <label class="govuk-label govuk-checkboxes__label" for="Active">
                             Active
                         </label>
                     </div>
                     <div class="govuk-checkboxes__item">
-                        <input class="govuk-checkboxes__input" id="InActive" name="InActive" type="checkbox" value="inActive">
+                        <input class="govuk-checkboxes__input" id="InActive" name="InActive" type="checkbox" value="inActive"
+                               @(active is "false" or "both" ? "checked=\"checked\"" : string.Empty)/>
                         <label class="govuk-label govuk-checkboxes__label" for="InActive">
                             InActive
                         </label>
@@ -58,7 +62,7 @@
                         {
                             <tr class="govuk-table__row">
                                 <td class="govuk-table__cell">
-                                    <a class="govuk-link--no-visited-state" href="@($"/Admin/Subscriber/{subscriber.SubscriberId}")">
+                                    <a class="govuk-link--no-visited-state" href="@($"/Admin/Subscriber/{subscriber.SubscriberId}/")">
                                         @subscriber.SubscriberId
                                     </a>
                                 </td>
@@ -81,3 +85,7 @@
     </div>
 
 </main>
+
+@section PageScripts {
+    <script src="~/js/subscriberList.js" asp-append-version="true" type="module"></script>
+}

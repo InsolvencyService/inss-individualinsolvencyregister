@@ -25,13 +25,13 @@ public class ClientService : IClientService
             .ReceiveJson<TResult>();
     }
 
-    public async Task<TResult> GetAsync<TResult>(string url, IDictionary<string, object> parameters)
+    public async Task<TResult> GetAsync<TResult>(string url, IList<string> parameters)
     {
         var clientUrl = _settings.BaseUrl.AppendPathSegment(url);
 
         foreach (var parameter in parameters)
         {
-            clientUrl.SetQueryParam(parameter.Key, parameter.Value);
+            clientUrl.AppendPathSegment(parameter);
         }
 
         return await clientUrl.GetJsonAsync<TResult>();
