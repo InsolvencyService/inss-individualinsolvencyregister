@@ -51,9 +51,8 @@ public class Subscriber
     [OpenApiParameter(name: "subscriberId", In = ParameterLocation.Path, Required = true, Type = typeof(string), Description = "The subscriber Id")]
     [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "text/plain", bodyType: typeof(Models.SubscriberModels.Subscriber), Description = "Subscriber details for the Id specified")]
     public async Task<IActionResult> GetSubscriberById(
-        [HttpTrigger(AuthorizationLevel.Function, "get", Route = "subscribers/{subscriberId}")] HttpRequest req)
+        [HttpTrigger(AuthorizationLevel.Function, "get", Route = "subscribers/{subscriberId}")] HttpRequest req, string subscriberId)
     {
-        string subscriberId = req.Query["subscriberId"];
         if (string.IsNullOrEmpty(subscriberId))
         {
             var error = "Subscriber trigger function: missing query parameter subscriber Id is required.";

@@ -96,15 +96,10 @@ namespace INSS.EIIR.Functions.Tests
             var subscriberDataProvider = new SubscriberDataProvider(repositoryMock.Object);
             var subscriberFunc = new Subscriber(logger, subscriberDataProvider);
 
-            var paramsDictionary = new Dictionary<string, StringValues>
-            {
-                { "subscriberId", "12345" }
-            };
-     
-            Mock<HttpRequest> mockRequest = CreateMockGetWithParamRequest(paramsDictionary);
+            Mock<HttpRequest> mockRequest = CreateMockRequest();
 
             //Act
-            var response = await subscriberFunc.GetSubscriberById(mockRequest.Object) as OkObjectResult;
+            var response = await subscriberFunc.GetSubscriberById(mockRequest.Object, "12345") as OkObjectResult;
 
             //Assert
             Assert.IsType<OkObjectResult>(response);
@@ -117,15 +112,10 @@ namespace INSS.EIIR.Functions.Tests
             var logger = Mock.Of<ILogger<Subscriber>>();
             var subscriberFunc = new Subscriber(logger, _subscriberDataProvider);
 
-            var paramsDictionary = new Dictionary<string, StringValues>
-            {
-                { "subscriberId", "12345" }
-            };
-
-            Mock<HttpRequest> mockRequest = CreateMockGetWithParamRequest(paramsDictionary);
+            Mock<HttpRequest> mockRequest = CreateMockRequest();
 
             //Act
-            var response = await subscriberFunc.GetSubscriberById(mockRequest.Object) as NotFoundObjectResult;
+            var response = await subscriberFunc.GetSubscriberById(mockRequest.Object, "12345") as NotFoundObjectResult;
 
             //Assert
             Assert.IsType<NotFoundObjectResult>(response);
