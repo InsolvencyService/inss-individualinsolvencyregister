@@ -131,13 +131,12 @@ public class Subscriber
     [FunctionName("subscriber-update")]
     [OpenApiOperation(operationId: "Run", tags: new[] { "Subscriber" })]
     [OpenApiSecurity("apikeyheader_auth", SecuritySchemeType.ApiKey, In = OpenApiSecurityLocationType.Header, Name = "x-functions-key")]
-    [OpenApiParameter(name: "subscriberId", In = ParameterLocation.Query, Required = true, Type = typeof(string), Description = "The subscriber Id")]
+    [OpenApiParameter(name: "subscriberId", In = ParameterLocation.Path, Required = true, Type = typeof(string), Description = "The subscriber Id")]
     [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(CreateUpdateSubscriber), Description = "The subscriber details to edit", Required = true)]
     [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "text/json", bodyType: typeof(string), Description = "Subscriber details to update")]
     public async Task<IActionResult> UpdateSubscriber(
-    [HttpTrigger(AuthorizationLevel.Function, "put", Route = "subscribers/{subscriberId}/update")] HttpRequest req)
+    [HttpTrigger(AuthorizationLevel.Function, "put", Route = "subscribers/{subscriberId}/update")] HttpRequest req, string subscriberId)
     {
-        string subscriberId = req.Query["subscriberId"];
         if (string.IsNullOrEmpty(subscriberId))
         {
             var subscriberIdIError = "Subscriber trigger function: missing query parameter subscriber Id is required.";
