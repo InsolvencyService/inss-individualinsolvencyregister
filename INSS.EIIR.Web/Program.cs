@@ -142,8 +142,6 @@ builder.Services.AddTransient(_ =>
 
     services.AddTransient<IAuthenticationProvider, AuthenticationProvider>();
     services.AddTransient<IAccountRepository, AccountRepository>();
-    services.AddTransient<ISubscriberDataProvider, SubscriberDataProvider>();
-    services.AddTransient<ISubscriberRepository, SubscriberRepository>();
 
     // Auto Mapper Configurations
     var mapperConfig = new MapperConfiguration(mc =>
@@ -156,6 +154,7 @@ builder.Services.AddTransient(_ =>
 
     services.AddTransient<IClientService, ClientService>();
     services.AddTransient<IIndividualSearch, IndividualSearch>();
+    services.AddTransient<ISubscriberService, SubscriberService>();
 }
 
 static bool IsAdminContext(RedirectContext<CookieAuthenticationOptions> context)

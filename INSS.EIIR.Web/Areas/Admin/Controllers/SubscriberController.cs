@@ -5,16 +5,17 @@ using System.Linq;
 using System.Net.Mail;
 using System.Threading.Tasks;
 using INSS.EIIR.Interfaces.Services;
+using INSS.EIIR.Interfaces.Web.Services;
 using INSS.EIIR.Models.Constants;
 using INSS.EIIR.Models.SubscriberModels;
 using INSS.EIIR.Web.Constants;
+using INSS.EIIR.Web.Services;
 using INSS.EIIR.Web.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.CodeAnalysis.Differencing;
 using Microsoft.VisualBasic;
-using static System.Net.Mime.MediaTypeNames;
 
 // For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -23,11 +24,11 @@ namespace INSS.EIIR.Web.Areas.Admin.Controllers
 
     public class SubscriberController : Controller
     {
-        private readonly ISubscriberDataProvider _subscriberDataProvider;
+        private readonly ISubscriberService _subscriberService;
 
-        public SubscriberController(ISubscriberDataProvider subscriberDataProvider)
+        public SubscriberController(ISubscriberService subscriberService)
         {
-            _subscriberDataProvider = subscriberDataProvider;
+            _subscriberService = subscriberService;
         }
 
         // GET: /<controller>/
@@ -41,7 +42,7 @@ namespace INSS.EIIR.Web.Areas.Admin.Controllers
         [Authorize(Roles = Role.Admin)]
         public async Task<IActionResult> Profile(int subscriberId)
         {
-            var subscriber = await _subscriberDataProvider.GetSubscriberByIdAsync($"{subscriberId}");
+            var subscriber = await _subscriberService.GetSubscriberByIdAsync($"{subscriberId}");
 
             return View(subscriber);
         }
@@ -51,7 +52,7 @@ namespace INSS.EIIR.Web.Areas.Admin.Controllers
         [Authorize(Roles = Role.Admin)]
         public async Task<IActionResult> ChangeProfile(int subscriberId)
         {
-            var subscriber = await _subscriberDataProvider.GetSubscriberByIdAsync($"{subscriberId}");
+            var subscriber = await _subscriberService.GetSubscriberByIdAsync($"{subscriberId}");
 
             var subscriberProfile = new SubscriberProfile
             {
@@ -92,6 +93,7 @@ namespace INSS.EIIR.Web.Areas.Admin.Controllers
         {
             if (ModelState.IsValid)
             {
+               
                 var createUpdateSubscriber = new CreateUpdateSubscriber
                 {
                     AccountActive = subscriber.AccountActive,
@@ -112,7 +114,7 @@ namespace INSS.EIIR.Web.Areas.Admin.Controllers
                     
                 };
 
-                await _subscriberDataProvider.UpdateSubscriberAsync($"{subscriber.SubscriberId}", createUpdateSubscriber);
+                await _subscriberService.UpdateSubscriberAsync($"{subscriber.SubscriberId}", createUpdateSubscriber);
 
                 return RedirectToRoute("SubscriberProfile", new { subscriberId = subscriber.SubscriberId });
 
