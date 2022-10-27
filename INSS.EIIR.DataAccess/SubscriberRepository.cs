@@ -25,10 +25,11 @@ public class SubscriberRepository : ISubscriberRepository
         List<Subscriber> subscribers = new();
 
         var results = await (from sa in _context.SubscriberAccounts
-                                orderby sa.SubscriberId
-                                join apps in _context.SubscriberApplications
-                                on new { Id = sa.SubscriberId } equals new { Id = apps.SubscriberId.ToString() }
-                                select new { SubscriberAccounts = sa, SubscriberApplications = apps }).ToListAsync();
+                                orderby sa.SubscribedTo descending,
+                                        sa.OrganisationName
+                                    join apps in _context.SubscriberApplications
+                                    on new { Id = sa.SubscriberId } equals new { Id = apps.SubscriberId.ToString() }
+                                    select new { SubscriberAccounts = sa, SubscriberApplications = apps }).ToListAsync();
 
         var contacts = await _context.SubscriberContacts.ToListAsync();
                 
