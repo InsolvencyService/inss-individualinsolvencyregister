@@ -78,9 +78,6 @@ namespace INSS.EIIR.Web.ViewModels
         [Required]
         public string AccountActive { get; set; }
 
-        [MaxLength(5)]
-        public string ContactTitle { get; set; }
-
         [MaxLength(40)]
         public string ContactForename { get; set; }
 

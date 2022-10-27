@@ -43,7 +43,7 @@
                     Full name
                 </dt>
                 <dd class="govuk-summary-list__value">
-                    @String.Join(' ', Model.SubscriberDetails.ContactTitle, Model.SubscriberDetails.ContactForename, Model.SubscriberDetails.ContactSurname)
+                    @String.Join(' ', Model.SubscriberDetails.ContactForename, Model.SubscriberDetails.ContactSurname)
                 </dd>
                 <dd class="govuk-summary-list__actions">
                     <a class="govuk-link govuk-link--no-visited-state" href="@(Model.SubscriberId)/change-profile#first-name">
@@ -107,7 +107,7 @@
                     Application submitted date
                 </dt>
                 <dd class="govuk-summary-list__value">
-                    @Model.AuthorisedDate
+                    @Model.SubscriberDetails.ApplicationDate
                 </dd>
                 <dd class="govuk-summary-list__actions">
                     <a class="govuk-link govuk-link--no-visited-state" href="@(Model.SubscriberId)/change-profile#application-day">
