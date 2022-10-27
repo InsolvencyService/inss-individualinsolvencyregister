@@ -18,7 +18,8 @@ public class SubscriberDataProvider : ISubscriberDataProvider
         var totalSubscribers = await _subscriberRepository.GetSubscribersAsync();
         var pagedSubscribers = totalSubscribers
                                 .Skip(pagingParameters.Skip)
-                                .Take(pagingParameters.PageSize);
+                                .Take(pagingParameters.PageSize)
+                                .ToList();
 
         var response = new SubscriberWithPaging
         {
@@ -36,11 +37,12 @@ public class SubscriberDataProvider : ISubscriberDataProvider
 
     public async Task<SubscriberWithPaging> GetActiveSubscribersAsync(PagingParameters pagingParameters)
     {
-        var totalSubscribers = await _subscriberRepository.GetSubscribersAsync();
+        var totalSubscribers = (await _subscriberRepository.GetSubscribersAsync()).Where(s => s.SubscribedFrom <= DateTime.Today && s.SubscribedTo >= DateTime.Today && s.AccountActive.ToUpperInvariant() == "Y");
         var pagedSubscribers = totalSubscribers
-                                .Where(s => s.SubscribedFrom <= DateTime.Today && s.SubscribedTo >= DateTime.Today)
+                                .Where(s => s.SubscribedFrom <= DateTime.Today && s.SubscribedTo >= DateTime.Today && s.AccountActive.ToUpperInvariant() == "Y")
                                 .Skip(pagingParameters.Skip)
-                                .Take(pagingParameters.PageSize);
+                                .Take(pagingParameters.PageSize)
+                                .ToList();
 
         var response = new SubscriberWithPaging
         {
@@ -53,11 +55,12 @@ public class SubscriberDataProvider : ISubscriberDataProvider
 
     public async Task<SubscriberWithPaging> GetInActiveSubscribersAsync(PagingParameters pagingParameters)
     {
-        var totalSubscribers = await _subscriberRepository.GetSubscribersAsync();
+        var totalSubscribers = (await _subscriberRepository.GetSubscribersAsync()).Where(s => s.SubscribedTo < DateTime.Today || s.AccountActive.ToUpperInvariant() == "N");
         var pagedSubscribers = totalSubscribers
-                                .Where(s => s.SubscribedTo < DateTime.Today)
+                                .Where(s => s.SubscribedTo < DateTime.Today || s.AccountActive.ToUpperInvariant() == "N")
                                 .Skip(pagingParameters.Skip)
-                                .Take(pagingParameters.PageSize);
+                                .Take(pagingParameters.PageSize)
+                                .ToList();
         var response = new SubscriberWithPaging
         {
             Paging = new Models.PagingModel(totalSubscribers.Count(), pagingParameters.PageNumber, pagingParameters.PageSize),
@@ -75,5 +78,21 @@ public class SubscriberDataProvider : ISubscriberDataProvider
     public async Task UpdateSubscriberAsync(string subscriberId, CreateUpdateSubscriber subscriber)
     {
         await _subscriberRepository.UpdateSubscriberAsync(subscriberId, subscriber);
+    }
+
+    public async Task CreateSubscriberDownload(string subscriberId, SubscriberDownloadDetail subscriberDownload)
+    {
+        await _subscriberRepository.CreateSubscriberDownload(subscriberId, subscriberDownload);
+    }
+
+    public async Task<bool?> IsSubscriberActiveAsync(string subscriberId)
+    {
+        var subscriber = await GetSubscriberByIdAsync(subscriberId);
+        if (subscriber == null) {
+            return null;
+        }
+
+        var isActive = (subscriber.SubscribedFrom <= DateTime.Today && subscriber.SubscribedTo >= DateTime.Today && subscriber.AccountActive.ToUpperInvariant() == "Y");
+        return isActive;
     }
 }

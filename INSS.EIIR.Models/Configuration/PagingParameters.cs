@@ -1,4 +1,6 @@
-﻿namespace INSS.EIIR.Models.Configuration;
+﻿using Newtonsoft.Json;
+
+namespace INSS.EIIR.Models.Configuration;
 
 public class PagingParameters
 {
@@ -18,12 +20,12 @@ public class PagingParameters
         }
     }
 
+    [JsonIgnore]
     public int Skip
     {
         get 
         {
-           return (PageNumber - 1) * PageSize;
-        
+           return (PageNumber - 1) * PageSize;        
         }
     }
 }

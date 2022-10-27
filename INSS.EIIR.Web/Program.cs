@@ -77,8 +77,8 @@ var options = new RewriteOptions()
 
 app.UseRewriter(options);
 
-app.MapHealthChecks("/health");
-app.MapHealthChecks("/ping");
+//app.MapHealthChecks("/health");
+//app.MapHealthChecks("/ping");
 
 app.MapControllerRoute(
     name: "areas",
@@ -136,10 +136,10 @@ void ConfigureServices(IServiceCollection services)
             configuration.GetSection("ApiSettings").Bind(settings);
         });
 
-    var appUrl = config.GetConnectionString("DRO_API_HEALTH_ENDPOINT_HERE");
-    builder.Services.AddHealthChecks().AddUrlGroup(new Uri(appUrl));
+    //var appUrl = config.GetConnectionString("DRO_API_HEALTH_ENDPOINT_HERE");
+    //builder.Services.AddHealthChecks().AddUrlGroup(new Uri(appUrl));
 
-builder.Services.AddTransient(_ =>
+    builder.Services.AddTransient(_ =>
     {
         var connectionString = config.GetConnectionString("iirwebdbContextConnectionString");
         return new EIIRContext(connectionString);
@@ -147,7 +147,6 @@ builder.Services.AddTransient(_ =>
 
     services.AddTransient<IAuthenticationProvider, AuthenticationProvider>();
     services.AddTransient<IAccountRepository, AccountRepository>();
-    services.AddTransient<ISubscriberDataProvider, SubscriberDataProvider>();
     services.AddTransient<ISubscriberRepository, SubscriberRepository>();
 
     // Auto Mapper Configurations
@@ -161,6 +160,7 @@ builder.Services.AddTransient(_ =>
 
     services.AddTransient<IClientService, ClientService>();
     services.AddTransient<IIndividualSearch, IndividualSearch>();
+    services.AddTransient<ISubscriberSearch, SubscriberSearch>();
 }
 
 static bool IsAdminContext(RedirectContext<CookieAuthenticationOptions> context)

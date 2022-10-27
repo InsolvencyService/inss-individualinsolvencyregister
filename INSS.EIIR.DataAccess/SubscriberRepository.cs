@@ -78,6 +78,22 @@ public class SubscriberRepository : ISubscriberRepository
         await CreateUpdateSubscriber(sql, subscriber, subscriberId);
     }
 
+    public async Task CreateSubscriberDownload(string subscriberId, SubscriberDownloadDetail subscriberDownload)
+    {
+        string sql = "EXEC subscr_download_INS @ExtractID, @SubscriberID, @DownloadIPAddress, @DownloadServer, @ExtractZipDownload";
+
+        List<SqlParameter> sqlParams = new()
+        {
+            new SqlParameter { ParameterName = "@ExtractID", Value = subscriberDownload.ExtractId },
+            new SqlParameter { ParameterName = "@SubscriberID", Value = subscriberId },
+            new SqlParameter { ParameterName = "@DownloadIPAddress", Value = subscriberDownload.IPAddress },
+            new SqlParameter { ParameterName = "@DownloadServer", Value = subscriberDownload.Server },
+            new SqlParameter { ParameterName = "@ExtractZipDownload", Value = subscriberDownload.ExtractZipDownload },
+        };
+
+        await _context.Database.ExecuteSqlRawAsync(sql, sqlParams.ToArray());
+    }
+
     private async Task CreateUpdateSubscriber(string sql, CreateUpdateSubscriber subscriber, string subscriberId = null)
     {
         List<SqlParameter> sqlParams = new();

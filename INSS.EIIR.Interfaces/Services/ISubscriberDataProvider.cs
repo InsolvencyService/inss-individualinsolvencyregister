@@ -11,4 +11,6 @@ public interface ISubscriberDataProvider
     Task<SubscriberWithPaging> GetInActiveSubscribersAsync(PagingParameters pagingParameters);
     Task CreateSubscriberAsync(CreateUpdateSubscriber subscriber);
     Task UpdateSubscriberAsync(string subscriberId, CreateUpdateSubscriber subscriber);
+    Task CreateSubscriberDownload(string subscriberId, SubscriberDownloadDetail subscriberDownload);
+    Task<bool?> IsSubscriberActiveAsync(string subscriberId);
 }

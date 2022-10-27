@@ -1,12 +1,7 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using INSS.EIIR.Interfaces.AzureSearch;
-using INSS.EIIR.Models;
 using INSS.EIIR.Models.SearchModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -35,9 +30,9 @@ namespace INSS.EIIR.Functions.Functions
 
         [FunctionName("IndividualSearch")]
         [OpenApiOperation(operationId: "Run", tags: new[] { "Search" })]
-        [OpenApiSecurity("function_key", SecuritySchemeType.ApiKey, Name = "code", In = OpenApiSecurityLocationType.Query)]
-        [OpenApiParameter(name: "SearchModel", In = ParameterLocation.Header, Required = true, Type = typeof(IndividualSearchModel), Description = "The SearchModel parameter")]
-        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "text/plain", bodyType: typeof(string), Description = "The OK response")]
+        [OpenApiSecurity("apikeyheader_auth", SecuritySchemeType.ApiKey, In = OpenApiSecurityLocationType.Header, Name = "x-functions-key")]
+        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(IndividualSearchModel), Description = "The search model", Required = true)]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "text/plain", bodyType: typeof(SearchResult), Description = "The OK response")]
         public async Task<IActionResult> Run([HttpTrigger(AuthorizationLevel.Function, "post", Route = null)] HttpRequest req)
         {
             _logger.LogInformation("C# HTTP trigger function processed a request.");

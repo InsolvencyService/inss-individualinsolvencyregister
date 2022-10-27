@@ -2,7 +2,13 @@
 {
     public class SubscriberWithPaging
     {
+        public SubscriberWithPaging()
+        {
+            Subscribers = new List<Subscriber>();
+        }
+
         public PagingModel Paging { get; set; }
-        public IEnumerable<Subscriber> Subscribers { get; set; }
+
+        public List<Subscriber> Subscribers { get; set; }
     } 
 }
