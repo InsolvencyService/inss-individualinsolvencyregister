@@ -28,7 +28,7 @@
                     @Model.OrganisationName
                 </dd>
                 <dd class="govuk-summary-list__actions">
-                    <a class="govuk-link govuk-link--no-visited-state" href="@(Model.SubscriberId)/change-profile#organisation">
+                    <a class="govuk-link govuk-link--no-visited-state" href="@(Model.SubscriberId)/change-profile#OrganisationName">
                         Change<span class="govuk-visually-hidden"> name</span>
                     </a>
                 </dd>
@@ -107,7 +107,7 @@
                     Application submitted date
                 </dt>
                 <dd class="govuk-summary-list__value">
-                    @Model.SubscriberDetails.ApplicationDate
+                    @Model.SubscriberDetails.ApplicationDate.ToString("dd MMMM yyyy")
                 </dd>
                 <dd class="govuk-summary-list__actions">
                     <a class="govuk-link govuk-link--no-visited-state" href="@(Model.SubscriberId)/change-profile#application-day">
@@ -165,39 +165,22 @@
         </div>
 
         <dl class="govuk-summary-list">
-            @for (var index = 0; index < @Model.EmailContacts.Count(); index++)
-            {
+            @for (var index = 1; index <= 3; index++)
+                {
+                    var emailAddress = Model.EmailContacts.Skip(index - 1).Take(1).Select(x => x.EmailAddress).FirstOrDefault();
                 <div class="govuk-summary-list__row">
                     <dt class="govuk-summary-list__key">
-                        Email address @(index + 1)
+                        Email address @index
                     </dt>
-                    <dd class="govuk-summary-list__value">
-                        @Model.EmailContacts[index].EmailAddress
-                    </dd>
+                    <dt class="govuk-summary-list__value">
+                        @emailAddress
+                    </dt>
                     <dd class="govuk-summary-list__actions">
-                        <a class="govuk-link govuk-link--no-visited-state" href="@(Model.SubscriberId)/change-profile#email-@(index + 1)">
-                            @(index == 0 ? "Change" : "Change or remove")
-                            <span class="govuk-visually-hidden"> @Model.EmailContacts[index].EmailAddress</span>
+                        <a class="govuk-link govuk-link--no-visited-state" href="@(Model.SubscriberId)/change-profile#EmailAddress@index">
+                            @(String.IsNullOrEmpty(emailAddress) ? "Add" : index == 1 ? "Change" : "Change or remove")
                         </a>
                     </dd>
                 </div>
-            }
-
-            @if (Model.EmailContacts.Count() < 3)
-                {
-            <div class="govuk-summary-list__row">
-                <dt class="govuk-summary-list__key">
-                    Email address @(Model.EmailContacts.Count() + 1)
-                </dt>
-                <dt class="govuk-summary-list__value">
-                    
-                </dt>
-                <dd class="govuk-summary-list__actions">
-                    <a class="govuk-link govuk-link--no-visited-state" href="@(Model.SubscriberId)/change-profile#email-@(Model.EmailContacts.Count() + 1)">
-                        Add<span class="govuk-visually-hidden"></span>
-                    </a>
-                </dd>
-            </div>
                 }
         </dl>
 

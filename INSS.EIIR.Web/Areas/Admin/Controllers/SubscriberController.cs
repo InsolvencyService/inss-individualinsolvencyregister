@@ -37,7 +37,7 @@ namespace INSS.EIIR.Web.Areas.Admin.Controllers
         }
 
         [Area(AreaNames.Admin)]
-        [Route(AreaNames.Admin + "/subscriber/{subscriberId}")]
+        [Route(AreaNames.Admin + "/subscriber/{subscriberId}", Name = "SubscriberProfile")]
         [Authorize(Roles = Role.Admin)]
         public async Task<IActionResult> Profile(int subscriberId)
         {
@@ -113,6 +113,9 @@ namespace INSS.EIIR.Web.Areas.Admin.Controllers
                 };
 
                 await _subscriberDataProvider.UpdateSubscriberAsync($"{subscriber.SubscriberId}", createUpdateSubscriber);
+
+                return RedirectToRoute("SubscriberProfile", new { subscriberId = subscriber.SubscriberId });
+
             }
 
             return View(subscriber);

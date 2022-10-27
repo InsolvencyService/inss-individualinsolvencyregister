@@ -77,9 +77,6 @@ var options = new RewriteOptions()
 
 app.UseRewriter(options);
 
-app.MapHealthChecks("/health");
-app.MapHealthChecks("/ping");
-
 app.MapControllerRoute(
     name: "areas",
     pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
@@ -136,8 +133,6 @@ void ConfigureServices(IServiceCollection services)
             configuration.GetSection("ApiSettings").Bind(settings);
         });
 
-    var appUrl = config.GetConnectionString("DRO_API_HEALTH_ENDPOINT_HERE");
-    builder.Services.AddHealthChecks().AddUrlGroup(new Uri(appUrl));
 
 builder.Services.AddTransient(_ =>
     {
