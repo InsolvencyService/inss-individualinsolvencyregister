@@ -1,41 +1,52 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using INSS.EIIR.Interfaces.Services;
+﻿using INSS.EIIR.Interfaces.Web.Services;
+using INSS.EIIR.Models.Configuration;
 using INSS.EIIR.Models.Constants;
+using INSS.EIIR.Models.SubscriberModels;
 using INSS.EIIR.Web.Constants;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-// For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-
 namespace INSS.EIIR.Web.Areas.Admin.Controllers
 {
+    [Authorize(Roles = Role.Admin)]
+    [Area(AreaNames.Admin)]
     public class SubscriberController : Controller
     {
-        private readonly ISubscriberDataProvider _subscriberDataProvider;
-
-        public SubscriberController(ISubscriberDataProvider subscriberDataProvider)
+        private readonly ISubscriberSearch _subscriberSearch;
+        
+        public SubscriberController(ISubscriberSearch subscriberSearch)
         {
-            _subscriberDataProvider = subscriberDataProvider;
+            _subscriberSearch = subscriberSearch;
         }
 
-        // GET: /<controller>/
-        public IActionResult Index()
+        [HttpGet(AreaNames.Admin + "/Subscribers/{page?}/{active?}")]
+        public async Task<IActionResult> Index(int page = 1, string active = null)
         {
-            return View();
+            var paging = new PagingParameters
+            {
+                PageSize = 10,
+                PageNumber = page
+            };
+
+            var subscribers = active switch
+            {
+                "true" => await _subscriberSearch.GetActiveSubscribersAsync(paging),
+                "false" => await _subscriberSearch.GetInActiveSubscribersAsync(paging),
+                _ => await _subscriberSearch.GetSubscribersAsync(paging)
+            };
+
+            subscribers.Paging.RootUrl = "Admin/Subscribers";
+            subscribers.Paging.Parameters = active ?? string.Empty;
+            
+            return View(subscribers);
         }
 
-        [Area(AreaNames.Admin)]
-        [Route(AreaNames.Admin + "/subscriber/{subscriberId}")]
-        [Authorize(Roles = Role.Admin)]
+        [HttpGet(AreaNames.Admin + "/Subscriber/{subscriberId}")]
         public async Task<IActionResult> Profile(int subscriberId)
         {
-            var subscriber = await _subscriberDataProvider.GetSubscriberByIdAsync($"{subscriberId}");
+            var subscriber = await _subscriberSearch.GetSubscriberByIdAsync(subscriberId);
 
             return View(subscriber);
         }
     }
 }
-

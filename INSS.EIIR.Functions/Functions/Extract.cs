@@ -53,14 +53,13 @@ namespace INSS.EIIR.Functions.Functions
         [FunctionName("extract-download")]
         [OpenApiOperation(operationId: "Run", tags: new[] { "Extract" })]
         [OpenApiSecurity("apikeyheader_auth", SecuritySchemeType.ApiKey, In = OpenApiSecurityLocationType.Header, Name = "x-functions-key")]
-        [OpenApiParameter(name: "subscriberId", In = ParameterLocation.Query, Required = true, Type = typeof(string), Description = "The subscriber Id")]
+        [OpenApiParameter(name: "subscriberId", In = ParameterLocation.Path, Required = true, Type = typeof(string), Description = "The subscriber Id")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/octet-stream", bodyType: typeof(string), Description = "The latest extract zip file")]
         public async Task<IActionResult> LatestExtract(
-            [HttpTrigger(AuthorizationLevel.Function, "get", Route = "eiir/{subscriberId}/downloads/latest")] HttpRequest req)
+            [HttpTrigger(AuthorizationLevel.Function, "get", Route = "eiir/{subscriberId}/downloads/latest")] HttpRequest req, string subscriberId)
         {
             _logger.LogInformation("Extract function: Endpoint LatestExtract [ retrieving latest zip file.]");
 
-            string subscriberId = req.Query["subscriberId"];
             if (string.IsNullOrEmpty(subscriberId))
             {
                 var error = "Extract function: Endpoint LatestExtract [ missing query parameter subscriber Id is required.]";

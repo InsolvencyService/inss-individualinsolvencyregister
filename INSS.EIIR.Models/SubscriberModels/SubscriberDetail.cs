@@ -2,8 +2,6 @@
 {
     public class SubscriberDetail
     {
-        public int SubscriberId { get; set; }
-        public string OrganisationName { get; set; } = null!;
         public string OrganisationType { get; set; } = null!;
         public string ApplicationIpaddress { get; set; } = null!;
         public string ContactTitle { get; set; } = null!;

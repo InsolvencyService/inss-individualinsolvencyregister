@@ -48,6 +48,7 @@ namespace INSS.EIIR.Functions
                 mc.AddProfile(new IndividualSearchMapper());
                 mc.AddProfile(new ExtractMapper());
                 mc.AddProfile(new SubscriberMapper());
+                mc.AddProfile(new FeedbackMapper());
             });
 
             var mapper = mapperConfig.CreateMapper();
@@ -123,9 +124,12 @@ namespace INSS.EIIR.Functions
             builder.Services.AddScoped<IServiceBusMessageSender, ServiceBusMessageSender>();
             builder.Services.AddScoped<IExtractRepository, ExtractRepository>();
             builder.Services.AddScoped<ISubscriberRepository, SubscriberRepository>();
+            builder.Services.AddScoped<IFeedbackRepository, FeedbackRepository>();
+
             builder.Services.AddScoped<IExtractDataProvider, ExtractDataProvider>();
             builder.Services.AddScoped<ISubscriberDataProvider, SubscriberDataProvider>();
             builder.Services.AddScoped<INotificationService, NotificationService>();
+            builder.Services.AddScoped<IFeedbackDataProvider, FeedbackDataProvider>();
 
             builder.Services.AddTransient<IIndexService, IndividualSearchIndexService>();
             builder.Services.AddTransient<IIndividualRepository, IndividualRepository>();
