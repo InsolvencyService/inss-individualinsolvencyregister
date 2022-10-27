@@ -23,15 +23,16 @@ namespace INSS.EIIR.DataAccess
         {
             List<CaseFeedback> caseFeedback = new();
             var results = await (from cf in _context.CiCaseFeedback
-                                 orderby cf.FeedbackId descending
+                                 orderby cf.FeedbackDate descending
                                  join c in _context.CiCases
                                  on cf.CaseId equals c.CaseNo
-                                 select new { cf, c.InsolvencyType }).ToListAsync();
+                                 select new { cf, c.InsolvencyType, c.CaseName }).ToListAsync();
 
             results.ToList().ForEach(s =>
             {
                 var caseFB = _mapper.Map<CiCaseFeedback, CaseFeedback>(s.cf);
                 caseFB.InsolvencyType = s.InsolvencyType;
+                caseFB.CaseName = s.CaseName;
                 caseFeedback.Add(caseFB); 
             });
 
