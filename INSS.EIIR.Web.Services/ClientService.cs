@@ -27,7 +27,9 @@ public class ClientService : IClientService
 
     public async Task<TResult> GetAsync<TResult>(string url, IList<string> parameters)
     {
-        var clientUrl = _settings.BaseUrl.AppendPathSegment(url);
+        var clientUrl = _settings.BaseUrl
+            .WithHeader("x-functions-key", _settings.ApiKey)
+            .AppendPathSegment(url);
 
         foreach (var parameter in parameters)
         {
