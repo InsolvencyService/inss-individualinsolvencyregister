@@ -22,7 +22,7 @@ namespace INSS.EIIR.Web.Services
         public async Task<Subscriber> GetSubscriberByIdAsync(string subscriberId)
         {
             return await _settings.BaseUrl
-                .AppendPathSegment("SubscriberById")
+                .AppendPathSegment("subscribers")
                 .WithHeader("x-functions-key", _settings.ApiKey)
                 .GetJsonAsync<Subscriber>();
         }
@@ -30,7 +30,7 @@ namespace INSS.EIIR.Web.Services
         public async Task UpdateSubscriberAsync(string subscriberId, CreateUpdateSubscriber subscriber)
         {
             await _settings.BaseUrl
-                .AppendPathSegment("subscriber-update")
+                .AppendPathSegment("subscribers")
                 .WithHeader("x-functions-key", _settings.ApiKey)
                 .PostJsonAsync(subscriber);
         }
