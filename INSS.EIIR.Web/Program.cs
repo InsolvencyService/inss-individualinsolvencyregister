@@ -76,7 +76,6 @@ var options = new RewriteOptions()
     .AddRedirect("security.txt$", @"https://security.insolvency.gov.uk/.well-known/security.txt");
 
 app.UseRewriter(options);
-
 app.MapControllerRoute(
     name: "areas",
     pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
@@ -133,8 +132,7 @@ void ConfigureServices(IServiceCollection services)
             configuration.GetSection("ApiSettings").Bind(settings);
         });
 
-
-builder.Services.AddTransient(_ =>
+    builder.Services.AddTransient(_ =>
     {
         var connectionString = config.GetConnectionString("iirwebdbContextConnectionString");
         return new EIIRContext(connectionString);
@@ -155,6 +153,7 @@ builder.Services.AddTransient(_ =>
     services.AddTransient<IClientService, ClientService>();
     services.AddTransient<IIndividualSearch, IndividualSearch>();
     services.AddTransient<ISubscriberService, SubscriberService>();
+    services.AddTransient<ISubscriberSearch, SubscriberSearch>();
 }
 
 static bool IsAdminContext(RedirectContext<CookieAuthenticationOptions> context)

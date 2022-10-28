@@ -42,7 +42,7 @@ namespace INSS.EIIR.Web.Controllers
 
             await Authenticate(validUser);
 
-            return RedirectToAction("AdminHome", "AdminHome", new { area = AreaNames.Admin });
+            return RedirectToAction("Index", "AdminHome", new { area = AreaNames.Admin });
         }
 
         public async Task<IActionResult> Logout()

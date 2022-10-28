@@ -18,6 +18,7 @@ namespace INSS.EIIR.Web.Controllers
             return View();
         }
 
+        [Route("/home/privacy")]
         public IActionResult Privacy()
         {
             var contentViewModel = new StaticContent()
@@ -28,6 +29,7 @@ namespace INSS.EIIR.Web.Controllers
             return View(contentViewModel);
         }
 
+        [Route("/home/terms-and-conditions")]
         public IActionResult TermsAndConditions()
         {
             var contentViewModel = new StaticContent()
@@ -37,7 +39,7 @@ namespace INSS.EIIR.Web.Controllers
 
             return View(contentViewModel);
         }
-
+        [Route("/home/accessibility-statement")]
         public IActionResult Accessibility()
         {
             var contentViewModel = new StaticContent()

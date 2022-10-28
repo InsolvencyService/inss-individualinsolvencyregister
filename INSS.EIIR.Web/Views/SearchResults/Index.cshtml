@@ -23,40 +23,49 @@
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-full">
             
-            @if (Model != null && Model.Results.Any())
+            @if (Model != null)
             {
-                <p class="govuk-body">
-                    Your search returned <span class="govuk-!-font-weight-bold">@Model.Paging.ResultCount</span> records. These may include individuals with an alias or a previous name which matches your search criteria.
-                </p>
-
-                <p class="govuk-body">Select a <span class="govuk-!-font-weight-bold">Name</span> link to view the relevant report.</p>
-
-                <table class="govuk-table">
-                    <thead class="govuk-table__head">
-                    <tr class="govuk-table__row">
-                        <th scope="col" class="govuk-table__header">Name</th>
-                        <th scope="col" class="govuk-table__header">Date of birth</th>
-                        <th scope="col" class="govuk-table__header">Trading name</th>
-                    </tr>
-                    </thead>
-                    <tbody class="govuk-table__body">
-
-                    @foreach (var individual in Model.Results)
-                    {
-                        var name = $"{individual.FirstName} {individual.Surname}";
-                        <tr class="govuk-table__row">
-                            <td class="govuk-table__cell"><a class="govuk-link--no-visited-state" href="#">@name</a></td>
-                            <td class="govuk-table__cell">@individual.DateOfBirth?.ToString("dd/MM/yyyy")</td>
-                            <td class="govuk-table__cell"></td>
-                        </tr>
-                    }
-
-                    </tbody>
-                </table>
-
-                @if (Model.Paging.ResultCount > Model.Results.Count)
+                if (Model.Results.Any())
                 {
-                    <partial name="_Paging" model="@Model.Paging" />
+                    <p class="govuk-body">
+                        Your search returned <span class="govuk-!-font-weight-bold">@Model.Paging.ResultCount</span> records. These may include individuals with an alias or a previous name which matches your search criteria.
+                    </p>
+
+                    <p class="govuk-body">Select a <span class="govuk-!-font-weight-bold">Name</span> link to view the relevant report.</p>
+
+                    <table class="govuk-table">
+                        <thead class="govuk-table__head">
+                        <tr class="govuk-table__row">
+                            <th scope="col" class="govuk-table__header">Name</th>
+                            <th scope="col" class="govuk-table__header">Date of birth</th>
+                            <th scope="col" class="govuk-table__header">Trading name</th>
+                        </tr>
+                        </thead>
+                        <tbody class="govuk-table__body">
+
+                        @foreach (var individual in Model.Results)
+                        {
+                            var name = $"{individual.FirstName} {individual.Surname}";
+                            <tr class="govuk-table__row">
+                                <td class="govuk-table__cell"><a class="govuk-link--no-visited-state" href="#">@name</a></td>
+                                <td class="govuk-table__cell">@individual.DateOfBirth?.ToString("dd/MM/yyyy")</td>
+                                <td class="govuk-table__cell"></td>
+                            </tr>
+                        }
+
+                        </tbody>
+                    </table>
+
+                    @if (Model.Paging.ResultCount > Model.Results.Count)
+                    {
+                        <partial name="_Paging" model="@Model.Paging"/>
+                    }
+                }
+                else
+                {
+                    <p class="govuk-body">
+                        We didn't find any results for '@Model.Paging.SearchTerm'. Try searching again.
+                    </p>
                 }
             }
         </div>

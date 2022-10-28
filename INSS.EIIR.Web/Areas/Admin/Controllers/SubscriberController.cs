@@ -1,11 +1,13 @@
-﻿using System;
+
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Net.Mail;
 using System.Threading.Tasks;
 using INSS.EIIR.Interfaces.Services;
-using INSS.EIIR.Interfaces.Web.Services;
+﻿using INSS.EIIR.Interfaces.Web.Services;
+using INSS.EIIR.Models.Configuration;
 using INSS.EIIR.Models.Constants;
 using INSS.EIIR.Models.SubscriberModels;
 using INSS.EIIR.Web.Constants;
@@ -17,25 +19,44 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.CodeAnalysis.Differencing;
 using Microsoft.VisualBasic;
 
-// For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-
 namespace INSS.EIIR.Web.Areas.Admin.Controllers
 {
 
+    [Authorize(Roles = Role.Admin)]
+    [Area(AreaNames.Admin)]
     public class SubscriberController : Controller
     {
+        private readonly ISubscriberSearch _subscriberSearch;
         private readonly ISubscriberService _subscriberService;
 
-        public SubscriberController(ISubscriberService subscriberService)
+        public SubscriberController(ISubscriberSearch subscriberSearch, ISubscriberService subscriberService)
         {
+            _subscriberSearch = subscriberSearch;
             _subscriberService = subscriberService;
         }
 
-        // GET: /<controller>/
-        public IActionResult Index()
+        [HttpGet(AreaNames.Admin + "/Subscribers/{page?}/{active?}")]
+        public async Task<IActionResult> Index(int page = 1, string active = null)
         {
-            return View();
+            var paging = new PagingParameters
+            {
+                PageSize = 10,
+                PageNumber = page
+            };
+
+            var subscribers = active switch
+            {
+                "true" => await _subscriberSearch.GetActiveSubscribersAsync(paging),
+                "false" => await _subscriberSearch.GetInActiveSubscribersAsync(paging),
+                _ => await _subscriberSearch.GetSubscribersAsync(paging)
+            };
+
+            subscribers.Paging.RootUrl = "Admin/Subscribers";
+            subscribers.Paging.Parameters = active ?? string.Empty;
+            
+            return View(subscribers);
         }
+
 
         [Area(AreaNames.Admin)]
         [Route(AreaNames.Admin + "/subscriber/{subscriberId}", Name = "SubscriberProfile")]
@@ -124,4 +145,3 @@ namespace INSS.EIIR.Web.Areas.Admin.Controllers
         }
     }
 }
-
