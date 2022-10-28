@@ -7,11 +7,13 @@ using System.Net.Mail;
 using System.Threading.Tasks;
 using INSS.EIIR.Interfaces.Services;
 ﻿using INSS.EIIR.Interfaces.Web.Services;
+using INSS.EIIR.Models.Breadcrumb;
 using INSS.EIIR.Models.Configuration;
 using INSS.EIIR.Models.Constants;
 using INSS.EIIR.Models.SubscriberModels;
 using INSS.EIIR.Web.Constants;
 using INSS.EIIR.Web.Services;
+using INSS.EIIR.Web.Helper;
 using INSS.EIIR.Web.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -28,11 +30,14 @@ namespace INSS.EIIR.Web.Areas.Admin.Controllers
     {
         private readonly ISubscriberSearch _subscriberSearch;
         private readonly ISubscriberService _subscriberService;
+        private List<BreadcrumbLink> _breadcrumbs;
 
         public SubscriberController(ISubscriberSearch subscriberSearch, ISubscriberService subscriberService)
         {
             _subscriberSearch = subscriberSearch;
             _subscriberService = subscriberService;
+
+            _breadcrumbs = BreadcrumbBuilder.BuildBreadcrumbs().ToList();
         }
 
         [HttpGet(AreaNames.Admin + "/Subscribers/{page?}/{active?}")]
@@ -53,8 +58,14 @@ namespace INSS.EIIR.Web.Areas.Admin.Controllers
 
             subscribers.Paging.RootUrl = "Admin/Subscribers";
             subscribers.Paging.Parameters = active ?? string.Empty;
-            
-            return View(subscribers);
+
+            var viewModel = new SubscriberListViewModel
+            {
+                SubscriberWithPaging = subscribers,
+                Breadcrumbs = _breadcrumbs
+            };
+
+            return View(viewModel);
         }
 
 

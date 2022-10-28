@@ -1,90 +1,97 @@
-﻿@model INSS.EIIR.Models.SubscriberModels.SubscriberWithPaging
-
+﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model INSS.EIIR.Web.ViewModels.SubscriberListViewModel
 @{
-    ViewData["Title"] = "View subscribers";
+    ViewData["Title"] = "Subscribers";
 
-    var active = Model.Paging.Parameters ?? string.Empty;
+    var active = Model.SubscriberWithPaging.Paging.Parameters ?? string.Empty;
 }
 
-@*<a asp-controller="ViewSubscribers" asp-action="Index" class="govuk-back-link">Back</a>*@
+@section AdminBreadcrumb
+{
+    <partial name="~/Areas/Admin/Shared/_AdminBreadcrumb.cshtml" model="Model.Breadcrumbs" />
+}
 
-<main class="govuk-main-wrapper govuk-main-wrapper--auto-spacing" id="main-content" role="main">
+<h1 class="govuk-heading-l govuk-!-margin-bottom-8">
+    Subscribers
+</h1>
 
-    <div class="govuk-grid-row">
+<p class="govuk-body govuk-!-margin-bottom-8">
+    Select the relevant subscriber link to view and update their details.
+</p>
 
-        <div class="govuk-grid-column-one-third">
-            <input type="hidden" id="pageNumber" value="@Model.Paging.Page" />
-            <fieldset class="govuk-fieldset" aria-describedby="status-hint">
-                <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
-                    <h1 class="govuk-fieldset__heading">
-                        Status
-                    </h1>
-                </legend>
-                <div class="govuk-checkboxes" data-module="govuk-checkboxes">
-                    <div class="govuk-checkboxes__item">
-                        <input class="govuk-checkboxes__input" id="Active" name="Active" type="checkbox" value="active"
-                               @(active is "true" or "both" ? "checked=\"checked\"" : string.Empty)/>
-                        <label class="govuk-label govuk-checkboxes__label" for="Active">
-                            Active
-                        </label>
-                    </div>
-                    <div class="govuk-checkboxes__item">
-                        <input class="govuk-checkboxes__input" id="InActive" name="InActive" type="checkbox" value="inActive"
-                               @(active is "false" or "both" ? "checked=\"checked\"" : string.Empty)/>
-                        <label class="govuk-label govuk-checkboxes__label" for="InActive">
-                            InActive
-                        </label>
-                    </div>
+<div class="govuk-grid-row">
+
+    <div class="govuk-grid-column-one-quarter">
+        <input type="hidden" id="pageNumber" value="@Model.SubscriberWithPaging.Paging.Page" />
+        <fieldset class="govuk-fieldset" aria-describedby="status-hint">
+            <label class="govuk-label">
+                View
+            </label>
+            <div class="govuk-checkboxes" data-module="govuk-checkboxes">
+                <div class="govuk-checkboxes__item">
+                    <input class="govuk-checkboxes__input" id="Active" name="Active" type="checkbox" value="active"
+                           @(active is "true" or "both" ? "checked=\"checked\"" : string.Empty)/>
+                    <label class="govuk-label govuk-checkboxes__label" for="Active">
+                        Active
+                    </label>
                 </div>
-            </fieldset>
+                <div class="govuk-checkboxes__item">
+                    <input class="govuk-checkboxes__input" id="InActive" name="InActive" type="checkbox" value="inActive"
+                           @(active is "false" or "both" ? "checked=\"checked\"" : string.Empty)/>
+                    <label class="govuk-label govuk-checkboxes__label" for="InActive">
+                        InActive
+                    </label>
+                </div>
+            </div>
+        </fieldset>
 
-        </div>
-        <div class="govuk-grid-column-two-thirds">
-
-            @if (Model != null && Model.Subscribers.Any())
-            {
-                <p class="govuk-body">
-                    Select the relevant subscriber link to view and update their details.
-                </p>
-
-
-                <table class="govuk-table" style="margin-top: 40px; margin-bottom: 60px;">
-                    <thead class="govuk-table__head">
-                        <tr class="govuk-table__row">
-                            <th scope="col" class="govuk-table__header">Subscriber ID</th>
-                            <th scope="col" class="govuk-table__header">Company or organisation name</th>
-
-                        </tr>
-                    </thead>
-                    <tbody class="govuk-table__body">
-
-                        @foreach (var subscriber in Model.Subscribers)
-                        {
-                            <tr class="govuk-table__row">
-                                <td class="govuk-table__cell">
-                                    <a class="govuk-link--no-visited-state" href="@($"/Admin/Subscriber/{subscriber.SubscriberId}/")">
-                                        @subscriber.SubscriberId
-                                    </a>
-                                </td>
-                            
-                                <td class="govuk-table__cell">
-                                    @subscriber.OrganisationName
-                                </td>
-                            </tr>
-                        }
-
-                    </tbody>
-                </table>
-
-                @if (Model.Paging.ResultCount > Model.Subscribers.Count)
-                {
-                    <partial name="_Paging" model="@Model.Paging" />
-                }
-            }
-        </div>
     </div>
+    <div class="govuk-grid-column-three-quarters">
 
-</main>
+        @if (Model != null && Model.SubscriberWithPaging.Subscribers.Any())
+        {
+            <table class="govuk-table table_header">
+                <thead class="govuk-table__head">
+                    <tr class="govuk-table__row">
+                        <th scope="col" class="govuk-table__header">Subscriber ID</th>
+                        <th scope="col" class="govuk-table__header">Company or organisation name</th>
+                        <th scope="col" class="govuk-table__header">Subscription end</th>
+                    </tr>
+                </thead>
+                <tbody class="govuk-table__body">
+
+                    @foreach (var subscriber in Model.SubscriberWithPaging.Subscribers)
+                    {
+                        <tr class="govuk-table__row">
+                            <td class="govuk-table__cell">
+                                @subscriber.SubscriberId
+                            </td>
+                        
+                            <td class="govuk-table__cell">
+                                <a class="govuk-link--no-visited-state" href="@($"/Admin/Subscriber/{subscriber.SubscriberId}/")">
+                                    @subscriber.OrganisationName
+                                </a>
+                            </td>
+                            
+                            <td class="govuk-table__cell">
+                                @if (subscriber.SubscribedTo != null)
+                                {
+                                    @subscriber.SubscribedTo.Value.ToString("dd MMMM yyyy")
+                                }
+                            </td>
+                        </tr>
+                    }
+
+                </tbody>
+            </table>
+
+            @if (Model.SubscriberWithPaging.Paging.ResultCount > Model.SubscriberWithPaging.Subscribers.Count)
+            {
+                <partial name="_Paging" model="@Model.SubscriberWithPaging.Paging" />
+            }
+        }
+    </div>
+</div>
 
 @section PageScripts {
     <script src="~/js/subscriberList.js" asp-append-version="true" type="module"></script>

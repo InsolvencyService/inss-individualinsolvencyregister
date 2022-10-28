@@ -24,17 +24,18 @@
         document.body.className = ((document.body.className) ? document.body.className + ' js-enabled' : 'js-enabled');
     </script>
 
-    @*<partial name="_CookieBanner" />*@
-
     <a href="#main-content" class="govuk-skip-link" data-module="govuk-skip-link">Skip to main content</a>
 
     <partial name="~/Areas/Admin/Shared/_AdminHeader.cshtml" />
 
     <div class="govuk-width-container ">
+        
+        @if (IsSectionDefined("AdminBreadcrumb"))
+        {
+            @await RenderSectionAsync("AdminBreadcrumb", required: false)
+        }
 
-        <partial name="~/Areas/Admin/Shared/_AdminBanner.cshtml" />
-
-        <main class="govuk-main-wrapper " id="main-content" role="main">
+        <main class="govuk-main-wrapper govuk-main-wrapper--auto-spacing" id="main-content" role="main">
             @RenderBody()
         </main>
     </div>
