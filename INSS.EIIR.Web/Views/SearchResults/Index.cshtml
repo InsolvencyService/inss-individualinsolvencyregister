@@ -1,4 +1,5 @@
-﻿@model INSS.EIIR.Models.SearchModels.SearchResults
+﻿@using INSS.EIIR.Web.Extensions
+@model INSS.EIIR.Models.SearchModels.SearchResults
 
 @{
     ViewData["Title"] = "";
@@ -43,7 +44,7 @@
 
                     @foreach (var individual in Model.Results)
                     {
-                        var name = $"{individual.FirstName} {individual.Surname}";
+                        var name = $"{individual.FirstName} {individual.Surname}".ToTitleCase();
                         <tr class="govuk-table__row">
                             <td class="govuk-table__cell"><a class="govuk-link--no-visited-state" href="#">@name</a></td>
                             <td class="govuk-table__cell">@individual.DateOfBirth?.ToString("dd/MM/yyyy")</td>
