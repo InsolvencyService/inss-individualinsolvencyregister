@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using INSS.EIIR.Models.Home;
+using INSS.EIIR.Web.Helper;
+using Microsoft.AspNetCore.Mvc;
 
 namespace INSS.EIIR.Web.Controllers
 {
@@ -6,7 +8,12 @@ namespace INSS.EIIR.Web.Controllers
     {
         public IActionResult Index()
         {
-            return View();
+            var contentViewModel = new StaticContent
+            {
+                Breadcrumbs = BreadcrumbBuilder.BuildBreadcrumbs()
+            };
+
+            return View(contentViewModel);
         }
 
         [HttpPost("Search/{searchTerm}")]
