@@ -24,23 +24,25 @@
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-full">
             
-            @if (Model != null && Model.Results.Any())
+            @if (Model != null)
             {
-                <p class="govuk-body">
-                    Your search returned <span class="govuk-!-font-weight-bold">@Model.Paging.ResultCount</span> records. These may include individuals with an alias or a previous name which matches your search criteria.
-                </p>
+                if (Model.Results.Any())
+                {
+                    <p class="govuk-body">
+                        Your search returned <span class="govuk-!-font-weight-bold">@Model.Paging.ResultCount</span> records. These may include individuals with an alias or a previous name which matches your search criteria.
+                    </p>
 
-                <p class="govuk-body">Select a <span class="govuk-!-font-weight-bold">Name</span> link to view the relevant report.</p>
+                    <p class="govuk-body">Select a <span class="govuk-!-font-weight-bold">Name</span> link to view the relevant report.</p>
 
-                <table class="govuk-table">
-                    <thead class="govuk-table__head">
-                    <tr class="govuk-table__row">
-                        <th scope="col" class="govuk-table__header">Name</th>
-                        <th scope="col" class="govuk-table__header">Date of birth</th>
-                        <th scope="col" class="govuk-table__header">Trading name</th>
-                    </tr>
-                    </thead>
-                    <tbody class="govuk-table__body">
+                    <table class="govuk-table">
+                        <thead class="govuk-table__head">
+                        <tr class="govuk-table__row">
+                            <th scope="col" class="govuk-table__header">Name</th>
+                            <th scope="col" class="govuk-table__header">Date of birth</th>
+                            <th scope="col" class="govuk-table__header">Trading name</th>
+                        </tr>
+                        </thead>
+                        <tbody class="govuk-table__body">
 
                     @foreach (var individual in Model.Results)
                     {
@@ -52,12 +54,19 @@
                         </tr>
                     }
 
-                    </tbody>
-                </table>
+                        </tbody>
+                    </table>
 
-                @if (Model.Paging.ResultCount > Model.Results.Count)
+                    @if (Model.Paging.ResultCount > Model.Results.Count)
+                    {
+                        <partial name="_Paging" model="@Model.Paging"/>
+                    }
+                }
+                else
                 {
-                    <partial name="_Paging" model="@Model.Paging" />
+                    <p class="govuk-body">
+                        We didn't find any results for '@Model.Paging.SearchTerm'. Try searching again.
+                    </p>
                 }
             }
         </div>
