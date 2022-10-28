@@ -11,12 +11,10 @@ namespace INSS.EIIR.Web.Helper
                 new BreadcrumbLink{ Text = "Home", Href = "/" },
             };
 
-            // commendted out the FIP implementation for the moment.
-
-            //if (showSearch)
-            //{
-            //    breadcrumbs.Add(new BreadcrumbLink { Text = "Search", Href = "/IP/Search" });
-            //}
+            if (showSearch)
+            {
+                breadcrumbs.Add(new BreadcrumbLink { Text = "Search", Href = "/Search" });
+            }
 
             //if (showResults)
             //{
