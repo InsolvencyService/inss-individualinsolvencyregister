@@ -1,4 +1,5 @@
-﻿using INSS.EIIR.Models.SearchModels;
+using INSS.EIIR.Models.CaseModels;
+using INSS.EIIR.Models.SearchModels;
 using Microsoft.EntityFrameworkCore;
 
 namespace INSS.EIIR.Data.Models;
@@ -59,6 +60,10 @@ public partial class EIIRContext : DbContext
     public virtual DbSet<WebMessage> WebMessages { get; set; } = null!;
 
     public virtual DbSet<SearchResult> SearchResults { get; set; } = null!;
+<<<<<<< HEAD
+=======
+    public virtual DbSet<CaseResult> CaseResults { get; set; } = null!;
+>>>>>>> c4d1103 (ATU-4 Citizen - View search (case) details screen  rebased and squashed)
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
