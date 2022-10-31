@@ -1,43 +1,41 @@
 ﻿using FluentAssertions;
 using INSS.EIIR.Interfaces.DataAccess;
+using INSS.EIIR.Models.CaseModels;
 using INSS.EIIR.Models.SearchModels;
 using Moq;
 using Xunit;
 
 namespace INSS.EIIR.Services.Tests
 {
-    public class SearchDataProviderTests
+    public class CaseDataProviderTests
     {
         [Fact]
-        public void GetIndividualSearchData_Calls_Correct_Repo_Method()
+        public async void GetIndividualSearchData_Calls_Correct_Repo_Method()
         {
             var expectedResult = GetData();
+            var caseRequest = new CaseRequest();
 
-            var repositoryMock = new Mock<IIndividualRepository>();
+            var repositoryMock = new Mock<ICaseQueryRepository>();
             repositoryMock
-                .Setup(m => m.SearchByName(string.Empty, string.Empty))
+                .Setup(m => m.GetCaseAsync(caseRequest))
                 .Returns(expectedResult);
 
-            var service = new SearchDataProvider(repositoryMock.Object);
+            var service = new CaseDataProvider(repositoryMock.Object);
 
-            var result  = service.GetIndividualSearchData(string.Empty, string.Empty).ToList();
+            var result = await service.GetCaseByCaseNoIndivNoAsync(caseRequest); 
 
-            repositoryMock.Verify(m => m.SearchByName(string.Empty, string.Empty), Times.Once);
+            repositoryMock.Verify(m => m.GetCaseAsync(caseRequest), Times.Once);
 
-            result.Count.Should().Be(1);
-            result.First().FirstName.Should().Be("Bill");
-            result.First().Surname.Should().Be("Smith");
+            result.indvidualForenames.Should().Be("Bill");
+            result.indvidualSurname.Should().Be("Smith");
         }
 
-        private static IEnumerable<SearchResult> GetData()
+        private static async Task<CaseResult> GetData()
         {
-            return new List<SearchResult>
-            {
-                new()
+            return new CaseResult()
                 {
-                    FirstName = "Bill",
-                    Surname = "Smith"
-                }
+                    indvidualForenames = "Bill",
+                    indvidualSurname = "Smith"
             };
         }
     }
