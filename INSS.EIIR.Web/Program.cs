@@ -132,6 +132,9 @@ void ConfigureServices(IServiceCollection services)
             configuration.GetSection("ApiSettings").Bind(settings);
         });
 
+    var appUrl = config.GetConnectionString("EIIRWEB_API_HEALTH_ENDPOINT_HERE");
+    builder.Services.AddHealthChecks().AddUrlGroup(new Uri(appUrl));
+
     builder.Services.AddTransient(_ =>
     {
         var connectionString = config.GetConnectionString("iirwebdbContextConnectionString");
@@ -154,6 +157,8 @@ void ConfigureServices(IServiceCollection services)
     services.AddTransient<IIndividualSearch, IndividualSearch>();
     services.AddTransient<ISubscriberService, SubscriberService>();
     services.AddTransient<ISubscriberSearch, SubscriberSearch>();
+    services.AddTransient<ICaseService, CaseService>();
+
 }
 
 static bool IsAdminContext(RedirectContext<CookieAuthenticationOptions> context)

@@ -141,6 +141,9 @@ namespace INSS.EIIR.Functions
 
             builder.Services.AddTransient<ISearchTermFormattingService, SearchTermFormattingService>();
             builder.Services.AddTransient<ISearchCleaningService, SearchCleaningService>();
+            
+            builder.Services.AddScoped<ICaseDataProvider, CaseDataProvider>();
+            builder.Services.AddTransient<ICaseQueryRepository, CaseQueryRepository>();
         }
 
         private static SearchIndexClient CreateSearchServiceClient(string searchServiceUrl, string adminApiKey)
