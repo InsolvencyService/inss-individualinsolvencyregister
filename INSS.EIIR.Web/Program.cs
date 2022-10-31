@@ -76,10 +76,6 @@ var options = new RewriteOptions()
     .AddRedirect("security.txt$", @"https://security.insolvency.gov.uk/.well-known/security.txt");
 
 app.UseRewriter(options);
-
-//app.MapHealthChecks("/health");
-//app.MapHealthChecks("/ping");
-
 app.MapControllerRoute(
     name: "areas",
     pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
@@ -136,9 +132,6 @@ void ConfigureServices(IServiceCollection services)
             configuration.GetSection("ApiSettings").Bind(settings);
         });
 
-    //var appUrl = config.GetConnectionString("DRO_API_HEALTH_ENDPOINT_HERE");
-    //builder.Services.AddHealthChecks().AddUrlGroup(new Uri(appUrl));
-
     builder.Services.AddTransient(_ =>
     {
         var connectionString = config.GetConnectionString("iirwebdbContextConnectionString");
@@ -147,7 +140,6 @@ void ConfigureServices(IServiceCollection services)
 
     services.AddTransient<IAuthenticationProvider, AuthenticationProvider>();
     services.AddTransient<IAccountRepository, AccountRepository>();
-    services.AddTransient<ISubscriberRepository, SubscriberRepository>();
 
     // Auto Mapper Configurations
     var mapperConfig = new MapperConfiguration(mc =>
@@ -160,6 +152,7 @@ void ConfigureServices(IServiceCollection services)
 
     services.AddTransient<IClientService, ClientService>();
     services.AddTransient<IIndividualSearch, IndividualSearch>();
+    services.AddTransient<ISubscriberService, SubscriberService>();
     services.AddTransient<ISubscriberSearch, SubscriberSearch>();
 }
 

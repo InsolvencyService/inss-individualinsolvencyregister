@@ -1,51 +1,54 @@
-﻿@model INSS.EIIR.Models.SearchModels.SearchResults
+﻿@using INSS.EIIR.Web.Extensions
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model INSS.EIIR.Web.ViewModels.IndividualListViewModel
 
 @{
-    ViewData["Title"] = "";
+    ViewData["Title"] = "Search results";
 }
 
-<a asp-controller="Search" asp-action="Index" class="govuk-back-link">Back</a>
+@section Breadcrumb
+{
+    <partial name="_Breadcrumb" model="Model.Breadcrumbs" />
+}
 
-<main class="govuk-main-wrapper govuk-main-wrapper--auto-spacing" id="main-content" role="main">
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
 
-    <div class="govuk-grid-row">
-        <div class="govuk-grid-column-two-thirds">
+        <h1 class="govuk-heading-l">
+            Search results
+        </h1>
+        <br>
 
-            <h1 class="govuk-heading-l">
-                Search results
-            </h1>
-            <br>
-
-            <div class="govuk-grid-column-one-third"></div>
-        </div>
+        <div class="govuk-grid-column-one-third"></div>
     </div>
+</div>
 
-    <div class="govuk-grid-row">
-        <div class="govuk-grid-column-full">
-            
-            @if (Model != null)
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+
+        @if (Model != null)
+        {
+            if (Model.SearchResults.Results.Any())
             {
-                if (Model.Results.Any())
-                {
-                    <p class="govuk-body">
-                        Your search returned <span class="govuk-!-font-weight-bold">@Model.Paging.ResultCount</span> records. These may include individuals with an alias or a previous name which matches your search criteria.
-                    </p>
+                <p class="govuk-body">
+                    Your search returned <span class="govuk-!-font-weight-bold">@Model.SearchResults.Paging.ResultCount</span> records. These may include individuals with an alias or a previous name which matches your search criteria.
+                </p>
 
-                    <p class="govuk-body">Select a <span class="govuk-!-font-weight-bold">Name</span> link to view the relevant report.</p>
+                <p class="govuk-body">Select a <span class="govuk-!-font-weight-bold">Name</span> link to view the relevant report.</p>
 
-                    <table class="govuk-table">
-                        <thead class="govuk-table__head">
+                <table class="govuk-table">
+                    <thead class="govuk-table__head">
                         <tr class="govuk-table__row">
                             <th scope="col" class="govuk-table__header">Name</th>
                             <th scope="col" class="govuk-table__header">Date of birth</th>
                             <th scope="col" class="govuk-table__header">Trading name</th>
                         </tr>
-                        </thead>
-                        <tbody class="govuk-table__body">
+                    </thead>
+                    <tbody class="govuk-table__body">
 
-                        @foreach (var individual in Model.Results)
+                        @foreach (var individual in Model.SearchResults.Results)
                         {
-                            var name = $"{individual.FirstName} {individual.Surname}";
+                            var name = $"{individual.FirstName} {individual.Surname}".ToTitleCase();
                             <tr class="govuk-table__row">
                                 <td class="govuk-table__cell"><a class="govuk-link--no-visited-state" href="#">@name</a></td>
                                 <td class="govuk-table__cell">@individual.DateOfBirth?.ToString("dd/MM/yyyy")</td>
@@ -53,22 +56,20 @@
                             </tr>
                         }
 
-                        </tbody>
-                    </table>
+                    </tbody>
+                </table>
 
-                    @if (Model.Paging.ResultCount > Model.Results.Count)
-                    {
-                        <partial name="_Paging" model="@Model.Paging"/>
-                    }
-                }
-                else
+                @if (Model.SearchResults.Paging.ResultCount > Model.SearchResults.Results.Count)
                 {
-                    <p class="govuk-body">
-                        We didn't find any results for '@Model.Paging.SearchTerm'. Try searching again.
-                    </p>
+                    <partial name="_Paging" model="@Model.SearchResults.Paging" />
                 }
             }
-        </div>
+            else
+            {
+                <p class="govuk-body">
+                    We didn't find any results for '@Model.SearchResults.Paging.SearchTerm'. Try searching again.
+                </p>
+            }
+        }
     </div>
-
-</main>
+</div>

@@ -1,0 +1,292 @@
+﻿@model INSS.EIIR.Web.ViewModels.SubscriberProfile
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+        <form asp-area="admin" asp-controller="subscriber" asp-action="change-profile" method="post">
+            <h1 class="govuk-heading-l govuk-!-margin-bottom-8">
+                Update subscriber details
+            </h1>
+
+            <fieldset class="govuk-fieldset">
+                <div class="govuk-form-group">
+                    <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+                        <h2 class="govuk-fieldset__heading">
+                            Company or organisation
+                        </h2>
+                    </legend>
+                    <span class="govuk-error-message" asp-validation-for="OrganisationName"></span>
+                    <label class="govuk-label" asp-for="OrganisationName">
+                        Name
+                    </label>
+                    <input class="govuk-input" asp-for="OrganisationName">
+                </div>
+                <div class="govuk-form-group">
+                    <span class="govuk-error-message" asp-validation-for="OrganisationType"></span>
+                    <label class="govuk-label" asp-for="OrganisationType">
+                        Type
+                    </label>
+                    <select class="govuk-select" asp-for="OrganisationType">
+                        <option value="">Select</option>
+                        <option>Credit reference agency</option>
+                        <option>Credit card issuer</option>
+                        <option>Bank or Building society</option>
+                        <option>Mortgage provider</option>
+                        <option>Government department</option>
+                        <option>Financial services</option>
+                        <option>Debt recovery agents</option>
+                        <option>Other</option>
+                    </select>
+                </div>
+            </fieldset>
+
+            <fieldset class="govuk-fieldset">
+                <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+                    <h2 class="govuk-fieldset__heading">
+                        Main contact
+                    </h2>
+                </legend>
+                <div class="govuk-form-group">
+                    <span class="govuk-error-message" asp-validation-for="ContactForename"></span>
+                    <label class="govuk-label" asp-for="ContactForename">
+                        Forename
+                    </label>
+                    <input class="govuk-input" asp-for="ContactForename">
+                </div>
+                <div class="govuk-form-group">
+                    <span class="govuk-error-message" asp-validation-for="ContactSurname"></span>
+                    <label class="govuk-label" asp-for="ContactSurname">
+                        Surname
+                    </label>
+                    <input class="govuk-input" asp-for="ContactSurname">
+                </div>
+                <div class="govuk-form-group">
+                    <span class="govuk-error-message" asp-validation-for="ContactAddress1"></span>
+                    <label class="govuk-label" asp-for="ContactAddress1">
+                        Address line 1
+                    </label>
+                    <input class="govuk-input" asp-for="ContactAddress1">
+                </div>
+                <div class="govuk-form-group">
+                    <span class="govuk-error-message" asp-validation-for="ContactAddress2"></span>
+                    <label class="govuk-label" asp-for="ContactAddress2">
+                        Address line 2 (optional)
+                    </label>
+                    <input class="govuk-input govuk-!-width-full" asp-for="ContactAddress2">
+                </div>
+                <div class="govuk-form-group">
+                    <span class="govuk-error-message" asp-validation-for="ContactCity"></span>
+                    <label class="govuk-label" asp-for="ContactCity">
+                        Town or city
+                    </label>
+                    <input class="govuk-input govuk-!-width-two-thirds" asp-for="ContactCity">
+                </div>
+                <div class="govuk-form-group">
+                    <span class="govuk-error-message" asp-validation-for="ContactPostcode"></span>
+                    <label class="govuk-label" asp-for="ContactPostcode">
+                        Postcode
+                    </label>
+                    <input class="govuk-input govuk-input--width-10" asp-for="ContactPostcode">
+                </div>
+                <div class="govuk-form-group">
+                    <span class="govuk-error-message" asp-validation-for="ContactEmail"></span>
+                    <label class="govuk-label" asp-for="ContactEmail">
+                        Email address
+                    </label>
+                    <input class="govuk-input" asp-for="ContactEmail">
+                </div>
+                <div class="govuk-form-group govuk-!-margin-bottom-8">
+                    <span class="govuk-error-message" asp-validation-for="ContactTelephone"></span>
+                    <label class="govuk-label" asp-for="ContactTelephone">
+                        Telephone number
+                    </label>
+                    <input class="govuk-input govuk-input--width-20" asp-for="ContactTelephone">
+                </div>
+            </fieldset>
+
+            <h2 class="govuk-heading-m govuk-!-margin-bottom-4">
+                Subscription
+            </h2>
+
+            <fieldset class="govuk-fieldset" role="group" aria-describedby="application-date-hint">
+                <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
+                    <h3 class="govuk-fieldset__heading">
+                        Application submitted date
+                    </h3>
+                </legend>
+                <div class="govuk-date-input" id="application-date">
+                    <div class="govuk-date-input__item">
+                        <div class="govuk-form-group">
+                            <span class="govuk-error-message" asp-validation-for="ApplicationDay"></span>
+                            <label class="govuk-label govuk-date-input__label" asp-for="ApplicationDay">
+                                Day
+                            </label>
+                            <input class="govuk-input govuk-date-input__input govuk-input--width-2" asp-for="ApplicationDay">
+                        </div>
+                    </div>
+                    <div class="govuk-date-input__item">
+                        <div class="govuk-form-group">
+                            <span class="govuk-error-message" asp-validation-for="ApplicationMonth"></span>
+                            <label class="govuk-label govuk-date-input__label" asp-for="ApplicationMonth">
+                                Month
+                            </label>
+                            <input class="govuk-input govuk-date-input__input govuk-input--width-2" asp-for="ApplicationMonth">
+                        </div>
+                    </div>
+                    <div class="govuk-date-input__item">
+                        <div class="govuk-form-group">
+                            <span class="govuk-error-message" asp-validation-for="ApplicationYear"></span>
+                            <label class="govuk-label govuk-date-input__label" asp-for="ApplicationYear">
+                                Year
+                            </label>
+                            <input class="govuk-input govuk-date-input__input govuk-input--width-4" asp-for="ApplicationYear">
+                        </div>
+                    </div>
+                </div>
+            </fieldset>
+
+            <fieldset class="govuk-fieldset" role="group" aria-describedby="start-date">
+                <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
+                    <h2 class="govuk-fieldset__heading">
+                        Start date
+                    </h2>
+                </legend>
+                <div class="govuk-date-input" id="start-date">
+                    <div class="govuk-date-input__item">
+                        <div class="govuk-form-group">
+                            <span class="govuk-error-message" asp-validation-for="SubscribedFromDay"></span>
+                            <label class="govuk-label govuk-date-input__label" asp-for="SubscribedFromDay">
+                                Day
+                            </label>
+                            <input class="govuk-input govuk-date-input__input govuk-input--width-2" asp-for="SubscribedFromDay">
+                        </div>
+                    </div>
+                    <div class="govuk-date-input__item">
+                        <div class="govuk-form-group">
+                            <span class="govuk-error-message" asp-validation-for="SubscribedFromMonth"></span>
+                            <label class="govuk-label govuk-date-input__label" asp-for="SubscribedFromMonth">
+                                Month
+                            </label>
+                            <input class="govuk-input govuk-date-input__input govuk-input--width-2" asp-for="SubscribedFromMonth">
+                        </div>
+                    </div>
+                    <div class="govuk-date-input__item">
+                        <div class="govuk-form-group">
+                            <span class="govuk-error-message" asp-validation-for="SubscribedFromYear"></span>
+                            <label class="govuk-label govuk-date-input__label" asp-for="SubscribedFromYear">
+                                Year
+                            </label>
+                            <input class="govuk-input govuk-date-input__input govuk-input--width-4" asp-for="SubscribedFromYear">
+                        </div>
+                    </div>
+                </div>
+            </fieldset>
+
+            <fieldset class="govuk-fieldset" role="group" aria-describedby="end-date">
+                <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
+                    <h3 class="govuk-fieldset__heading">
+                        End date
+                    </h3>
+                </legend>
+                <div class="govuk-date-input" id="end-date">
+                    <div class="govuk-date-input__item">
+                        <div class="govuk-form-group">
+                            <span class="govuk-error-message" asp-validation-for="SubscribedToDay"></span>
+                            <label class="govuk-label govuk-date-input__label" asp-for="SubscribedToDay">
+                                Day
+                            </label>
+                            <input class="govuk-input govuk-date-input__input govuk-input--width-2" asp-for="SubscribedToDay">
+                        </div>
+                    </div>
+                    <div class="govuk-date-input__item">
+                        <div class="govuk-form-group">
+                            <span class="govuk-error-message" asp-validation-for="SubscribedToMonth"></span>
+                            <label class="govuk-label govuk-date-input__label" asp-for="SubscribedToMonth">
+                                Month
+                            </label>
+                            <input class="govuk-input govuk-date-input__input govuk-input--width-2" asp-for="SubscribedToMonth">
+                        </div>
+                    </div>
+                    <div class="govuk-date-input__item">
+                        <div class="govuk-form-group">
+                            <span class="govuk-error-message" asp-validation-for="SubscribedToYear"></span>
+                            <label class="govuk-label govuk-date-input__label" asp-for="SubscribedToYear">
+                                Year
+                            </label>
+                            <input class="govuk-input govuk-date-input__input govuk-input--width-4" asp-for="SubscribedToYear">
+                        </div>
+                    </div>
+                </div>
+
+            </fieldset>
+
+            <div class="govuk-form-group">
+                <fieldset class="govuk-fieldset" aria-describedby="subscription-state-hint">
+                    <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
+                        <h3 class="govuk-fieldset__heading">
+                            Status
+                        </h3>
+                    </legend>
+                    <div data-module="govuk-radios">
+                        <span class="govuk-error-message" asp-validation-for="AccountActive"></span>
+                        <div class="govuk-radios__item">
+                            <input class="govuk-radios__input" id="subscription-state" type="radio" value="Y" asp-for="AccountActive">
+                            <label class="govuk-label govuk-radios__label" asp-for="AccountActive">
+                                Active
+                            </label>
+                        </div>
+                        <div class="govuk-radios__item">
+                            <input class="govuk-radios__input" id="subscription-state" type="radio" value="N" asp-for="AccountActive">
+                            <label class="govuk-label govuk-radios__label" asp-for="AccountActive">
+                                Inactive
+                            </label>
+                        </div>
+                    </div>
+
+                </fieldset>
+            </div>
+
+            <fieldset class="govuk-fieldset">
+                <legend class="govuk-fieldset__legend govuk-fieldset__legend--m govuk-!-margin-bottom-4">
+                    <h2 class="govuk-fieldset__heading">
+                        Data extract emails
+                    </h2>
+                </legend>
+
+                <p class="govuk-body">The data extract will be sent to these email addresses.</p>
+
+                <div class="govuk-inset-text">
+                    There must be at least <strong>1</strong> data extract email address per subscriber, with a maximum of <strong>3</strong>.
+                </div>
+
+                <div class="govuk-form-group">
+                    <span class="govuk-error-message" asp-validation-for="EmailAddress1"></span>
+                    <label class="govuk-label" asp-for="EmailAddress1">
+                        Email address 1
+                    </label>
+                    <input class="govuk-input govuk-input--width-20" asp-for="EmailAddress1">
+                </div>
+                <div class="govuk-form-group">
+                    <span class="govuk-error-message" asp-validation-for="EmailAddress2"></span>
+                    <label class="govuk-label" asp-for="EmailAddress2">
+                        Email address 2
+                    </label>
+                    <input class="govuk-input govuk-input--width-20" asp-for="EmailAddress2">
+                </div>
+                <div class="govuk-form-group">
+                    <span class="govuk-error-message" asp-validation-for="EmailAddress3"></span>
+                    <label class="govuk-label" asp-for="EmailAddress3">
+                        Email address 3
+                    </label>
+                    <input class="govuk-input govuk-input--width-20" asp-for="EmailAddress3">
+                </div>
+            </fieldset>
+            <br>
+            <input asp-for="SubscriberId" />
+            <button class="govuk-button" data-module="govuk-button" type="submit">
+                Save and return to subscriber
+            </button>
+
+        </form>
+    </div>
+</div>
