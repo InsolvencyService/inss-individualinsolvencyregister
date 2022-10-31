@@ -1,358 +1,188 @@
-﻿@model INSS.EIIR.Models.CaseModels.CaseResult
+﻿@model INSS.EIIR.Models.CaseModels.CaseResult 
 
 @{
   ViewData["Title"] = String.Format("Individual Insolvency Register - {0}", Model.caseName);
-}
+} 
 
 <a asp-controller="Search" asp-action="Index" class="govuk-back-link">Back</a>
 
 <main class="govuk-main-wrapper govuk-main-wrapper--auto-spacing" id="main-content" role="main">
-
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-
-      <h1 class="govuk-heading-l">
-        Case details: @Html.DisplayFor(model => model.indvidualForenames) @Html.DisplayFor(model =>
-        model.indvidualSurname)
-      </h1>
+      <h1 class="govuk-heading-l"> Case details: @Html.DisplayFor(model => model.indvidualForenames) @Html.DisplayFor(model => model.indvidualSurname) </h1>
       <br>
-
       <div class="govuk-grid-column-one-third"></div>
     </div>
   </div>
-
   <div class="govuk-grid-row">
-
     <div class="govuk-grid-column-two-thirds">
-
       <div class="govuk-accordion" data-module="govuk-accordion" id="accordion-default" aria-expanded="true">
         <div class="govuk-accordion__section govuk-accordion__section--expanded">
           <div class="govuk-accordion__section-header">
             <h2 class="govuk-accordion__section-heading">
-              <span class="govuk-accordion__section-button" id="accordion-default-heading-1">
-                Individual details
-              </span>
+              <span class="govuk-accordion__section-button" id="accordion-default-heading-1"> Individual details </span>
             </h2>
           </div>
-          <div id="accordion-default-content-1" class="govuk-accordion__section-content"
-            aria-labelledby="accordion-default-heading-1">
+          <div id="accordion-default-content-1" class="govuk-accordion__section-content" aria-labelledby="accordion-default-heading-1">
             <dl class="govuk-summary-list govuk-summary-list--no-border">
-                <div class="govuk-summary-list__row">
-                  <dt class="govuk-summary-list__key">
-                    Surname
-                  </dt>
-                  <dd class="govuk-summary-list__value">
-                    @Html.DisplayFor(model => model.indvidualSurname)
-                  </dd>
-                </div>
-                <div class="govuk-summary-list__row">
-                  <dt class="govuk-summary-list__key">
-                    Forename(s)
-                  </dt>
-                  <dd class="govuk-summary-list__value">
-                    @Html.DisplayFor(model => model.indvidualForenames)
-                  </dd>
-                </div>
-                <div class="govuk-summary-list__row">
-                  <dt class="govuk-summary-list__key">
-                    Title
-                  </dt>
-                  <dd class="govuk-summary-list__value">
-                    @Html.DisplayFor(model => model.indvidualTitle)
-                  </dd>
-                </div>
-                <div class="govuk-summary-list__row">
-                  <dt class="govuk-summary-list__key">
-                    Gender
-                  </dt>
-                  <dd class="govuk-summary-list__value">
-                    @Html.DisplayFor(model => model.indvidualGender)
-                  </dd>
-                </div>
-                <div class="govuk-summary-list__row">
-                  <dt class="govuk-summary-list__key">
-                    Occupation
-                  </dt>
-                  <dd class="govuk-summary-list__value">
-                    @Html.DisplayFor(model => model.indvidualOccupation)
-                  </dd>
-                </div>
-                <div class="govuk-summary-list__row">
-                  <dt class="govuk-summary-list__key">
-                    Date of birth
-                  </dt>
-                  <dd class="govuk-summary-list__value">
-                    @Html.DisplayFor(model => model.indvidualDOB)
-                  </dd>
-                </div>
-                <div class="govuk-summary-list__row">
-                  <dt class="govuk-summary-list__key">
-                    Last known address
-                  </dt>
-                  <dd class="govuk-summary-list__value">
-                    @Html.DisplayFor(model => model.indvidualAddress)
-                    <br />
-                    @Html.DisplayFor(model => model.indvidualPostcode)
-                  </dd>
-                </div>
-                <div class="govuk-summary-list__row">
-                  <dt class="govuk-summary-list__key">
-                    This person may also be known as
-                  </dt>
-                  <dd class="govuk-summary-list__value">
-                    @Html.DisplayFor(model => model.indvidualAlias)
-                  </dd>
-                </div>
+              <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key"> Surname </dt>
+                <dd class="govuk-summary-list__value"> @Html.DisplayFor(model => model.indvidualSurname) </dd>
+              </div>
+              <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key"> Forename(s) </dt>
+                <dd class="govuk-summary-list__value"> @Html.DisplayFor(model => model.indvidualForenames) </dd>
+              </div>
+              <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key"> Title </dt>
+                <dd class="govuk-summary-list__value"> @Html.DisplayFor(model => model.indvidualTitle) </dd>
+              </div>
+              <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key"> Gender </dt>
+                <dd class="govuk-summary-list__value"> @Html.DisplayFor(model => model.indvidualGender) </dd>
+              </div>
+              <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key"> Occupation </dt>
+                <dd class="govuk-summary-list__value"> @Html.DisplayFor(model => model.indvidualOccupation) </dd>
+              </div>
+              <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key"> Date of birth </dt>
+                <dd class="govuk-summary-list__value"> @Html.DisplayFor(model => model.indvidualDOB) </dd>
+              </div>
+              <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key"> Last known address </dt>
+                <dd class="govuk-summary-list__value"> @Html.DisplayFor(model => model.indvidualAddress) <br /> @Html.DisplayFor(model => model.indvidualPostcode) </dd>
+              </div>
+              <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key"> This person may also be known as </dt>
+                <dd class="govuk-summary-list__value"> @Html.DisplayFor(model => model.indvidualAlias) </dd>
+              </div>
             </dl>
-                <div class="govuk-inset-text">
-              The individual details may have changed since the Court Order but might not reflect the person's current address or occupation.
-            </div>
-=======
-              }
-            </dl>
->>>>>>> 42dfcb10d11f751c2d57af50001a30b9e8fe37c3
+            <div class="govuk-inset-text"> The individual details may have changed since the Court Order but might not reflect the person's current address or occupation. </div>
           </div>
         </div>
         <div class="govuk-accordion__section ">
           <div class="govuk-accordion__section-header">
             <h2 class="govuk-accordion__section-heading">
-              <span class="govuk-accordion__section-button" id="accordion-default-heading-2">
-                Insolvency case details
-              </span>
+              <span class="govuk-accordion__section-button" id="accordion-default-heading-2"> Insolvency case details </span>
             </h2>
           </div>
-          <div id="accordion-default-content-2" class="govuk-accordion__section-content"
-            aria-labelledby="accordion-default-heading-2">
+          <div id="accordion-default-content-2" class="govuk-accordion__section-content" aria-labelledby="accordion-default-heading-2">
             <dl class="govuk-summary-list govuk-summary-list--no-border">
               <div class="govuk-summary-list__row">
-                <dt class="govuk-summary-list__key">
-                  Case name
-                </dt>
-                <dd class="govuk-summary-list__value">
-                  @Html.DisplayFor(model => model.caseName)
-                </dd>
+                <dt class="govuk-summary-list__key"> Case name </dt>
+                <dd class="govuk-summary-list__value"> @Html.DisplayFor(model => model.caseName) </dd>
               </div>
               <div class="govuk-summary-list__row">
-                <dt class="govuk-summary-list__key">
-                  Court
-                </dt>
-                <dd class="govuk-summary-list__value">
-                  @Html.DisplayFor(model => model.courtName)
-                </dd>
-              </div>
-
-
-              <div class="govuk-summary-list__row">
-                <dt class="govuk-summary-list__key">
-                  Type
-                </dt>
-                <dd class="govuk-summary-list__value">
-                  @Html.DisplayFor(model => model.insolvencyType)
-                </dd>
-              </div>
-
-
-              <div class="govuk-summary-list__row">
-                <dt class="govuk-summary-list__key">
-                  Number
-                </dt>
-                <dd class="govuk-summary-list__value">
-                  @Html.DisplayFor(model => model.caseNo)
-                </dd>
-              </div>
-
-              <div class="govuk-summary-list__row">
-                <dt class="govuk-summary-list__key">
-                  Arrangement date
-                </dt>
-                <dd class="govuk-summary-list__value">
-                      @if (@Model.insolvencyDate.HasValue)
-                      {
-                    @Model.insolvencyDate.Value.ToString("dd MMMM yyyy")
-                      }
-                </dd>
+                <dt class="govuk-summary-list__key"> Court </dt>
+                <dd class="govuk-summary-list__value"> @Html.DisplayFor(model => model.courtName) </dd>
               </div>
               <div class="govuk-summary-list__row">
-                <dt class="govuk-summary-list__key">
-                  Status
-                </dt>
-                <dd class="govuk-summary-list__value">
-                  @Html.DisplayFor(model => model.caseStatus)
-                </dd>
+                <dt class="govuk-summary-list__key"> Type </dt>
+                <dd class="govuk-summary-list__value"> @Html.DisplayFor(model => model.insolvencyType) </dd>
               </div>
-
               <div class="govuk-summary-list__row">
-                <dt class="govuk-summary-list__key">
-                  Notification date
-                </dt>
-                <dd class="govuk-summary-list__value">
-                    
-                      @if (@Model.notificationDate.HasValue)
-                      {
-                    @Model.notificationDate.Value.ToString("dd MMMM yyyy")
-                      }
-                </dd>
+                <dt class="govuk-summary-list__key"> Number </dt>
+                <dd class="govuk-summary-list__value"> @Html.DisplayFor(model => model.caseNo) </dd>
+              </div>
+              <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key"> Arrangement date </dt>
+                <dd class="govuk-summary-list__value"> @if (@Model.insolvencyDate.HasValue) { @Model.insolvencyDate.Value.ToString("dd MMMM yyyy") } </dd>
+              </div>
+              <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key"> Status </dt>
+                <dd class="govuk-summary-list__value"> @Html.DisplayFor(model => model.caseStatus) </dd>
+              </div>
+              <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key"> Notification date </dt>
+                <dd class="govuk-summary-list__value"> @if (@Model.notificationDate.HasValue) { @Model.notificationDate.Value.ToString("dd MMMM yyyy") } </dd>
               </div>
             </dl>
-              <div class="govuk-warning-text">
+            <div class="govuk-warning-text">
               <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
               <strong class="govuk-warning-text__text">
-                <span class="govuk-warning-text__assistive">Warning</span>
-                Individual Voluntary Arrangements remain on the register for 3 months after the agreement is revoked, implemented or terminated.
-              </strong>
+                <span class="govuk-warning-text__assistive">Warning</span> Individual Voluntary Arrangements remain on the register for 3 months after the agreement is revoked, implemented or terminated. </strong>
             </div>
-
-            <div class="govuk-inset-text">
-              The insolvency case details are taken from the Court Order made on the order date, and include the address(es) from which debts were incurred. They cannot be changed without the consent of the Court.
-            </div>
-
+            <div class="govuk-inset-text"> The insolvency case details are taken from the Court Order made on the order date, and include the address(es) from which debts were incurred. They cannot be changed without the consent of the Court. </div>
           </div>
         </div>
+        @if (!String.IsNullOrEmpty(@Model.insolvencyPractitionerName)) {
         <div class="govuk-accordion__section ">
           <div class="govuk-accordion__section-header">
             <h2 class="govuk-accordion__section-heading">
-              <span class="govuk-accordion__section-button" id="accordion-default-heading-3">
-                Insolvency practitioner contact details
-              </span>
+              <span class="govuk-accordion__section-button" id="accordion-default-heading-3"> Insolvency practitioner contact details </span>
             </h2>
           </div>
-          <div id="accordion-default-content-3" class="govuk-accordion__section-content"
-            aria-labelledby="accordion-default-heading-3">
+          <div id="accordion-default-content-3" class="govuk-accordion__section-content" aria-labelledby="accordion-default-heading-3">
             <dl class="govuk-summary-list govuk-summary-list--no-border">
-
               <div class="govuk-summary-list__row">
-                <dt class="govuk-summary-list__key">
-                  Main insolvency practitioner
-                </dt>
-                <dd class="govuk-summary-list__value">
-                  @Html.DisplayFor(model => model.insolvencyPractitionerName)
-                </dd>
+                <dt class="govuk-summary-list__key"> Main insolvency practitioner </dt>
+                <dd class="govuk-summary-list__value"> @Html.DisplayFor(model => model.insolvencyPractitionerName) </dd>
               </div>
-
               <div class="govuk-summary-list__row">
-                <dt class="govuk-summary-list__key">
-                  Firm
-                </dt>
-                <dd class="govuk-summary-list__value">
-                  @Html.DisplayFor(model => model.insolvencyPractitionerFirmName)
-                </dd>
+                <dt class="govuk-summary-list__key"> Firm </dt>
+                <dd class="govuk-summary-list__value"> @Html.DisplayFor(model => model.insolvencyPractitionerFirmName) </dd>
               </div>
-
               <div class="govuk-summary-list__row">
-                <dt class="govuk-summary-list__key">
-                  Address
-                </dt>
-                <dd class="govuk-summary-list__value">
-                  @Html.DisplayFor(model => model.insolvencyPractitionerAddress)
-                </dd>
+                <dt class="govuk-summary-list__key"> Address </dt>
+                <dd class="govuk-summary-list__value"> @Html.DisplayFor(model => model.insolvencyPractitionerAddress) </dd>
               </div>
-
               <div class="govuk-summary-list__row">
-                <dt class="govuk-summary-list__key">
-                  Postcode
-                </dt>
-                <dd class="govuk-summary-list__value">
-                  @Html.DisplayFor(model => model.insolvencyPractitionerPostcode)
-                </dd>
+                <dt class="govuk-summary-list__key"> Postcode </dt>
+                <dd class="govuk-summary-list__value"> @Html.DisplayFor(model => model.insolvencyPractitionerPostcode) </dd>
               </div>
-
               <div class="govuk-summary-list__row">
-                <dt class="govuk-summary-list__key">
-                  Telephone
-                </dt>
-                <dd class="govuk-summary-list__value">
-                  @Html.DisplayFor(model => model.insolvencyPractitionerTelephone)
-                </dd>
+                <dt class="govuk-summary-list__key"> Telephone </dt>
+                <dd class="govuk-summary-list__value"> @Html.DisplayFor(model => model.insolvencyPractitionerTelephone) </dd>
               </div>
-
             </dl>
           </div>
         </div>
+        }
         <div class="govuk-accordion__section ">
           <div class="govuk-accordion__section-header">
             <h2 class="govuk-accordion__section-heading">
-              <span class="govuk-accordion__section-button" id="accordion-default-heading-4">
-                Insolvency Service contact details
-              </span>
+              <span class="govuk-accordion__section-button" id="accordion-default-heading-4"> Insolvency Service contact details </span>
             </h2>
           </div>
-          <div id="accordion-default-content-4" class="govuk-accordion__section-content"
-            aria-labelledby="accordion-default-heading-4">
+          <div id="accordion-default-content-4" class="govuk-accordion__section-content" aria-labelledby="accordion-default-heading-4">
             <dl class="govuk-summary-list govuk-summary-list--no-border">
-
               <div class="govuk-summary-list__row">
-                <dt class="govuk-summary-list__key">
-                  Insolvency Service office
-                </dt>
-                <dd class="govuk-summary-list__value">
-                  @Html.DisplayFor(model => model.insolvencyServiceOffice)
-                </dd>
+                <dt class="govuk-summary-list__key"> Insolvency Service office </dt>
+                <dd class="govuk-summary-list__value"> @Html.DisplayFor(model => model.insolvencyServiceOffice) </dd>
               </div>
-
               <div class="govuk-summary-list__row">
-                <dt class="govuk-summary-list__key">
-                  Contact
-                </dt>
-                <dd class="govuk-summary-list__value">
-                  @Html.DisplayFor(model => model.insolvencyServiceContact)
-                </dd>
-
-              <div class="govuk-summary-list__row">
-                <dt class="govuk-summary-list__key">
-                  Address
-                </dt>
-                <dd class="govuk-summary-list__value">
-                  @Html.DisplayFor(model => model.insolvencyServiceAddress)
-                </dd>
-              </div>
-
-              <div class="govuk-summary-list__row">
-                <dt class="govuk-summary-list__key">
-                  Postcode
-                </dt>
-                <dd class="govuk-summary-list__value">
-                  @Html.DisplayFor(model => model.insolvencyServicePostcode)
-                </dd>
-              </div>
-
-              <div class="govuk-summary-list__row">
-                <dt class="govuk-summary-list__key">
-                  Telephone
-                </dt>
-                <dd class="govuk-summary-list__value">
-
-                  @Html.DisplayFor(model => model.insolvencyServicePhone)
-                </dd>
-              </div>
+                <dt class="govuk-summary-list__key"> Contact </dt>
+                <dd class="govuk-summary-list__value"> @Html.DisplayFor(model => model.insolvencyServiceContact) </dd>
+                <div class="govuk-summary-list__row">
+                  <dt class="govuk-summary-list__key"> Address </dt>
+                  <dd class="govuk-summary-list__value"> @Html.DisplayFor(model => model.insolvencyServiceAddress) </dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                  <dt class="govuk-summary-list__key"> Postcode </dt>
+                  <dd class="govuk-summary-list__value"> @Html.DisplayFor(model => model.insolvencyServicePostcode) </dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                  <dt class="govuk-summary-list__key"> Telephone </dt>
+                  <dd class="govuk-summary-list__value"> @Html.DisplayFor(model => model.insolvencyServicePhone) </dd>
+                </div>
             </dl>
           </div>
         </div>
       </div>
-
-      <a asp-controller="Search" asp-action="Index" class="govuk-button">
-        Start new search
-      </a>
-
+      <a asp-controller="Search" asp-action="Index" class="govuk-button"> Start new search </a>
     </div>
     <div class="govuk-grid-column-one-third">
-
       <aside class="app-related-items" role="complementary">
-        <h2 class="govuk-heading-m" id="subsection-title">
-          Report an error
-        </h2>
+        <h2 class="govuk-heading-m" id="subsection-title"> Report an error </h2>
         <nav role="navigation" aria-labelledby="subsection-title">
           <ul class="govuk-list govuk-!-font-size-16">
             <li>
-              <a class="govuk-link--no-visited-state" href="report-an-issue">
-                Report an error or issue
-              </a>
+              <a class="govuk-link--no-visited-state" href="report-an-issue"> Report an error or issue </a>
             </li>
-
           </ul>
         </nav>
       </aside>
-
     </div>
   </div>
-
 </main>
