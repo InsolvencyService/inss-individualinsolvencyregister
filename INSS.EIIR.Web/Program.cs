@@ -157,6 +157,8 @@ void ConfigureServices(IServiceCollection services)
     services.AddTransient<IIndividualSearch, IndividualSearch>();
     services.AddTransient<ISubscriberService, SubscriberService>();
     services.AddTransient<ISubscriberSearch, SubscriberSearch>();
+    services.AddTransient<ICaseService, CaseService>();
+
 }
 
 static bool IsAdminContext(RedirectContext<CookieAuthenticationOptions> context)
