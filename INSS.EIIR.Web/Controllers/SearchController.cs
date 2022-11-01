@@ -6,19 +6,30 @@ namespace INSS.EIIR.Web.Controllers
 {
     public class SearchController : Controller
     {
-        public IActionResult Index()
+        [HttpGet("Search/{error?}")]
+        public IActionResult Index(bool? error)
         {
             var contentViewModel = new StaticContent
             {
                 Breadcrumbs = BreadcrumbBuilder.BuildBreadcrumbs()
             };
 
+            if (error ?? false)
+            {
+                ModelState.AddModelError("InvalidSearch", string.Empty);
+            }
+            
             return View(contentViewModel);
         }
 
-        [HttpPost("Search/{searchTerm}")]
+        [HttpPost("Search/{searchTerm?}")]
         public IActionResult Search(string searchTerm)
         {
+            if (string.IsNullOrWhiteSpace(searchTerm))
+            {
+                return RedirectToAction("Index", new { error = true });
+            }
+
             return RedirectToAction("Index", "SearchResults", new { searchTerm });
         }
     }
