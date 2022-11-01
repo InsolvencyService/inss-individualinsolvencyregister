@@ -1,4 +1,5 @@
-﻿using INSS.EIIR.Models.SearchModels;
+using INSS.EIIR.Models.CaseModels;
+using INSS.EIIR.Models.SearchModels;
 using Microsoft.EntityFrameworkCore;
 
 namespace INSS.EIIR.Data.Models;
@@ -59,6 +60,7 @@ public partial class EIIRContext : DbContext
     public virtual DbSet<WebMessage> WebMessages { get; set; } = null!;
 
     public virtual DbSet<SearchResult> SearchResults { get; set; } = null!;
+    public virtual DbSet<CaseResult> CaseResults { get; set; } = null!;
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
