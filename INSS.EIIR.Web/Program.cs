@@ -132,8 +132,8 @@ void ConfigureServices(IServiceCollection services)
             configuration.GetSection("ApiSettings").Bind(settings);
         });
 
-    var appUrl = config.GetConnectionString("EIIRWEB_API_HEALTH_ENDPOINT_HERE");
-    builder.Services.AddHealthChecks().AddUrlGroup(new Uri(appUrl));
+    // var appUrl = config.GetConnectionString("EIIRWEB_API_HEALTH_ENDPOINT_HERE");
+    // builder.Services.AddHealthChecks().AddUrlGroup(new Uri(appUrl));
 
     builder.Services.AddTransient(_ =>
     {
