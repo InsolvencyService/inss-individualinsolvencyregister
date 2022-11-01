@@ -1,25 +1,14 @@
 
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Net.Mail;
-using System.Threading.Tasks;
-using INSS.EIIR.Interfaces.Services;
 ﻿using INSS.EIIR.Interfaces.Web.Services;
 using INSS.EIIR.Models.Breadcrumb;
 using INSS.EIIR.Models.Configuration;
 using INSS.EIIR.Models.Constants;
 using INSS.EIIR.Models.SubscriberModels;
 using INSS.EIIR.Web.Constants;
-using INSS.EIIR.Web.Services;
 using INSS.EIIR.Web.Helper;
 using INSS.EIIR.Web.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.CodeAnalysis.Differencing;
-using Microsoft.VisualBasic;
 
 namespace INSS.EIIR.Web.Areas.Admin.Controllers
 {
@@ -41,7 +30,7 @@ namespace INSS.EIIR.Web.Areas.Admin.Controllers
         }
 
         [HttpGet(AreaNames.Admin + "/Subscribers/{page?}/{active?}")]
-        public async Task<IActionResult> Index(int page = 1, string active = null)
+        public async Task<IActionResult> Index(int page = 1, string active = "true")
         {
             var paging = new PagingParameters
             {
