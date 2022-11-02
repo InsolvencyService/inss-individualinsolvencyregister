@@ -1,5 +1,5 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
+using INSS.EIIR.Models.Breadcrumb;
 using Microsoft.AspNetCore.Mvc;
 
 namespace INSS.EIIR.Web.ViewModels
@@ -9,6 +9,7 @@ namespace INSS.EIIR.Web.ViewModels
 
         public SubscriberProfile()
         {
+            Breadcrumbs = new List<BreadcrumbLink>();
         }
 
         [Required]
@@ -52,8 +53,8 @@ namespace INSS.EIIR.Web.ViewModels
         public int ApplicationDay { get; set; }
 
         [Display(Name = "Application submitted date")]
-        [Range(1, 12)]
-        [Required]
+        [Range(1, 12, ErrorMessage = "Enter number between 1 and 12")]
+        [Required(ErrorMessage = "Application submitted date is required")]
         public int ApplicationMonth { get; set; }
 
         [Display(Name = "Application submitted date")]
@@ -112,6 +113,8 @@ namespace INSS.EIIR.Web.ViewModels
 
         [HiddenInput]
         public int SubscriberId { get; set; }
+
+        public List<BreadcrumbLink> Breadcrumbs { get; set; }
 
         internal DateTime ApplicationDate => new DateTime(ApplicationYear, ApplicationMonth, ApplicationDay);
 

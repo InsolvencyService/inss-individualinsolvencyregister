@@ -101,7 +101,7 @@ namespace INSS.EIIR.Web.Areas.Admin.Controllers
                 EmailAddress2 = subscriber.EmailContacts.Skip(1).Select(e => e.EmailAddress).FirstOrDefault(),
                 EmailAddress3 = subscriber.EmailContacts.Skip(2).Select(e => e.EmailAddress).FirstOrDefault(),
                 AccountActive = subscriber.AccountActive,
-
+                Breadcrumbs = _breadcrumbs
             };
 
             return View(subscriberProfile);
@@ -132,7 +132,6 @@ namespace INSS.EIIR.Web.Areas.Admin.Controllers
                     OrganisationType = subscriber.OrganisationType,
                     SubscribedFrom = subscriber.SubscribedFrom,
                     SubscribedTo = subscriber.SubscribedTo
-                    
                 };
 
                 await _subscriberService.UpdateSubscriberAsync($"{subscriber.SubscriberId}", createUpdateSubscriber);
