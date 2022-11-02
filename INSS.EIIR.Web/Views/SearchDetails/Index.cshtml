@@ -4,7 +4,7 @@
   ViewData["Title"] = String.Format("Individual Insolvency Register - {0}", Model.caseName);
 } 
 
-<a asp-controller="Search" asp-action="Index" class="govuk-back-link">Back</a>
+<a asp-controller="Search" asp-action="Index" id="Back" class="govuk-back-link">Back</a>
 
 <main class="govuk-main-wrapper govuk-main-wrapper--auto-spacing" id="main-content" role="main">
   <div class="govuk-grid-row">
@@ -171,7 +171,7 @@
           </div>
         </div>
       </div>
-      <a asp-controller="Search" asp-action="Index" class="govuk-button"> Start new search </a>
+      <a asp-controller="Search" asp-action="Index" id="newSearch" class="govuk-button"> Start new search </a>
     </div>
     <div class="govuk-grid-column-one-third">
       <aside class="app-related-items" role="complementary">
