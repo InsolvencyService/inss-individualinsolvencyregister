@@ -1,9 +1,26 @@
 ﻿@model INSS.EIIR.Models.SubscriberModels.Subscriber
 
+@{
+    var header = "Subscriber details";
+    ViewData["Header"] = header;
+    ViewData["Title"] = $"{header} – Individual Insolvency Register";
+
+    var parameters = string.Empty;
+    if(Model?.SubscriberParameters != null)
+    {
+        parameters = $"/{Model.SubscriberParameters.SubscriberId}/{Model.SubscriberParameters.Page}/{Model.SubscriberParameters.Active}";
+    }
+}
+
+@section AdminBreadcrumb
+{
+    <partial name="~/Areas/Admin/Shared/_AdminBreadcrumb.cshtml" model="Model.Breadcrumbs" />
+}
+
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
         <h1 class="govuk-heading-l govuk-!-margin-bottom-8">
-            Subscriber details
+            @header
         </h1>
 
         @if (Model != null && Model.SubscribedTo.HasValue)
@@ -17,7 +34,7 @@
             </div>
             }
 
-        <h2 class="govuk-heading-m">Company or organsation</h2>
+        <h2 class="govuk-heading-m">Company or organisation</h2>
 
         <dl class="govuk-summary-list govuk-!-margin-bottom-9">
             <div class="govuk-summary-list__row">
@@ -28,7 +45,7 @@
                     @Model.OrganisationName
                 </dd>
                 <dd class="govuk-summary-list__actions">
-                    <a class="govuk-link govuk-link--no-visited-state" href="change-profile#OrganisationName">
+                    <a class="govuk-link govuk-link--no-visited-state" href="/admin/subscriber@(parameters)/change-profile#OrganisationName">
                         Change<span class="govuk-visually-hidden"> name</span>
                     </a>
                 </dd>
@@ -46,7 +63,7 @@
                     @String.Join(' ', Model.SubscriberDetails.ContactForename, Model.SubscriberDetails.ContactSurname)
                 </dd>
                 <dd class="govuk-summary-list__actions">
-                    <a class="govuk-link govuk-link--no-visited-state" href="change-profile#first-name">
+                    <a class="govuk-link govuk-link--no-visited-state" href="/admin/subscriber@(parameters)/change-profile#first-name">
                         Change<span class="govuk-visually-hidden"> full name</span>
                     </a>
                 </dd>
@@ -67,7 +84,7 @@
                     @Model.SubscriberDetails.ContactPostcode
                 </dd>
                 <dd class="govuk-summary-list__actions">
-                    <a class="govuk-link govuk-link--no-visited-state" href="change-profile#address-line-1">
+                    <a class="govuk-link govuk-link--no-visited-state" href="/admin/subscriber@(parameters)/change-profile#address-line-1">
                         Change<span class="govuk-visually-hidden"> address</span>
                     </a>
                 </dd>
@@ -80,7 +97,7 @@
                     <p class="govuk-body">@Model.SubscriberDetails.ContactEmail</p>
                 </dd>
                 <dd class="govuk-summary-list__actions">
-                    <a class="govuk-link govuk-link--no-visited-state" href="change-profile#email-address">
+                    <a class="govuk-link govuk-link--no-visited-state" href="/admin/subscriber@(parameters)/change-profile#email-address">
                         Change<span class="govuk-visually-hidden"> email address</span>
                     </a>
                 </dd>
@@ -93,7 +110,7 @@
                     <p class="govuk-body">@Model.SubscriberDetails.ContactTelephone</p>
                 </dd>
                 <dd class="govuk-summary-list__actions">
-                    <a class="govuk-link govuk-link--no-visited-state" href="change-profile#telephone">
+                    <a class="govuk-link govuk-link--no-visited-state" href="/admin/subscriber@(parameters)/change-profile#telephone">
                         Change<span class="govuk-visually-hidden"> telephone</span>
                     </a>
                 </dd>
@@ -110,7 +127,7 @@
                     @Model.SubscriberDetails.ApplicationDate.ToString("dd MMMM yyyy")
                 </dd>
                 <dd class="govuk-summary-list__actions">
-                    <a class="govuk-link govuk-link--no-visited-state" href="change-profile#application-day">
+                    <a class="govuk-link govuk-link--no-visited-state" href="/admin/subscriber@(parameters)/change-profile#application-day">
                         Change<span class="govuk-visually-hidden"> date</span>
                     </a>
                 </dd>
@@ -123,7 +140,7 @@
                     @Model.SubscribedFrom?.ToString("dd MMMM yyyy")
                 </dd>
                 <dd class="govuk-summary-list__actions">
-                    <a class="govuk-link govuk-link--no-visited-state" href="change-profile#start-day">
+                    <a class="govuk-link govuk-link--no-visited-state" href="/admin/subscriber@(parameters)/change-profile#start-day">
                         Change<span class="govuk-visually-hidden"> type</span>
                     </a>
                 </dd>
@@ -136,7 +153,7 @@
                     @Model.SubscribedTo?.ToString("dd MMMM yyyy")
                 </dd>
                 <dd class="govuk-summary-list__actions">
-                    <a class="govuk-link govuk-link--no-visited-state" href="change-profile#end-day">
+                    <a class="govuk-link govuk-link--no-visited-state" href="/admin/subscriber@(parameters)/change-profile#end-day">
                         Change<span class="govuk-visually-hidden"> website</span>
                     </a>
                 </dd>
@@ -149,7 +166,7 @@
                     @(Model.AccountActive.Equals("Y") ? "Active" : "Inactive")
                 </dd>
                 <dd class="govuk-summary-list__actions">
-                    <a class="govuk-link govuk-link--no-visited-state" href="change-profile#subscription-state">
+                    <a class="govuk-link govuk-link--no-visited-state" href="/admin/subscriber@(parameters)/change-profile#subscription-state">
                         Change<span class="govuk-visually-hidden"> status</span>
                     </a>
                 </dd>
@@ -176,7 +193,7 @@
                         @emailAddress
                     </dt>
                     <dd class="govuk-summary-list__actions">
-                        <a class="govuk-link govuk-link--no-visited-state" href="change-profile#EmailAddress@index">
+                        <a class="govuk-link govuk-link--no-visited-state" href="/admin/subscriber@(parameters)/change-profile#EmailAddress@index">
                             @(String.IsNullOrEmpty(emailAddress) ? "Add" : index == 1 ? "Change" : "Change or remove")
                         </a>
                     </dd>
@@ -184,7 +201,7 @@
                 }
         </dl>
 
-        <form action="admin-area" method="post" novalidate="">
+        <form asp-controller="AdminHome" asp-action="Index" method="post" novalidate="">
             <br>
             <br>
 
@@ -194,7 +211,7 @@
 
         </form>
         <p>
-            <a class="govuk-link govuk-link--no-visited-state" href="subscriber-list-page">View another subscriber</a>
+            <a class="govuk-link govuk-link--no-visited-state" asp-controller="Subscriber" asp-action="Index">View another subscriber</a>
         </p>
     </div>
 </div>

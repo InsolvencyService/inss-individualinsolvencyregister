@@ -3,7 +3,7 @@
 
 @{
     var header = "Update subscriber details";
-
+    ViewData["Header"] = header;
     ViewData["Title"] = $"{header} – Individual Insolvency Register";
 
     var organisationNameError = ViewContext.ModelState["OrganisationName"] != null && ViewContext.ModelState["OrganisationName"].Errors.Count > 0;
@@ -211,10 +211,10 @@
                     </div>
 
                     <div class="govuk-date-input__item">
-                        <div class="@(applicationDayError ? ValidationClasses.GroupErrorClass : ValidationClasses.GroupClass)">
-                            @if (applicationDayError)
+                        <div class="@(applicationMonthError ? ValidationClasses.GroupErrorClass : ValidationClasses.GroupClass)">
+                            @if (applicationMonthError)
                             {
-                                @await Html.PartialAsync("~/Areas/Admin/Shared/_ValidationError.cshtml", ViewContext.ModelState["ApplicationDay"].Errors)
+                                @await Html.PartialAsync("~/Areas/Admin/Shared/_ValidationError.cshtml", ViewContext.ModelState["ApplicationMonth"].Errors)
                             }
                             <label class="govuk-label govuk-date-input__label" asp-for="ApplicationMonth">
                                 Month
@@ -224,10 +224,10 @@
                     </div>
 
                     <div class="govuk-date-input__item">
-                        <div class="@(applicationDayError ? ValidationClasses.GroupErrorClass : ValidationClasses.GroupClass)">
-                            @if (applicationDayError)
+                        <div class="@(applicationYearError ? ValidationClasses.GroupErrorClass : ValidationClasses.GroupClass)">
+                            @if (applicationYearError)
                             {
-                                @await Html.PartialAsync("~/Areas/Admin/Shared/_ValidationError.cshtml", ViewContext.ModelState["ApplicationDay"].Errors)
+                                @await Html.PartialAsync("~/Areas/Admin/Shared/_ValidationError.cshtml", ViewContext.ModelState["ApplicationYear"].Errors)
                             }
                             <label class="govuk-label govuk-date-input__label" asp-for="ApplicationYear">
                                 Year
