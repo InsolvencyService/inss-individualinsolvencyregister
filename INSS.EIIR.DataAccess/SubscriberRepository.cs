@@ -35,13 +35,14 @@ public class SubscriberRepository : ISubscriberRepository
                 
         results.ToList().ForEach(s =>
         {
-            subscribers.Add(_mapper.Map<SubscriberAccount, Subscriber>(s.SubscriberAccounts));
-            subscribers.ToList().ForEach(x =>
-            {
-                var subContacts = contacts.Where(u => x.SubscriberId == u.SubscriberId).ToList();
-                x.SubscriberDetails = _mapper.Map<SubscriberApplication, SubscriberDetail>(s.SubscriberApplications);
-                x.EmailContacts = _mapper.Map<IList<SubscriberContact>, IList<SubscriberEmailContact>>(subContacts);
-            });
+            var subContacts = contacts.Where(sc => s.SubscriberAccounts.SubscriberId == sc.SubscriberId).ToList();
+            var subscriber = _mapper.Map<SubscriberAccount, Subscriber>(s.SubscriberAccounts);
+            var application = _mapper.Map<SubscriberApplication, SubscriberDetail>(s.SubscriberApplications);
+            var emailContacts = _mapper.Map<IList<SubscriberContact>, IList<SubscriberEmailContact>>(subContacts);
+
+            subscriber.SubscriberDetails = application;
+            subscriber.EmailContacts = emailContacts;
+            subscribers.Add(subscriber);
         });
 
         return subscribers;
