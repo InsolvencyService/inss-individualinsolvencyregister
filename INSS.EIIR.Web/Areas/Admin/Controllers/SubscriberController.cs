@@ -59,19 +59,29 @@ namespace INSS.EIIR.Web.Areas.Admin.Controllers
 
 
         [Area(AreaNames.Admin)]
-        [Route(AreaNames.Admin + "/subscriber/{subscriberId}", Name = "SubscriberProfile")]
+        [Route(AreaNames.Admin + "/subscriber/{subscriberId}/{page}/{active}", Name = "SubscriberProfile")]
         [Authorize(Roles = Role.Admin)]
-        public async Task<IActionResult> Profile(int subscriberId)
+        public async Task<IActionResult> Profile(int subscriberId, int page, string active)
         {
             var subscriber = await _subscriberService.GetSubscriberByIdAsync($"{subscriberId}");
+
+            var parameters = new SubscriberParameters
+            {
+                SubscriberId = subscriberId,
+                Page = page,
+                Active = active
+            };
+            subscriber.SubscriberParameters = parameters;
+
+            subscriber.Breadcrumbs = BreadcrumbBuilder.BuildBreadcrumbs(showSubscriberList: true, subscriberParameters: parameters).ToList();
 
             return View(subscriber);
         }
 
         [Area(AreaNames.Admin)]
-        [HttpGet(AreaNames.Admin + "/subscriber/{subscriberId}/change-profile")]
+        [HttpGet(AreaNames.Admin + "/subscriber/{subscriberId}/{page}/{active}/change-profile")]
         [Authorize(Roles = Role.Admin)]
-        public async Task<IActionResult> ChangeProfile(int subscriberId)
+        public async Task<IActionResult> ChangeProfile(int subscriberId, int page, string active)
         {
             var subscriber = await _subscriberService.GetSubscriberByIdAsync($"{subscriberId}");
 
@@ -88,21 +98,32 @@ namespace INSS.EIIR.Web.Areas.Admin.Controllers
                 ContactPostcode = subscriber.SubscriberDetails.ContactPostcode,
                 ContactEmail = subscriber.SubscriberDetails.ContactEmail,
                 ContactTelephone = subscriber.SubscriberDetails.ContactTelephone,
-                ApplicationDay = subscriber.SubscriberDetails.ApplicationDate.Day,
-                ApplicationMonth = subscriber.SubscriberDetails.ApplicationDate.Month,
-                ApplicationYear = subscriber.SubscriberDetails.ApplicationDate.Year,
-                SubscribedFromDay = subscriber.SubscribedFrom?.Day,
-                SubscribedFromMonth = subscriber.SubscribedFrom?.Month,
-                SubscribedFromYear = subscriber.SubscribedFrom?.Year,
-                SubscribedToDay = subscriber.SubscribedTo?.Day,
-                SubscribedToMonth = subscriber.SubscribedTo?.Month,
-                SubscribedToYear = subscriber.SubscribedTo?.Year,
+                ApplicationDay = subscriber.SubscriberDetails.ApplicationDate.Day.ToString(),
+                ApplicationMonth = subscriber.SubscriberDetails.ApplicationDate.Month.ToString(),
+                ApplicationYear = subscriber.SubscriberDetails.ApplicationDate.Year.ToString(),
+                SubscribedFromDay = subscriber.SubscribedFrom?.Day.ToString(),
+                SubscribedFromMonth = subscriber.SubscribedFrom?.Month.ToString(),
+                SubscribedFromYear = subscriber.SubscribedFrom?.Year.ToString(),
+                SubscribedToDay = subscriber.SubscribedTo?.Day.ToString(),
+                SubscribedToMonth = subscriber.SubscribedTo?.Month.ToString(),
+                SubscribedToYear = subscriber.SubscribedTo?.Year.ToString(),
                 EmailAddress1 = subscriber.EmailContacts.Select(e => e.EmailAddress).FirstOrDefault(),
                 EmailAddress2 = subscriber.EmailContacts.Skip(1).Select(e => e.EmailAddress).FirstOrDefault(),
                 EmailAddress3 = subscriber.EmailContacts.Skip(2).Select(e => e.EmailAddress).FirstOrDefault(),
                 AccountActive = subscriber.AccountActive,
-
             };
+
+            var parameters = new SubscriberParameters
+            {
+                SubscriberId = subscriberId,
+                Page = page,
+                Active = active
+            };
+
+            subscriberProfile.SubscriberParameters = parameters;
+
+            subscriberProfile.Breadcrumbs =
+                BreadcrumbBuilder.BuildBreadcrumbs(showSubscriberList: true, showSubscriber:true, subscriberParameters: parameters).ToList();
 
             return View(subscriberProfile);
         }
@@ -132,7 +153,6 @@ namespace INSS.EIIR.Web.Areas.Admin.Controllers
                     OrganisationType = subscriber.OrganisationType,
                     SubscribedFrom = subscriber.SubscribedFrom,
                     SubscribedTo = subscriber.SubscribedTo
-                    
                 };
 
                 await _subscriberService.UpdateSubscriberAsync($"{subscriber.SubscriberId}", createUpdateSubscriber);

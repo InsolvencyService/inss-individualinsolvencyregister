@@ -1,7 +1,9 @@
 ﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
 @model INSS.EIIR.Web.ViewModels.SubscriberListViewModel
 @{
-    ViewData["Title"] = "Subscribers";
+    var header = "Subscribers";
+    ViewData["Header"] = header;
+    ViewData["Title"] = $"{header} – Individual Insolvency Register";
 
     var active = Model.SubscriberWithPaging.Paging.Parameters ?? string.Empty;
 }
@@ -12,7 +14,7 @@
 }
 
 <h1 class="govuk-heading-l govuk-!-margin-bottom-8">
-    Subscribers
+    @header
 </h1>
 
 <p class="govuk-body govuk-!-margin-bottom-8">
@@ -50,7 +52,7 @@
 
         @if (Model != null && Model.SubscriberWithPaging.Subscribers.Any())
         {
-            <table class="govuk-table table_header">
+            <table class="govuk-table govuk-!-margin-bottom-8">
                 <thead class="govuk-table__head">
                     <tr class="govuk-table__row">
                         <th scope="col" class="govuk-table__header">Subscriber ID</th>
@@ -68,7 +70,7 @@
                             </td>
                         
                             <td class="govuk-table__cell">
-                                <a class="govuk-link--no-visited-state" href="@($"/Admin/Subscriber/{subscriber.SubscriberId}/")">
+                                <a class="govuk-link--no-visited-state" href="@($"/Admin/Subscriber/{subscriber.SubscriberId}/{Model.SubscriberWithPaging.Paging.Page}/{active}")">
                                     @subscriber.OrganisationName
                                 </a>
                             </td>

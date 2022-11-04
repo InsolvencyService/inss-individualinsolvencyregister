@@ -1,18 +1,12 @@
-﻿@model INSS.EIIR.Models.Home.StaticContent
+﻿@using INSS.EIIR.Web.Constants
+@model INSS.EIIR.Models.Home.StaticContent
 @{
     ViewData["Title"] = "Search";
 
     var searchError = ViewContext.ModelState["InvalidSearch"] != null;
 
-    const string groupClass = "govuk-form-group";
-    const string groupErrorClass = "govuk-form-group govuk-form-group--error";
-
-    const string inputClass = "govuk-input govuk-input--width-30";
-    const string inputErrorClass = "govuk-input govuk-input--width-30 govuk-input--error";
-
-    var searchInputClass = searchError ? inputErrorClass : inputClass;
-    var searchGroupClass = searchError ? groupErrorClass : groupClass;
-
+    var searchInputClass = searchError ? ValidationClasses.InputErrorClass : ValidationClasses.InputClass;
+    var searchGroupClass = searchError ? ValidationClasses.GroupErrorClass : ValidationClasses.GroupClass;
 }
 
 @section Breadcrumb

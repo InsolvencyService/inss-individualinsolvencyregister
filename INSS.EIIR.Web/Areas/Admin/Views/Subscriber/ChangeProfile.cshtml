@@ -1,32 +1,83 @@
-﻿@model INSS.EIIR.Web.ViewModels.SubscriberProfile
+﻿@using INSS.EIIR.Web.Constants
+@model INSS.EIIR.Web.ViewModels.SubscriberProfile
+
+@{
+    var header = "Update subscriber details";
+    ViewData["Header"] = header;
+    ViewData["Title"] = $"{header} – Individual Insolvency Register";
+
+    var organisationNameError = ViewContext.ModelState["OrganisationName"] != null && ViewContext.ModelState["OrganisationName"].Errors.Count > 0;
+    var organisationTypeError = ViewContext.ModelState["OrganisationType"] != null && ViewContext.ModelState["OrganisationType"].Errors.Count > 0;
+    
+    var contactForenameError = ViewContext.ModelState["ContactForename"] != null && ViewContext.ModelState["ContactForename"].Errors.Count > 0;
+    var contactSurnameError = ViewContext.ModelState["ContactSurname"] != null && ViewContext.ModelState["ContactSurname"].Errors.Count > 0;
+    var contactAddress1Error = ViewContext.ModelState["ContactAddress1"] != null && ViewContext.ModelState["ContactAddress1"].Errors.Count > 0;
+    var contactAddress2Error = ViewContext.ModelState["ContactAddress2"] != null && ViewContext.ModelState["ContactAddress2"].Errors.Count > 0;
+    var contactCityError = ViewContext.ModelState["ContactCity"] != null && ViewContext.ModelState["ContactCity"].Errors.Count > 0;
+    var contactPostcodeError = ViewContext.ModelState["ContactPostcode"] != null && ViewContext.ModelState["ContactPostcode"].Errors.Count > 0;
+    var contactEmailError = ViewContext.ModelState["ContactEmail"] != null && ViewContext.ModelState["ContactEmail"].Errors.Count > 0;
+    var contactTelephoneError = ViewContext.ModelState["ContactTelephone"] != null && ViewContext.ModelState["ContactTelephone"].Errors.Count > 0;
+
+    var applicationDayError = ViewContext.ModelState["ApplicationDay"] != null && ViewContext.ModelState["ApplicationDay"].Errors.Count > 0;
+    var applicationMonthError = ViewContext.ModelState["ApplicationMonth"] != null && ViewContext.ModelState["ApplicationMonth"].Errors.Count > 0;
+    var applicationYearError = ViewContext.ModelState["ApplicationYear"] != null && ViewContext.ModelState["ApplicationYear"].Errors.Count > 0;
+
+    var subscribedFromDayError = ViewContext.ModelState["SubscribedFromDay"] != null && ViewContext.ModelState["SubscribedFromDay"].Errors.Count > 0;
+    var subscribedFromMonthError = ViewContext.ModelState["SubscribedFromMonth"] != null && ViewContext.ModelState["SubscribedFromMonth"].Errors.Count > 0;
+    var subscribedFromYearError = ViewContext.ModelState["SubscribedFromYear"] != null && ViewContext.ModelState["SubscribedFromYear"].Errors.Count > 0;
+
+    var subscribedToDayError = ViewContext.ModelState["SubscribedToDay"] != null && ViewContext.ModelState["SubscribedToDay"].Errors.Count > 0;
+    var subscribedToMonthError = ViewContext.ModelState["SubscribedToMonth"] != null && ViewContext.ModelState["SubscribedToMonth"].Errors.Count > 0;
+    var subscribedToYearError = ViewContext.ModelState["SubscribedToYear"] != null && ViewContext.ModelState["SubscribedToYear"].Errors.Count > 0;
+
+    var accountActiveError = ViewContext.ModelState["AccountActive"] != null && ViewContext.ModelState["AccountActive"].Errors.Count > 0;
+
+    var emailAddress1Error = ViewContext.ModelState["EmailAddress1"] != null && ViewContext.ModelState["EmailAddress1"].Errors.Count > 0;
+    var emailAddress2Error = ViewContext.ModelState["EmailAddress2"] != null && ViewContext.ModelState["EmailAddress2"].Errors.Count > 0;
+    var emailAddress3Error = ViewContext.ModelState["EmailAddress3"] != null && ViewContext.ModelState["EmailAddress3"].Errors.Count > 0;
+}
+
+@section AdminBreadcrumb
+{
+    <partial name="~/Areas/Admin/Shared/_AdminBreadcrumb.cshtml" model="Model.Breadcrumbs" />
+}
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
 
-        <form asp-area="admin" asp-controller="subscriber" asp-action="change-profile" method="post">
+        @await Html.PartialAsync("~/Areas/Admin/Shared/_ValidationSummary.cshtml", ViewData.ModelState)
+
+        <form asp-area="admin" asp-controller="subscriber" asp-action="ChangeProfile" method="post">
             <h1 class="govuk-heading-l govuk-!-margin-bottom-8">
-                Update subscriber details
+                @header
             </h1>
 
             <fieldset class="govuk-fieldset">
-                <div class="govuk-form-group">
+                <div class="@(organisationNameError ? ValidationClasses.GroupErrorClass : ValidationClasses.GroupClass)">
                     <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
                         <h2 class="govuk-fieldset__heading">
                             Company or organisation
                         </h2>
                     </legend>
-                    <span class="govuk-error-message" asp-validation-for="OrganisationName"></span>
+                    @if (organisationNameError)
+                    {
+                        @await Html.PartialAsync("~/Areas/Admin/Shared/_ValidationError.cshtml", ViewContext.ModelState["OrganisationName"].Errors)
+                    }
                     <label class="govuk-label" asp-for="OrganisationName">
                         Name
                     </label>
-                    <input class="govuk-input" asp-for="OrganisationName">
+                    <input class="@(organisationNameError ? ValidationClasses.InputErrorClass : ValidationClasses.InputClass)" asp-for="OrganisationName">
                 </div>
-                <div class="govuk-form-group">
-                    <span class="govuk-error-message" asp-validation-for="OrganisationType"></span>
+
+                <div class="@(organisationTypeError ? ValidationClasses.GroupErrorClass : ValidationClasses.GroupClass)">
+                    @if (organisationTypeError)
+                    {
+                        @await Html.PartialAsync("~/Areas/Admin/Shared/_ValidationError.cshtml", ViewContext.ModelState["OrganisationType"].Errors)
+                    }
                     <label class="govuk-label" asp-for="OrganisationType">
                         Type
                     </label>
-                    <select class="govuk-select" asp-for="OrganisationType">
+                    <select class="@(organisationTypeError ? "govuk-select govuk-select--error" : "govuk-select")" asp-for="OrganisationType">
                         <option value="">Select</option>
                         <option>Credit reference agency</option>
                         <option>Credit card issuer</option>
@@ -46,61 +97,92 @@
                         Main contact
                     </h2>
                 </legend>
-                <div class="govuk-form-group">
-                    <span class="govuk-error-message" asp-validation-for="ContactForename"></span>
+                <div class="@(contactForenameError ? ValidationClasses.GroupErrorClass : ValidationClasses.GroupClass)">
+                    @if (contactForenameError)
+                    {
+                        @await Html.PartialAsync("~/Areas/Admin/Shared/_ValidationError.cshtml", ViewContext.ModelState["ContactForename"].Errors)
+                    }
                     <label class="govuk-label" asp-for="ContactForename">
                         Forename
                     </label>
-                    <input class="govuk-input" asp-for="ContactForename">
+                    <input class="@(contactForenameError ? ValidationClasses.InputErrorClass : ValidationClasses.InputClass)" asp-for="ContactForename">
                 </div>
-                <div class="govuk-form-group">
-                    <span class="govuk-error-message" asp-validation-for="ContactSurname"></span>
+
+                <div class="@(contactSurnameError ? ValidationClasses.GroupErrorClass : ValidationClasses.GroupClass)">
+                    @if (contactSurnameError)
+                    {
+                        @await Html.PartialAsync("~/Areas/Admin/Shared/_ValidationError.cshtml", ViewContext.ModelState["ContactSurname"].Errors)
+                    }
                     <label class="govuk-label" asp-for="ContactSurname">
                         Surname
                     </label>
-                    <input class="govuk-input" asp-for="ContactSurname">
+                    <input class="@(contactSurnameError ? ValidationClasses.InputErrorClass : ValidationClasses.InputClass)" asp-for="ContactSurname">
                 </div>
-                <div class="govuk-form-group">
-                    <span class="govuk-error-message" asp-validation-for="ContactAddress1"></span>
+
+                <div class="@(contactAddress1Error ? ValidationClasses.GroupErrorClass : ValidationClasses.GroupClass)">
+                    @if (contactAddress1Error)
+                    {
+                        @await Html.PartialAsync("~/Areas/Admin/Shared/_ValidationError.cshtml", ViewContext.ModelState["ContactAddress1"].Errors)
+                    }
                     <label class="govuk-label" asp-for="ContactAddress1">
                         Address line 1
                     </label>
-                    <input class="govuk-input" asp-for="ContactAddress1">
+                    <input class="@(contactAddress1Error ? ValidationClasses.InputErrorClass : ValidationClasses.InputClass)" asp-for="ContactAddress1">
                 </div>
-                <div class="govuk-form-group">
-                    <span class="govuk-error-message" asp-validation-for="ContactAddress2"></span>
+
+                <div class="@(contactAddress2Error ? ValidationClasses.GroupErrorClass : ValidationClasses.GroupClass)">
+                    @if (contactAddress2Error)
+                    {
+                        @await Html.PartialAsync("~/Areas/Admin/Shared/_ValidationError.cshtml", ViewContext.ModelState["ContactAddress2"].Errors)
+                    }
                     <label class="govuk-label" asp-for="ContactAddress2">
                         Address line 2 (optional)
                     </label>
-                    <input class="govuk-input govuk-!-width-full" asp-for="ContactAddress2">
+                    <input class="@(contactAddress2Error ? ValidationClasses.InputErrorClass : ValidationClasses.InputClass)" asp-for="ContactAddress2">
                 </div>
-                <div class="govuk-form-group">
-                    <span class="govuk-error-message" asp-validation-for="ContactCity"></span>
+
+                <div class="@(contactCityError ? ValidationClasses.GroupErrorClass : ValidationClasses.GroupClass)">
+                    @if (contactCityError)
+                    {
+                        @await Html.PartialAsync("~/Areas/Admin/Shared/_ValidationError.cshtml", ViewContext.ModelState["ContactCity"].Errors)
+                    }
                     <label class="govuk-label" asp-for="ContactCity">
                         Town or city
                     </label>
-                    <input class="govuk-input govuk-!-width-two-thirds" asp-for="ContactCity">
+                    <input class="@(contactCityError ? $"{ValidationClasses.InputErrorClass} {ValidationClasses.TwoThirdsWidthClass}" : $"{ValidationClasses.InputClass} {ValidationClasses.TwoThirdsWidthClass}")" asp-for="ContactCity">
                 </div>
-                <div class="govuk-form-group">
-                    <span class="govuk-error-message" asp-validation-for="ContactPostcode"></span>
+
+                <div class="@(contactPostcodeError ? ValidationClasses.GroupErrorClass : ValidationClasses.GroupClass)">
+                    @if (contactPostcodeError)
+                    {
+                        @await Html.PartialAsync("~/Areas/Admin/Shared/_ValidationError.cshtml", ViewContext.ModelState["ContactPostcode"].Errors)
+                    }
                     <label class="govuk-label" asp-for="ContactPostcode">
                         Postcode
                     </label>
-                    <input class="govuk-input govuk-input--width-10" asp-for="ContactPostcode">
+                    <input class="@(contactPostcodeError ? $"{ValidationClasses.InputErrorClass} {ValidationClasses.TenWidthClass}" : $"{ValidationClasses.InputClass} {ValidationClasses.TenWidthClass}")" asp-for="ContactPostcode">
                 </div>
-                <div class="govuk-form-group">
-                    <span class="govuk-error-message" asp-validation-for="ContactEmail"></span>
+
+                <div class="@(contactEmailError ? ValidationClasses.GroupErrorClass : ValidationClasses.GroupClass)">
+                    @if (contactEmailError)
+                    {
+                        @await Html.PartialAsync("~/Areas/Admin/Shared/_ValidationError.cshtml", ViewContext.ModelState["ContactEmail"].Errors)
+                    }
                     <label class="govuk-label" asp-for="ContactEmail">
                         Email address
                     </label>
-                    <input class="govuk-input" asp-for="ContactEmail">
+                    <input class="@(contactEmailError ? ValidationClasses.InputErrorClass : ValidationClasses.InputClass)" asp-for="ContactEmail">
                 </div>
-                <div class="govuk-form-group govuk-!-margin-bottom-8">
-                    <span class="govuk-error-message" asp-validation-for="ContactTelephone"></span>
+
+                <div class="@(contactTelephoneError ? ValidationClasses.GroupErrorClass : ValidationClasses.GroupClass)">
+                    @if (contactTelephoneError)
+                    {
+                        @await Html.PartialAsync("~/Areas/Admin/Shared/_ValidationError.cshtml", ViewContext.ModelState["ContactTelephone"].Errors)
+                    }
                     <label class="govuk-label" asp-for="ContactTelephone">
                         Telephone number
                     </label>
-                    <input class="govuk-input govuk-input--width-20" asp-for="ContactTelephone">
+                    <input class="@(contactTelephoneError ? $"{ValidationClasses.InputErrorClass} {ValidationClasses.TwoThirdsWidthClass}" : $"{ValidationClasses.InputClass} {ValidationClasses.TwoThirdsWidthClass}")" asp-for="ContactTelephone">
                 </div>
             </fieldset>
 
@@ -116,30 +198,41 @@
                 </legend>
                 <div class="govuk-date-input" id="application-date">
                     <div class="govuk-date-input__item">
-                        <div class="govuk-form-group">
-                            <span class="govuk-error-message" asp-validation-for="ApplicationDay"></span>
+                        <div class="@(applicationDayError ? ValidationClasses.GroupErrorClass : ValidationClasses.GroupClass)">
+                            @if (applicationDayError)
+                            {
+                                @await Html.PartialAsync("~/Areas/Admin/Shared/_ValidationError.cshtml", ViewContext.ModelState["ApplicationDay"].Errors)
+                            }
                             <label class="govuk-label govuk-date-input__label" asp-for="ApplicationDay">
                                 Day
                             </label>
-                            <input class="govuk-input govuk-date-input__input govuk-input--width-2" asp-for="ApplicationDay">
+                            <input class="@(applicationDayError ? $"{ValidationClasses.InputErrorClass} {ValidationClasses.TwoWidthClass}" : $"{ValidationClasses.InputClass} {ValidationClasses.TwoWidthClass}")" asp-for="ApplicationDay">
                         </div>
                     </div>
+
                     <div class="govuk-date-input__item">
-                        <div class="govuk-form-group">
-                            <span class="govuk-error-message" asp-validation-for="ApplicationMonth"></span>
+                        <div class="@(applicationMonthError ? ValidationClasses.GroupErrorClass : ValidationClasses.GroupClass)">
+                            @if (applicationMonthError)
+                            {
+                                @await Html.PartialAsync("~/Areas/Admin/Shared/_ValidationError.cshtml", ViewContext.ModelState["ApplicationMonth"].Errors)
+                            }
                             <label class="govuk-label govuk-date-input__label" asp-for="ApplicationMonth">
                                 Month
                             </label>
-                            <input class="govuk-input govuk-date-input__input govuk-input--width-2" asp-for="ApplicationMonth">
+                            <input class="@(applicationMonthError ? $"{ValidationClasses.InputErrorClass} {ValidationClasses.TwoWidthClass}" : $"{ValidationClasses.InputClass} {ValidationClasses.TwoWidthClass}")" asp-for="ApplicationMonth">
                         </div>
                     </div>
+
                     <div class="govuk-date-input__item">
-                        <div class="govuk-form-group">
-                            <span class="govuk-error-message" asp-validation-for="ApplicationYear"></span>
+                        <div class="@(applicationYearError ? ValidationClasses.GroupErrorClass : ValidationClasses.GroupClass)">
+                            @if (applicationYearError)
+                            {
+                                @await Html.PartialAsync("~/Areas/Admin/Shared/_ValidationError.cshtml", ViewContext.ModelState["ApplicationYear"].Errors)
+                            }
                             <label class="govuk-label govuk-date-input__label" asp-for="ApplicationYear">
                                 Year
                             </label>
-                            <input class="govuk-input govuk-date-input__input govuk-input--width-4" asp-for="ApplicationYear">
+                            <input class="@(applicationYearError ? $"{ValidationClasses.InputErrorClass} {ValidationClasses.FourWidthClass}" : $"{ValidationClasses.InputClass} {ValidationClasses.FourWidthClass}")" asp-for="ApplicationYear">
                         </div>
                     </div>
                 </div>
@@ -153,30 +246,41 @@
                 </legend>
                 <div class="govuk-date-input" id="start-date">
                     <div class="govuk-date-input__item">
-                        <div class="govuk-form-group">
-                            <span class="govuk-error-message" asp-validation-for="SubscribedFromDay"></span>
+                        <div class="@(subscribedFromDayError ? ValidationClasses.GroupErrorClass : ValidationClasses.GroupClass)">
+                            @if (subscribedFromDayError)
+                            {
+                                @await Html.PartialAsync("~/Areas/Admin/Shared/_ValidationError.cshtml", ViewContext.ModelState["SubscribedFromDay"].Errors)
+                            }
                             <label class="govuk-label govuk-date-input__label" asp-for="SubscribedFromDay">
                                 Day
                             </label>
-                            <input class="govuk-input govuk-date-input__input govuk-input--width-2" asp-for="SubscribedFromDay">
+                            <input class="@(subscribedFromDayError ? $"{ValidationClasses.InputErrorClass} {ValidationClasses.TwoWidthClass}" : $"{ValidationClasses.InputClass} {ValidationClasses.TwoWidthClass}")" asp-for="SubscribedFromDay">
                         </div>
                     </div>
+
                     <div class="govuk-date-input__item">
-                        <div class="govuk-form-group">
-                            <span class="govuk-error-message" asp-validation-for="SubscribedFromMonth"></span>
+                        <div class="@(subscribedFromMonthError ? ValidationClasses.GroupErrorClass : ValidationClasses.GroupClass)">
+                            @if (subscribedFromMonthError)
+                            {
+                                @await Html.PartialAsync("~/Areas/Admin/Shared/_ValidationError.cshtml", ViewContext.ModelState["SubscribedFromMonth"].Errors)
+                            }
                             <label class="govuk-label govuk-date-input__label" asp-for="SubscribedFromMonth">
                                 Month
                             </label>
-                            <input class="govuk-input govuk-date-input__input govuk-input--width-2" asp-for="SubscribedFromMonth">
+                            <input class="@(subscribedFromMonthError ? $"{ValidationClasses.InputErrorClass} {ValidationClasses.TwoWidthClass}" : $"{ValidationClasses.InputClass} {ValidationClasses.TwoWidthClass}")" asp-for="SubscribedFromMonth">
                         </div>
                     </div>
+
                     <div class="govuk-date-input__item">
-                        <div class="govuk-form-group">
-                            <span class="govuk-error-message" asp-validation-for="SubscribedFromYear"></span>
+                        <div class="@(subscribedFromYearError ? ValidationClasses.GroupErrorClass : ValidationClasses.GroupClass)">
+                            @if (subscribedFromYearError)
+                            {
+                                @await Html.PartialAsync("~/Areas/Admin/Shared/_ValidationError.cshtml", ViewContext.ModelState["SubscribedFromYear"].Errors)
+                            }
                             <label class="govuk-label govuk-date-input__label" asp-for="SubscribedFromYear">
                                 Year
                             </label>
-                            <input class="govuk-input govuk-date-input__input govuk-input--width-4" asp-for="SubscribedFromYear">
+                            <input class="@(subscribedFromYearError ? $"{ValidationClasses.InputErrorClass} {ValidationClasses.FourWidthClass}" : $"{ValidationClasses.InputClass} {ValidationClasses.FourWidthClass}")" asp-for="SubscribedFromYear">
                         </div>
                     </div>
                 </div>
@@ -190,37 +294,49 @@
                 </legend>
                 <div class="govuk-date-input" id="end-date">
                     <div class="govuk-date-input__item">
-                        <div class="govuk-form-group">
-                            <span class="govuk-error-message" asp-validation-for="SubscribedToDay"></span>
+                        <div class="@(subscribedToDayError ? ValidationClasses.GroupErrorClass : ValidationClasses.GroupClass)">
+                            @if (subscribedToDayError)
+                            {
+                                @await Html.PartialAsync("~/Areas/Admin/Shared/_ValidationError.cshtml", ViewContext.ModelState["SubscribedToDay"].Errors)
+                            }
                             <label class="govuk-label govuk-date-input__label" asp-for="SubscribedToDay">
                                 Day
                             </label>
-                            <input class="govuk-input govuk-date-input__input govuk-input--width-2" asp-for="SubscribedToDay">
+                            <input class="@(subscribedToDayError ? $"{ValidationClasses.InputErrorClass} {ValidationClasses.TwoWidthClass}" : $"{ValidationClasses.InputClass} {ValidationClasses.TwoWidthClass}")" asp-for="SubscribedToDay">
                         </div>
                     </div>
+
                     <div class="govuk-date-input__item">
-                        <div class="govuk-form-group">
-                            <span class="govuk-error-message" asp-validation-for="SubscribedToMonth"></span>
+                        <div class="@(subscribedToMonthError ? ValidationClasses.GroupErrorClass : ValidationClasses.GroupClass)">
+                            @if (subscribedToMonthError)
+                            {
+                                @await Html.PartialAsync("~/Areas/Admin/Shared/_ValidationError.cshtml", ViewContext.ModelState["SubscribedToMonth"].Errors)
+                            }
                             <label class="govuk-label govuk-date-input__label" asp-for="SubscribedToMonth">
                                 Month
                             </label>
-                            <input class="govuk-input govuk-date-input__input govuk-input--width-2" asp-for="SubscribedToMonth">
+                            <input class="@(subscribedToMonthError ? $"{ValidationClasses.InputErrorClass} {ValidationClasses.TwoWidthClass}" : $"{ValidationClasses.InputClass} {ValidationClasses.TwoWidthClass}")" asp-for="SubscribedToMonth">
                         </div>
                     </div>
+
                     <div class="govuk-date-input__item">
-                        <div class="govuk-form-group">
-                            <span class="govuk-error-message" asp-validation-for="SubscribedToYear"></span>
+                        <div class="@(subscribedToYearError ? ValidationClasses.GroupErrorClass : ValidationClasses.GroupClass)">
+                            @if (subscribedToYearError)
+                            {
+                                @await Html.PartialAsync("~/Areas/Admin/Shared/_ValidationError.cshtml", ViewContext.ModelState["SubscribedToYear"].Errors)
+                            }
                             <label class="govuk-label govuk-date-input__label" asp-for="SubscribedToYear">
                                 Year
                             </label>
-                            <input class="govuk-input govuk-date-input__input govuk-input--width-4" asp-for="SubscribedToYear">
+                            <input class="@(subscribedToYearError ? $"{ValidationClasses.InputErrorClass} {ValidationClasses.FourWidthClass}" : $"{ValidationClasses.InputClass} {ValidationClasses.FourWidthClass}")" asp-for="SubscribedToYear">
                         </div>
                     </div>
                 </div>
 
             </fieldset>
 
-            <div class="govuk-form-group">
+        <div class="@(accountActiveError ? ValidationClasses.GroupErrorClass : ValidationClasses.GroupClass)">
+            
                 <fieldset class="govuk-fieldset" aria-describedby="subscription-state-hint">
                     <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
                         <h3 class="govuk-fieldset__heading">
@@ -228,13 +344,17 @@
                         </h3>
                     </legend>
                     <div data-module="govuk-radios">
-                        <span class="govuk-error-message" asp-validation-for="AccountActive"></span>
+                        @if (accountActiveError)
+                        {
+                            @await Html.PartialAsync("~/Areas/Admin/Shared/_ValidationError.cshtml", ViewContext.ModelState["AccountActive"].Errors)
+                        }
                         <div class="govuk-radios__item">
                             <input class="govuk-radios__input" id="subscription-state" type="radio" value="Y" asp-for="AccountActive">
                             <label class="govuk-label govuk-radios__label" asp-for="AccountActive">
                                 Active
                             </label>
                         </div>
+
                         <div class="govuk-radios__item">
                             <input class="govuk-radios__input" id="subscription-state" type="radio" value="N" asp-for="AccountActive">
                             <label class="govuk-label govuk-radios__label" asp-for="AccountActive">
@@ -259,26 +379,37 @@
                     There must be at least <strong>1</strong> data extract email address per subscriber, with a maximum of <strong>3</strong>.
                 </div>
 
-                <div class="govuk-form-group">
-                    <span class="govuk-error-message" asp-validation-for="EmailAddress1"></span>
+                <div class="@(emailAddress1Error ? ValidationClasses.GroupErrorClass : ValidationClasses.GroupClass)">
+                    @if (emailAddress1Error)
+                    {
+                        @await Html.PartialAsync("~/Areas/Admin/Shared/_ValidationError.cshtml", ViewContext.ModelState["EmailAddress1"].Errors)
+                    }
                     <label class="govuk-label" asp-for="EmailAddress1">
                         Email address 1
                     </label>
-                    <input class="govuk-input govuk-input--width-20" asp-for="EmailAddress1">
+                    <input class="@(emailAddress1Error ? $"{ValidationClasses.InputErrorClass} {ValidationClasses.TwentyWidthClass}" : $"{ValidationClasses.InputClass} {ValidationClasses.TwentyWidthClass}")" asp-for="EmailAddress1">
                 </div>
-                <div class="govuk-form-group">
-                    <span class="govuk-error-message" asp-validation-for="EmailAddress2"></span>
+
+                <div class="@(emailAddress2Error ? ValidationClasses.GroupErrorClass : ValidationClasses.GroupClass)">
+                    @if (emailAddress2Error)
+                    {
+                        @await Html.PartialAsync("~/Areas/Admin/Shared/_ValidationError.cshtml", ViewContext.ModelState["EmailAddress2"].Errors)
+                    }
                     <label class="govuk-label" asp-for="EmailAddress2">
                         Email address 2
                     </label>
-                    <input class="govuk-input govuk-input--width-20" asp-for="EmailAddress2">
+                    <input class="@(emailAddress2Error ? $"{ValidationClasses.InputErrorClass} {ValidationClasses.TwentyWidthClass}" : $"{ValidationClasses.InputClass} {ValidationClasses.TwentyWidthClass}")" asp-for="EmailAddress2">
                 </div>
-                <div class="govuk-form-group">
-                    <span class="govuk-error-message" asp-validation-for="EmailAddress3"></span>
+
+                <div class="@(emailAddress3Error ? ValidationClasses.GroupErrorClass : ValidationClasses.GroupClass)">
+                    @if (emailAddress3Error)
+                    {
+                        @await Html.PartialAsync("~/Areas/Admin/Shared/_ValidationError.cshtml", ViewContext.ModelState["EmailAddress3"].Errors)
+                    }
                     <label class="govuk-label" asp-for="EmailAddress3">
                         Email address 3
                     </label>
-                    <input class="govuk-input govuk-input--width-20" asp-for="EmailAddress3">
+                    <input class="@(emailAddress3Error ? $"{ValidationClasses.InputErrorClass} {ValidationClasses.TwentyWidthClass}" : $"{ValidationClasses.InputClass} {ValidationClasses.TwentyWidthClass}")" asp-for="EmailAddress3">
                 </div>
             </fieldset>
             <br>

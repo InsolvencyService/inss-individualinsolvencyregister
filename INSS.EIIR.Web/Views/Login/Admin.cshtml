@@ -1,13 +1,8 @@
-﻿@model INSS.EIIR.Models.Authentication.User
+﻿@using INSS.EIIR.Web.Constants
+@model INSS.EIIR.Models.Authentication.User
 
 @{
     ViewData["Title"] = "Admin login – Search the Individual Insolvency Register";
-
-    const string groupClass = "govuk-form-group";
-    const string groupErrorClass = "govuk-form-group govuk-form-group--error";
-
-    const string inputClass = "govuk-input govuk-input--width-10";
-    const string inputErrorClass = "govuk-input govuk-input--width-10 govuk-input--error";
 
     var userError = ViewContext.ModelState["UserName"] != null && ViewContext.ModelState["UserName"].Errors.Count > 0;
     var passwordError = ViewContext.ModelState["Password"] != null && ViewContext.ModelState["Password"].Errors.Count > 0;
@@ -15,11 +10,11 @@
 
     var errorsFound = userError || passwordError || loginError;
 
-    var userInputClass = userError ? inputErrorClass : inputClass;
-    var userGroupClass = userError ? groupErrorClass : groupClass;
+    var userInputClass = userError ? $"{ValidationClasses.InputErrorClass} {ValidationClasses.TenWidthClass}" : $"{ValidationClasses.InputClass} {ValidationClasses.TenWidthClass}";
+    var userGroupClass = userError ? $"{ValidationClasses.GroupErrorClass} {ValidationClasses.TenWidthClass}" : $"{ValidationClasses.GroupClass} {ValidationClasses.TenWidthClass}";
 
-    var passwordInputClass = passwordError ? inputErrorClass : inputClass;
-    var passwordGroupClass = passwordError ? groupErrorClass : groupClass;
+    var passwordInputClass = passwordError ? $"{ValidationClasses.InputErrorClass} {ValidationClasses.TenWidthClass}" : $"{ValidationClasses.InputClass} {ValidationClasses.TenWidthClass}";
+    var passwordGroupClass = passwordError ? $"{ValidationClasses.GroupErrorClass} {ValidationClasses.TenWidthClass}" : $"{ValidationClasses.GroupClass} {ValidationClasses.TenWidthClass}";
 
 }
 
