@@ -67,9 +67,9 @@ namespace INSS.EIIR.Functions
             if (string.IsNullOrEmpty(notifyConnectionString))
                 throw new ArgumentNullException("notify__connectionstring is missing");
 
-            var tableConnectionString = Environment.GetEnvironmentVariable("tableStorage_connectionstring");
-            if (string.IsNullOrEmpty(connectionString))
-                throw new ArgumentNullException("tableStorage_connectionstring missing");
+            var storageConnectionString = Environment.GetEnvironmentVariable("storageconnectionstring");
+            if (string.IsNullOrEmpty(storageConnectionString))
+                throw new ArgumentNullException("storageconnectionstring is missing");
 
             builder.Services.AddTransient(_ =>
             {
@@ -86,10 +86,6 @@ namespace INSS.EIIR.Functions
 
             builder.Services.AddDbContext<EIIRExtractContext>(options =>
                 options.UseSqlServer(connectionString));
-
-            var blobconnectionstring = Environment.GetEnvironmentVariable("blobconnectionstring");
-            if (string.IsNullOrEmpty(blobconnectionstring))
-                throw new ArgumentNullException("blobconnectionstring is missing");
 
             builder.Services.AddOptions<DatabaseConfig>()
                .Configure<IConfiguration>((settings, configuration) =>
@@ -109,7 +105,7 @@ namespace INSS.EIIR.Functions
 
             builder.Services.AddAzureClients(clientsBuilder =>
             {
-                clientsBuilder.AddTableServiceClient(tableConnectionString);
+                clientsBuilder.AddTableServiceClient(storageConnectionString);
 
                 clientsBuilder.AddServiceBusClient(serviceBusPubConnectionString)
                   .WithName("ServiceBusPublisher_ExtractJob")
@@ -125,7 +121,7 @@ namespace INSS.EIIR.Functions
                       options.TransportType = ServiceBusTransportType.AmqpWebSockets;
                   });
 
-                clientsBuilder.AddBlobServiceClient(blobconnectionstring);
+                clientsBuilder.AddBlobServiceClient(storageConnectionString);
             });
             
 

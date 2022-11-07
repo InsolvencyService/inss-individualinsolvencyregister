@@ -35,7 +35,7 @@ public class ExtractIntegrationTests
     public ExtractIntegrationTests()
     {
         Environment.SetEnvironmentVariable("blobcontainername", "eiirdailyextracts");
-        Environment.SetEnvironmentVariable("blobconnectionstring", "UseDevelopmentStorage=true");
+        Environment.SetEnvironmentVariable("storageconnectionstring", "UseDevelopmentStorage=true");
 
         MapperConfiguration mapperConfig = new MapperConfiguration(
          cfg =>
