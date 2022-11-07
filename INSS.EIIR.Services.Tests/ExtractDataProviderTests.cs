@@ -16,7 +16,7 @@ namespace INSS.EIIR.Services.Tests
         public ExtractDataProviderTests()
         {
             Environment.SetEnvironmentVariable("blobcontainername", "eiirextractjobs");
-            Environment.SetEnvironmentVariable("blobconnectionstring", "UseDevelopmentStorage=true");
+            Environment.SetEnvironmentVariable("storageconnectionstring", "UseDevelopmentStorage=true");
         }
 
         [Theory]

@@ -37,14 +37,14 @@ public class ExtractDataProvider : IExtractDataProvider
         _dbConfig = dbOptions.Value;
         _blobServiceClient = blobServiceClient;
         _blobContainerName = Environment.GetEnvironmentVariable("blobcontainername");
-        _blobConnectionString = Environment.GetEnvironmentVariable("blobconnectionstring");
+        _blobConnectionString = Environment.GetEnvironmentVariable("storageconnectionstring");
         if (string.IsNullOrEmpty(_blobContainerName))
         {
             throw new Exception("ExtractDataProvider missing blobcontainername configuration");
         }
         if (string.IsNullOrEmpty(_blobConnectionString))
         {
-            throw new Exception("ExtractDataProvider missing blobconnectionstring configuration");
+            throw new Exception("ExtractDataProvider missing storageconnectionstring configuration");
         }
 
         _containerClient = _blobServiceClient.GetBlobContainerClient(_blobContainerName);
