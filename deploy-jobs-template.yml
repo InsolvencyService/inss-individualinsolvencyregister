@@ -53,7 +53,7 @@ jobs:
                   appSettings: >
                     -EIIRIndexUrl "$(EIIRIndexUrl)"
                     -EIIRApiKey "$(EIIRApiKey)"
-                    -blobconnectionstring "$(blobconnectionstring)"
+                    -storageconnectionstring "$(storageconnectionstring)"
                     -blobcontainername "$(blobcontainername)"
                     -extractjobserviceurl "$(extractjobserviceurl)"
                     -extractjobtimercron "$(extractjobtimercron)"
