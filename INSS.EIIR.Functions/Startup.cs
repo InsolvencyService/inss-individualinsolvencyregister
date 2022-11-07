@@ -13,6 +13,7 @@ using INSS.EIIR.Interfaces.AzureSearch;
 using INSS.EIIR.Interfaces.DataAccess;
 using INSS.EIIR.Interfaces.Messaging;
 using INSS.EIIR.Interfaces.Services;
+using INSS.EIIR.Interfaces.Storage;
 using INSS.EIIR.Models.AutoMapperProfiles;
 using INSS.EIIR.Models.Configuration;
 using INSS.EIIR.Services;
@@ -65,7 +66,11 @@ namespace INSS.EIIR.Functions
             var notifyConnectionString = Environment.GetEnvironmentVariable("notify__connectionstring");
             if (string.IsNullOrEmpty(notifyConnectionString))
                 throw new ArgumentNullException("notify__connectionstring is missing");
-            
+
+            var tableConnectionString = Environment.GetEnvironmentVariable("tableStorage_connectionstring");
+            if (string.IsNullOrEmpty(connectionString))
+                throw new ArgumentNullException("tableStorage_connectionstring missing");
+
             builder.Services.AddTransient(_ =>
             {
                 return new EIIRContext(connectionString);
@@ -104,6 +109,8 @@ namespace INSS.EIIR.Functions
 
             builder.Services.AddAzureClients(clientsBuilder =>
             {
+                clientsBuilder.AddTableServiceClient(tableConnectionString);
+
                 clientsBuilder.AddServiceBusClient(serviceBusPubConnectionString)
                   .WithName("ServiceBusPublisher_ExtractJob")
                   .ConfigureOptions(options =>
@@ -120,6 +127,7 @@ namespace INSS.EIIR.Functions
 
                 clientsBuilder.AddBlobServiceClient(blobconnectionstring);
             });
+            
 
             builder.Services.AddScoped<IServiceBusMessageSender, ServiceBusMessageSender>();
             builder.Services.AddScoped<IExtractRepository, ExtractRepository>();
@@ -144,6 +152,8 @@ namespace INSS.EIIR.Functions
             
             builder.Services.AddScoped<ICaseDataProvider, CaseDataProvider>();
             builder.Services.AddTransient<ICaseQueryRepository, CaseQueryRepository>();
+            builder.Services.AddScoped(typeof(ITableStorageRepository<>), typeof(AzureTableStorageRepository<>));
+
         }
 
         private static SearchIndexClient CreateSearchServiceClient(string searchServiceUrl, string adminApiKey)
