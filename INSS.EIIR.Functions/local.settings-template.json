@@ -10,7 +10,7 @@
     "OpenApi__Version": "v3",
     "OpenApi__DocVersion": "1.0.0",
     "OpenApi__DocTitle": "Swagger EIIR Services",
-
+    "tableStorage_connectionstring": "__tablestorageconnectionstring__",
     "servicebus__publisherconnectionstring": "__servicebus:publisherconnectionstring__",
     "servicebus__notifyqueue": "__servicebus:notifyqueue__",
     "database__connectionstring": "__database:connectionstring__",

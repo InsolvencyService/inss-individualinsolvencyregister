@@ -31,6 +31,6 @@ public class ExtractJobNotificationTrigger
 
         var activeSubscribers = await _subscriberService.GetActiveSubscribersAsync(new PagingParameters() { PageSize = 1000 });
 
-        await _notificationService.ScheduleSubscriberNotificationAsync(activeSubscribers.Subscribers);
+        await _notificationService.ScheduleSubscriberNotificationAsync(name, activeSubscribers.Subscribers);
     }
 }

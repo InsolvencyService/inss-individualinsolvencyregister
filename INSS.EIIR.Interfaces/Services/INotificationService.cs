@@ -6,5 +6,5 @@ public interface INotificationService
 {
     Task CreateNotificationAsync<T>(T message, Dictionary<string, object> properties);
 
-    Task ScheduleSubscriberNotificationAsync(IEnumerable<Subscriber> subscribers);
+    Task ScheduleSubscriberNotificationAsync(string filename, IEnumerable<Subscriber> subscribers);
 }
