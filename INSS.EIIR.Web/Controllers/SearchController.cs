@@ -6,7 +6,7 @@ namespace INSS.EIIR.Web.Controllers
 {
     public class SearchController : Controller
     {
-        [HttpGet("Search/{error?}")]
+        [HttpGet("search/{error?}")]
         public IActionResult Index(bool? error)
         {
             var contentViewModel = new StaticContent
@@ -22,7 +22,7 @@ namespace INSS.EIIR.Web.Controllers
             return View(contentViewModel);
         }
 
-        [HttpPost("Search/{searchTerm?}")]
+        [HttpPost("search/{searchTerm?}")]
         public IActionResult Search(string searchTerm)
         {
             if (string.IsNullOrWhiteSpace(searchTerm))

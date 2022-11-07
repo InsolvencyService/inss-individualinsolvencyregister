@@ -3,6 +3,7 @@
 public class ValidationClasses
 {
     public const string TwoThirdsWidthClass = "govuk-!-width-two-thirds";
+    public const string ThirtyWidthClass = "govuk-input--width-30";
     public const string TwentyWidthClass = "govuk-input--width-20";
     public const string TenWidthClass = "govuk-input--width-10";
     public const string FourWidthClass = "govuk-input--width-4";

@@ -5,7 +5,7 @@
 
     var searchError = ViewContext.ModelState["InvalidSearch"] != null;
 
-    var searchInputClass = searchError ? ValidationClasses.InputErrorClass : ValidationClasses.InputClass;
+    var searchInputClass = searchError ? $"{ValidationClasses.InputErrorClass} {ValidationClasses.ThirtyWidthClass}" : $"{ValidationClasses.InputClass} {ValidationClasses.ThirtyWidthClass}";
     var searchGroupClass = searchError ? ValidationClasses.GroupErrorClass : ValidationClasses.GroupClass;
 }
 
@@ -14,21 +14,10 @@
     <partial name="_Breadcrumb" model="Model.Breadcrumbs" />
 }
 
+@if (searchError)
+{
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
-            <h1 class="govuk-heading-l">
-                Search the Individual Insolvency Register
-            </h1>
-        </div>
-        <div class="govuk-grid-column-one-third">
-        </div>
-    </div>
-
-    <div class="govuk-grid-row">
-        <div class="govuk-grid-column-two-thirds">
-
-        @if (searchError)
-        {
             <div class="govuk-error-summary" aria-labelledby="error-summary-title" role="alert" data-disable-auto-focus="true" data-module="govuk-error-summary">
                 <h2 class="govuk-error-summary__title" id="error-summary-title">
                     There is a problem
@@ -42,10 +31,31 @@
                     </ul>
                 </div>
             </div>
-        }
+        </div>
+    </div>
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <h1 class="govuk-heading-l">
+            Search the Individual Insolvency Register
+        </h1>
+    </div>
+    <div class="govuk-grid-column-one-third">
+    </div>
+</div>
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
 
         <form asp-action="Search">
             <div class="@searchGroupClass">
+                @if (searchError)
+                {
+                    <p id="search-error" class="govuk-error-message">
+                        <span>Enter the name of an individual or their trading name</span>
+                    </p>
+                }
                 <label class="govuk-label" for="search-name">
                     Name of individual or trading name
                 </label>
