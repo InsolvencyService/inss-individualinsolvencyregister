@@ -79,6 +79,18 @@ namespace INSS.EIIR.Web.Areas.Admin.Controllers
         }
 
         [Area(AreaNames.Admin)]
+        [HttpGet(AreaNames.Admin + "/subscriber/add-profile")]
+        [Authorize(Roles = Role.Admin)]
+        public async Task<IActionResult> AddProfile()
+        {
+            var subscriberProfile = new SubscriberProfile();
+
+            subscriberProfile.Breadcrumbs = BreadcrumbBuilder.BuildBreadcrumbs().ToList();
+
+            return View("ChangeProfile", subscriberProfile);
+        }
+
+        [Area(AreaNames.Admin)]
         [HttpGet(AreaNames.Admin + "/subscriber/{subscriberId}/{page}/{active}/change-profile")]
         [Authorize(Roles = Role.Admin)]
         public async Task<IActionResult> ChangeProfile(int subscriberId, int page, string active)
@@ -140,22 +152,30 @@ namespace INSS.EIIR.Web.Areas.Admin.Controllers
                 {
                     AccountActive = subscriber.AccountActive,
                     ApplicationDate = subscriber.ApplicationDate,
-                    ContactAddress1 = subscriber.ContactAddress1,
-                    ContactAddress2 = subscriber.ContactAddress2,
-                    ContactCity = subscriber.ContactCity,
+                    ContactAddress1 = subscriber.ContactAddress1 ?? string.Empty,
+                    ContactAddress2 = subscriber.ContactAddress2 ?? string.Empty,
+                    ContactCity = subscriber.ContactCity ?? string.Empty,
                     ContactEmail = subscriber.ContactEmail,
-                    ContactForename = subscriber.ContactForename,
-                    ContactPostcode = subscriber.ContactPostcode,
-                    ContactSurname = subscriber.ContactSurname,
-                    ContactTelephone = subscriber.ContactTelephone,
+                    ContactForename = subscriber.ContactForename ?? string.Empty,
+                    ContactPostcode = subscriber.ContactPostcode ?? string.Empty,
+                    ContactSurname = subscriber.ContactSurname ?? string.Empty,
+                    ContactTelephone = subscriber.ContactTelephone ?? string.Empty,
                     EmailAddresses = subscriber.EmailAddresses.ToList(),
-                    OrganisationName = subscriber.OrganisationName,
+                    OrganisationName = subscriber.OrganisationName ?? string.Empty,
                     OrganisationType = subscriber.OrganisationType,
                     SubscribedFrom = subscriber.SubscribedFrom,
                     SubscribedTo = subscriber.SubscribedTo
                 };
 
-                await _subscriberService.UpdateSubscriberAsync($"{subscriber.SubscriberId}", createUpdateSubscriber);
+
+                if(subscriber.SubscriberId != 0)
+                {
+                    await _subscriberService.UpdateSubscriberAsync($"{subscriber.SubscriberId}", createUpdateSubscriber);
+                }
+                else
+                {
+                    await _subscriberService.CreateSubscriberAsync(createUpdateSubscriber);
+                }
 
                 return RedirectToRoute("SubscriberProfile", new { subscriberId = subscriber.SubscriberId });
 
