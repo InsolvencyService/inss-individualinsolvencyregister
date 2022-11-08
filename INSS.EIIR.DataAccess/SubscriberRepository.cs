@@ -4,6 +4,7 @@ using INSS.EIIR.Interfaces.DataAccess;
 using INSS.EIIR.Models.SubscriberModels;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 
 namespace INSS.EIIR.DataAccess;
 
@@ -121,6 +122,7 @@ public class SubscriberRepository : ISubscriberRepository
         if (subscriber.EmailAddresses.Any())
         {
             emailContacts = string.Join(",", subscriber.EmailAddresses);
+            emailContacts = emailContacts.TrimEnd(',');
         }
 
         if (!string.IsNullOrEmpty(subscriberId)) {
@@ -140,11 +142,21 @@ public class SubscriberRepository : ISubscriberRepository
             new SqlParameter { ParameterName = "@ContactTelephone", Value = subscriber.ContactTelephone },
             new SqlParameter { ParameterName = "@ContactEmail", Value = subscriber.ContactEmail },
             new SqlParameter { ParameterName = "@ApplicationDate", Value = subscriber.ApplicationDate },
-            new SqlParameter { ParameterName = "@SubscribedFrom", Value = subscriber.SubscribedFrom },
-            new SqlParameter { ParameterName = "@SubscribedTo", Value = subscriber.SubscribedTo },
             new SqlParameter { ParameterName = "@AccountActive", Value = subscriber.AccountActive },
             new SqlParameter { ParameterName = "@EmailContacts", Value = emailContacts },
         };
+
+        if (subscriber.SubscribedFrom.HasValue) {
+            sqlParamsCore.Add(new SqlParameter { ParameterName = "@SubscribedFrom", Value = subscriber.SubscribedFrom });
+        } else {
+            sqlParamsCore.Add(new SqlParameter { ParameterName = "@SubscribedFrom", Value = DBNull.Value });
+        }
+
+        if (subscriber.SubscribedTo.HasValue) {
+            sqlParamsCore.Add(new SqlParameter { ParameterName = "@SubscribedTo", Value = subscriber.SubscribedTo });
+        } else {
+            sqlParamsCore.Add(new SqlParameter { ParameterName = "@SubscribedTo", Value = DBNull.Value });
+        }
 
         sqlParams.AddRange(sqlParamsCore);
         await _context.Database.ExecuteSqlRawAsync(sql, sqlParams.ToArray());
