@@ -8,7 +8,7 @@ GO
 /****** Object:  Stored Procedure dbo.subscr_appl_INS    Script Date: 15/06/2010 09:37:32 ******/
 
 
-CREATE PROCEDURE [dbo].[subscriber_update]
+CREATE OR ALTER PROCEDURE [dbo].[subscriber_update]
 (
 	   @SubscriberId        varchar(10),
        @OrganisationName    varchar(50),
@@ -87,7 +87,7 @@ WHERE email_address NOT IN (
 INSERT INTO subscriber_contact
 	SELECT ec.subscriber_id, ec.email_address, ec.created_on
      FROM @updateEmailContacts ec
-LEFT OUTER JOIN subscriber_contact sc ON sc.email_address = ec.email_address
+LEFT OUTER JOIN subscriber_contact sc ON sc.email_address = ec.email_address AND sc.subscriber_id = ec.subscriber_id
 WHERE sc.email_address is null
 
 END
