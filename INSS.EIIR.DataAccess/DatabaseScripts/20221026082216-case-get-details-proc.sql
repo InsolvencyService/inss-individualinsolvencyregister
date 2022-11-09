@@ -10,7 +10,7 @@ GO
 
 
 
-CREATE PROCEDURE [dbo].[getCaseByCaseNoIndivNo]
+CREATE OR ALTER PROCEDURE [dbo].[getCaseByCaseNoIndivNo]
 
 (
 	@CaseNo int,
