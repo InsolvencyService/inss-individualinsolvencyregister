@@ -2,6 +2,7 @@
 using INSS.EIIR.Models.Breadcrumb;
 using INSS.EIIR.Models.SubscriberModels;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 
 namespace INSS.EIIR.Web.ViewModels
 {
@@ -11,18 +12,30 @@ namespace INSS.EIIR.Web.ViewModels
         public SubscriberProfile()
         {
             Breadcrumbs = new List<BreadcrumbLink>();
+            SubscriberParameters = new SubscriberParameters();
         }
 
-        [Required(ErrorMessage = "Enter a name")]
+        [Required(ErrorMessage = "Enter the name of the company or organisation")]
         [MaxLength(50)]
         [Display(Name = "Name")]
         public string OrganisationName { get; set; }
 
-        [Required(ErrorMessage = "Select a Type")]
+        [Required(ErrorMessage = "Select the type of company or organisation")]
         [MaxLength(40)]
         [Display(Name = "Type")]
         public string OrganisationType { get; set; }
 
+        [Required(ErrorMessage = "Enter the first name")]
+        [Display(Name = "First name")]
+        [MaxLength(40)]
+        public string ContactForename { get; set; }
+
+        [Required(ErrorMessage = "Enter the last name")]
+        [Display(Name = "Last name")]
+        [MaxLength(40)]
+        public string ContactSurname { get; set; }
+
+        [Required(ErrorMessage = "Enter line 1 of the address")]
         [Display(Name = "Address line 1")]
         [MaxLength(60)]
         public string ContactAddress1 { get; set; }
@@ -31,36 +44,42 @@ namespace INSS.EIIR.Web.ViewModels
         [MaxLength(60)]
         public string ContactAddress2 { get; set; }
 
+        [Required(ErrorMessage = "Enter the town or city")]
         [Display(Name = "Town or city")]
         [MaxLength(60)]
         public string ContactCity { get; set; }
 
+        [Required(ErrorMessage = "Enter the postcode")]
         [Display(Name = "Postcode")]
+        [RegularExpression("(?i:^(([A-Z]{1,2}[0-9][A-Z0-9]?|ASCN|STHL|TDCU|BBND|[BFS]IQQ|PCRN|TKCA) ?[0-9][A-Z]{2}|BFPO ?[0-9]{1,4}|(KY[0-9]|MSR|VG|AI)[ -]?[0-9]{4}|[A-Z]{2} ?[0-9]{2}|GE ?CX|GIR ?0A{2}|SAN ?TA1)$)", 
+            ErrorMessage = "Enter the postcode in the correct format")]
         [MaxLength(10)]
         public string ContactPostcode { get; set; }
 
+        [Required(ErrorMessage = "Enter the contact email address")]
         [Display(Name = "Email address")]
-        [EmailAddress]
+        [EmailAddress(ErrorMessage = "Enter the contact email address in the correct format")]
         [MaxLength(60)]
         public string ContactEmail { get; set; }
 
+        [Required(ErrorMessage = "Enter the telephone number")]
         [Display(Name = "Telephone number")]
         [MaxLength(20)]
         public string ContactTelephone { get; set; }
 
         [Display(Name = "Application submitted date")]
         [RegularExpression(@"^([1-9]|[12][0-9]|3[01])$", ErrorMessage = "Enter a day between 1 and 31")]
-        [Required(ErrorMessage = "Enter an application day")]
+        [Required(ErrorMessage = "The application submitted date must include a day")]
         public string ApplicationDay { get; set; }
 
         [Display(Name = "Application submitted date")]
         [RegularExpression(@"^([1-9]|1[0-2])$", ErrorMessage = "Enter a month between 1 and 12")]
-        [Required(ErrorMessage = "Enter an application month")]
+        [Required(ErrorMessage = "The application submitted date must include a month")]
         public string ApplicationMonth { get; set; }
 
         [Display(Name = "Application submitted date")]
         [RegularExpression(@"^([1][9]\d{2}|[2]\d{3}|[3](0){3})$", ErrorMessage = "Enter a year between 1900 and 3000")]
-        [Required(ErrorMessage = "Enter an application year")]
+        [Required(ErrorMessage = "The application submitted date must include a year")]
         public string ApplicationYear { get; set; }
 
         [Display(Name = "Start date")]
@@ -87,33 +106,29 @@ namespace INSS.EIIR.Web.ViewModels
         [RegularExpression(@"^([1][9]\d{2}|[2]\d{3}|[3](0){3})$", ErrorMessage = "Enter a year between 1900 and 3000")]
         public string SubscribedToYear { get; set; }
 
-        [Required(ErrorMessage = "Enter an extract email address")]
-        [EmailAddress]
+        [Required(ErrorMessage = "Enter data extract email address 1")]
+        [EmailAddress(ErrorMessage = "Enter data extract email address 1 in the correct format")]
         [Display(Name = "Email address")]
         public string EmailAddress1 { get; set; }
 
         [Display(Name = "Email address")]
-        [EmailAddress]
+        [EmailAddress(ErrorMessage = "Enter data extract email address 2 in the correct format")]
         public string EmailAddress2 { get; set; }
 
         [Display(Name = "Email address")]
-        [EmailAddress]
+        [EmailAddress(ErrorMessage = "Enter data extract email address 3 in the correct format")]
         public string EmailAddress3 { get; set; }
 
-        [Display(Name = "Status")][Required] public string AccountActive { get; set; }
-
-        [Display(Name = "Forename")]
-        [MaxLength(40)]
-        public string ContactForename { get; set; }
-
-        [Display(Name = "Surname")]
-        [MaxLength(40)]
-        public string ContactSurname { get; set; }
+        [Display(Name = "Status")]
+        [Required(ErrorMessage = "Select if the status is active or inactive")] 
+        public string AccountActive { get; set; }
 
         [HiddenInput] public int SubscriberId { get; set; }
 
+        [ValidateNever]
         public List<BreadcrumbLink> Breadcrumbs { get; set; }
 
+        [ValidateNever]
         public SubscriberParameters SubscriberParameters { get; set; }
 
         internal DateTime ApplicationDate
@@ -126,7 +141,7 @@ namespace INSS.EIIR.Web.ViewModels
 
                 return isYear && isMonth && isDay
                     ? new DateTime(year, month, day)
-                    : throw new ArgumentException("Subscriber ApplicationDate values not valid");
+                    : DateTime.MinValue;
             }
         }
 

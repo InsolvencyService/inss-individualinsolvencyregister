@@ -10,7 +10,7 @@ using INSS.EIIR.Web.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace INSS.EIIR.Web.Areas.Admin.Controllers
+ namespace INSS.EIIR.Web.Areas.Admin.Controllers
 {
 
     [Authorize(Roles = Role.Admin)]
@@ -79,6 +79,18 @@ namespace INSS.EIIR.Web.Areas.Admin.Controllers
         }
 
         [Area(AreaNames.Admin)]
+        [HttpGet(AreaNames.Admin + "/subscriber/add-profile")]
+        [Authorize(Roles = Role.Admin)]
+        public async Task<IActionResult> AddProfile()
+        {
+            var subscriberProfile = new SubscriberProfile();
+            
+            subscriberProfile.Breadcrumbs = BreadcrumbBuilder.BuildBreadcrumbs().ToList();
+
+            return View("ChangeProfile", subscriberProfile);
+        }
+
+        [Area(AreaNames.Admin)]
         [HttpGet(AreaNames.Admin + "/subscriber/{subscriberId}/{page}/{active}/change-profile")]
         [Authorize(Roles = Role.Admin)]
         public async Task<IActionResult> ChangeProfile(int subscriberId, int page, string active)
@@ -133,6 +145,16 @@ namespace INSS.EIIR.Web.Areas.Admin.Controllers
         [Authorize(Roles = Role.Admin)]
         public async Task<IActionResult> ChangeProfile(SubscriberProfile subscriber)
         {
+            var isDate = DateTime.TryParse($"{subscriber.ApplicationYear}-{subscriber.ApplicationMonth}-{subscriber.ApplicationDay}", out _);
+
+            if (!isDate)
+            {
+                ModelState.AddModelError($"{nameof(subscriber.ApplicationDate)}", "The application submitted date must be a real date");
+            }
+
+            ValidateDate(subscriber.SubscribedFromDay, subscriber.SubscribedFromMonth, subscriber.SubscribedFromYear, nameof(subscriber.SubscribedFrom), "subscription start date");
+            ValidateDate(subscriber.SubscribedToDay, subscriber.SubscribedToMonth, subscriber.SubscribedToYear, nameof(subscriber.SubscribedTo), "subscription end date");
+
             if (ModelState.IsValid)
             {
                
@@ -140,28 +162,68 @@ namespace INSS.EIIR.Web.Areas.Admin.Controllers
                 {
                     AccountActive = subscriber.AccountActive,
                     ApplicationDate = subscriber.ApplicationDate,
-                    ContactAddress1 = subscriber.ContactAddress1,
-                    ContactAddress2 = subscriber.ContactAddress2,
-                    ContactCity = subscriber.ContactCity,
-                    ContactEmail = subscriber.ContactEmail,
-                    ContactForename = subscriber.ContactForename,
-                    ContactPostcode = subscriber.ContactPostcode,
-                    ContactSurname = subscriber.ContactSurname,
-                    ContactTelephone = subscriber.ContactTelephone,
+                    ContactAddress1 = subscriber.ContactAddress1 ?? string.Empty,
+                    ContactAddress2 = subscriber.ContactAddress2 ?? string.Empty,
+                    ContactCity = subscriber.ContactCity ?? string.Empty,
+                    ContactEmail = subscriber.ContactEmail ?? string.Empty,
+                    ContactForename = subscriber.ContactForename ?? string.Empty,
+                    ContactPostcode = subscriber.ContactPostcode ?? string.Empty,
+                    ContactSurname = subscriber.ContactSurname ?? string.Empty,
+                    ContactTelephone = subscriber.ContactTelephone ?? string.Empty,
                     EmailAddresses = subscriber.EmailAddresses.ToList(),
-                    OrganisationName = subscriber.OrganisationName,
+                    OrganisationName = subscriber.OrganisationName ?? string.Empty,
                     OrganisationType = subscriber.OrganisationType,
                     SubscribedFrom = subscriber.SubscribedFrom,
                     SubscribedTo = subscriber.SubscribedTo
                 };
 
-                await _subscriberService.UpdateSubscriberAsync($"{subscriber.SubscriberId}", createUpdateSubscriber);
 
-                return RedirectToRoute("SubscriberProfile", new { subscriberId = subscriber.SubscriberId });
+                if(subscriber.SubscriberId != 0)
+                {
+                    await _subscriberService.UpdateSubscriberAsync($"{subscriber.SubscriberId}", createUpdateSubscriber);
 
+                    return RedirectToAction("Profile", new
+                    {
+                        subscriberId = subscriber.SubscriberId,
+                        page = subscriber.SubscriberParameters.Page,
+                        active = subscriber.SubscriberParameters.Active
+                    });
+                }
+
+                await _subscriberService.CreateSubscriberAsync(createUpdateSubscriber);
+
+                return RedirectToAction("Index", "AdminHome");
             }
 
             return View(subscriber);
+        }
+
+        private void ValidateDate(string day, string month, string year, string fieldName, string messageName)
+        {
+            if (!string.IsNullOrEmpty(day) || !string.IsNullOrEmpty(month) || !string.IsNullOrEmpty(year))
+            {
+                if (string.IsNullOrEmpty(day))
+                {
+                    ModelState.AddModelError($"{fieldName}Day", $"The {messageName} must include a day");
+                }
+
+                if (string.IsNullOrEmpty(month))
+                {
+                    ModelState.AddModelError($"{fieldName}Month", $"The {messageName} must include a month");
+                }
+
+                if (string.IsNullOrEmpty(year))
+                {
+                    ModelState.AddModelError($"{fieldName}Year", $"The {messageName} must include a year");
+                }
+
+                var isDate = DateTime.TryParse($"{year}-{month}-{day}", out _);
+
+                if (!isDate)
+                {
+                    ModelState.AddModelError($"{fieldName}Date", $"The {messageName} must be a real date");
+                }
+            }
         }
     }
 }
