@@ -9,7 +9,6 @@ using INSS.EIIR.Web.Helper;
 using INSS.EIIR.Web.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
- using Microsoft.EntityFrameworkCore;
 
  namespace INSS.EIIR.Web.Areas.Admin.Controllers
 {
