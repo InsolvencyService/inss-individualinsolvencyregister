@@ -9,7 +9,7 @@ GO
 /****** Object:  Stored Procedure dbo.subscr_appl_INS    Script Date: 15/06/2010 09:37:32 ******/
 
 
-CREATE PROCEDURE [dbo].[subscriber_create]
+CREATE OR ALTER PROCEDURE [dbo].[subscriber_create]
 (
        @OrganisationName    varchar(50),
        @OrganisationType    varchar(40),
