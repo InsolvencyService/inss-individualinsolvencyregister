@@ -50,15 +50,16 @@
 
         <form asp-action="Search">
             <div class="@searchGroupClass">
+
+                <label class="govuk-label" for="search-name">
+                    Name of individual or trading name
+                </label>
                 @if (searchError)
                 {
                     <p id="search-error" class="govuk-error-message">
                         <span>Enter the name of an individual or their trading name</span>
                     </p>
                 }
-                <label class="govuk-label" for="search-name">
-                    Name of individual or trading name
-                </label>
                 <input class="@searchInputClass" id="searchTerm" name="searchTerm" type="text" spellcheck="false" aria-describedby="search">
             </div>
 
