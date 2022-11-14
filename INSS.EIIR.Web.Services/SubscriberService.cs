@@ -24,6 +24,14 @@ namespace INSS.EIIR.Web.Services
                 .GetJsonAsync<Subscriber>();
         }
 
+        public async Task CreateSubscriberAsync(CreateUpdateSubscriber subscriber)
+        {
+            await _settings.BaseUrl
+                .AppendPathSegment($"subscribers/create")
+                .WithHeader("x-functions-key", _settings.ApiKey)
+                .PostJsonAsync(subscriber);
+        }
+
         public async Task UpdateSubscriberAsync(string subscriberId, CreateUpdateSubscriber subscriber)
         {
             await _settings.BaseUrl

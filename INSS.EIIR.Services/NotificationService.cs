@@ -3,6 +3,7 @@ using INSS.EIIR.Interfaces.Services;
 using INSS.EIIR.Interfaces.Storage;
 using INSS.EIIR.Models.Configuration;
 using INSS.EIIR.Models.ExtractModels;
+using INSS.EIIR.Models.NotificationModels;
 using INSS.EIIR.Models.SubscriberModels;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -81,6 +82,32 @@ public class NotificationService : INotificationService
                 await CreateNotificationAsync(body, applicationProperties);
                 await CreateExtractJobNotification(subscriber.SubscriberId, filename, contact.EmailAddress, currentDt);
             }
+        }
+    }
+
+    public async Task SendNotificationAsync(NotifcationDetail notification)
+    {
+        var recipients = notification.Recipients.Split(',');
+     
+        foreach (var recipient in  recipients)
+        { 
+            var body = new
+            {
+                notification.TemplateId,
+                _notifyConfig.ApiKey,
+                EmailAddress = recipient,
+                Personalisation = new Dictionary<string, dynamic>
+                {
+                    { "subject", notification.Subject },
+                    { "body", notification.Body }
+                }
+            };
+
+            var applicationProperties = new Dictionary<string, object>()
+            {
+                { "NotificationType", "Email"}
+            };
+            await CreateNotificationAsync(body, applicationProperties);
         }
     }
 
