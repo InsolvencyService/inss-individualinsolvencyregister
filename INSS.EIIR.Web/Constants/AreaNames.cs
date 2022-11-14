@@ -2,6 +2,5 @@
 
 public class AreaNames
 {
-    public const string Admin = "Admin";
-    public const string Subscribers = "Subscribers";
+    public const string Admin = "admin";
 }

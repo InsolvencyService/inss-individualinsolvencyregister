@@ -1,7 +1,4 @@
-﻿using System;
-using Flurl;
-using System.Reflection.Metadata;
-using INSS.EIIR.Interfaces.DataAccess;
+﻿using Flurl;
 using INSS.EIIR.Interfaces.Web.Services;
 using INSS.EIIR.Models.Configuration;
 using INSS.EIIR.Models.SubscriberModels;
@@ -44,4 +41,3 @@ namespace INSS.EIIR.Web.Services
         }
     }
 }
-
