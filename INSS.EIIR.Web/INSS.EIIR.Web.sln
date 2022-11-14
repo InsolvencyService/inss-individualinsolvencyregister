@@ -41,6 +41,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "INSS.EIIR.AzureSearch.Servi
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "INSS.EIIR.Web.Services", "..\INSS.EIIR.Web.Services\INSS.EIIR.Web.Services.csproj", "{02AD1A96-B430-4A1F-B4A5-2D73EC3855B3}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "EIIRSnapshotScripts", "EIIRSnapshotScripts", "{D470BA1D-38CE-4D9E-A2DF-F45912375995}"
+	ProjectSection(SolutionItems) = preProject
+		..\..\..\TheInsolvencyService\Eiir\eiirextract-test\EIIRDailyUpdatePart1LoadUpdate-Test.ps1 = ..\..\..\TheInsolvencyService\Eiir\eiirextract-test\EIIRDailyUpdatePart1LoadUpdate-Test.ps1
+		..\..\..\TheInsolvencyService\Eiir\eiirextract-test\EIIRDailyUpdatePart2Snapshot-Test.ps1 = ..\..\..\TheInsolvencyService\Eiir\eiirextract-test\EIIRDailyUpdatePart2Snapshot-Test.ps1
+		..\..\..\TheInsolvencyService\Eiir\eiirextract-test\EIIRDailyUpdatePart3Extract-Test.ps1 = ..\..\..\TheInsolvencyService\Eiir\eiirextract-test\EIIRDailyUpdatePart3Extract-Test.ps1
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -117,6 +124,7 @@ Global
 		{9192DB36-EAE1-482A-99F7-88BF2315F56C} = {DAB23EC1-D19D-41BB-A148-20BA1913508B}
 		{41B6A700-1C60-4A38-97BA-8005F48F4866} = {DAB23EC1-D19D-41BB-A148-20BA1913508B}
 		{18876872-7C5C-443D-9660-85C076157260} = {DAB23EC1-D19D-41BB-A148-20BA1913508B}
+		{D470BA1D-38CE-4D9E-A2DF-F45912375995} = {7555A9EC-591D-4F02-AF5A-B140A16BE611}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {6BA0DD0F-AA99-4A09-AB01-971BA60E5FE4}
