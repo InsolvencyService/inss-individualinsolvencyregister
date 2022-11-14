@@ -4,7 +4,7 @@
 @{
     var header = "Update subscriber details";
     ViewData["Header"] = header;
-    ViewData["Title"] = $"{header} – Individual Insolvency Register";
+    ViewData["Title"] = $"{header}";
 
     var organisationNameError = ViewContext.ModelState["OrganisationName"] != null && ViewContext.ModelState["OrganisationName"].Errors.Count > 0;
     var organisationTypeError = ViewContext.ModelState["OrganisationType"] != null && ViewContext.ModelState["OrganisationType"].Errors.Count > 0;

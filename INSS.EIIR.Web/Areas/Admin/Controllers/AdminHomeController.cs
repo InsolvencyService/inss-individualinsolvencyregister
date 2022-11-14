@@ -7,7 +7,7 @@ namespace INSS.EIIR.Web.Areas.Admin.Controllers
 {
     [Authorize(Roles = Role.Admin)]
     [Area(AreaNames.Admin)]
-    [Route(AreaNames.Admin + "/AdminHome")]
+    [Route(AreaNames.Admin + "/admin-area")]
     public class AdminHomeController : Controller
     {
         public IActionResult Index()

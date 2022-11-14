@@ -29,7 +29,7 @@ namespace INSS.EIIR.Web.Areas.Admin.Controllers
             _breadcrumbs = BreadcrumbBuilder.BuildBreadcrumbs().ToList();
         }
 
-        [HttpGet(AreaNames.Admin + "/Subscribers/{page?}/{active?}")]
+        [HttpGet(AreaNames.Admin + "/subscribers/{page?}/{active?}")]
         public async Task<IActionResult> Index(int page = 1, string active = "true")
         {
             var paging = new PagingParameters
@@ -45,7 +45,7 @@ namespace INSS.EIIR.Web.Areas.Admin.Controllers
                 _ => await _subscriberSearch.GetSubscribersAsync(paging)
             };
 
-            subscribers.Paging.RootUrl = "Admin/Subscribers";
+            subscribers.Paging.RootUrl = "admin/subscribers";
             subscribers.Paging.Parameters = active ?? string.Empty;
 
             var viewModel = new SubscriberListViewModel

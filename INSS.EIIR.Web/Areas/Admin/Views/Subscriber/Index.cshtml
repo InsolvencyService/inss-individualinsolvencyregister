@@ -3,7 +3,7 @@
 @{
     var header = "Subscribers";
     ViewData["Header"] = header;
-    ViewData["Title"] = $"{header} – Individual Insolvency Register";
+    ViewData["Title"] = $"{header}";
 
     var active = Model.SubscriberWithPaging.Paging.Parameters ?? string.Empty;
 }
@@ -70,7 +70,7 @@
                             </td>
                         
                             <td class="govuk-table__cell">
-                                <a class="govuk-link--no-visited-state" href="@($"/Admin/Subscriber/{subscriber.SubscriberId}/{Model.SubscriberWithPaging.Paging.Page}/{active}")">
+                                <a class="govuk-link--no-visited-state" href="@($"/admin/subscriber/{subscriber.SubscriberId}/{Model.SubscriberWithPaging.Paging.Page}/{active}")">
                                     @subscriber.OrganisationName
                                 </a>
                             </td>
