@@ -26,13 +26,14 @@ namespace INSS.EIIR.DataAccess
                                  orderby cf.FeedbackDate descending
                                  join c in _context.CiCases
                                  on cf.CaseId equals c.CaseNo
-                                 select new { cf, c.InsolvencyType, c.CaseName }).ToListAsync();
+                                 select new { cf, c.InsolvencyType, c.CaseName, c.InsolvencyDate }).ToListAsync();
 
             results.ToList().ForEach(s =>
             {
                 var caseFB = _mapper.Map<CiCaseFeedback, CaseFeedback>(s.cf);
                 caseFB.InsolvencyType = s.InsolvencyType;
                 caseFB.CaseName = s.CaseName;
+                caseFB.OrderDate = s.InsolvencyDate;
                 caseFeedback.Add(caseFB); 
             });
 
