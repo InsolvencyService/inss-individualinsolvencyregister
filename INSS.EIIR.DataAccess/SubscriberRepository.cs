@@ -121,7 +121,8 @@ public class SubscriberRepository : ISubscriberRepository
         var emailContacts = "";
         if (subscriber.EmailAddresses.Any())
         {
-            emailContacts = string.Join(",", subscriber.EmailAddresses);
+            var emails = subscriber.EmailAddresses.Where(x => !string.IsNullOrWhiteSpace(x));
+            emailContacts = string.Join(",", emails);
             emailContacts = emailContacts.TrimEnd(',');
         }
 
