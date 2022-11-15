@@ -11,10 +11,10 @@ variables:
 parameters: 
 - name: deployWebapp    
   type: boolean    
-  default: false
+  default: true
 - name: deployfuncapp    
   type: boolean    
-  default: false
+  default: true
 
 resources:
   repositories:
