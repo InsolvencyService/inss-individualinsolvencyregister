@@ -21,13 +21,10 @@ public class IndividualRepository : IIndividualRepository
 
         using (_context)
         {
-            var surname = new SqlParameter("@Surname", lastName);
-            var forename = new SqlParameter("@Forename", firstName);
-
             _context.Database.SetCommandTimeout(600);
 
             results = _context.SearchResults
-                .FromSqlRaw("exec getIndividualByName @Surname, @Forename", surname, forename)
+                .FromSqlRaw("exec getEiirSearchIndex")
                 .ToList();
         }
 

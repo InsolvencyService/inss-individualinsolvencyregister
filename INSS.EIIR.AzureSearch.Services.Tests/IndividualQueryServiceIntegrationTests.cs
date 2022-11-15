@@ -26,7 +26,7 @@ public class IndividualQueryServiceIntegrationTests
 
         var expected = new SearchResult
         {
-            CaseNo = 12345
+            caseNo = "12345"
         };
 
         var indexModel = new IndividualSearch { CaseNumber = "12345" };
@@ -78,7 +78,7 @@ public class IndividualQueryServiceIntegrationTests
         var result  = (await service.SearchIndexAsync(searchModel));
 
         result.Results.Count.Should().Be(1);
-        result.Results.First().CaseNo.Should().Be(12345);
+        result.Results.First().caseNo.Should().Be("12345");
     }
 
     private IEnumerable<IIndiviualSearchFilter> GetFilters(ISearchCleaningService cleaningSer4viceMock)

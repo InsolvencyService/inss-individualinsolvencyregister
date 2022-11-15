@@ -2685,10 +2685,6 @@ public partial class EIIRContext : DbContext
         modelBuilder.Entity<SearchResult>(entity =>
         {
             entity.HasNoKey();
-
-            entity.Property(e => e.DateOfBirth).HasColumnName("Date of Birth");
-
-            entity.Property(e => e.DateOfOrder).HasColumnName("Date of Order");
         });
 
         OnModelCreatingPartial(modelBuilder);

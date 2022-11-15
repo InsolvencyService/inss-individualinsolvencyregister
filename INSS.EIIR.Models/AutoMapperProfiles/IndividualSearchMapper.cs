@@ -8,10 +8,14 @@ public class IndividualSearchMapper : Profile
 {
     public IndividualSearchMapper()
     {
-        CreateMap<SearchResult, IndividualSearch>()
-            .ForMember(m => m.CaseNumber, opt => opt.MapFrom(s => s.CaseNo))
-            .ForMember(m => m.Court, opt => opt.MapFrom(s => s.Court))
-            .ForMember(m => m.FirstName, opt => opt.MapFrom(s => s.FirstName))
-            .ForMember(m => m.FamilyName, opt => opt.MapFrom(s => s.Surname)).ReverseMap();
+        CreateMap<IndividualSearch, SearchResult>()
+            .ForMember(m => m.indvidualForenames, opt => opt.MapFrom(s => s.FirstName))
+            .ForMember(m => m.indvidualSurname, opt => opt.MapFrom(s => s.FamilyName))
+            .ForMember(m => m.indvidualAlias, opt => opt.MapFrom(s => s.AlternativeNames))
+            .ForMember(m => m.companyName, opt => opt.MapFrom(s => s.CompanyName))
+            .ForMember(m => m.indvidualTown, opt => opt.MapFrom(s => s.LastKnownLocality))
+            .ForMember(m => m.indvidualPostcode, opt => opt.MapFrom(s => s.LastKnownPostcode))
+            .ForMember(m => m.caseNo, opt => opt.MapFrom(s => s.CaseNumber))
+            .ForMember(m => m.indivNo, opt => opt.MapFrom(s => s.IndvidualNumber)).ReverseMap();
     }
 }

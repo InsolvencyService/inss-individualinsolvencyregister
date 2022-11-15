@@ -70,8 +70,8 @@ namespace INSS.EIIR.AzureSearch.Tests
             {
                 new()
                 {
-                    FirstName = "Bill",
-                    Surname = "Smith"
+                    indvidualForenames = "Bill",
+                    indvidualSurname = "Smith"
                 }
             };
         }
