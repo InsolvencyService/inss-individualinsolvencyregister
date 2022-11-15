@@ -1,6 +1,5 @@
 ﻿using INSS.EIIR.Models.Breadcrumb;
 using INSS.EIIR.Models.SubscriberModels;
-using INSS.EIIR.Web.ViewModels;
 
 namespace INSS.EIIR.Web.Helper
 {
@@ -10,10 +9,11 @@ namespace INSS.EIIR.Web.Helper
             bool showSearch = false,
             bool showSubscriberList = false,
             bool showSubscriber = false,
+            bool isAdmin = false,
             SubscriberParameters subscriberParameters = null)
         {
             var breadcrumbs = new List<BreadcrumbLink> {
-                new() { Text = "Home", Href = "/" },
+                new() { Text = "Home", Href = !isAdmin ? "/" : "/admin/admin-area" },
             };
 
             if (showSearch)

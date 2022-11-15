@@ -155,6 +155,7 @@ void ConfigureServices(IServiceCollection services)
 
     services.AddTransient<IClientService, ClientService>();
     services.AddTransient<IIndividualSearch, IndividualSearch>();
+    services.AddTransient<IErrorIssuesService, ErrorIssuesService>();
     services.AddTransient<ISubscriberService, SubscriberService>();
     services.AddTransient<ISubscriberSearch, SubscriberSearch>();
     services.AddTransient<ICaseService, CaseService>();

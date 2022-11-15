@@ -26,7 +26,7 @@ using Microsoft.AspNetCore.Mvc;
             _subscriberSearch = subscriberSearch;
             _subscriberService = subscriberService;
 
-            _breadcrumbs = BreadcrumbBuilder.BuildBreadcrumbs().ToList();
+            _breadcrumbs = BreadcrumbBuilder.BuildBreadcrumbs(isAdmin: true).ToList();
         }
 
         [HttpGet(AreaNames.Admin + "/subscribers/{page?}/{active?}")]
@@ -73,7 +73,7 @@ using Microsoft.AspNetCore.Mvc;
             };
             subscriber.SubscriberParameters = parameters;
 
-            subscriber.Breadcrumbs = BreadcrumbBuilder.BuildBreadcrumbs(showSubscriberList: true, subscriberParameters: parameters).ToList();
+            subscriber.Breadcrumbs = BreadcrumbBuilder.BuildBreadcrumbs(isAdmin: true, showSubscriberList: true, subscriberParameters: parameters).ToList();
 
             return View(subscriber);
         }
@@ -85,7 +85,7 @@ using Microsoft.AspNetCore.Mvc;
         {
             var subscriberProfile = new SubscriberProfile();
             
-            subscriberProfile.Breadcrumbs = BreadcrumbBuilder.BuildBreadcrumbs().ToList();
+            subscriberProfile.Breadcrumbs = BreadcrumbBuilder.BuildBreadcrumbs(isAdmin: true).ToList();
 
             return View("ChangeProfile", subscriberProfile);
         }
@@ -135,7 +135,7 @@ using Microsoft.AspNetCore.Mvc;
             subscriberProfile.SubscriberParameters = parameters;
 
             subscriberProfile.Breadcrumbs =
-                BreadcrumbBuilder.BuildBreadcrumbs(showSubscriberList: true, showSubscriber:true, subscriberParameters: parameters).ToList();
+                BreadcrumbBuilder.BuildBreadcrumbs(isAdmin: true, showSubscriberList: true, showSubscriber:true, subscriberParameters: parameters).ToList();
 
             return View(subscriberProfile);
         }

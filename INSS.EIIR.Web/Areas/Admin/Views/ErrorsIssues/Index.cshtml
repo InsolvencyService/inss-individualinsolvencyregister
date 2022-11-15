@@ -1,0 +1,186 @@
+﻿@model INSS.EIIR.Web.ViewModels.FeedbackViewModel
+
+@{
+    var header = "Errors or issues";
+    ViewData["Header"] = header;
+    ViewData["Title"] = header;
+}
+
+@section AdminBreadcrumb
+    {
+    <partial name="~/Areas/Admin/Shared/_AdminBreadcrumb.cshtml" model="Model.Breadcrumbs" />
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+        <h1 class="govuk-heading-l">
+            @header
+        </h1>
+    </div>
+</div>
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-one-third">
+
+        <div class="govuk-form-group">
+            <label class="govuk-label" for="organisation">
+                Organisation
+            </label>
+            <select class="govuk-select" id="organisation" name="organisation">
+                <option value="" selected="">All</option>
+                <option value="Member of the public">Member of the public</option>
+                <option value="Credit reference agency">Credit reference agency</option>
+                <option value="Credit card issuer">Credit card issuer</option>
+                <option value="Bank or building society">Bank or building society</option>
+                <option value="Mortgage provider">Mortgage provider</option>
+                <option value="Government department">Government department</option>
+                <option value="Financial services">Financial services</option>
+                <option value="Debt recovery agency">Debt recovery agents</option>
+                <option value="Other">Other</option>
+            </select>
+        </div>
+
+        <div class="govuk-form-group">
+            <label class="govuk-label" for="type">
+                Type
+            </label>
+            <select class="govuk-select" id="type" name="type">
+                <option value="" selected="">All</option>
+                <option value="B">Bankruptcies</option>
+                <option value="D">Debt relief orders</option>
+                <option value="I">IVAs</option>
+            </select>
+        </div>
+
+        <div class="govuk-form-group">
+            <label class="govuk-label" for="status">
+                Status
+            </label>
+            <select class="govuk-select" id="status" name="status">
+                <option value="All" selected="">All</option>
+                <option value="Unviewed">Not viewed</option>
+                <option value="Viewed">Viewed</option>
+            </select>
+        </div>
+
+    </div>
+
+    @if (Model?.FeedbackWithPaging?.Feedback != null && Model.FeedbackWithPaging.Feedback.Any())
+    {
+        <div class="govuk-grid-column-two-thirds">
+
+            @foreach (var feedback in Model.FeedbackWithPaging.Feedback)
+            {
+                var viewed = feedback.Viewed ? "viewed" : "not viewed";
+
+                var insolvencyType = feedback.InsolvencyType switch
+                {
+                    "I" => "IVA",
+                    "D" => "Debt relief order",
+                    "B" => "Bankruptcy",
+                    _ => string.Empty
+                };
+
+                <h2 class="govuk-heading-m govuk-!-margin-top-4 govuk-!-margin-bottom-2">
+                    @feedback.CaseId
+                </h2>
+
+                <dl class="govuk-summary-list govuk-summary-list--no-border">
+                    <div class="govuk-summary-list__row">
+                        <dt class="govuk-summary-list__key">
+                            Status
+                        </dt>
+                        <dd class="govuk-summary-list__value">
+                            <strong class="govuk-tag govuk-tag--grey" id="report-status">@viewed</strong>
+                        </dd>
+                        <dd class="govuk-summary-list__actions">
+                            <a href="">
+                                Change to viewed
+                            </a>
+                        </dd>
+                    </div>
+                    <div class="govuk-summary-list__row">
+                        <dt class="govuk-summary-list__key">
+                            Report date
+                        </dt>
+                        <dd class="govuk-summary-list__value">
+                            @feedback.FeedbackDate.ToString("dd MMMM yyyy")
+                        </dd>
+                    </div>
+                    <div class="govuk-summary-list__row">
+                        <dt class="govuk-summary-list__key">
+                            Case name
+                        </dt>
+                        <dd class="govuk-summary-list__value">
+                            <a href="https://eiir-prototype.herokuapp.com/citizen/v4/case-details-page">@feedback.CaseName</a>
+                        </dd>
+                    </div>
+                    <div class="govuk-summary-list__row">
+                        <dt class="govuk-summary-list__key">
+                            Type
+                        </dt>
+                        <dd class="govuk-summary-list__value">
+                            @insolvencyType
+                        </dd>
+                    </div>
+                    <div class="govuk-summary-list__row">
+                        <dt class="govuk-summary-list__key">
+                            Order or arrangement date
+                        </dt>
+                        <dd class="govuk-summary-list__value">
+                            @*@feedback.*@
+                        </dd>
+                    </div>
+                    <div class="govuk-summary-list__row">
+                        <dt class="govuk-summary-list__key">
+                            Reporter name
+                        </dt>
+                        <dd class="govuk-summary-list__value">
+                            @feedback.ReporterFullname
+                        </dd>
+                    </div>
+                    <div class="govuk-summary-list__row">
+                        <dt class="govuk-summary-list__key">
+                            Email address
+                        </dt>
+                        <dd class="govuk-summary-list__value">
+                            @feedback.ReporterEmailAddress
+                        </dd>
+                    </div>
+                    <div class="govuk-summary-list__row">
+                        <dt class="govuk-summary-list__key">
+                            Organisation
+                        </dt>
+                        <dd class="govuk-summary-list__value">
+                            @feedback.ReporterOrganisation
+                        </dd>
+                    </div>
+                </dl>
+
+                <div class="govuk-form-group">
+                    <h3 class="govuk-label-wrapper">
+                        <label class="govuk-label govuk-label--s" for="more-detail">
+                            Report
+                        </label>
+                    </h3>
+                    <textarea class="govuk-textarea" id="more-detail" name="more-detail" rows="5" aria-describedby="more-detail-hint">
+                        @feedback.Message.Trim()
+                    </textarea>
+                </div>
+
+                <hr class="govuk-section-break govuk-section-break--visible">
+            }
+
+            @if (Model.FeedbackWithPaging.Paging.ResultCount > Model.FeedbackWithPaging.Feedback.Count())
+            {
+                <partial name="_Paging" model="@Model.FeedbackWithPaging.Paging" />
+            }
+
+        </div>
+    }
+</div>
+
+@*@section PageScripts {
+    <script src="~/js/subscriberList.js" asp-append-version="true" type="module"></script>
+}*@
