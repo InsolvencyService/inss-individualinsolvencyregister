@@ -15,7 +15,7 @@ public class IndividualRepository : IIndividualRepository
         _context = context;
     }
 
-    public IEnumerable<SearchResult> SearchByName(string firstName = "", string lastName = "")
+    public IEnumerable<SearchResult> BuildEiirSearchIndex()
     {
         List<SearchResult> results;
 

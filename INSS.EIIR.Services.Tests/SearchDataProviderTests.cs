@@ -15,14 +15,14 @@ namespace INSS.EIIR.Services.Tests
 
             var repositoryMock = new Mock<IIndividualRepository>();
             repositoryMock
-                .Setup(m => m.SearchByName(string.Empty, string.Empty))
+                .Setup(m => m.BuildEiirSearchIndex())
                 .Returns(expectedResult);
 
             var service = new SearchDataProvider(repositoryMock.Object);
 
-            var result  = service.GetIndividualSearchData(string.Empty, string.Empty).ToList();
+            var result  = service.GetIndividualSearchData().ToList();
 
-            repositoryMock.Verify(m => m.SearchByName(string.Empty, string.Empty), Times.Once);
+            repositoryMock.Verify(m => m.BuildEiirSearchIndex(), Times.Once);
 
             result.Count.Should().Be(1);
             result.First().indvidualForenames.Should().Be("Bill");
