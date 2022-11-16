@@ -8,7 +8,6 @@ using INSS.EIIR.Functions.Functions;
 using INSS.EIIR.Interfaces.AzureSearch;
 using INSS.EIIR.Models.SearchModels;
 using INSS.EIIR.Services;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Timers;
 using Microsoft.Extensions.Configuration;
@@ -55,7 +54,7 @@ namespace INSS.EIIR.Functions.Tests
 
             var service = new RebuildIndexes(GetIndexServices(mapperMock.Object), loggerMock.Object);
 
-            await service.Run(CreateMockRequest().Object);
+            await service.Run("RebuildIndexes");
         }
 
         private IEnumerable<IIndexService> GetIndexServices(IMapper mapper)
@@ -87,22 +86,6 @@ namespace INSS.EIIR.Functions.Tests
                     FamilyName = "Smith"
                 }
             };
-        }
-
-        private static Mock<HttpRequest> CreateMockRequest()
-        {
-            var ms = new MemoryStream();
-            var sw = new StreamWriter(ms);
-            var headers = new Mock<IHeaderDictionary>();
-
-            headers.Setup(x => x["X-Forwarded-For"]).Returns("127.0.0.1");
-            headers.Setup(x => x["x-functions-key"]).Returns("mbhyhterkjopeNwshQ8y8jcZ5vCRBWKU8fY1fu-sSFX-AzFu1FZb0w==");
-
-            var mockRequest = new Mock<HttpRequest>();
-            mockRequest.Setup(h => h.Headers).Returns(headers.Object);
-            mockRequest.Setup(x => x.Body).Returns(ms);
-
-            return mockRequest;
         }
     }
 }

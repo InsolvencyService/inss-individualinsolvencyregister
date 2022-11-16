@@ -2,7 +2,7 @@
 # trigger Rebuild Indexes Process
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 
-$uri = 'https://func-uksouth-dev-eiir.azurewebsites.net/api/RebuildIndexes'
+$uri = 'https://func-uksouth-dev-eiir.azurewebsites.net/api/EiirOrchestrator_Start'
 $key = ''
 
 $headers = @{
