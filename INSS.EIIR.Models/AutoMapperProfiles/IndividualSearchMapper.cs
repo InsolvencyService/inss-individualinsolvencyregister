@@ -16,6 +16,6 @@ public class IndividualSearchMapper : Profile
             .ForMember(m => m.indvidualTown, opt => opt.MapFrom(s => s.LastKnownLocality))
             .ForMember(m => m.indvidualPostcode, opt => opt.MapFrom(s => s.LastKnownPostcode))
             .ForMember(m => m.caseNo, opt => opt.MapFrom(s => s.CaseNumber))
-            .ForMember(m => m.indivNo, opt => opt.MapFrom(s => s.IndvidualNumber)).ReverseMap();
+            .ForMember(m => m.indivNo, opt => opt.MapFrom(s => s.IndividualNumber)).ReverseMap();
     }
 }

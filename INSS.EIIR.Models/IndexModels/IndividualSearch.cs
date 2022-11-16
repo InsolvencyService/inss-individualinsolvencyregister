@@ -10,7 +10,7 @@ public class IndividualSearch
     public string CaseNumber { get; set; }
 
     [SearchableField(IsSortable = true)]
-    public string IndvidualNumber { get; set; }
+    public string IndividualNumber { get; set; }
 
     [SearchableField(IsSortable = true)]
     public string FirstName { get; set; }
