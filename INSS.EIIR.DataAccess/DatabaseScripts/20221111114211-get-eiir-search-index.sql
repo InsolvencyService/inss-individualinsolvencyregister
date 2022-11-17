@@ -26,8 +26,8 @@ CREATE OR ALTER PROCEDURE [dbo].[getEiirSearchIndex] AS
         SELECT DISTINCT
 
 
-            individual.case_no AS caseNo,
-            individual.indiv_no AS indivNo,
+            CAST(individual.case_no as varchar(20)) as caseNo,
+            CAST(individual.indiv_no as varchar(20)) as indivNo,
 
             -- Individual details        
             UPPER(individual.forenames) AS individualForenames,
