@@ -26,6 +26,7 @@
     "blobcontainername": "__containername__",
     "extractjobserviceurl": "__extractjobserviceurl__",
     "extractjobtimercron": "__extractjobtimercron__",
-    "functionapikey": "__functionapikey__"
+    "functionapikey": "__functionapikey__",
+    "eiirFuncTaskHub": "__taskhubname__"
   }
 }
