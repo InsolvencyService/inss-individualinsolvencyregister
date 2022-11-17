@@ -5,37 +5,18 @@ namespace INSS.EIIR.Models.SearchModels;
 [ExcludeFromCodeCoverage]
 public class SearchResult
 {
-    public string Title { get; set; }
+    public string individualForenames { get; set; }
+    public string individualSurname { get; set; }
+    public string individualAlias { get; set; }
 
-    public string FirstName { get; set; }
+    public string companyName { get; set; }
 
-    public string Surname { get; set; }
+    public string individualTown { get; set; }
 
-    public int CaseNo { get; set; }
+    public string individualPostcode { get; set; }
 
-    public int IndivNo { get; set; }
+    public string caseNo { get; set; }
 
-    public DateTime? DateOfBirth { get; set; }
+    public string indivNo { get; set; }
 
-    public string Address1 { get; set; }
-
-    public string Address2 { get; set; }
-
-    public string Address3 { get; set; }
-
-    public string Wflag { get; set; }
-
-    public string Court { get; set; }
-
-    public string Number { get; set; }
-
-    public string DRONumber { get; set; }
-
-    public DateTime? DateOfOrder { get; set; }
-
-    public int? Year { get; set; }
-
-    public string Type { get; set; }
-
-    public int Office { get; set; }
 }

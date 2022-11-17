@@ -31,7 +31,7 @@ namespace INSS.EIIR.DataAccess.Tests
             var repository = new IndividualRepository(context);
 
             //Act
-            var results = repository.SearchByName("Brian", "Young").ToList();
+            var results = repository.BuildEiirSearchIndex().ToList();
 
             //Assert
             results.Count.Should().Be(expectedResultsCount);
