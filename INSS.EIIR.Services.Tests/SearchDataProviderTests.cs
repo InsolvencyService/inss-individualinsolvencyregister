@@ -25,8 +25,8 @@ namespace INSS.EIIR.Services.Tests
             repositoryMock.Verify(m => m.BuildEiirSearchIndex(), Times.Once);
 
             result.Count.Should().Be(1);
-            result.First().indvidualForenames.Should().Be("Bill");
-            result.First().indvidualSurname.Should().Be("Smith");
+            result.First().individualForenames.Should().Be("Bill");
+            result.First().individualSurname.Should().Be("Smith");
         }
 
         private static IEnumerable<SearchResult> GetData()
@@ -35,8 +35,8 @@ namespace INSS.EIIR.Services.Tests
             {
                 new()
                 {
-                    indvidualForenames = "Bill",
-                    indvidualSurname = "Smith"
+                    individualForenames = "Bill",
+                    individualSurname = "Smith"
                 }
             };
         }

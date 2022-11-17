@@ -56,8 +56,8 @@ namespace INSS.EIIR.Functions.Tests
            var caseDetailsFunc = new CaseDetails(logger, _caseDataProvider);
            var caseResult = new CaseResult()
            {
-               indvidualForenames = "Bill",
-               indvidualSurname = "Smith"
+               individualForenames = "Bill",
+               individualSurname = "Smith"
            };
 
            Mock<HttpRequest> mockRequest = CreateMockRequest(caseResult);

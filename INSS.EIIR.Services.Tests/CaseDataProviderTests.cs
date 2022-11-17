@@ -26,16 +26,16 @@ namespace INSS.EIIR.Services.Tests
 
             repositoryMock.Verify(m => m.GetCaseAsync(caseRequest), Times.Once);
 
-            result.indvidualForenames.Should().Be("Bill");
-            result.indvidualSurname.Should().Be("Smith");
+            result.individualForenames.Should().Be("Bill");
+            result.individualSurname.Should().Be("Smith");
         }
 
         private static async Task<CaseResult> GetData()
         {
             return new CaseResult()
                 {
-                    indvidualForenames = "Bill",
-                    indvidualSurname = "Smith"
+                    individualForenames = "Bill",
+                    individualSurname = "Smith"
             };
         }
     }

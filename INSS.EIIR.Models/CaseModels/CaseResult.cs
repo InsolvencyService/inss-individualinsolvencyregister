@@ -12,23 +12,23 @@ public class CaseResult
 
     public int indivNo { get; set; }
 
-    public string? indvidualForenames { get; set; }
-    public string? indvidualSurname { get; set; }
+    public string? individualForenames { get; set; }
+    public string? individualSurname { get; set; }
 
-    public string? indvidualTitle { get; set; }
+    public string? individualTitle { get; set; }
 
-    public string? indvidualGender { get; set; }
+    public string? individualGender { get; set; }
 
-    public DateTime? indvidualDOB { get; set; }
+    public DateTime? individualDOB { get; set; }
 
-    public string? indvidualOccupation { get; set; }
-    public string? indvidualAddress { get; set; }
+    public string? individualOccupation { get; set; }
+    public string? individualAddress { get; set; }
 
-    public string? indvidualPostcode { get; set; }
+    public string? individualPostcode { get; set; }
 
-    public string? indvidualAddressWithheld { get; set; }
+    public string? individualAddressWithheld { get; set; }
 
-    public string? indvidualAlias { get; set; }
+    public string? individualAlias { get; set; }
 
     public string? caseName { get; set; }
     public string? courtName { get; set; }

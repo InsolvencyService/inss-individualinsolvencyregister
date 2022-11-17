@@ -51,12 +51,12 @@
 
                         @foreach (var individual in Model.SearchResults.Results)
                         {
-                            var name = $"{individual.indvidualForenames} {individual.indvidualSurname}".ToTitleCase();
+                            var name = $"{individual.individualForenames} {individual.individualSurname}".ToTitleCase();
                             <tr class="govuk-table__row">
                                 <td class="govuk-table__cell"><a class="govuk-link--no-visited-state" href="/SearchDetails/@individual.caseNo/@individual.indivNo">@name</a></td>
                                 <td class="govuk-table__cell">@individual.companyName</td>
-                                <td class="govuk-table__cell">@individual.indvidualTown</td>
-                                <td class="govuk-table__cell">@individual.indvidualPostcode</td>
+                                <td class="govuk-table__cell">@individual.individualTown</td>
+                                <td class="govuk-table__cell">@individual.individualPostcode</td>
                             </tr>
                         }
 

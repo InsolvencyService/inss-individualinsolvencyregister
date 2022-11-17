@@ -13,11 +13,11 @@ CREATE OR ALTER PROCEDURE [dbo].[getEiirSearchIndex] AS
     getEiirSearchIndex(
         caseNo,
         indivNo,
-        indvidualForenames,
-        indvidualSurname,
-        indvidualTown,
-        indvidualPostcode,
-        indvidualAlias,
+        individualForenames,
+        individualSurname,
+        individualTown,
+        individualPostcode,
+        individualAlias,
         companyName
     )
     AS
@@ -30,13 +30,13 @@ CREATE OR ALTER PROCEDURE [dbo].[getEiirSearchIndex] AS
             individual.indiv_no AS indivNo,
 
             -- Individual details        
-            UPPER(individual.forenames) AS indvidualForenames,
-            UPPER(individual.surname) AS indvidualSurname,
-            CONCAT(individual.address_line_1, ' ', individual.address_line_2, ' ', individual.address_line_3, ' ', individual.address_line_4, ' ', individual.address_line_5) AS indvidualTown,
-            individual.postcode AS indvidualPostcode,
+            UPPER(individual.forenames) AS individualForenames,
+            UPPER(individual.surname) AS individualSurname,
+            CONCAT(individual.address_line_1, ' ', individual.address_line_2, ' ', individual.address_line_3, ' ', individual.address_line_4, ' ', individual.address_line_5) AS individualTown,
+            individual.postcode AS individualPostcode,
             ISNULL((SELECT STRING_AGG( ISNULL(UPPER(ci_other_name.surname) +' '+ UPPER(ci_other_name.forenames), ' '), ', ' )
             FROM ci_other_name
-            WHERE ci_other_name.case_no = individual.case_no AND ci_other_name.indiv_no = individual.indiv_no), '') AS indvidualAlias,
+            WHERE ci_other_name.case_no = individual.case_no AND ci_other_name.indiv_no = individual.indiv_no), '') AS individualAlias,
 
             ISNULL(trade.trading_name, 'N/A') AS companyName
 
@@ -50,11 +50,11 @@ CREATE OR ALTER PROCEDURE [dbo].[getEiirSearchIndex] AS
 SELECT 
     caseNo,
     indivNo,
-    indvidualForenames,
-    indvidualSurname,
-    indvidualTown,
-    indvidualPostcode,
-    indvidualAlias,
+    individualForenames,
+    individualSurname,
+    individualTown,
+    individualPostcode,
+    individualAlias,
     companyName
 
 FROM getEiirSearchIndex
