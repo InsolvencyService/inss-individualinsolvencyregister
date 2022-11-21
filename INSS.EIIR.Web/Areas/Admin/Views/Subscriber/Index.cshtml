@@ -1,0 +1,100 @@
+﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model INSS.EIIR.Web.ViewModels.SubscriberListViewModel
+@{
+    var header = "Subscribers";
+    ViewData["Header"] = header;
+    ViewData["Title"] = $"{header}";
+
+    var active = Model.SubscriberWithPaging.Paging.Parameters ?? string.Empty;
+}
+
+@section AdminBreadcrumb
+{
+    <partial name="~/Areas/Admin/Shared/_AdminBreadcrumb.cshtml" model="Model.Breadcrumbs" />
+}
+
+<h1 class="govuk-heading-l govuk-!-margin-bottom-8">
+    @header
+</h1>
+
+<p class="govuk-body govuk-!-margin-bottom-8">
+    Select the relevant subscriber link to view and update their details.
+</p>
+
+<div class="govuk-grid-row">
+
+    <div class="govuk-grid-column-one-quarter">
+        <input type="hidden" id="pageNumber" value="@Model.SubscriberWithPaging.Paging.Page" />
+        <fieldset class="govuk-fieldset" aria-describedby="status-hint">
+            <label class="govuk-label">
+                View
+            </label>
+            <div class="govuk-checkboxes" data-module="govuk-checkboxes">
+                <div class="govuk-checkboxes__item">
+                    <input class="govuk-checkboxes__input" id="Active" name="Active" type="checkbox" value="active"
+                           @(active is "true" or "both" ? "checked=\"checked\"" : string.Empty)/>
+                    <label class="govuk-label govuk-checkboxes__label" for="Active">
+                        Active
+                    </label>
+                </div>
+                <div class="govuk-checkboxes__item">
+                    <input class="govuk-checkboxes__input" id="InActive" name="InActive" type="checkbox" value="inActive"
+                           @(active is "false" or "both" ? "checked=\"checked\"" : string.Empty)/>
+                    <label class="govuk-label govuk-checkboxes__label" for="InActive">
+                        Inactive
+                    </label>
+                </div>
+            </div>
+        </fieldset>
+
+    </div>
+    <div class="govuk-grid-column-three-quarters">
+
+        @if (Model != null && Model.SubscriberWithPaging.Subscribers.Any())
+        {
+            <table class="govuk-table govuk-!-margin-bottom-8">
+                <thead class="govuk-table__head">
+                    <tr class="govuk-table__row">
+                        <th scope="col" class="govuk-table__header">Subscriber ID</th>
+                        <th scope="col" class="govuk-table__header">Company or organisation name</th>
+                        <th scope="col" class="govuk-table__header">Subscription end date</th>
+                    </tr>
+                </thead>
+                <tbody class="govuk-table__body">
+
+                    @foreach (var subscriber in Model.SubscriberWithPaging.Subscribers)
+                    {
+                        <tr class="govuk-table__row">
+                            <td class="govuk-table__cell">
+                                @subscriber.SubscriberId
+                            </td>
+                        
+                            <td class="govuk-table__cell">
+                                <a class="govuk-link--no-visited-state" href="@($"/admin/subscriber/{subscriber.SubscriberId}/{Model.SubscriberWithPaging.Paging.Page}/{active}")">
+                                    @subscriber.OrganisationName
+                                </a>
+                            </td>
+                            
+                            <td class="govuk-table__cell">
+                                @if (subscriber.SubscribedTo != null)
+                                {
+                                    @subscriber.SubscribedTo.Value.ToString("dd MMMM yyyy")
+                                }
+                            </td>
+                        </tr>
+                    }
+
+                </tbody>
+            </table>
+
+            @if (Model.SubscriberWithPaging.Paging.ResultCount > Model.SubscriberWithPaging.Subscribers.Count)
+            {
+                <partial name="_Paging" model="@Model.SubscriberWithPaging.Paging" />
+            }
+        }
+    </div>
+</div>
+
+@section PageScripts {
+    <script src="~/js/subscriberList.js" asp-append-version="true" type="module"></script>
+}

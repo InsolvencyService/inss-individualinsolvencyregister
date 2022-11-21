@@ -6,22 +6,15 @@ using INSS.EIIR.Data.Models;
 using INSS.EIIR.DataAccess;
 using INSS.EIIR.Functions.Functions;
 using INSS.EIIR.Interfaces.AzureSearch;
-using INSS.EIIR.Models;
+using INSS.EIIR.Models.SearchModels;
 using INSS.EIIR.Services;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Timers;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Moq;
-using INSS.EIIR.Data.Models;
-using INSS.EIIR.Functions.Functions;
-using Microsoft.Azure.WebJobs;
-using Microsoft.Extensions.Logging;
-using Microsoft.Azure.WebJobs.Extensions.Timers;
-using INSS.EIIR.Interfaces.AzureSearch;
-using IndividualSearch = INSS.EIIR.Models.IndexModels.IndividualSearch;
-using INSS.EIIR.Models.SearchModels;
 using Xunit;
+using IndividualSearch = INSS.EIIR.Models.IndexModels.IndividualSearch;
 
 namespace INSS.EIIR.Functions.Tests
 {
@@ -50,7 +43,7 @@ namespace INSS.EIIR.Functions.Tests
         public async Task Run_Builds_And_Populates_Index()
         {
             var timerInfo = new TimerInfo(new DailySchedule(), new ScheduleStatus(), false);
-            var loggerMock = new Mock<ILogger>();
+            var loggerMock = new Mock<ILogger<RebuildIndexes>>();
 
             var mappedData = GetMappedData();
 
@@ -59,9 +52,9 @@ namespace INSS.EIIR.Functions.Tests
                 .Setup(m => m.Map<IEnumerable<SearchResult>, IEnumerable<IndividualSearch>>(It.IsAny<IEnumerable<SearchResult>>()))
                 .Returns(mappedData);
 
-            var service = new RebuildIndexes(GetIndexServices(mapperMock.Object));
+            var service = new RebuildIndexes(GetIndexServices(mapperMock.Object), loggerMock.Object);
 
-            await service.Run(timerInfo, loggerMock.Object);
+            await service.Run("RebuildIndexes");
         }
 
         private IEnumerable<IIndexService> GetIndexServices(IMapper mapper)

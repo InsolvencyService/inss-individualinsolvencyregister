@@ -11,13 +11,10 @@ variables:
 parameters: 
 - name: deployWebapp    
   type: boolean    
-  default: false
+  default: true
 - name: deployfuncapp    
   type: boolean    
-  default: false
-- name: RunIntTest    
-  type: boolean    
-  default: false
+  default: true
 
 resources:
   repositories:
@@ -74,7 +71,6 @@ stages:
         inputs:
           command: 'publish'
           publishWebProjects: false
-          # projects: '**/*.csproj'
           projects: |
             **/INSS.EIIR*.csproj
             !**/INSS.EIIR*Tests.csproj

@@ -1,0 +1,18 @@
+﻿@model IEnumerable<INSS.EIIR.Models.Breadcrumb.BreadcrumbLink>
+
+@if (Model != null && Model.Any())
+{
+    <div class="govuk-breadcrumbs">
+        <ol class="govuk-breadcrumbs__list">
+            @foreach (var breadcrumb in Model)
+            {
+                <li class="govuk-breadcrumbs__list-item">
+                    <a class="govuk-breadcrumbs__link" href="@breadcrumb.Href">@breadcrumb.Text</a>
+                </li>
+            }
+            <li class="govuk-breadcrumbs__list-item">
+                @ViewData["Header"]
+            </li>
+        </ol> 
+    </div> 
+}

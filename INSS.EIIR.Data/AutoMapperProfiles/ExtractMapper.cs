@@ -9,6 +9,7 @@ public class ExtractMapper : Profile
     public ExtractMapper()
     {
 
-        CreateMap<ExtractAvailabilitySP, ExtractAvailable>();
+        CreateMap<ExtractAvailabilitySP, Extract>();
+        CreateMap<ExtractAvailability, Extract>();
     }
 }

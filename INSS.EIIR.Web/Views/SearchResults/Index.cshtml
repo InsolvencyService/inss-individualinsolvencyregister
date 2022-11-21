@@ -1,65 +1,102 @@
-﻿@model INSS.EIIR.Models.SearchModels.SearchResults
+﻿@using INSS.EIIR.Web.Extensions
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model INSS.EIIR.Web.ViewModels.IndividualListViewModel
 
 @{
-    ViewData["Title"] = "";
+    ViewData["Title"] = "Search results";
 }
 
-<a asp-controller="Search" asp-action="Index" class="govuk-back-link">Back</a>
-
-<main class="govuk-main-wrapper govuk-main-wrapper--auto-spacing" id="main-content" role="main">
+@section Breadcrumb
+    {
+    <partial name="_Breadcrumb" model="Model.Breadcrumbs" />
+}
 
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
 
             <h1 class="govuk-heading-l">
-                Search results
+                @ViewData["Title"]
             </h1>
             <br>
 
-            <div class="govuk-grid-column-one-third"></div>
+            <div class="govuk-grid-column-one-third">
+            </div>
         </div>
     </div>
 
     <div class="govuk-grid-row">
-        <div class="govuk-grid-column-full">
-            
-            @if (Model != null && Model.Results.Any())
+        <div class="govuk-grid-column-two-thirds">
+
+        @if (Model != null)
+        {
+            if (Model.SearchResults.Results.Any())
             {
                 <p class="govuk-body">
-                    Your search returned <span class="govuk-!-font-weight-bold">@Model.Paging.ResultCount</span> records. These may include individuals with an alias or a previous name which matches your search criteria.
+                    Your search returned <span class="govuk-!-font-weight-bold">@Model.SearchResults.Paging.ResultCount</span>> records. These may include individuals with an alias or a previous name which matches your search criteria.
+                    If you expected to see a name in the register and it is not there, <a href="https://www.insolvencydirect.bis.gov.uk/ExternalOnlineForms/GeneralEnquiry.aspx">tell the Insolvency Service</a>.
                 </p>
 
-                <p class="govuk-body">Select a <span class="govuk-!-font-weight-bold">Name</span> link to view the relevant report.</p>
+                <p class="govuk-body">Select a <span class="govuk-!-font-weight-bold">Name</span> link to view the relevant case details.</p>
 
-                <table class="govuk-table" style="margin-top: 40px; margin-bottom: 60px;">
+                <table class="govuk-table">
                     <thead class="govuk-table__head">
-                    <tr class="govuk-table__row">
-                        <th scope="col" class="govuk-table__header">Name</th>
-                        <th scope="col" class="govuk-table__header">Date of birth</th>
-                        <th scope="col" class="govuk-table__header">Trading name</th>
-                    </tr>
+                        <tr class="govuk-table__row">
+                            <th scope="col" class="govuk-table__header">Name</th>
+                            <th scope="col" class="govuk-table__header">Company</th>
+                            <th scope="col" class="govuk-table__header">Town or city</th>
+                            <th scope="col" class="govuk-table__header">Postcode</th>
+                        </tr>
                     </thead>
                     <tbody class="govuk-table__body">
 
-                    @foreach (var individual in Model.Results)
-                    {
-                        var name = $"{individual.FirstName} {individual.Surname}";
-                        <tr class="govuk-table__row">
-                            <td class="govuk-table__cell"><a class="govuk-link--no-visited-state" href="#">@name</a></td>
-                            <td class="govuk-table__cell">@individual.DateOfBirth</td>
-                            <td class="govuk-table__cell"></td>
-                        </tr>
-                    }
+                        @foreach (var individual in Model.SearchResults.Results)
+                        {
+                            var name = $"{individual.individualForenames} {individual.individualSurname}".ToTitleCase();
+                            <tr class="govuk-table__row">
+                                <td class="govuk-table__cell"><a class="govuk-link--no-visited-state" href="/SearchDetails/@individual.caseNo/@individual.indivNo">@name</a></td>
+                                <td class="govuk-table__cell">@individual.companyName</td>
+                                <td class="govuk-table__cell">@individual.individualTown</td>
+                                <td class="govuk-table__cell">@individual.individualPostcode</td>
+                            </tr>
+                        }
 
                     </tbody>
                 </table>
 
-                @if (Model.Paging.ResultCount > Model.Results.Count)
+                @if (Model.SearchResults.Paging.ResultCount > Model.SearchResults.Results.Count)
                 {
-                    <partial name="_Paging" model="@Model.Paging" />
+                    <partial name="_Paging" model="@Model.SearchResults.Paging" />
                 }
             }
-        </div>
+            else
+            {
+                <p class="govuk-body">
+                    We didn't find any results for '@Model.SearchResults.Paging.SearchTerm'. Try searching again.
+                </p>
+            }
+        }
     </div>
+    <div class="govuk-grid-column-one-third">
 
-</main>
+        <aside class="app-related-items" role="complementary">
+            <h2 class="govuk-heading-s" id="subsection-title">
+                Related content
+            </h2>
+            <nav role="navigation" aria-labelledby="subsection-title">
+                <ul class="govuk-list govuk-!-font-size-16">
+                    <li>
+                        <a class="govuk-link--no-visited-state" href="https://www.gov.uk/get-help-insolvency-service">
+                            Get help from the Insolvency Service
+                        </a>
+                    </li>
+                    <li>
+                        <a class="govuk-link--no-visited-state" href="https://www.gov.uk/browse/tax/court-claims-debt-bankruptcy">
+                            Find out more about bankruptcy and insolvency
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
+
+    </div>
+</div>

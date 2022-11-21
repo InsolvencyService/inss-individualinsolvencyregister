@@ -1,4 +1,5 @@
-﻿using INSS.EIIR.Models.SearchModels;
+using INSS.EIIR.Models.CaseModels;
+using INSS.EIIR.Models.SearchModels;
 using Microsoft.EntityFrameworkCore;
 
 namespace INSS.EIIR.Data.Models;
@@ -37,6 +38,7 @@ public partial class EIIRContext : DbContext
     public virtual DbSet<CiSelection> CiSelections { get; set; } = null!;
     public virtual DbSet<CiSelectionDecode> CiSelectionDecodes { get; set; } = null!;
     public virtual DbSet<CiTrade> CiTrades { get; set; } = null!;
+    public virtual DbSet<CiCaseFeedback> CiCaseFeedback { get; set; } = null!;
     public virtual DbSet<EiirSnapshotTable> EiirSnapshotTables { get; set; } = null!;
     public virtual DbSet<EiirSnapshotTablepreviousDay> EiirSnapshotTablepreviousDays { get; set; } = null!;
     public virtual DbSet<ExtractAvailability> ExtractAvailabilities { get; set; } = null!;
@@ -58,6 +60,7 @@ public partial class EIIRContext : DbContext
     public virtual DbSet<WebMessage> WebMessages { get; set; } = null!;
 
     public virtual DbSet<SearchResult> SearchResults { get; set; } = null!;
+    public virtual DbSet<CaseResult> CaseResults { get; set; } = null!;
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
@@ -1580,6 +1583,43 @@ public partial class EIIRContext : DbContext
                 .HasColumnName("trading_name");
         });
 
+        modelBuilder.Entity<CiCaseFeedback>(entity =>
+        {
+            entity.HasKey(e => e.FeedbackId);
+
+            entity.ToTable("CI_Case_Feedback");            
+
+            entity.HasIndex(e => e.Viewed, "ci_case_feedback_viewed");
+
+            entity.Property(e => e.FeedbackDate).HasColumnName("FeedbackDate");
+
+            entity.Property(e => e.CaseId).HasColumnName("CaseId");
+
+            entity.Property(e => e.Message)
+                .HasMaxLength(4000)
+                .IsUnicode(false)
+                .HasColumnName("Message");
+
+            entity.Property(e => e.ReporterFullname)
+                .HasMaxLength(255)
+                .IsUnicode(false)
+                .HasColumnName("ReporterFullname");
+
+            entity.Property(e => e.ReporterEmailAddress)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("ReporterEmailAddress");
+
+            entity.Property(e => e.ReporterOrganisation)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("ReporterOrganisation");
+
+            entity.Property(e => e.Viewed).HasColumnName("Viewed");
+
+            entity.Property(e => e.ViewedDate).HasColumnName("ViewedDate").IsRequired(false);
+        });
+
         modelBuilder.Entity<EiirSnapshotTable>(entity =>
         {
             entity.HasNoKey();
@@ -2645,10 +2685,6 @@ public partial class EIIRContext : DbContext
         modelBuilder.Entity<SearchResult>(entity =>
         {
             entity.HasNoKey();
-
-            entity.Property(e => e.DateOfBirth).HasColumnName("Date of Birth");
-
-            entity.Property(e => e.DateOfOrder).HasColumnName("Date of Order");
         });
 
         OnModelCreatingPartial(modelBuilder);

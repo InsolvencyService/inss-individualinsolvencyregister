@@ -4,6 +4,7 @@ using INSS.EIIR.Interfaces.DataAccess;
 using INSS.EIIR.Models.SubscriberModels;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 
 namespace INSS.EIIR.DataAccess;
 
@@ -25,22 +26,24 @@ public class SubscriberRepository : ISubscriberRepository
         List<Subscriber> subscribers = new();
 
         var results = await (from sa in _context.SubscriberAccounts
-                                orderby sa.SubscriberId
-                                join apps in _context.SubscriberApplications
-                                on new { Id = sa.SubscriberId } equals new { Id = apps.SubscriberId.ToString() }
-                                select new { SubscriberAccounts = sa, SubscriberApplications = apps }).ToListAsync();
+                                orderby sa.SubscribedTo descending,
+                                        sa.OrganisationName
+                                    join apps in _context.SubscriberApplications
+                                    on new { Id = sa.SubscriberId } equals new { Id = apps.SubscriberId.ToString() }
+                                    select new { SubscriberAccounts = sa, SubscriberApplications = apps }).ToListAsync();
 
         var contacts = await _context.SubscriberContacts.ToListAsync();
                 
         results.ToList().ForEach(s =>
         {
-            subscribers.Add(_mapper.Map<SubscriberAccount, Subscriber>(s.SubscriberAccounts));
-            subscribers.ToList().ForEach(x =>
-            {
-                var subContacts = contacts.Where(u => x.SubscriberId == u.SubscriberId).ToList();
-                x.SubscriberDetails = _mapper.Map<SubscriberApplication, SubscriberDetail>(s.SubscriberApplications);
-                x.EmailContacts = _mapper.Map<IList<SubscriberContact>, IList<SubscriberEmailContact>>(subContacts);
-            });
+            var subContacts = contacts.Where(sc => s.SubscriberAccounts.SubscriberId == sc.SubscriberId).ToList();
+            var subscriber = _mapper.Map<SubscriberAccount, Subscriber>(s.SubscriberAccounts);
+            var application = _mapper.Map<SubscriberApplication, SubscriberDetail>(s.SubscriberApplications);
+            var emailContacts = _mapper.Map<IList<SubscriberContact>, IList<SubscriberEmailContact>>(subContacts);
+
+            subscriber.SubscriberDetails = application;
+            subscriber.EmailContacts = emailContacts;
+            subscribers.Add(subscriber);
         });
 
         return subscribers;
@@ -78,6 +81,22 @@ public class SubscriberRepository : ISubscriberRepository
         await CreateUpdateSubscriber(sql, subscriber, subscriberId);
     }
 
+    public async Task CreateSubscriberDownload(string subscriberId, SubscriberDownloadDetail subscriberDownload)
+    {
+        string sql = "EXEC subscr_download_INS @ExtractID, @SubscriberID, @DownloadIPAddress, @DownloadServer, @ExtractZipDownload";
+
+        List<SqlParameter> sqlParams = new()
+        {
+            new SqlParameter { ParameterName = "@ExtractID", Value = subscriberDownload.ExtractId },
+            new SqlParameter { ParameterName = "@SubscriberID", Value = subscriberId },
+            new SqlParameter { ParameterName = "@DownloadIPAddress", Value = subscriberDownload.IPAddress },
+            new SqlParameter { ParameterName = "@DownloadServer", Value = subscriberDownload.Server },
+            new SqlParameter { ParameterName = "@ExtractZipDownload", Value = subscriberDownload.ExtractZipDownload },
+        };
+
+        await _context.Database.ExecuteSqlRawAsync(sql, sqlParams.ToArray());
+    }
+
     private async Task CreateUpdateSubscriber(string sql, CreateUpdateSubscriber subscriber, string subscriberId = null)
     {
         List<SqlParameter> sqlParams = new();
@@ -102,7 +121,9 @@ public class SubscriberRepository : ISubscriberRepository
         var emailContacts = "";
         if (subscriber.EmailAddresses.Any())
         {
-            emailContacts = string.Join(",", subscriber.EmailAddresses);
+            var emails = subscriber.EmailAddresses.Where(x => !string.IsNullOrWhiteSpace(x));
+            emailContacts = string.Join(",", emails);
+            emailContacts = emailContacts.TrimEnd(',');
         }
 
         if (!string.IsNullOrEmpty(subscriberId)) {
@@ -122,11 +143,21 @@ public class SubscriberRepository : ISubscriberRepository
             new SqlParameter { ParameterName = "@ContactTelephone", Value = subscriber.ContactTelephone },
             new SqlParameter { ParameterName = "@ContactEmail", Value = subscriber.ContactEmail },
             new SqlParameter { ParameterName = "@ApplicationDate", Value = subscriber.ApplicationDate },
-            new SqlParameter { ParameterName = "@SubscribedFrom", Value = subscriber.SubscribedFrom },
-            new SqlParameter { ParameterName = "@SubscribedTo", Value = subscriber.SubscribedTo },
             new SqlParameter { ParameterName = "@AccountActive", Value = subscriber.AccountActive },
             new SqlParameter { ParameterName = "@EmailContacts", Value = emailContacts },
         };
+
+        if (subscriber.SubscribedFrom.HasValue) {
+            sqlParamsCore.Add(new SqlParameter { ParameterName = "@SubscribedFrom", Value = subscriber.SubscribedFrom });
+        } else {
+            sqlParamsCore.Add(new SqlParameter { ParameterName = "@SubscribedFrom", Value = DBNull.Value });
+        }
+
+        if (subscriber.SubscribedTo.HasValue) {
+            sqlParamsCore.Add(new SqlParameter { ParameterName = "@SubscribedTo", Value = subscriber.SubscribedTo });
+        } else {
+            sqlParamsCore.Add(new SqlParameter { ParameterName = "@SubscribedTo", Value = DBNull.Value });
+        }
 
         sqlParams.AddRange(sqlParamsCore);
         await _context.Database.ExecuteSqlRawAsync(sql, sqlParams.ToArray());

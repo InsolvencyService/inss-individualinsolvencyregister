@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="utf-8">
-    <title>@ViewData["Title"] - INSS.EIIR.Web</title>
+    <title>@ViewData["Title"] - Individual Insolvency Register</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
     <meta name="theme-color" content="#0b0c0c">
 
@@ -24,20 +24,18 @@
         document.body.className = ((document.body.className) ? document.body.className + ' js-enabled' : 'js-enabled');
     </script>
 
-    @*<partial name="_CookieBanner" />*@
-
     <a href="#main-content" class="govuk-skip-link" data-module="govuk-skip-link">Skip to main content</a>
 
     <partial name="_Header" />
 
     <div class="govuk-width-container ">
 
-        <partial name="_Banner" />
         @if (IsSectionDefined("Breadcrumb"))
         {
-            @await RenderSectionAsync("Breadcrumb", required: false)        }
+            @await RenderSectionAsync("Breadcrumb", required: false)
+        }
 
-        <main class="govuk-main-wrapper " id="main-content" role="main">
+        <main class="govuk-main-wrapper govuk-main-wrapper--auto-spacing" id="main-content" role="main">
             @RenderBody()
         </main>
     </div>

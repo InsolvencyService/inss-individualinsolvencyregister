@@ -1,0 +1,230 @@
+﻿@model INSS.EIIR.Models.SubscriberModels.Subscriber
+
+@{
+    var header = "Subscriber details";
+    ViewData["Header"] = header;
+    ViewData["Title"] = $"{header}";
+
+    var parameters = string.Empty;
+    if(Model?.SubscriberParameters != null)
+    {
+        parameters = $"/{Model.SubscriberParameters.SubscriberId}/{Model.SubscriberParameters.Page}/{Model.SubscriberParameters.Active}";
+    }
+}
+
+@section AdminBreadcrumb
+{
+    <partial name="~/Areas/Admin/Shared/_AdminBreadcrumb.cshtml" model="Model.Breadcrumbs" />
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <h1 class="govuk-heading-l govuk-!-margin-bottom-8">
+            @header
+        </h1>
+
+        @if (Model != null && Model.SubscribedTo.HasValue)
+            {
+            <div class="govuk-warning-text">
+                <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
+                <strong class="govuk-warning-text__text">
+                    <span class="govuk-warning-text__assistive">Warning</span>
+                    This subscription ends in @Model.SubscribedTo.Value.Subtract(DateTime.Today).Days days.
+                </strong>
+            </div>
+            }
+
+        <h2 class="govuk-heading-m">Company or organisation</h2>
+
+        <dl class="govuk-summary-list govuk-!-margin-bottom-9">
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                    Name
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    @Model.OrganisationName
+                </dd>
+                <dd class="govuk-summary-list__actions">
+                    <a class="govuk-link govuk-link--no-visited-state" href="/admin/subscriber@(parameters)/change-profile#OrganisationName">
+                        Change<span class="govuk-visually-hidden"> name</span>
+                    </a>
+                </dd>
+            </div>
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                    Type
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    @Model.SubscriberDetails.OrganisationType
+                </dd>
+                <dd class="govuk-summary-list__actions">
+                    <a class="govuk-link govuk-link--no-visited-state" href="/admin/subscriber@(parameters)/change-profile#OrganisationType">
+                        Change<span class="govuk-visually-hidden"> type</span>
+                    </a>
+                </dd>
+            </div>
+        </dl>
+
+        <h2 class="govuk-heading-m">Main contact</h2>
+
+        <dl class="govuk-summary-list govuk-!-margin-bottom-9">
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                    Full name
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    @String.Join(' ', Model.SubscriberDetails.ContactForename, Model.SubscriberDetails.ContactSurname)
+                </dd>
+                <dd class="govuk-summary-list__actions">
+                    <a class="govuk-link govuk-link--no-visited-state" href="/admin/subscriber@(parameters)/change-profile#ContactForename">
+                        Change<span class="govuk-visually-hidden"> full name</span>
+                    </a>
+                </dd>
+            </div>
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                    Address
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    @Model.SubscriberDetails.ContactAddress1
+                    <br />
+                    @Model.SubscriberDetails.ContactAddress2
+                    <br />
+                    @Model.SubscriberDetails.ContactCity
+                    <br />
+                    @Model.SubscriberDetails.ContactCountry
+                    <br />
+                    @Model.SubscriberDetails.ContactPostcode
+                </dd>
+                <dd class="govuk-summary-list__actions">
+                    <a class="govuk-link govuk-link--no-visited-state" href="/admin/subscriber@(parameters)/change-profile#ContactAddress1">
+                        Change<span class="govuk-visually-hidden"> address</span>
+                    </a>
+                </dd>
+            </div>
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                    Email address
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    <p class="govuk-body">@Model.SubscriberDetails.ContactEmail</p>
+                </dd>
+                <dd class="govuk-summary-list__actions">
+                    <a class="govuk-link govuk-link--no-visited-state" href="/admin/subscriber@(parameters)/change-profile#ContactEmail">
+                        Change<span class="govuk-visually-hidden"> email address</span>
+                    </a>
+                </dd>
+            </div>
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                    Telephone number
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    <p class="govuk-body">@Model.SubscriberDetails.ContactTelephone</p>
+                </dd>
+                <dd class="govuk-summary-list__actions">
+                    <a class="govuk-link govuk-link--no-visited-state" href="/admin/subscriber@(parameters)/change-profile#ContactTelephone">
+                        Change<span class="govuk-visually-hidden"> telephone</span>
+                    </a>
+                </dd>
+            </div>
+        </dl>
+
+        <h2 class="govuk-heading-m govuk-!-margin-bottom-6">Subscription</h2>
+        <dl class="govuk-summary-list govuk-!-margin-bottom-9">
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                    Application submitted date
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    @Model.SubscriberDetails.ApplicationDate.ToString("dd MMMM yyyy")
+                </dd>
+                <dd class="govuk-summary-list__actions">
+                    <a class="govuk-link govuk-link--no-visited-state" href="/admin/subscriber@(parameters)/change-profile#ApplicationDay">
+                        Change<span class="govuk-visually-hidden"> date</span>
+                    </a>
+                </dd>
+            </div>
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                    Start date
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    @Model.SubscribedFrom?.ToString("dd MMMM yyyy")
+                </dd>
+                <dd class="govuk-summary-list__actions">
+                    <a class="govuk-link govuk-link--no-visited-state" href="/admin/subscriber@(parameters)/change-profile#SubscribedFromDay">
+                        Change<span class="govuk-visually-hidden"> type</span>
+                    </a>
+                </dd>
+            </div>
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                    End date
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    @Model.SubscribedTo?.ToString("dd MMMM yyyy")
+                </dd>
+                <dd class="govuk-summary-list__actions">
+                    <a class="govuk-link govuk-link--no-visited-state" href="/admin/subscriber@(parameters)/change-profile#SubscribedToDay">
+                        Change<span class="govuk-visually-hidden"> website</span>
+                    </a>
+                </dd>
+            </div>
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                    Status
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    @(Model.AccountActive.Equals("Y") ? "Active" : "Inactive")
+                </dd>
+                <dd class="govuk-summary-list__actions">
+                    <a class="govuk-link govuk-link--no-visited-state" href="/admin/subscriber@(parameters)/change-profile#subscription-state">
+                        Change<span class="govuk-visually-hidden"> status</span>
+                    </a>
+                </dd>
+            </div>
+        </dl>
+
+        <h2 class="govuk-heading-m">Data extract emails</h2>
+
+        <p class="govuk-body">The data extract will be sent to these email addresses.</p>
+
+        <div class="govuk-inset-text">
+            There must be at least <strong>1</strong> data extract email address per subscriber, with a maximum of <strong>3</strong>.
+        </div>
+
+        <dl class="govuk-summary-list">
+            @for (var index = 1; index <= 3; index++)
+                {
+                    var emailAddress = Model.EmailContacts.Skip(index - 1).Take(1).Select(x => x.EmailAddress).FirstOrDefault();
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">
+                        Email address @index
+                    </dt>
+                    <dt class="govuk-summary-list__value">
+                        @emailAddress
+                    </dt>
+                    <dd class="govuk-summary-list__actions">
+                        <a class="govuk-link govuk-link--no-visited-state" href="/admin/subscriber@(parameters)/change-profile#EmailAddress@(index)">
+                            @(string.IsNullOrEmpty(emailAddress) ? "Add" : index == 1 ? "Change" : "Change or remove")
+                        </a>
+                    </dd>
+                </div>
+                }
+        </dl>
+
+        <form asp-controller="AdminHome" asp-action="Index" method="post" novalidate="">
+            <br>
+            <br>
+
+            <button class="govuk-button" data-module="govuk-button">
+                Return to admin area
+            </button>
+
+        </form>
+        <p>
+            <a class="govuk-link govuk-link--no-visited-state larger-link" asp-controller="Subscriber" asp-action="Index">View another subscriber</a>
+        </p>
+    </div>
+</div>

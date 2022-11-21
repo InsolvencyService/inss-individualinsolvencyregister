@@ -9,6 +9,8 @@ public class PagingModel
         TotalPages = resultCount == 0 ? 0 : (int)Math.Ceiling((double)resultCount / pageSize);
     }
 
+    public string Parameters { get; set; }
+
     public int ResultCount { get; set; }
 
     public int Page { get; set; }

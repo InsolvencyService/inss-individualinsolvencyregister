@@ -8,6 +8,8 @@
 
   <ItemGroup>
     <None Remove="robots.txt" />
+    <None Remove="Areas\Admin\Views\Subscriber\" />
+    <None Remove="ViewModels\" />
   </ItemGroup>
 
   <ItemGroup>
@@ -17,9 +19,14 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Extensions\" />
+    <Folder Include="ViewModels\" />
     <Folder Include="Properties\" />
+    <Folder Include="Views\SearchResults\" />
     <Folder Include="wwwroot\assets\" />
     <Folder Include="Views\Subscriber\" />
+    <Folder Include="Areas\Admin\Views\Subscriber\" />
+    <Folder Include="ViewModels\" />
   </ItemGroup>
 
   <ItemGroup>
@@ -28,6 +35,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="AspNetCore.HealthChecks.Uris" Version="6.0.3" />
     <PackageReference Include="AspNetCore.SEOHelper" Version="1.0.1" />
     <PackageReference Include="Joonasw.AspNetCore.SecurityHeaders" Version="4.0.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.8" />

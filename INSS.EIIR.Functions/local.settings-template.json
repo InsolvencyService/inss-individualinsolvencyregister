@@ -10,7 +10,6 @@
     "OpenApi__Version": "v3",
     "OpenApi__DocVersion": "1.0.0",
     "OpenApi__DocTitle": "Swagger EIIR Services",
-
     "servicebus__publisherconnectionstring": "__servicebus:publisherconnectionstring__",
     "servicebus__notifyqueue": "__servicebus:notifyqueue__",
     "database__connectionstring": "__database:connectionstring__",
@@ -20,11 +19,14 @@
     "database__updateextractavailableprocedure": "__database:updateextractavailableprocedure__",
     "database__databuffersize": 8000000,
     "notify__subscriberEmailTemplateId": "__notify:subscriberEmailTemplateId__",
+    "notify__connectionstring": "__notify__connectionstring__",
     "servicebussubscriberconnectionstring": "__servicebus:subscriberconnectionstring__",
     "servicebusextractjobqueue": "__servicebus:extractjobqueue__",
-    "blobconnectionstring": "UseDevelopmentStorage=true",
+    "storageconnectionstring": "UseDevelopmentStorage=true",
     "blobcontainername": "__containername__",
     "extractjobserviceurl": "__extractjobserviceurl__",
-    "extractjobtimercron": "__extractjobtimercron__"
+    "extractjobtimercron": "__extractjobtimercron__",
+    "functionapikey": "__functionapikey__",
+    "eiirFuncTaskHub": "__taskhubname__"
   }
 }

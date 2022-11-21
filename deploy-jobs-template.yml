@@ -33,7 +33,7 @@ parameters:
 
 jobs:
   - deployment:
-    displayName: Deploy Search Service function
+    displayName: Deploy Eiir function
     environment: ${{ parameters.environment }}
     strategy:
       runOnce:
@@ -45,7 +45,7 @@ jobs:
                 inputs:
                   azureSubscription: ${{ parameters.azureSubscription }}
                   appType: 'functionApp'
-                  appName: 'func-${{ parameters.location }}-${{ lower(parameters.environment) }}-eiir-searchservice'
+                  appName: 'func-${{ parameters.location }}-${{ lower(parameters.environment) }}-eiir'
                   deployToSlotOrASE: true
                   resourceGroupName: 'rg-${{ parameters.location }}-${{ lower(parameters.environment) }}-eiir'
                   slotName: 'staging'
@@ -53,7 +53,7 @@ jobs:
                   appSettings: >
                     -EIIRIndexUrl "$(EIIRIndexUrl)"
                     -EIIRApiKey "$(EIIRApiKey)"
-                    -blobconnectionstring "$(blobconnectionstring)"
+                    -storageconnectionstring "$(storageconnectionstring)"
                     -blobcontainername "$(blobcontainername)"
                     -extractjobserviceurl "$(extractjobserviceurl)"
                     -extractjobtimercron "$(extractjobtimercron)"
@@ -68,13 +68,16 @@ jobs:
                     -servicebus__notifyqueue "$(servicebus__notifyqueue)"
                     -servicebussubscriberconnectionstring "$(servicebus__subscriberconnectionstring)"
                     -servicebusextractjobqueue "$(servicebusextractjobqueue)"
+                    -functionapikey "$(functionapikey)"
+                    -notify__connectionstring "$(notify__connectionstring)"
+
 
               - task: AzureAppServiceManage@0
                 displayName: Start Staging Slot
                 inputs:
                   azureSubscription: ${{ parameters.azureSubscription }}
                   Action: 'Start Azure App Service'
-                  WebAppName: 'func-${{ parameters.location }}-${{ lower(parameters.environment) }}-eiir-searchservice'
+                  WebAppName: 'func-${{ parameters.location }}-${{ lower(parameters.environment) }}-eiir'
                   ResourceGroupName: 'rg-${{ parameters.location }}-${{ lower(parameters.environment) }}-eiir'              
                   SpecifySlotOrASE: true
                   Slot: 'staging'
@@ -88,7 +91,7 @@ jobs:
                   targetType: 'filePath'
                   filePath: $(System.DefaultWorkingDirectory)\powershell\InvokeRequestWithRetry.ps1
                   arguments: > # Use this to avoid newline characters in multi-line string
-                    -URI "https://func-${{ parameters.location }}-${{ lower(parameters.environment) }}-eiir-searchservice-staging.azurewebsites.net/"
+                    -URI "https://func-${{ parameters.location }}-${{ lower(parameters.environment) }}-eiir-staging.azurewebsites.net/"
                     -Method "${{ parameters.method }}"
                     -Retries ${{ parameters.retries }}
                     -SecondsDelay ${{ parameters.secondsDelay }}
@@ -99,7 +102,7 @@ jobs:
                 inputs:
                   azureSubscription: ${{ parameters.azureSubscription }}
                   Action: 'Swap Slots'
-                  WebAppName: 'func-${{ parameters.location }}-${{ lower(parameters.environment) }}-eiir-searchservice'
+                  WebAppName: 'func-${{ parameters.location }}-${{ lower(parameters.environment) }}-eiir'
                   ResourceGroupName: 'rg-${{ parameters.location }}-${{ lower(parameters.environment) }}-eiir'
                   SourceSlot: 'staging'
                   SwapWithProduction: true
@@ -111,7 +114,7 @@ jobs:
                   targetType: 'filePath'
                   filePath: $(System.DefaultWorkingDirectory)\powershell\InvokeRequestWithRetry.ps1
                   arguments: > # Use this to avoid newline characters in multi-line string
-                    -URI "https://func-${{ parameters.location }}-${{ lower(parameters.environment) }}-eiir-searchservice.azurewebsites.net/"
+                    -URI "https://func-${{ parameters.location }}-${{ lower(parameters.environment) }}-eiir.azurewebsites.net/"
                     -Method "${{ parameters.method }}"
                     -Retries ${{ parameters.retries }}
                     -SecondsDelay ${{ parameters.secondsDelay }}
@@ -122,7 +125,7 @@ jobs:
                 inputs:
                   azureSubscription: ${{ parameters.azureSubscription }}
                   Action: 'Stop Azure App Service'
-                  WebAppName: 'func-${{ parameters.location }}-${{ lower(parameters.environment) }}-eiir-searchservice'
+                  WebAppName: 'func-${{ parameters.location }}-${{ lower(parameters.environment) }}-eiir'
                   ResourceGroupName: 'rg-${{ parameters.location }}-${{ lower(parameters.environment) }}-eiir'              
                   SpecifySlotOrASE: true
                   Slot: 'staging'
@@ -150,8 +153,8 @@ jobs:
                   package: '$(Pipeline.Workspace)/**/${{ parameters.appZipFile }}'
                   appSettings: >
                     -ConnectionStrings__iirwebdbContextConnectionString "$(iirwebdbContextConnectionString)"
-                    -ApiSettings__ApiKey "$(webappApiKey)"
-                    -ApiSettings__BaseUrl "$(webappBaseUrl)"
+                    -ApiSettings__ApiKey "$(functionapikey)"
+                    -ApiSettings__BaseUrl "$(functionBaseUrl)"
 
 
               - task: AzureAppServiceManage@0

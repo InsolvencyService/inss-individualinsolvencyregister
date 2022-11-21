@@ -1,32 +1,47 @@
 ﻿using INSS.EIIR.Models.Breadcrumb;
+using INSS.EIIR.Models.SubscriberModels;
+using INSS.EIIR.Web.ViewModels;
 
 namespace INSS.EIIR.Web.Helper
 {
     public static class BreadcrumbBuilder
     {
-        public static IList<BreadcrumbLink> BuildBreadcrumbs(bool showSearch = false, bool showResults = false, bool showIp = false, int? ipNumber = default, string? ipName = default)
+        public static IList<BreadcrumbLink> BuildBreadcrumbs(
+            bool showSearch = false,
+            bool showSubscriberList = false,
+            bool showSubscriber = false,
+            SubscriberParameters subscriberParameters = null)
         {
-            // add home link in by default
             var breadcrumbs = new List<BreadcrumbLink> {
-                new BreadcrumbLink{ Text = "Home", Href = "/" },
+                new() { Text = "Home", Href = "/" },
             };
 
-            // commendted out the FIP implementation for the moment.
+            if (showSearch)
+            {
+                breadcrumbs.Add(new BreadcrumbLink { Text = "Search", Href = "/search" });
+            }
 
-            //if (showSearch)
-            //{
-            //    breadcrumbs.Add(new BreadcrumbLink { Text = "Search", Href = "/IP/Search" });
-            //}
+            if (showSubscriberList)
+            {
+                var parameters = string.Empty;
+                if (subscriberParameters != null)
+                {
+                    parameters = $"/{subscriberParameters.Page}/{subscriberParameters.Active}";
+                }
 
-            //if (showResults)
-            //{
-            //    breadcrumbs.Add(new BreadcrumbLink { Text = "Search results", Href = "/IP/Results" });
-            //}
+                breadcrumbs.Add(new BreadcrumbLink { Text = "Subscribers", Href = $"/admin/subscribers" + parameters });
+            }
 
-            //if (showIp)
-            //{
-            //    breadcrumbs.Add(new BreadcrumbLink { Text = ipName ?? "Insolvency practitioner", Href = $"/IP/IP/{ipNumber}" });
-            //}
+            if (showSubscriber)
+            {
+                var parameters = string.Empty;
+                if (subscriberParameters != null)
+                {
+                    parameters = $"/{subscriberParameters.SubscriberId}/{subscriberParameters.Page}/{subscriberParameters.Active}";
+                }
+
+                breadcrumbs.Add(new BreadcrumbLink { Text = "Subscriber details", Href = $"/admin/subscriber{parameters}" });
+            }
 
             return breadcrumbs;
         }

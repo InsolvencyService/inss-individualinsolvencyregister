@@ -13,6 +13,7 @@ using INSS.EIIR.Interfaces.AzureSearch;
 using INSS.EIIR.Interfaces.DataAccess;
 using INSS.EIIR.Interfaces.Messaging;
 using INSS.EIIR.Interfaces.Services;
+using INSS.EIIR.Interfaces.Storage;
 using INSS.EIIR.Models.AutoMapperProfiles;
 using INSS.EIIR.Models.Configuration;
 using INSS.EIIR.Services;
@@ -41,12 +42,14 @@ namespace INSS.EIIR.Functions
             builder.Services.AddHttpClient();
             builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
+            builder.Services.AddHealthChecks();
             // Auto Mapper Configurations
             var mapperConfig = new MapperConfiguration(mc =>
             {
                 mc.AddProfile(new IndividualSearchMapper());
                 mc.AddProfile(new ExtractMapper());
                 mc.AddProfile(new SubscriberMapper());
+                mc.AddProfile(new FeedbackMapper());
             });
 
             var mapper = mapperConfig.CreateMapper();
@@ -59,6 +62,14 @@ namespace INSS.EIIR.Functions
             var serviceBusPubConnectionString = Environment.GetEnvironmentVariable("servicebus__publisherconnectionstring");
             if (string.IsNullOrEmpty(serviceBusPubConnectionString))
                 throw new ArgumentNullException("servicebus__publisherconnectionstring is missing");
+
+            var notifyConnectionString = Environment.GetEnvironmentVariable("notify__connectionstring");
+            if (string.IsNullOrEmpty(notifyConnectionString))
+                throw new ArgumentNullException("notify__connectionstring is missing");
+
+            var storageConnectionString = Environment.GetEnvironmentVariable("storageconnectionstring");
+            if (string.IsNullOrEmpty(storageConnectionString))
+                throw new ArgumentNullException("storageconnectionstring is missing");
 
             builder.Services.AddTransient(_ =>
             {
@@ -75,10 +86,6 @@ namespace INSS.EIIR.Functions
 
             builder.Services.AddDbContext<EIIRExtractContext>(options =>
                 options.UseSqlServer(connectionString));
-
-            var blobconnectionstring = Environment.GetEnvironmentVariable("blobconnectionstring");
-            if (string.IsNullOrEmpty(blobconnectionstring))
-                throw new ArgumentNullException("blobconnectionstring is missing");
 
             builder.Services.AddOptions<DatabaseConfig>()
                .Configure<IConfiguration>((settings, configuration) =>
@@ -98,22 +105,35 @@ namespace INSS.EIIR.Functions
 
             builder.Services.AddAzureClients(clientsBuilder =>
             {
+                clientsBuilder.AddTableServiceClient(storageConnectionString);
+
                 clientsBuilder.AddServiceBusClient(serviceBusPubConnectionString)
-                  .WithName("ServiceBusPublisher")
+                  .WithName("ServiceBusPublisher_ExtractJob")
                   .ConfigureOptions(options =>
                   {
                       options.TransportType = ServiceBusTransportType.AmqpWebSockets;
                   });
 
-                clientsBuilder.AddBlobServiceClient(blobconnectionstring);
+                clientsBuilder.AddServiceBusClient(notifyConnectionString)
+                  .WithName("ServiceBusPublisher_Notify")
+                  .ConfigureOptions(options =>
+                  {
+                      options.TransportType = ServiceBusTransportType.AmqpWebSockets;
+                  });
+
+                clientsBuilder.AddBlobServiceClient(storageConnectionString);
             });
+            
 
             builder.Services.AddScoped<IServiceBusMessageSender, ServiceBusMessageSender>();
             builder.Services.AddScoped<IExtractRepository, ExtractRepository>();
             builder.Services.AddScoped<ISubscriberRepository, SubscriberRepository>();
+            builder.Services.AddScoped<IFeedbackRepository, FeedbackRepository>();
+
             builder.Services.AddScoped<IExtractDataProvider, ExtractDataProvider>();
             builder.Services.AddScoped<ISubscriberDataProvider, SubscriberDataProvider>();
             builder.Services.AddScoped<INotificationService, NotificationService>();
+            builder.Services.AddScoped<IFeedbackDataProvider, FeedbackDataProvider>();
 
             builder.Services.AddTransient<IIndexService, IndividualSearchIndexService>();
             builder.Services.AddTransient<IIndividualRepository, IndividualRepository>();
@@ -125,6 +145,11 @@ namespace INSS.EIIR.Functions
 
             builder.Services.AddTransient<ISearchTermFormattingService, SearchTermFormattingService>();
             builder.Services.AddTransient<ISearchCleaningService, SearchCleaningService>();
+            
+            builder.Services.AddScoped<ICaseDataProvider, CaseDataProvider>();
+            builder.Services.AddTransient<ICaseQueryRepository, CaseQueryRepository>();
+            builder.Services.AddScoped(typeof(ITableStorageRepository<>), typeof(AzureTableStorageRepository<>));
+
         }
 
         private static SearchIndexClient CreateSearchServiceClient(string searchServiceUrl, string adminApiKey)

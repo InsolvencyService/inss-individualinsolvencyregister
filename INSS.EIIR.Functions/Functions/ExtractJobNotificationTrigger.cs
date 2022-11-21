@@ -24,13 +24,13 @@ public class ExtractJobNotificationTrigger
     }
 
     [FunctionName("ExtractJobNotificationTrigger")]
-    public async Task Run([BlobTrigger("%blobcontainername%/{name}.zip", Connection = "blobconnectionstring")] byte[] myBlob, string name, Uri uri)
+    public async Task Run([BlobTrigger("%blobcontainername%/{name}.zip", Connection = "storageconnectionstring")] byte[] myBlob, string name, Uri uri)
     {
         string message = $"ExtractJobNotificationTrigger Blob trigger function triggered for blob\n Name: {name}  \n with uri:{uri.AbsoluteUri}";
         _logger.LogInformation(message);
 
         var activeSubscribers = await _subscriberService.GetActiveSubscribersAsync(new PagingParameters() { PageSize = 1000 });
 
-        await _notificationService.ScheduleSubscriberNotificationAsync(activeSubscribers.Subscribers);
+        await _notificationService.ScheduleSubscriberNotificationAsync(name, activeSubscribers.Subscribers);
     }
 }

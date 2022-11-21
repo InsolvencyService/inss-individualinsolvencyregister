@@ -13,8 +13,8 @@ public class SearchDataProvider : ISearchDataProvider
         _repository = repository;
     }
 
-    public IEnumerable<SearchResult> GetIndividualSearchData(string firstName = "", string lastName = "")
+    public IEnumerable<SearchResult> GetIndividualSearchData()
     {
-        return _repository.SearchByName(firstName, lastName);
+        return _repository.BuildEiirSearchIndex();
     }
 }

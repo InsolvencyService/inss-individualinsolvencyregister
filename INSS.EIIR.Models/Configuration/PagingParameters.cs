@@ -1,4 +1,6 @@
-﻿namespace INSS.EIIR.Models.Configuration;
+﻿using Newtonsoft.Json;
+
+namespace INSS.EIIR.Models.Configuration;
 
 public class PagingParameters
 {
@@ -15,6 +17,15 @@ public class PagingParameters
         set
         {
             _pageSize = (value > maxPageSize) ? maxPageSize : value;
+        }
+    }
+
+    [JsonIgnore]
+    public int Skip
+    {
+        get 
+        {
+           return (PageNumber - 1) * PageSize;        
         }
     }
 }
