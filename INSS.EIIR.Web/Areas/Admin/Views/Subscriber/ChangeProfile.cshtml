@@ -47,7 +47,7 @@
 }
 
 @section AdminBreadcrumb
-    {
+{
     <partial name="~/Areas/Admin/Shared/_AdminBreadcrumb.cshtml" model="Model.Breadcrumbs" />
 }
 
@@ -63,6 +63,7 @@
 
             <input type="hidden" asp-for="SubscriberParameters.Page" />
             <input type="hidden" asp-for="SubscriberParameters.Active" />
+            <input type="hidden" asp-for="SubscriberParameters.SubscriberId" />
 
             <fieldset class="govuk-fieldset">
                 <div class="@(organisationNameError ? ValidationClasses.GroupErrorClass : ValidationClasses.GroupClass)">
