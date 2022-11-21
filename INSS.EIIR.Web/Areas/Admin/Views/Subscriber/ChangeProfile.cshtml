@@ -47,7 +47,7 @@
 }
 
 @section AdminBreadcrumb
-{
+    {
     <partial name="~/Areas/Admin/Shared/_AdminBreadcrumb.cshtml" model="Model.Breadcrumbs" />
 }
 
@@ -464,5 +464,16 @@
             </button>
 
         </form>
+
+        <p class="govuk-body">
+            @if(Model.SubscriberId != 0)
+            {
+                <a href="/admin/subscriber/@Model.SubscriberId/@Model.SubscriberParameters.Page/@Model.SubscriberParameters.Active">Cancel</a>
+            }
+            else
+            {
+                <a href="/admin/admin-area">Cancel</a>
+            }
+        </p>
     </div>
 </div>
