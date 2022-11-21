@@ -445,7 +445,7 @@ testRunner.Then("the user is shown error messages stating \"the application subm
             argumentsOfScenario.Add("NumberOfEmailAddresses", numberOfEmailAddresses);
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Update the details for a subscriber with between 1 and 3 data extract emails and " +
                     "verify changes are reflected on the Subscriber Details page", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
-#line 98
+#line 87
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
             bool isScenarioIgnored = default(bool);
@@ -468,29 +468,29 @@ this.ScenarioInitialize(scenarioInfo);
 #line 9
 this.FeatureBackground();
 #line hidden
-#line 99
+#line 88
 testRunner.When("I click on the Subscriber details change link for \"Organisation Name\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
-#line 100
+#line 89
 testRunner.And("I update the subscriber details using the \"Update values\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 101
+#line 90
 testRunner.And(string.Format("I update {0} email addresses on the update subscriber details", numberOfEmailAddresses), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 102
+#line 91
 testRunner.And("I press the Save and return to subscriber button", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 103
+#line 92
 testRunner.Then("the Subscriber Details page for \"Insolvency Service Internal Account\" is displaye" +
                         "d with the updated details for this subscriber", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
-#line 104
+#line 93
 testRunner.And(string.Format("the updated email addressess for {0} are displayed for the subscriber", numberOfEmailAddresses), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 105
+#line 94
 testRunner.When("I click on the Subscriber details change link for \"Organisation Name\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
-#line 106
+#line 95
 testRunner.And("I update the subscriber details using the \"Original values\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
             }
