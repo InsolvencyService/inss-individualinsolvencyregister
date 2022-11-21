@@ -79,13 +79,16 @@ using Microsoft.AspNetCore.Mvc;
         }
 
         [Area(AreaNames.Admin)]
-        [HttpGet(AreaNames.Admin + "/subscriber/add-profile")]
+        [HttpGet(AreaNames.Admin + "/subscriber/add-subscriber")]
         [Authorize(Roles = Role.Admin)]
         public async Task<IActionResult> AddProfile()
         {
             var subscriberProfile = new SubscriberProfile();
             
             subscriberProfile.Breadcrumbs = BreadcrumbBuilder.BuildBreadcrumbs().ToList();
+
+            ViewBag.Header = "Add new subscriber";
+            ViewBag.Title = "Add subscriber";
 
             return View("ChangeProfile", subscriberProfile);
         }
@@ -136,6 +139,9 @@ using Microsoft.AspNetCore.Mvc;
 
             subscriberProfile.Breadcrumbs =
                 BreadcrumbBuilder.BuildBreadcrumbs(showSubscriberList: true, showSubscriber:true, subscriberParameters: parameters).ToList();
+
+            ViewBag.Header = "Update subscriber details";
+            ViewBag.Title = "Update subscriber details";
 
             return View(subscriberProfile);
         }

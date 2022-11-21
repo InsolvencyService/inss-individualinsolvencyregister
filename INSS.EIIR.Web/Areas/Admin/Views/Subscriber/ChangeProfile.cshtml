@@ -2,9 +2,9 @@
 @model INSS.EIIR.Web.ViewModels.SubscriberProfile
 
 @{
-    var header = "Update subscriber details";
+    var header = ViewBag.Header;
     ViewData["Header"] = header;
-    ViewData["Title"] = $"{header}";
+    ViewData["Title"] = ViewBag.Title;
 
     var organisationNameError = ViewContext.ModelState["OrganisationName"] != null && ViewContext.ModelState["OrganisationName"].Errors.Count > 0;
     var organisationTypeError = ViewContext.ModelState["OrganisationType"] != null && ViewContext.ModelState["OrganisationType"].Errors.Count > 0;
