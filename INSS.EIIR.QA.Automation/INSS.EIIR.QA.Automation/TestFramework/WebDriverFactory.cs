@@ -22,7 +22,7 @@ namespace INSS.EIIR.QA.Automation.TestFramework
                 if (_config != null) return _config;
                 var builder = new ConfigurationBuilder()
                     .SetBasePath(Directory.GetCurrentDirectory())
-                    .AddJsonFile("appsettings-template.json", optional: true, reloadOnChange: true);
+                    .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
 
                 _config = builder.Build();
                 return _config;

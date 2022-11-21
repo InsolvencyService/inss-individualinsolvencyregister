@@ -14,6 +14,7 @@ namespace INSS.EIIR.QA.Automation.TestFramework.TestSupport
     {
         public static IWebDriver WebDriver { get; private set; }
 
+
         [Before]
         public static void SetUp()
         {
@@ -32,6 +33,9 @@ namespace INSS.EIIR.QA.Automation.TestFramework.TestSupport
                 default:
                     throw new Exception($"Driver name - {browser} does not match OR this framework does not support the webDriver specified");
             }
+            
+            WebDriver.Manage().Timeouts().ImplicitWait = TimeSpan.FromMilliseconds(10);
+            WebDriver.Navigate().GoToUrl(Constants.StartPageUrl);
         }
 
         [After]

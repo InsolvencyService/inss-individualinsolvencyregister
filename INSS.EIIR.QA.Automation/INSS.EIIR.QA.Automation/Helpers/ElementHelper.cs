@@ -67,6 +67,7 @@ namespace INSS.EIIR.QA.Automation.Helpers
         {
             WebDriver.FindElement(locator).Clear();
             WebDriver.FindElement(locator).SendKeys(text);
+           // WebDriver.FindElement(By.XPath("//*[@id='popup-container']/div[1]/div/a")).Click();
         }
 
         public static void EnterText(IWebElement element, int value)
@@ -204,5 +205,46 @@ namespace INSS.EIIR.QA.Automation.Helpers
             WebDriver.Navigate().Refresh();
         }
 
+        public static void WaitForPageElement(string elementId, int maxWaitTimeInSeconds)
+        {
+            var wait = new WebDriverWait(WebDriver, TimeSpan.FromSeconds(maxWaitTimeInSeconds));
+
+            wait.Until(
+                d =>
+                {
+                    bool result;
+
+                    try
+                    {
+                        result = WebDriver.FindElement(By.Id(elementId)) != null;
+                    }
+                    catch (NoSuchElementException)
+                    {
+                        throw new Exception("Element not found");
+                    }
+
+                    return result;
+                });
+        }
+
+        public static void WaitForPageElementBy(int maxWaitTimeInSeconds, By @by)
+        {
+            var wait = new WebDriverWait(WebDriver, TimeSpan.FromSeconds(maxWaitTimeInSeconds));
+
+            wait.Until(d =>
+            {
+                bool result;
+
+                try
+                {
+                    result = WebDriver.FindElement(@by) != null;
+                }
+                catch (NoSuchElementException)
+                {
+                    throw new Exception("Element not found");
+                }
+                return result;
+            });
+        }
     }
 }

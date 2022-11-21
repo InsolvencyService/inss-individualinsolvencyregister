@@ -8,6 +8,13 @@
     <NoWarn>$(NoWarn);NU1701</NoWarn>
   </PropertyGroup>
   <ItemGroup>
+    <SpecFlowObsoleteCodeBehindFiles Remove="Features\ATU_108_PrivacyPolicyPage - Copy.feature.cs" />
+    <SpecFlowObsoleteCodeBehindFiles Remove="Features\ATU_15_StartPage - Copy.feature.cs" />
+    <SpecFlowObsoleteCodeBehindFiles Remove="Features\ATU_213_ViewSubscriberDetailsPage - Copy.feature.cs" />
+    <SpecFlowObsoleteCodeBehindFiles Remove="Features\ATU_220_AdminLandingPage - Copy.feature.cs" />
+    <SpecFlowObsoleteCodeBehindFiles Remove="Features\ATU_82_ViewSubscriberListPage - Copy.feature.cs" />
+    <SpecFlowObsoleteCodeBehindFiles Remove="Features\ATU_84_UpdateSubscriberDetailsPage - Copy.feature.cs" />
+    <SpecFlowObsoleteCodeBehindFiles Remove="Features\ATU_94_TermsAndConditionsPage - Copy.feature.cs" />
     <SpecFlowObsoleteCodeBehindFiles Remove="Features\ODSLogin - Copy.feature.cs" />
   </ItemGroup>
 	<ItemGroup>
@@ -31,8 +38,33 @@
 		<PackageReference Include="SpecFlow" Version="3.9.50" />
 		<PackageReference Include="SpecFlow.NUnit" Version="3.9.50" />
 		<PackageReference Include="SpecFlow.Tools.MsBuild.Generation" Version="3.9.50" />
+		<PackageReference Include="System.Data.SqlClient" Version="4.8.5" />
 		<Compile Update="EnvironmentData.cs">
 		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Compile>
+		<Compile Update="Features\ATU_186_Admin_Logout.feature.cs">
+		  <DependentUpon>ATU_186_Admin_Logout.feature</DependentUpon>
+		</Compile>
+		<Compile Update="Features\ATU_81_AddNewSubscriberPage.feature.cs">
+		  <DependentUpon>ATU_81_AddNewSubscriberPage.feature</DependentUpon>
+		</Compile>
+		<Compile Update="Features\ATU_84_UpdateSubscriberDetailsPage.feature.cs">
+		  <DependentUpon>ATU_84_UpdateSubscriberDetailsPage.feature</DependentUpon>
+		</Compile>
+		<Compile Update="Features\ATU_220_AdminLandingPage.feature.cs">
+		  <DependentUpon>ATU_220_AdminLandingPage.feature</DependentUpon>
+		</Compile>
+		<Compile Update="Features\ATU_53_AccessibilityStatementPage.feature.cs">
+		  <DependentUpon>ATU_53_AccessibilityStatementPage.feature</DependentUpon>
+		</Compile>
+		<Compile Update="Features\ATU_175_CitizenSearchPage.feature.cs">
+		  <DependentUpon>ATU_175_CitizenSearchPage.feature</DependentUpon>
+		</Compile>
+		<Compile Update="Features\ATU_46_AdminLoginPage.feature.cs">
+		  <DependentUpon>ATU_46_AdminLoginPage.feature</DependentUpon>
+		</Compile>
+		<Compile Update="Features\ATU_94_TermsAndConditionsPage.feature.cs">
+		  <DependentUpon>ATU_94_TermsAndConditionsPage.feature</DependentUpon>
 		</Compile>
 	  <Compile Update="UI Automation\Features\ODSLogin.feature.cs">
 	    <Visible>true</Visible>
@@ -45,6 +77,9 @@
     <Folder Include="Utils\" />
   </ItemGroup>
   <ItemGroup>
+    <None Update="appsettings.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="appsettings-template.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -53,7 +88,47 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <SpecFlowFeatureFiles Update="Features\TechUplift.feature">
+    <SpecFlowFeatureFiles Update="Features\ATU_186_Admin_Logout.feature">
+      <Visible>$(UsingMicrosoftNETSdk)</Visible>
+      <CodeBehindFile>%(RelativeDir)%(Filename).feature$(DefaultLanguageSourceExtension)</CodeBehindFile>
+    </SpecFlowFeatureFiles>
+    <SpecFlowFeatureFiles Update="Features\ATU_81_AddNewSubscriberPage.feature">
+      <Visible>$(UsingMicrosoftNETSdk)</Visible>
+      <CodeBehindFile>%(RelativeDir)%(Filename).feature$(DefaultLanguageSourceExtension)</CodeBehindFile>
+    </SpecFlowFeatureFiles>
+    <SpecFlowFeatureFiles Update="Features\ATU_84_UpdateSubscriberDetailsPage.feature">
+      <Visible>$(UsingMicrosoftNETSdk)</Visible>
+      <CodeBehindFile>%(RelativeDir)%(Filename).feature$(DefaultLanguageSourceExtension)</CodeBehindFile>
+    </SpecFlowFeatureFiles>
+    <SpecFlowFeatureFiles Update="Features\ATU_220_AdminLandingPage.feature">
+      <Visible>$(UsingMicrosoftNETSdk)</Visible>
+      <CodeBehindFile>%(RelativeDir)%(Filename).feature$(DefaultLanguageSourceExtension)</CodeBehindFile>
+    </SpecFlowFeatureFiles>
+    <SpecFlowFeatureFiles Update="Features\ATU_213_ViewSubscriberDetailsPage.feature">
+      <Visible>$(UsingMicrosoftNETSdk)</Visible>
+      <CodeBehindFile>%(RelativeDir)%(Filename).feature$(DefaultLanguageSourceExtension)</CodeBehindFile>
+    </SpecFlowFeatureFiles>
+    <SpecFlowFeatureFiles Update="Features\ATU_82_ViewSubscriberListPage.feature">
+      <Visible>$(UsingMicrosoftNETSdk)</Visible>
+      <CodeBehindFile>%(RelativeDir)%(Filename).feature$(DefaultLanguageSourceExtension)</CodeBehindFile>
+    </SpecFlowFeatureFiles>
+    <SpecFlowFeatureFiles Update="Features\ATU_53_AccessibilityStatementPage.feature">
+      <Visible>$(UsingMicrosoftNETSdk)</Visible>
+      <CodeBehindFile>%(RelativeDir)%(Filename).feature$(DefaultLanguageSourceExtension)</CodeBehindFile>
+    </SpecFlowFeatureFiles>
+    <SpecFlowFeatureFiles Update="Features\ATU_175_CitizenSearchPage.feature">
+      <Visible>$(UsingMicrosoftNETSdk)</Visible>
+      <CodeBehindFile>%(RelativeDir)%(Filename).feature$(DefaultLanguageSourceExtension)</CodeBehindFile>
+    </SpecFlowFeatureFiles>
+    <SpecFlowFeatureFiles Update="Features\ATU_46_AdminLoginPage.feature">
+      <Visible>$(UsingMicrosoftNETSdk)</Visible>
+      <CodeBehindFile>%(RelativeDir)%(Filename).feature$(DefaultLanguageSourceExtension)</CodeBehindFile>
+    </SpecFlowFeatureFiles>
+    <SpecFlowFeatureFiles Update="Features\ATU_15_StartPage.feature">
+      <Visible>$(UsingMicrosoftNETSdk)</Visible>
+      <CodeBehindFile>%(RelativeDir)%(Filename).feature$(DefaultLanguageSourceExtension)</CodeBehindFile>
+    </SpecFlowFeatureFiles>
+    <SpecFlowFeatureFiles Update="Features\ATU_94_TermsAndConditionsPage.feature">
       <Visible>$(UsingMicrosoftNETSdk)</Visible>
       <CodeBehindFile>%(RelativeDir)%(Filename).feature$(DefaultLanguageSourceExtension)</CodeBehindFile>
     </SpecFlowFeatureFiles>
