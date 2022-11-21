@@ -42,7 +42,7 @@ namespace INSS.EIIR.Services
 
             var response = new FeedbackWithPaging
             {
-                Paging = new Models.PagingModel(totalFeedback.Count(), feedbackBody.PagingModel.PageNumber, feedbackBody.PagingModel.PageSize),
+                Paging = new Models.PagingModel(totalFeedback.Count, feedbackBody.PagingModel.PageNumber, feedbackBody.PagingModel.PageSize),
                 Feedback = pagedFeedback
             };
 

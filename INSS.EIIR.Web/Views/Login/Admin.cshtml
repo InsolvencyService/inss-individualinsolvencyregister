@@ -61,27 +61,27 @@
 
             <fieldset class="govuk-fieldset">
                 <div class="@userGroupClass">
+                    <label class="govuk-label" for="username">
+                        Username
+                    </label>
                     @if (userError)
                     {
                         <p id="username-error" class="govuk-error-message">
                             <span>Enter username</span>
                         </p>
                     }
-                    <label class="govuk-label" for="username">
-                        Username
-                    </label>
                     <input class="@userInputClass" id="username" name="username" type="text" asp-for="UserName">
                 </div>
                 <div class="@passwordGroupClass">
+                    <label class="govuk-label" for="password">
+                        Password
+                    </label>
                     @if (passwordError)
                     {
                         <p id="password-error" class="govuk-error-message">
                             <span>Enter password</span>
                         </p>
                     }
-                    <label class="govuk-label" for="password">
-                        Password
-                    </label>
                     <input class="@passwordInputClass" id="password" name="password" type="password" asp-for="Password">
                 </div>
             </fieldset>
