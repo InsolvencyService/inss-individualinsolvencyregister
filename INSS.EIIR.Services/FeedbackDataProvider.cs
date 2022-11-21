@@ -31,11 +31,12 @@ namespace INSS.EIIR.Services
             var organisation = feedbackBody?.Filters?.Organisation;
             var insolvencyType = feedbackBody?.Filters?.InsolvencyType;
 
-            var totalFeedback = await _feedbackRepository.GetFeedbackAsync();
-            var pagedFeedback = totalFeedback
+            var totalFeedback = (await _feedbackRepository.GetFeedbackAsync())
                                     .Where(x => x.Viewed.Equals(viewedStatus) || viewedStatus is null)
                                     .Where(x => x.ReporterOrganisation.Equals(organisation) || string.IsNullOrEmpty(organisation))
-                                    .Where(x => x.InsolvencyType.Equals(insolvencyType) || string.IsNullOrEmpty(insolvencyType))
+                                    .Where(x => x.InsolvencyType.Equals(insolvencyType) || string.IsNullOrEmpty(insolvencyType));
+
+            var pagedFeedback = totalFeedback
                                     .Skip(feedbackBody.PagingModel.Skip)
                                     .Take(feedbackBody.PagingModel.PageSize);
 
