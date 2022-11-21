@@ -1,32 +1,39 @@
+using INSS.EIIR.Interfaces.AzureSearch;
+using Microsoft.Azure.WebJobs;
+using Microsoft.Azure.WebJobs.Extensions.DurableTask;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using INSS.EIIR.Interfaces.AzureSearch;
-using Microsoft.Azure.WebJobs;
-using Microsoft.Extensions.Logging;
 
-namespace INSS.EIIR.Functions.Functions
+namespace INSS.EIIR.Functions.Functions;
+
+public class RebuildIndexes
 {
-    public class RebuildIndexes
+    private readonly IEnumerable<IIndexService> _indexServices;
+    private readonly ILogger<RebuildIndexes> _logger;
+
+    public RebuildIndexes(
+        IEnumerable<IIndexService> indexServices,
+        ILogger<RebuildIndexes> logger)
     {
-        private readonly IEnumerable<IIndexService> _indexServices;
+        _indexServices = indexServices;
+        _logger = logger;
+    }
 
-        public RebuildIndexes(IEnumerable<IIndexService> indexServices)
+    [FunctionName(nameof(RebuildIndexes))]
+    public async Task<string> Run([ActivityTrigger] string name)
+    {
+        var message = $"Eiir RebuildIndexes has been triggered at: {DateTime.Now}";
+        _logger.LogInformation(message);
+
+        foreach (var indexService in _indexServices)
         {
-            _indexServices = indexServices;
+            await indexService.DeleteIndexAsync(_logger);
+            await indexService.CreateIndexAsync(_logger);
+            await indexService.PopulateIndexAsync(_logger);
         }
 
-        [FunctionName("RebuildIndexes")]
-        public async Task Run([TimerTrigger("0 0 6 * * *")] TimerInfo myTimer, ILogger log)
-        {
-            log.LogInformation($"C# Timer trigger function executed at: {DateTime.Now}");
-
-            foreach (var indexService in _indexServices)
-            {
-                await indexService.DeleteIndexAsync(log);
-                await indexService.CreateIndexAsync(log);
-                await indexService.PopulateIndexAsync(log);
-            }
-        }
+        return $"Eiir RebuildIndexes completed successfully at: {DateTime.Now}";
     }
 }

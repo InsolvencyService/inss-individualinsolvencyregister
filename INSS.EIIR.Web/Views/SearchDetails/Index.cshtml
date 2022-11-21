@@ -9,7 +9,7 @@
 <main class="govuk-main-wrapper govuk-main-wrapper--auto-spacing" id="main-content" role="main">
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-      <h1 class="govuk-heading-l"> Case details: @Html.DisplayFor(model => model.indvidualForenames) @Html.DisplayFor(model => model.indvidualSurname) </h1>
+      <h1 class="govuk-heading-l"> Case details: @Html.DisplayFor(model => model.individualForenames) @Html.DisplayFor(model => model.individualSurname) </h1>
       <br>
       <div class="govuk-grid-column-one-third"></div>
     </div>
@@ -27,35 +27,35 @@
             <dl class="govuk-summary-list govuk-summary-list--no-border">
               <div class="govuk-summary-list__row">
                 <dt class="govuk-summary-list__key"> Surname </dt>
-                <dd class="govuk-summary-list__value"> @Html.DisplayFor(model => model.indvidualSurname) </dd>
+                <dd class="govuk-summary-list__value"> @Html.DisplayFor(model => model.individualSurname) </dd>
               </div>
               <div class="govuk-summary-list__row">
                 <dt class="govuk-summary-list__key"> Forename(s) </dt>
-                <dd class="govuk-summary-list__value"> @Html.DisplayFor(model => model.indvidualForenames) </dd>
+                <dd class="govuk-summary-list__value"> @Html.DisplayFor(model => model.individualForenames) </dd>
               </div>
               <div class="govuk-summary-list__row">
                 <dt class="govuk-summary-list__key"> Title </dt>
-                <dd class="govuk-summary-list__value"> @Html.DisplayFor(model => model.indvidualTitle) </dd>
+                <dd class="govuk-summary-list__value"> @Html.DisplayFor(model => model.individualTitle) </dd>
               </div>
               <div class="govuk-summary-list__row">
                 <dt class="govuk-summary-list__key"> Gender </dt>
-                <dd class="govuk-summary-list__value"> @Html.DisplayFor(model => model.indvidualGender) </dd>
+                <dd class="govuk-summary-list__value"> @Html.DisplayFor(model => model.individualGender) </dd>
               </div>
               <div class="govuk-summary-list__row">
                 <dt class="govuk-summary-list__key"> Occupation </dt>
-                <dd class="govuk-summary-list__value"> @Html.DisplayFor(model => model.indvidualOccupation) </dd>
+                <dd class="govuk-summary-list__value"> @Html.DisplayFor(model => model.individualOccupation) </dd>
               </div>
               <div class="govuk-summary-list__row">
                 <dt class="govuk-summary-list__key"> Date of birth </dt>
-                <dd class="govuk-summary-list__value"> @if (@Model.indvidualDOB.HasValue) { @Model.indvidualDOB.Value.ToString("dd MMMM yyyy") } </dd>
+                <dd class="govuk-summary-list__value"> @if (@Model.individualDOB.HasValue) { @Model.individualDOB.Value.ToString("dd MMMM yyyy") } </dd>
               </div>
               <div class="govuk-summary-list__row">
                 <dt class="govuk-summary-list__key"> Last known address </dt>
-                <dd class="govuk-summary-list__value"> @Html.DisplayFor(model => model.indvidualAddress) <br /> @Html.DisplayFor(model => model.indvidualPostcode) </dd>
+                <dd class="govuk-summary-list__value"> @Html.DisplayFor(model => model.individualAddress) <br /> @Html.DisplayFor(model => model.individualPostcode) </dd>
               </div>
               <div class="govuk-summary-list__row">
                 <dt class="govuk-summary-list__key"> This person may also be known as </dt>
-                <dd class="govuk-summary-list__value"> @Html.DisplayFor(model => model.indvidualAlias) </dd>
+                <dd class="govuk-summary-list__value"> @Html.DisplayFor(model => model.individualAlias) </dd>
               </div>
             </dl>
             <div class="govuk-inset-text"> The individual details may have changed since the Court Order but might not reflect the person's current address or occupation. </div>

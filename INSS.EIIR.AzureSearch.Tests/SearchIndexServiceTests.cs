@@ -23,7 +23,7 @@ namespace INSS.EIIR.AzureSearch.Tests
 
             var dataProviderMock = new Mock<ISearchDataProvider>();
             dataProviderMock
-                .Setup(m => m.GetIndividualSearchData(string.Empty, string.Empty))
+                .Setup(m => m.GetIndividualSearchData())
                 .Returns(rawData);
 
             var mapperMock = new Mock<IMapper>();
@@ -48,7 +48,7 @@ namespace INSS.EIIR.AzureSearch.Tests
             await service.PopulateIndexAsync(Mock.Of<ILogger>());
 
             //Assert
-            dataProviderMock.Verify(m => m.GetIndividualSearchData(string.Empty, string.Empty), Times.Once);
+            dataProviderMock.Verify(m => m.GetIndividualSearchData(), Times.Once);
             mapperMock.Verify(m => m.Map<IEnumerable<SearchResult>, IEnumerable<IndividualSearch>>(rawData), Times.Once);
 
             indexClientMock.Verify(m => m.GetSearchClient("individual_search"), Times.Once);
@@ -70,8 +70,8 @@ namespace INSS.EIIR.AzureSearch.Tests
             {
                 new()
                 {
-                    FirstName = "Bill",
-                    Surname = "Smith"
+                    individualForenames = "Bill",
+                    individualSurname = "Smith"
                 }
             };
         }
