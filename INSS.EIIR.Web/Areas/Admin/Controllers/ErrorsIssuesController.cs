@@ -21,29 +21,44 @@ namespace INSS.EIIR.Web.Areas.Admin.Controllers
             _errorIssuesService = errorIssuesService;
         }
 
-        [HttpGet("/errors-or-issues")]
-        public async Task<IActionResult> Index(int page = 1, string insolvencyType = "", string organisation = "", string status = "All")
+        [HttpGet(AreaNames.Admin + "/errors-or-issues/{page?}/{insolvencyType?}/{organisation?}/{status?}")]
+        public async Task<IActionResult> Index(int page = 1, string insolvencyType = "", int organisation = 0, int status = 0)
         {
-            var feedback = new FeedbackViewModel();
+            var feedback = new FeedbackViewModel
+            {
+                InsolvencyTypeFilter = insolvencyType,
+                OrganisationFilter = organisation,
+                StatusFilter = status
+            };
 
             var parameters = CreateParameters(page, insolvencyType, organisation, status);
 
             feedback.FeedbackWithPaging = await _errorIssuesService.GetFeedbackAsync(parameters);
+            feedback.FeedbackWithPaging.Paging.RootUrl = "admin/errors-or-issues";
+            feedback.FeedbackWithPaging.Paging.Parameters = $"{insolvencyType}/{organisation}/{status}";
 
             feedback.Breadcrumbs = BreadcrumbBuilder.BuildBreadcrumbs(isAdmin: true).ToList();
 
             return View(feedback);
         }
 
-        private static FeedbackBody CreateParameters(int page, string insolvencyType, string organisation, string status)
+        [HttpGet(AreaNames.Admin + "/errors-or-issues/update-status/{feedbackId}/{viewed}")]
+        public async Task<IActionResult> UpdateStatus(int feedbackId, bool viewed)
+        {
+            await _errorIssuesService.UpdateStatusAsync(feedbackId, viewed);
+
+            return RedirectToAction("Index");
+        }
+
+        private static FeedbackBody CreateParameters(int page, string insolvencyType, int organisation, int status)
         {
             var parameters = new FeedbackBody
             {
                 Filters = new FeedbackFilterModel
                 {
-                    InsolvencyType = insolvencyType,
-                    Organisation = organisation,
-                    Status = status
+                    InsolvencyType = insolvencyType == "A" ? string.Empty : insolvencyType,
+                    Organisation = organisation == 0 ? string.Empty : FeedbackFilters.OrganisationFilters[organisation],
+                    Status = status == 1 ? "Unviewed" : FeedbackFilters.StatusFilters[status]
                 },
                 PagingModel = new PagingParameters
                 {

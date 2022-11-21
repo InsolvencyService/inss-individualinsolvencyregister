@@ -1,4 +1,5 @@
-﻿@model INSS.EIIR.Web.ViewModels.FeedbackViewModel
+﻿@using INSS.EIIR.Web.Constants
+@model INSS.EIIR.Web.ViewModels.FeedbackViewModel
 
 @{
     var header = "Errors or issues";
@@ -28,16 +29,17 @@
                 Organisation
             </label>
             <select class="govuk-select" id="organisation" name="organisation">
-                <option value="" selected="">All</option>
-                <option value="Member of the public">Member of the public</option>
-                <option value="Credit reference agency">Credit reference agency</option>
-                <option value="Credit card issuer">Credit card issuer</option>
-                <option value="Bank or building society">Bank or building society</option>
-                <option value="Mortgage provider">Mortgage provider</option>
-                <option value="Government department">Government department</option>
-                <option value="Financial services">Financial services</option>
-                <option value="Debt recovery agency">Debt recovery agents</option>
-                <option value="Other">Other</option>
+                @foreach (var filter in FeedbackFilters.OrganisationFilters)
+                {
+                    @if (filter.Key == Model.OrganisationFilter)
+                    {
+                        <option value="@filter.Key" selected="">@filter.Value</option>
+                    }
+                    else
+                    {
+                        <option value="@filter.Key">@filter.Value</option>
+                    }
+                }
             </select>
         </div>
 
@@ -46,10 +48,17 @@
                 Type
             </label>
             <select class="govuk-select" id="type" name="type">
-                <option value="" selected="">All</option>
-                <option value="B">Bankruptcies</option>
-                <option value="D">Debt relief orders</option>
-                <option value="I">IVAs</option>
+                @foreach (var filter in FeedbackFilters.InsolvencyTypeFilters)
+                {
+                    @if (filter.Key == Model.InsolvencyTypeFilter)
+                    {
+                        <option value="@filter.Key" selected="">@filter.Value</option>
+                    }
+                    else
+                    {
+                        <option value="@filter.Key">@filter.Value</option>
+                    }
+                }
             </select>
         </div>
 
@@ -58,9 +67,17 @@
                 Status
             </label>
             <select class="govuk-select" id="status" name="status">
-                <option value="All" selected="">All</option>
-                <option value="Unviewed">Not viewed</option>
-                <option value="Viewed">Viewed</option>
+                @foreach (var filter in FeedbackFilters.StatusFilters)
+                {
+                    @if (filter.Key == Model.StatusFilter)
+                    {
+                        <option value="@filter.Key" selected="">@filter.Value</option>
+                    }
+                    else
+                    {
+                        <option value="@filter.Key">@filter.Value</option>
+                    }
+                }
             </select>
         </div>
 
@@ -69,10 +86,11 @@
     @if (Model?.FeedbackWithPaging?.Feedback != null && Model.FeedbackWithPaging.Feedback.Any())
     {
         <div class="govuk-grid-column-two-thirds">
-
+            
             @foreach (var feedback in Model.FeedbackWithPaging.Feedback)
             {
                 var viewed = feedback.Viewed ? "viewed" : "not viewed";
+                var change = feedback.Viewed ? "not viewed" : "viewed";
 
                 var insolvencyType = feedback.InsolvencyType switch
                 {
@@ -95,8 +113,8 @@
                             <strong class="govuk-tag govuk-tag--grey" id="report-status">@viewed</strong>
                         </dd>
                         <dd class="govuk-summary-list__actions">
-                            <a href="">
-                                Change to viewed
+                            <a href="/admin/errors-or-issues/update-status/@feedback.FeedbackId/@(!feedback.Viewed)">
+                                Change to @change
                             </a>
                         </dd>
                     </div>
@@ -164,9 +182,7 @@
                             Report
                         </label>
                     </h3>
-                    <textarea class="govuk-textarea" id="more-detail" name="more-detail" rows="5" aria-describedby="more-detail-hint">
-                        @feedback.Message.Trim()
-                    </textarea>
+                    <textarea class="govuk-textarea" id="more-detail" name="more-detail" rows="5" aria-describedby="more-detail-hint">@feedback.Message.Trim()</textarea>
                 </div>
 
                 <hr class="govuk-section-break govuk-section-break--visible">
@@ -181,6 +197,6 @@
     }
 </div>
 
-@*@section PageScripts {
-    <script src="~/js/subscriberList.js" asp-append-version="true" type="module"></script>
-}*@
+@section PageScripts {
+    <script src="~/js/feedbackList.js" asp-append-version="true" type="module"></script>
+}

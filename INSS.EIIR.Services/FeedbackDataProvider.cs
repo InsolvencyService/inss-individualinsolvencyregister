@@ -31,7 +31,7 @@ namespace INSS.EIIR.Services
             var organisation = feedbackBody?.Filters?.Organisation;
             var insolvencyType = feedbackBody?.Filters?.InsolvencyType;
 
-            var totalFeedback = await _feedbackRepository.GetFeedbackAsync();
+            var totalFeedback = (await _feedbackRepository.GetFeedbackAsync()).ToList();
             var pagedFeedback = totalFeedback
                                     .Where(x => x.Viewed.Equals(viewedStatus) || viewedStatus is null)
                                     .Where(x => x.ReporterOrganisation.Equals(organisation) || string.IsNullOrEmpty(organisation))
@@ -41,7 +41,7 @@ namespace INSS.EIIR.Services
 
             var response = new FeedbackWithPaging
             {
-                Paging = new Models.PagingModel(totalFeedback.Count(), feedbackBody.PagingModel.PageNumber, feedbackBody.PagingModel.PageSize),
+                Paging = new Models.PagingModel(totalFeedback.Count, feedbackBody.PagingModel.PageNumber, feedbackBody.PagingModel.PageSize),
                 Feedback = pagedFeedback
             };
 
