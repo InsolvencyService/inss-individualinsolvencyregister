@@ -108,6 +108,60 @@ stages:
         deployWebapp: ${{ parameters.deployWebapp }}
         deployfuncapp: ${{ parameters.deployfuncapp }}
 
+- stage: RunIntTest
+  displayName: 'Execute Int Tests'
+  condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
+  variables:
+    - group: EIIR-int-test-Sit
+  jobs:
+  - job: A
+    steps:
+      - ${{ if eq(parameters.RunIntTest, true) }}:
+
+        - task: DownloadPipelineArtifact@2
+          inputs:
+            artifact: 'INSS.EIIR'
+            patterns: '**/*QA*.zip'
+
+        - task: ExtractFiles@1
+          inputs:
+            archiveFilePatterns: '$(Pipeline.Workspace)/*QA*.zip'
+            destinationFolder: $(Pipeline.Workspace)
+            cleanDestinationFolder: false
+            overwriteExistingFiles: true
+
+        - task: qetza.replacetokens.replacetokens-task.replacetokens@3
+          displayName: Replace Tokens
+          inputs:
+            targetFiles: |
+              $(Pipeline.Workspace)/appsettings-template.json
+            encoding: 'auto'
+            verbosity: 'detailed'
+            actionOnMissing: 'log warning'
+            keepToken: false
+            tokenPrefix: '__'
+            tokenSuffix: '__'
+            useLegacyPattern: false
+
+        - task: VSTest@2
+          displayName: Execute Tests
+          inputs:
+            testSelector: 'testAssemblies'
+            testAssemblyVer2: |
+              INSS.EIIR.QA.Automation.dll
+            searchFolder: '$(Pipeline.Workspace)'
+            codeCoverageEnabled: true
+            platform: '$(buildPlatform)'
+            configuration: '$(buildConfiguration)'
+          continueOnError: true
+
+        - task: PublishTestResults@2
+          displayName: 'Publish Test Results'
+          inputs:
+            testResultsFormat: VSTest
+            testResultsFiles: '*.trx'
+            searchFolder: '$(Agent.TempDirectory)\TestResults'
+
 - stage: DeployPreProd
   displayName: 'Deploy to PreProd'
   condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
