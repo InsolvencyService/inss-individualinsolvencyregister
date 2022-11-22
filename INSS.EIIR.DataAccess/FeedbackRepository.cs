@@ -25,8 +25,10 @@ namespace INSS.EIIR.DataAccess
             var results = await (from cf in _context.CiCaseFeedback
                                  orderby cf.FeedbackDate descending
                                  join c in _context.CiCases
-                                 on cf.CaseId equals c.CaseNo
-                                 select new { cf, c.InsolvencyType, c.CaseName, c.InsolvencyDate }).ToListAsync();
+                                    on cf.CaseId equals c.CaseNo
+                                 join ci in _context.CiIndividuals
+                                    on cf.CaseId equals ci.CaseNo
+                                 select new { cf, c.InsolvencyType, c.CaseName, c.InsolvencyDate, ci.IndivNo }).ToListAsync();
 
             results.ToList().ForEach(s =>
             {
@@ -34,6 +36,7 @@ namespace INSS.EIIR.DataAccess
                 caseFB.InsolvencyType = s.InsolvencyType;
                 caseFB.CaseName = s.CaseName;
                 caseFB.OrderDate = s.InsolvencyDate;
+                caseFB.IndivNo = s.IndivNo;
                 caseFeedback.Add(caseFB); 
             });
 
