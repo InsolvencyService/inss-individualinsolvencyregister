@@ -117,7 +117,7 @@ stages:
   variables:
     - group: EIIR-int-test-Sit
   jobs:
-  - job: Run Test
+  - job: RunTest
     steps:
       - ${{ if eq(parameters.RunIntTest, true) }}:
 
