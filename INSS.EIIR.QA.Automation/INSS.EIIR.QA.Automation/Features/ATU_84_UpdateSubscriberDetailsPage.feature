@@ -13,7 +13,7 @@ And the Active check box is selected by default
 And I click the link for subscriber "Insolvency Service Internal Account"
 
 @UpdateSubscriberDetails @Regression
-Scenario: Verify the breadcrumb navigation on the Update subscriber page
+Scenario: ATU_84 Verify the breadcrumb navigation on the Update subscriber page
 When I click on the Subscriber details change link for "Organisation Name"
 And I click the Subscriber details breadcrumb on the Update subscriber details page
 Then the Subscriber Details page for "Insolvency Service Internal Account" is displayed with details for this subscriber
@@ -26,12 +26,12 @@ Then the Admin landing page will be displayed and the URL, page title and H1 wil
 
 
 @UpdateSubscriberDetails @Regression
-Scenario: Verify the Update subscriber details page URL, page title
+Scenario: ATU_84 Verify the Update subscriber details page URL, page title
 When I click on the Subscriber details change link for "Organisation Name"
 Then the Update Subscriber Details page is displayed with the expected URL, page title and header
 
 @UpdateSubscriberDetails @Regression
-Scenario: Verify the error messages for the text entry fields
+Scenario: ATU_84 Verify the error messages for the text entry fields
 When I click on the Subscriber details change link for "Organisation Name"
 And I clear the <TextField> field
 And I press the Save and return to subscriber button 
@@ -51,7 +51,7 @@ Examples:
 
 
 @UpdateSubscriberDetails @Regression
-Scenario: Verify the incorretc postcode format error message
+Scenario: ATU_84 Verify the incorretc postcode format error message
 When I click on the Subscriber details change link for "Organisation Name"
 And I clear the <TextField> field
 And I enter the following invalid <Postcode>
@@ -67,7 +67,7 @@ Examples:
 
 
 @UpdateSubscriberDetails @Regression
-Scenario: Verify the error messages for Application submitted date
+Scenario: ATU_84 Verify the error messages for Application submitted date
 When I click on the Subscriber details change link for "Organisation Name"
 Then the Update Subscriber Details page is displayed with the expected URL, page title and header
 And I update the Application Date to have a blank Day, Month and Year 
@@ -84,7 +84,7 @@ And I press the Save and return to subscriber button
 Then the user is shown error messages stating "the application submitted date YEAR entered must be between 1900 and 3000"
 
 @UpdateSubscriberDetails @Regression
-Scenario: Update the details for a subscriber with between 1 and 3 data extract emails and verify changes are reflected on the Subscriber Details page 
+Scenario: ATU_84 Update the details for a subscriber with between 1 and 3 data extract emails and verify changes are reflected on the Subscriber Details page 
 When I click on the Subscriber details change link for "Organisation Name"
 And I update the subscriber details using the "Update values"
 And I update <NumberOfEmailAddresses> email addresses on the update subscriber details

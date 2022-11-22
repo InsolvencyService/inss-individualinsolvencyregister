@@ -85,14 +85,14 @@ testRunner.Given("I navigate to the Terms and conditions page", ((string)(null))
         }
         
         [NUnit.Framework.TestAttribute()]
-        [NUnit.Framework.DescriptionAttribute("Verify the Terms and conditions page")]
+        [NUnit.Framework.DescriptionAttribute("ATU_94 Verify the Terms and conditions page")]
         [NUnit.Framework.CategoryAttribute("TermsAndConditions")]
-        public virtual void VerifyTheTermsAndConditionsPage()
+        public virtual void ATU_94VerifyTheTermsAndConditionsPage()
         {
             string[] tagsOfScenario = new string[] {
                     "TermsAndConditions"};
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Verify the Terms and conditions page", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("ATU_94 Verify the Terms and conditions page", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
 #line 12
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
@@ -124,14 +124,14 @@ this.FeatureBackground();
         }
         
         [NUnit.Framework.TestAttribute()]
-        [NUnit.Framework.DescriptionAttribute("Verify the breadcrumb navigation on the T&C page")]
+        [NUnit.Framework.DescriptionAttribute("ATU_94 Verify the breadcrumb navigation on the T&C page")]
         [NUnit.Framework.CategoryAttribute("TermsAndConditions")]
-        public virtual void VerifyTheBreadcrumbNavigationOnTheTCPage()
+        public virtual void ATU_94VerifyTheBreadcrumbNavigationOnTheTCPage()
         {
             string[] tagsOfScenario = new string[] {
                     "TermsAndConditions"};
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Verify the breadcrumb navigation on the T&C page", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("ATU_94 Verify the breadcrumb navigation on the T&C page", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
 #line 16
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
@@ -166,14 +166,14 @@ this.FeatureBackground();
         }
         
         [NUnit.Framework.TestAttribute()]
-        [NUnit.Framework.DescriptionAttribute("Verify the navigation of the tell the Insolvency Service link")]
+        [NUnit.Framework.DescriptionAttribute("ATU_94 Verify the navigation of the tell the Insolvency Service link")]
         [NUnit.Framework.CategoryAttribute("TermsAndConditions")]
-        public virtual void VerifyTheNavigationOfTheTellTheInsolvencyServiceLink()
+        public virtual void ATU_94VerifyTheNavigationOfTheTellTheInsolvencyServiceLink()
         {
             string[] tagsOfScenario = new string[] {
                     "TermsAndConditions"};
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Verify the navigation of the tell the Insolvency Service link", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("ATU_94 Verify the navigation of the tell the Insolvency Service link", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
 #line 21
 this.ScenarioInitialize(scenarioInfo);
 #line hidden

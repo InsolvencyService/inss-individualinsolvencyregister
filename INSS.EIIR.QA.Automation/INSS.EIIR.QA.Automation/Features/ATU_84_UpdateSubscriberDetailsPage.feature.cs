@@ -95,16 +95,16 @@ testRunner.And("I click the link for subscriber \"Insolvency Service Internal Ac
         }
         
         [NUnit.Framework.TestAttribute()]
-        [NUnit.Framework.DescriptionAttribute("Verify the breadcrumb navigation on the Update subscriber page")]
+        [NUnit.Framework.DescriptionAttribute("ATU_84 Verify the breadcrumb navigation on the Update subscriber page")]
         [NUnit.Framework.CategoryAttribute("UpdateSubscriberDetails")]
         [NUnit.Framework.CategoryAttribute("Regression")]
-        public virtual void VerifyTheBreadcrumbNavigationOnTheUpdateSubscriberPage()
+        public virtual void ATU_84VerifyTheBreadcrumbNavigationOnTheUpdateSubscriberPage()
         {
             string[] tagsOfScenario = new string[] {
                     "UpdateSubscriberDetails",
                     "Regression"};
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Verify the breadcrumb navigation on the Update subscriber page", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("ATU_84 Verify the breadcrumb navigation on the Update subscriber page", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
 #line 16
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
@@ -163,16 +163,16 @@ testRunner.Then("the Admin landing page will be displayed and the URL, page titl
         }
         
         [NUnit.Framework.TestAttribute()]
-        [NUnit.Framework.DescriptionAttribute("Verify the Update subscriber details page URL, page title")]
+        [NUnit.Framework.DescriptionAttribute("ATU_84 Verify the Update subscriber details page URL, page title")]
         [NUnit.Framework.CategoryAttribute("UpdateSubscriberDetails")]
         [NUnit.Framework.CategoryAttribute("Regression")]
-        public virtual void VerifyTheUpdateSubscriberDetailsPageURLPageTitle()
+        public virtual void ATU_84VerifyTheUpdateSubscriberDetailsPageURLPageTitle()
         {
             string[] tagsOfScenario = new string[] {
                     "UpdateSubscriberDetails",
                     "Regression"};
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Verify the Update subscriber details page URL, page title", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("ATU_84 Verify the Update subscriber details page URL, page title", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
 #line 29
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
@@ -208,7 +208,7 @@ testRunner.Then("the Update Subscriber Details page is displayed with the expect
         }
         
         [NUnit.Framework.TestAttribute()]
-        [NUnit.Framework.DescriptionAttribute("Verify the error messages for the text entry fields")]
+        [NUnit.Framework.DescriptionAttribute("ATU_84 Verify the error messages for the text entry fields")]
         [NUnit.Framework.CategoryAttribute("UpdateSubscriberDetails")]
         [NUnit.Framework.CategoryAttribute("Regression")]
         [NUnit.Framework.TestCaseAttribute("\"Organisation Name\"", "\"Enter the name of the company or organisation\"", null)]
@@ -220,7 +220,7 @@ testRunner.Then("the Update Subscriber Details page is displayed with the expect
         [NUnit.Framework.TestCaseAttribute("\"Email address\"", "\"Enter the contact email address\"", null)]
         [NUnit.Framework.TestCaseAttribute("\"Telephone number\"", "\"Enter the telephone number\"", null)]
         [NUnit.Framework.TestCaseAttribute("\"Email address 1\"", "\"Enter data extract email address 1\"", null)]
-        public virtual void VerifyTheErrorMessagesForTheTextEntryFields(string textField, string errorMessage, string[] exampleTags)
+        public virtual void ATU_84VerifyTheErrorMessagesForTheTextEntryFields(string textField, string errorMessage, string[] exampleTags)
         {
             string[] @__tags = new string[] {
                     "UpdateSubscriberDetails",
@@ -233,7 +233,7 @@ testRunner.Then("the Update Subscriber Details page is displayed with the expect
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
             argumentsOfScenario.Add("TextField", textField);
             argumentsOfScenario.Add("ErrorMessage", errorMessage);
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Verify the error messages for the text entry fields", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("ATU_84 Verify the error messages for the text entry fields", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
 #line 34
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
@@ -274,13 +274,13 @@ testRunner.Then(string.Format("the user is shown the following error message {0}
         }
         
         [NUnit.Framework.TestAttribute()]
-        [NUnit.Framework.DescriptionAttribute("Verify the incorretc postcode format error message")]
+        [NUnit.Framework.DescriptionAttribute("ATU_84 Verify the incorretc postcode format error message")]
         [NUnit.Framework.CategoryAttribute("UpdateSubscriberDetails")]
         [NUnit.Framework.CategoryAttribute("Regression")]
         [NUnit.Framework.TestCaseAttribute("\"Postcode\"", "\"B20\"", "\"Enter the postcode in the correct format\"", null)]
         [NUnit.Framework.TestCaseAttribute("\"Postcode\"", "\"B\"", "\"Enter the postcode in the correct format\"", null)]
         [NUnit.Framework.TestCaseAttribute("\"Postcode\"", "\"!!!\"", "\"Enter the postcode in the correct format\"", null)]
-        public virtual void VerifyTheIncorretcPostcodeFormatErrorMessage(string textField, string postcode, string errorMessage, string[] exampleTags)
+        public virtual void ATU_84VerifyTheIncorretcPostcodeFormatErrorMessage(string textField, string postcode, string errorMessage, string[] exampleTags)
         {
             string[] @__tags = new string[] {
                     "UpdateSubscriberDetails",
@@ -294,7 +294,7 @@ testRunner.Then(string.Format("the user is shown the following error message {0}
             argumentsOfScenario.Add("TextField", textField);
             argumentsOfScenario.Add("Postcode", postcode);
             argumentsOfScenario.Add("ErrorMessage", errorMessage);
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Verify the incorretc postcode format error message", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("ATU_84 Verify the incorretc postcode format error message", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
 #line 54
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
@@ -338,16 +338,16 @@ testRunner.Then(string.Format("the user is shown the following error message {0}
         }
         
         [NUnit.Framework.TestAttribute()]
-        [NUnit.Framework.DescriptionAttribute("Verify the error messages for Application submitted date")]
+        [NUnit.Framework.DescriptionAttribute("ATU_84 Verify the error messages for Application submitted date")]
         [NUnit.Framework.CategoryAttribute("UpdateSubscriberDetails")]
         [NUnit.Framework.CategoryAttribute("Regression")]
-        public virtual void VerifyTheErrorMessagesForApplicationSubmittedDate()
+        public virtual void ATU_84VerifyTheErrorMessagesForApplicationSubmittedDate()
         {
             string[] tagsOfScenario = new string[] {
                     "UpdateSubscriberDetails",
                     "Regression"};
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Verify the error messages for Application submitted date", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("ATU_84 Verify the error messages for Application submitted date", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
 #line 70
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
@@ -424,14 +424,14 @@ testRunner.Then("the user is shown error messages stating \"the application subm
         }
         
         [NUnit.Framework.TestAttribute()]
-        [NUnit.Framework.DescriptionAttribute("Update the details for a subscriber with between 1 and 3 data extract emails and " +
-            "verify changes are reflected on the Subscriber Details page")]
+        [NUnit.Framework.DescriptionAttribute("ATU_84 Update the details for a subscriber with between 1 and 3 data extract emai" +
+            "ls and verify changes are reflected on the Subscriber Details page")]
         [NUnit.Framework.CategoryAttribute("UpdateSubscriberDetails")]
         [NUnit.Framework.CategoryAttribute("Regression")]
         [NUnit.Framework.TestCaseAttribute("1", null)]
         [NUnit.Framework.TestCaseAttribute("2", null)]
         [NUnit.Framework.TestCaseAttribute("3", null)]
-        public virtual void UpdateTheDetailsForASubscriberWithBetween1And3DataExtractEmailsAndVerifyChangesAreReflectedOnTheSubscriberDetailsPage(string numberOfEmailAddresses, string[] exampleTags)
+        public virtual void ATU_84UpdateTheDetailsForASubscriberWithBetween1And3DataExtractEmailsAndVerifyChangesAreReflectedOnTheSubscriberDetailsPage(string numberOfEmailAddresses, string[] exampleTags)
         {
             string[] @__tags = new string[] {
                     "UpdateSubscriberDetails",
@@ -443,8 +443,8 @@ testRunner.Then("the user is shown error messages stating \"the application subm
             string[] tagsOfScenario = @__tags;
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
             argumentsOfScenario.Add("NumberOfEmailAddresses", numberOfEmailAddresses);
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Update the details for a subscriber with between 1 and 3 data extract emails and " +
-                    "verify changes are reflected on the Subscriber Details page", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("ATU_84 Update the details for a subscriber with between 1 and 3 data extract emai" +
+                    "ls and verify changes are reflected on the Subscriber Details page", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
 #line 87
 this.ScenarioInitialize(scenarioInfo);
 #line hidden

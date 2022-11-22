@@ -84,16 +84,16 @@ testRunner.Given("I login as an admin user and navigate to the Admin landing pag
         }
         
         [NUnit.Framework.TestAttribute()]
-        [NUnit.Framework.DescriptionAttribute("Verify the Admin landing page URL, title and page heading")]
+        [NUnit.Framework.DescriptionAttribute("ATU_220 Verify the Admin landing page URL, title and page heading")]
         [NUnit.Framework.CategoryAttribute("AdminLandingPage")]
         [NUnit.Framework.CategoryAttribute("Regression")]
-        public virtual void VerifyTheAdminLandingPageURLTitleAndPageHeading()
+        public virtual void ATU_220VerifyTheAdminLandingPageURLTitleAndPageHeading()
         {
             string[] tagsOfScenario = new string[] {
                     "AdminLandingPage",
                     "Regression"};
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Verify the Admin landing page URL, title and page heading", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("ATU_220 Verify the Admin landing page URL, title and page heading", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
 #line 11
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
