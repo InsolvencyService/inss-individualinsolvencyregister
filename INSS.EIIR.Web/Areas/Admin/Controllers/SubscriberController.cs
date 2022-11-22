@@ -79,14 +79,18 @@ using Microsoft.AspNetCore.Mvc;
         }
 
         [Area(AreaNames.Admin)]
-        [HttpGet(AreaNames.Admin + "/subscriber/add-profile")]
+        [HttpGet(AreaNames.Admin + "/subscriber/add-subscriber")]
         [Authorize(Roles = Role.Admin)]
         public IActionResult AddProfile()
         {
             var subscriberProfile = new SubscriberProfile
             {
+                AccountActive = "Y",
                 Breadcrumbs = BreadcrumbBuilder.BuildBreadcrumbs(isAdmin: true).ToList()
             };
+
+            ViewBag.Header = "Add new subscriber";
+            ViewBag.Title = "Add subscriber";
 
             return View("ChangeProfile", subscriberProfile);
         }
@@ -138,6 +142,9 @@ using Microsoft.AspNetCore.Mvc;
             subscriberProfile.Breadcrumbs =
                 BreadcrumbBuilder.BuildBreadcrumbs(isAdmin: true, showSubscriberList: true, showSubscriber:true, subscriberParameters: parameters).ToList();
 
+            ViewBag.Header = "Update subscriber details";
+            ViewBag.Title = "Update subscriber details";
+
             return View(subscriberProfile);
         }
 
@@ -160,8 +167,14 @@ using Microsoft.AspNetCore.Mvc;
                 }
             }
 
-            ValidateDate(subscriber.SubscribedFromDay, subscriber.SubscribedFromMonth, subscriber.SubscribedFromYear, nameof(subscriber.SubscribedFrom), "subscription start date");
-            ValidateDate(subscriber.SubscribedToDay, subscriber.SubscribedToMonth, subscriber.SubscribedToYear, nameof(subscriber.SubscribedTo), "subscription end date");
+            var validFrom = ValidateDate(subscriber.SubscribedFromDay, subscriber.SubscribedFromMonth, subscriber.SubscribedFromYear, nameof(subscriber.SubscribedFrom), "subscription start date");
+            var validTo = ValidateDate(subscriber.SubscribedToDay, subscriber.SubscribedToMonth, subscriber.SubscribedToYear, nameof(subscriber.SubscribedTo), "subscription end date");
+
+            if (validFrom && validTo && subscriber.SubscribedTo < subscriber.SubscribedFrom)
+            {
+                ModelState.AddModelError($"{nameof(subscriber.SubscribedTo)}Date",
+                    "The subscription end date date cannot be before the subscription start date");
+            }
 
             if (ModelState.IsValid)
             {
@@ -209,7 +222,7 @@ using Microsoft.AspNetCore.Mvc;
             return View(subscriber);
         }
 
-        private void ValidateDate(string day, string month, string year, string fieldName, string messageName)
+        private bool ValidateDate(string day, string month, string year, string fieldName, string messageName)
         {
             if (!string.IsNullOrEmpty(day) || !string.IsNullOrEmpty(month) || !string.IsNullOrEmpty(year))
             {
@@ -236,8 +249,14 @@ using Microsoft.AspNetCore.Mvc;
                 if (!isDate)
                 {
                     ModelState.AddModelError($"{fieldName}Date", $"The {messageName} must be a real date");
+
+                    return false;
                 }
+
+                return true;
             }
+
+            return false;
         }
     }
 }
