@@ -19,14 +19,14 @@ using Microsoft.AspNetCore.Mvc;
     {
         private readonly ISubscriberSearch _subscriberSearch;
         private readonly ISubscriberService _subscriberService;
-        private List<BreadcrumbLink> _breadcrumbs;
+        private readonly List<BreadcrumbLink> _breadcrumbs;
 
         public SubscriberController(ISubscriberSearch subscriberSearch, ISubscriberService subscriberService)
         {
             _subscriberSearch = subscriberSearch;
             _subscriberService = subscriberService;
 
-            _breadcrumbs = BreadcrumbBuilder.BuildBreadcrumbs().ToList();
+            _breadcrumbs = BreadcrumbBuilder.BuildBreadcrumbs(isAdmin: true).ToList();
         }
 
         [HttpGet(AreaNames.Admin + "/subscribers/{page?}/{active?}")]
@@ -73,19 +73,24 @@ using Microsoft.AspNetCore.Mvc;
             };
             subscriber.SubscriberParameters = parameters;
 
-            subscriber.Breadcrumbs = BreadcrumbBuilder.BuildBreadcrumbs(showSubscriberList: true, subscriberParameters: parameters).ToList();
+            subscriber.Breadcrumbs = BreadcrumbBuilder.BuildBreadcrumbs(isAdmin: true, showSubscriberList: true, subscriberParameters: parameters).ToList();
 
             return View(subscriber);
         }
 
         [Area(AreaNames.Admin)]
-        [HttpGet(AreaNames.Admin + "/subscriber/add-profile")]
+        [HttpGet(AreaNames.Admin + "/subscriber/add-subscriber")]
         [Authorize(Roles = Role.Admin)]
-        public async Task<IActionResult> AddProfile()
+        public IActionResult AddProfile()
         {
-            var subscriberProfile = new SubscriberProfile();
-            
-            subscriberProfile.Breadcrumbs = BreadcrumbBuilder.BuildBreadcrumbs().ToList();
+            var subscriberProfile = new SubscriberProfile
+            {
+                AccountActive = "Y",
+                Breadcrumbs = BreadcrumbBuilder.BuildBreadcrumbs(isAdmin: true).ToList()
+            };
+
+            ViewBag.Header = "Add new subscriber";
+            ViewBag.Title = "Add subscriber";
 
             return View("ChangeProfile", subscriberProfile);
         }
@@ -135,7 +140,10 @@ using Microsoft.AspNetCore.Mvc;
             subscriberProfile.SubscriberParameters = parameters;
 
             subscriberProfile.Breadcrumbs =
-                BreadcrumbBuilder.BuildBreadcrumbs(showSubscriberList: true, showSubscriber:true, subscriberParameters: parameters).ToList();
+                BreadcrumbBuilder.BuildBreadcrumbs(isAdmin: true, showSubscriberList: true, showSubscriber:true, subscriberParameters: parameters).ToList();
+
+            ViewBag.Header = "Update subscriber details";
+            ViewBag.Title = "Update subscriber details";
 
             return View(subscriberProfile);
         }
@@ -145,15 +153,28 @@ using Microsoft.AspNetCore.Mvc;
         [Authorize(Roles = Role.Admin)]
         public async Task<IActionResult> ChangeProfile(SubscriberProfile subscriber)
         {
-            var isDate = DateTime.TryParse($"{subscriber.ApplicationYear}-{subscriber.ApplicationMonth}-{subscriber.ApplicationDay}", out _);
-
-            if (!isDate)
+            if (!string.IsNullOrEmpty(subscriber.ApplicationDay) && !string.IsNullOrEmpty(subscriber.ApplicationMonth) && !string.IsNullOrEmpty(subscriber.ApplicationYear))
             {
-                ModelState.AddModelError($"{nameof(subscriber.ApplicationDate)}", "The application submitted date must be a real date");
+                var isDate =
+                    DateTime.TryParse(
+                        $"{subscriber.ApplicationYear}-{subscriber.ApplicationMonth}-{subscriber.ApplicationDay}",
+                        out _);
+
+                if (!isDate)
+                {
+                    ModelState.AddModelError($"{nameof(subscriber.ApplicationDate)}",
+                        "The application submitted date must be a real date");
+                }
             }
 
-            ValidateDate(subscriber.SubscribedFromDay, subscriber.SubscribedFromMonth, subscriber.SubscribedFromYear, nameof(subscriber.SubscribedFrom), "subscription start date");
-            ValidateDate(subscriber.SubscribedToDay, subscriber.SubscribedToMonth, subscriber.SubscribedToYear, nameof(subscriber.SubscribedTo), "subscription end date");
+            var validFrom = ValidateDate(subscriber.SubscribedFromDay, subscriber.SubscribedFromMonth, subscriber.SubscribedFromYear, nameof(subscriber.SubscribedFrom), "subscription start date");
+            var validTo = ValidateDate(subscriber.SubscribedToDay, subscriber.SubscribedToMonth, subscriber.SubscribedToYear, nameof(subscriber.SubscribedTo), "subscription end date");
+
+            if (validFrom && validTo && subscriber.SubscribedTo < subscriber.SubscribedFrom)
+            {
+                ModelState.AddModelError($"{nameof(subscriber.SubscribedTo)}Date",
+                    "The subscription end date date cannot be before the subscription start date");
+            }
 
             if (ModelState.IsValid)
             {
@@ -195,10 +216,13 @@ using Microsoft.AspNetCore.Mvc;
                 return RedirectToAction("Index", "AdminHome");
             }
 
+            subscriber.Breadcrumbs =
+                BreadcrumbBuilder.BuildBreadcrumbs(isAdmin: true, showSubscriberList: true, showSubscriber: true, subscriberParameters: subscriber.SubscriberParameters).ToList();
+
             return View(subscriber);
         }
 
-        private void ValidateDate(string day, string month, string year, string fieldName, string messageName)
+        private bool ValidateDate(string day, string month, string year, string fieldName, string messageName)
         {
             if (!string.IsNullOrEmpty(day) || !string.IsNullOrEmpty(month) || !string.IsNullOrEmpty(year))
             {
@@ -216,14 +240,23 @@ using Microsoft.AspNetCore.Mvc;
                 {
                     ModelState.AddModelError($"{fieldName}Year", $"The {messageName} must include a year");
                 }
+            }
 
+            if (!string.IsNullOrEmpty(day) && !string.IsNullOrEmpty(month) && !string.IsNullOrEmpty(year))
+            {
                 var isDate = DateTime.TryParse($"{year}-{month}-{day}", out _);
 
                 if (!isDate)
                 {
                     ModelState.AddModelError($"{fieldName}Date", $"The {messageName} must be a real date");
+
+                    return false;
                 }
+
+                return true;
             }
+
+            return false;
         }
     }
 }

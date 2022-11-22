@@ -15,6 +15,9 @@ parameters:
 - name: deployfuncapp    
   type: boolean    
   default: true
+- name: RunIntTest    
+  type: boolean    
+  default: true
 
 resources:
   repositories:
@@ -109,12 +112,12 @@ stages:
         deployfuncapp: ${{ parameters.deployfuncapp }}
 
 - stage: RunIntTest
-  displayName: 'Execute Int Tests'
+  displayName: 'Int Tests'
   condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
   variables:
     - group: EIIR-int-test-Sit
   jobs:
-  - job: A
+  - job: RunTest
     steps:
       - ${{ if eq(parameters.RunIntTest, true) }}:
 

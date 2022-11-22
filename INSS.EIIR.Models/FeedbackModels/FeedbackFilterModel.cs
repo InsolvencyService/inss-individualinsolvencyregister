@@ -5,7 +5,9 @@ namespace INSS.EIIR.Models.FeedbackModels
     public class FeedbackFilterModel
     {
         public string Status { get; set; }
-        public string Organisation { get; set; }    
+
+        public string Organisation { get; set; }   
+        
         public string InsolvencyType { get; set; }
     }
 

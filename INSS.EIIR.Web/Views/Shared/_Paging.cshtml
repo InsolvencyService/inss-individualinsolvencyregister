@@ -14,7 +14,7 @@
 
     var hrefRoot = !string.IsNullOrEmpty(Model.SearchTerm) ? $"/{Model.RootUrl}/{Model.SearchTerm}" : $"/{Model.RootUrl}";
 
-    var parameters = Model.Parameters;
+    var parameters = Model.Parameters ?? string.Empty;
 }
 
 <nav class="govuk-pagination" role="navigation" aria-label="results">
@@ -42,22 +42,33 @@
         {
             <li class="govuk-pagination__item govuk-pagination__item--ellipses">⋯</li>
         }
-
-        <li class="@(current == leftNumber ? currentItemStyle : itemStyle)">
-            <a class="govuk-link govuk-pagination__link" href="@(hrefRoot + $"/{leftNumber}/{parameters}")" aria-label="Page @leftNumber" @(current == leftNumber ? "aria-current=\"page\"" : "")>
-                @leftNumber
-            </a>
-        </li>
-        <li class="@(current == middleNumber ? currentItemStyle : itemStyle)">
-            <a class="govuk-link govuk-pagination__link" href="@(hrefRoot + $"/{middleNumber}/{parameters}")" aria-label="Page @middleNumber" @(current == middleNumber ? "aria-current=\"page\"" : "")>
-                @middleNumber
-            </a>
-        </li>
-        <li class="@(current == rightNumber ? currentItemStyle : itemStyle)">
-            <a class="govuk-link govuk-pagination__link" href="@(hrefRoot + $"/{rightNumber}/{parameters}")" aria-label="Page @rightNumber" @(current == rightNumber ? "aria-current=\"page\"" : "")>
-                @rightNumber
-            </a>
-        </li>
+        
+        @if (total > 2)
+        {
+            <li class="@(current == leftNumber ? currentItemStyle : itemStyle)">
+                <a class="govuk-link govuk-pagination__link" href="@(hrefRoot + $"/{leftNumber}/{parameters}")" aria-label="Page @leftNumber" @(current == leftNumber ? "aria-current=\"page\"" : "")>
+                    @leftNumber
+                </a>
+            </li>
+        }
+        
+        @if (total > 3)
+        {
+            <li class="@(current == middleNumber ? currentItemStyle : itemStyle)">
+                <a class="govuk-link govuk-pagination__link" href="@(hrefRoot + $"/{middleNumber}/{parameters}")" aria-label="Page @middleNumber" @(current == middleNumber ? "aria-current=\"page\"" : "")>
+                    @middleNumber
+                </a>
+            </li>
+        }
+        
+        @if(total > 4)
+        {
+            <li class="@(current == rightNumber ? currentItemStyle : itemStyle)">
+                <a class="govuk-link govuk-pagination__link" href="@(hrefRoot + $"/{rightNumber}/{parameters}")" aria-label="Page @rightNumber" @(current == rightNumber ? "aria-current=\"page\"" : "")>
+                    @rightNumber
+                </a>
+            </li>
+        }
 
         @if (showEllipses && current < total - 2)
         {

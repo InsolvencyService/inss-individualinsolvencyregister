@@ -25,6 +25,15 @@ public class ClientService : IClientService
             .ReceiveJson<TResult>();
     }
 
+    public async Task<TResult> PutAsync<TContent, TResult>(string url, TContent content)
+    {
+        return await _settings.BaseUrl
+            .AppendPathSegment(url)
+            .WithHeader("x-functions-key", _settings.ApiKey)
+            .PutJsonAsync(content)
+            .ReceiveJson<TResult>();
+    }
+
     public async Task<TResult> GetAsync<TResult>(string url, IList<string> parameters)
     {
         var clientUrl = _settings.BaseUrl

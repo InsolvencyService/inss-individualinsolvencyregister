@@ -14,5 +14,6 @@
         public string InsolvencyType { get; set; }
         public string CaseName { get; set; }
         public DateTime? OrderDate { get; set; }
+        public int IndivNo { get; set; }
     }
 }
