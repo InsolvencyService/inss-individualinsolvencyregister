@@ -2,9 +2,9 @@
 @model INSS.EIIR.Web.ViewModels.SubscriberProfile
 
 @{
-    var header = "Update subscriber details";
+    var header = ViewBag.Header;
     ViewData["Header"] = header;
-    ViewData["Title"] = $"{header}";
+    ViewData["Title"] = ViewBag.Title;
 
     var organisationNameError = ViewContext.ModelState["OrganisationName"] != null && ViewContext.ModelState["OrganisationName"].Errors.Count > 0;
     var organisationTypeError = ViewContext.ModelState["OrganisationType"] != null && ViewContext.ModelState["OrganisationType"].Errors.Count > 0;
@@ -47,7 +47,7 @@
 }
 
 @section AdminBreadcrumb
-{
+    {
     <partial name="~/Areas/Admin/Shared/_AdminBreadcrumb.cshtml" model="Model.Breadcrumbs" />
 }
 
@@ -464,5 +464,16 @@
             </button>
 
         </form>
+
+        <p class="govuk-body">
+            @if(Model.SubscriberId != 0)
+            {
+                <a href="/admin/subscriber/@Model.SubscriberId/@Model.SubscriberParameters.Page/@Model.SubscriberParameters.Active">Cancel</a>
+            }
+            else
+            {
+                <a href="/admin/admin-area">Cancel</a>
+            }
+        </p>
     </div>
 </div>
