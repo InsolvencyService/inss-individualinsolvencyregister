@@ -165,7 +165,7 @@ namespace INSS.EIIR.QA.Automation.Pages
 
         public static void EnterNewSubscriberDetails()
         { 
-                EnterText(organisationNameTextBoxElement, Constants.UpdatedOrganisationName);
+                EnterText(organisationNameTextBoxElement, Constants.NewOrganisationName);
                 EnterText(firstNameTextBoxElement, Constants.UpdatedFirstName);
                 EnterText(surnameTextBoxElement, Constants.UpdatedSurname);
                 EnterText(addressLine1TextBoxElement, Constants.UpdatedAddressLine1);

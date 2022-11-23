@@ -33,7 +33,7 @@ public static class Constants
     public static string EndDateYear = "2026";
     public static string Status = "Active";
     //Updated Subscriber Details
-    public static string UpdatedOrganisationName = "New Updated Subscriber";
+    public static string UpdatedOrganisationName = "Updated Subscriber";
     public static string UpdatedType = "Debt recovery agents";
     public static string UpdatedFirstName = "UpdatedTestname";
     public static string UpdatedSurname = "UpdatedSurname";
@@ -56,4 +56,5 @@ public static class Constants
     public static string UpdatedEndDateMonth = "11";
     public static string UpdatedEndDateYear = "2028";
     public static string UpdatedStatus = "Inactive";
+    public static string NewOrganisationName = "New Updated Subscriber";
 }
