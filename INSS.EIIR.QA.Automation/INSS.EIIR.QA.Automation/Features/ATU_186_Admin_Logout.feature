@@ -9,7 +9,7 @@ Given I login as an admin user and navigate to the Admin landing page
 Then the Admin landing page will be displayed and the URL, page title and H1 will be as per requirements
 
 @AdminLogout @Regression
-Scenario: Verify the Admin pages cannot be accessed once the user signs out
+Scenario: ATU_186 Verify the Admin pages cannot be accessed once the user signs out
 Given I navigate to the update subscriber page and capture the URLs on the way so I can try and access them once logged out
 When I click the Sign out link
 Then I am navigated Admin Login page (use this temporarily until the capital A is removed from the URL

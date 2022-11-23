@@ -18,6 +18,9 @@ namespace INSS.EIIR.QA.Automation.Pages
 
         public static void verifyTermsAndConditionsPage()
         {
+            Console.WriteLine("Page URL is: " + WebDriver.Url);
+            Console.WriteLine("Page Title is: " + WebDriver.Title);
+            Console.WriteLine("Page Header is: " + WebDriver.FindElement(PageHeader).Text);
             Assert.IsTrue(WebDriver.Url.Contains(expectedPageUrl));
             Assert.AreEqual(expectedPageTitle, WebDriver.Title);
             Assert.AreEqual(expectedPageHeader,WebDriver.FindElement(PageHeader).Text);

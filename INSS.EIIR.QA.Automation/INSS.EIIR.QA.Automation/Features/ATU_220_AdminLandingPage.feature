@@ -8,5 +8,5 @@ Background:
 Given I login as an admin user and navigate to the Admin landing page
 
 @AdminLandingPage @Regression
-Scenario: Verify the Admin landing page URL, title and page heading
+Scenario: ATU_220 Verify the Admin landing page URL, title and page heading
 Then the Admin landing page will be displayed and the URL, page title and H1 will be as per requirements

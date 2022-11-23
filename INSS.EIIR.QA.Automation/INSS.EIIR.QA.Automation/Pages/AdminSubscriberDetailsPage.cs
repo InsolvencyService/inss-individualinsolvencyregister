@@ -184,6 +184,7 @@ namespace INSS.EIIR.QA.Automation.Pages
             switch (ChangeLink)
             {
                 case "Organisation Name":
+                    Console.WriteLine("User is currently on page: " + WebDriver.Url);
                     ClickElement(ChangeOrganisationNameLink);
                     break;
             }

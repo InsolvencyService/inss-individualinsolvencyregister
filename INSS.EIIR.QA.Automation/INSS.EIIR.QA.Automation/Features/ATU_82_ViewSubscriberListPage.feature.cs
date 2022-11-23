@@ -90,14 +90,16 @@ testRunner.And("the Active check box is selected by default", ((string)(null)), 
         }
         
         [NUnit.Framework.TestAttribute()]
-        [NUnit.Framework.DescriptionAttribute("Subscriber table is sorted correctly when active Subscribers are displayed")]
+        [NUnit.Framework.DescriptionAttribute("ATU_82 Subscriber table is sorted correctly when active Subscribers are displayed" +
+            "")]
         [NUnit.Framework.CategoryAttribute("SubscriberList")]
-        public virtual void SubscriberTableIsSortedCorrectlyWhenActiveSubscribersAreDisplayed()
+        public virtual void ATU_82SubscriberTableIsSortedCorrectlyWhenActiveSubscribersAreDisplayed()
         {
             string[] tagsOfScenario = new string[] {
                     "SubscriberList"};
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Subscriber table is sorted correctly when active Subscribers are displayed", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("ATU_82 Subscriber table is sorted correctly when active Subscribers are displayed" +
+                    "", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
 #line 14
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
@@ -130,14 +132,16 @@ testRunner.Then("the table is sorted by subscription end date and displays \"Act
         }
         
         [NUnit.Framework.TestAttribute()]
-        [NUnit.Framework.DescriptionAttribute("Subscriber table is sorted correctly when inactive Subscribers are displayed")]
+        [NUnit.Framework.DescriptionAttribute("ATU_82 Subscriber table is sorted correctly when inactive Subscribers are display" +
+            "ed")]
         [NUnit.Framework.CategoryAttribute("SubscriberList")]
-        public virtual void SubscriberTableIsSortedCorrectlyWhenInactiveSubscribersAreDisplayed()
+        public virtual void ATU_82SubscriberTableIsSortedCorrectlyWhenInactiveSubscribersAreDisplayed()
         {
             string[] tagsOfScenario = new string[] {
                     "SubscriberList"};
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Subscriber table is sorted correctly when inactive Subscribers are displayed", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("ATU_82 Subscriber table is sorted correctly when inactive Subscribers are display" +
+                    "ed", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
 #line 18
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
@@ -173,14 +177,14 @@ testRunner.Then("the table is sorted by subscription end date and displays \"Ina
         }
         
         [NUnit.Framework.TestAttribute()]
-        [NUnit.Framework.DescriptionAttribute("Subscriber table is sorted correctly when all subscribers are displayed")]
+        [NUnit.Framework.DescriptionAttribute("ATU_82 Subscriber table is sorted correctly when all subscribers are displayed")]
         [NUnit.Framework.CategoryAttribute("SubscriberList")]
-        public virtual void SubscriberTableIsSortedCorrectlyWhenAllSubscribersAreDisplayed()
+        public virtual void ATU_82SubscriberTableIsSortedCorrectlyWhenAllSubscribersAreDisplayed()
         {
             string[] tagsOfScenario = new string[] {
                     "SubscriberList"};
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Subscriber table is sorted correctly when all subscribers are displayed", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("ATU_82 Subscriber table is sorted correctly when all subscribers are displayed", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
 #line 23
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
@@ -215,14 +219,14 @@ testRunner.Then("the table is sorted by subscription end date and displays \"All
         }
         
         [NUnit.Framework.TestAttribute()]
-        [NUnit.Framework.DescriptionAttribute("Verify the Home breadcrumb takes the user back to the Admin dahsboard")]
+        [NUnit.Framework.DescriptionAttribute("ATU_82 Verify the Home breadcrumb takes the user back to the Admin dahsboard")]
         [NUnit.Framework.CategoryAttribute("SubscriberList")]
-        public virtual void VerifyTheHomeBreadcrumbTakesTheUserBackToTheAdminDahsboard()
+        public virtual void ATU_82VerifyTheHomeBreadcrumbTakesTheUserBackToTheAdminDahsboard()
         {
             string[] tagsOfScenario = new string[] {
                     "SubscriberList"};
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Verify the Home breadcrumb takes the user back to the Admin dahsboard", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("ATU_82 Verify the Home breadcrumb takes the user back to the Admin dahsboard", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
 #line 28
 this.ScenarioInitialize(scenarioInfo);
 #line hidden

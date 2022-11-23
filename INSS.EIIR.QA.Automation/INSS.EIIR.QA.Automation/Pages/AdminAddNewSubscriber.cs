@@ -257,5 +257,12 @@ namespace INSS.EIIR.QA.Automation.Pages
             ClearText(applicationSubmittedYearTextBoxElement);
         }
 
+        public static void verifyDefaultStatus()
+        {
+            bool Status = WebDriver.FindElement(statusActiveRadioElement).Selected;
+            Assert.IsTrue(Status);
+            
+        }       
+
     }
 }

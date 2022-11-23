@@ -22,6 +22,10 @@ namespace INSS.EIIR.QA.Automation.Pages
 
         public static void verifyAdminLandingPage()
         {
+            Console.WriteLine("Actual Web URL is: " + WebDriver.Url);
+            Console.WriteLine("Expected Web URL is: " + expectedPageUrl);
+            Console.WriteLine("Actual Page title is: " + WebDriver.Title);
+            Console.WriteLine("Expected Page title is: " + expectedPageTitle);
             Assert.IsTrue(WebDriver.Url.Contains(expectedPageUrl));
             Assert.AreEqual(expectedPageTitle, WebDriver.Title);
             Assert.AreEqual(expectedPageHeader,WebDriver.FindElement(PageHeader).Text);

@@ -21,6 +21,16 @@ namespace INSS.EIIR.QA.Automation
            // AdminAddNewSubscriber.verifyUpdateSubscriberDetailsPage();
         }
 
+        [Then(@"the status is set to Active by default")]
+        public void ThenTheStatusIsSetToActiveByDefault()
+        {
+            AdminAddNewSubscriber.verifyDefaultStatus();
+
+        }
+
+
+
+
         [Given(@"I click the Add New Subscriber link")]
         public void GivenIClickTheAddNewSubscriberLink()
         {

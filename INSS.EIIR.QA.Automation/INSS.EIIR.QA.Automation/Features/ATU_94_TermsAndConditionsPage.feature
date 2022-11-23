@@ -9,15 +9,15 @@ Background:
 Given I navigate to the Terms and conditions page
 
 @TermsAndConditions
-Scenario: Verify the Terms and conditions page
+Scenario: ATU_94 Verify the Terms and conditions page
 	Then the Terms and conditions page is displayed
 
 @TermsAndConditions
-Scenario: Verify the breadcrumb navigation on the T&C page
+Scenario: ATU_94 Verify the breadcrumb navigation on the T&C page
 	When I click the Home breadcrumb on the T&C page
 	Then I am navigated to the Home page of the EIIR service
 
 @TermsAndConditions
-Scenario: Verify the navigation of the tell the Insolvency Service link
+Scenario: ATU_94 Verify the navigation of the tell the Insolvency Service link
 	When I click the tell the Insolvency Service link on the T&C page
 	Then I am navigated to the General Enquiry page
