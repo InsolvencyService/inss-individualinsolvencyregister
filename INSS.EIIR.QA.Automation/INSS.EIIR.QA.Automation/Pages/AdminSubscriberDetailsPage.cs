@@ -129,7 +129,12 @@ namespace INSS.EIIR.QA.Automation.Pages
         public static void VerifySubscribersEmailAddresses(string Subscriber)
         {
             result = SqlQueries.GetSubscriberEmailAddresses(Subscriber);
-            SqlQueries.DeleteSubscriber(Subscriber);
+
+            if (Subscriber == Constants.NewOrganisationName)
+            {
+                SqlQueries.DeleteSubscriber(Subscriber);
+            }
+
             int emailCount = result.Count;
             if (emailCount == 1)
             {
