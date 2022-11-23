@@ -1,10 +1,8 @@
-using System;
 using System.IO;
 using System.Net;
 using System.Threading.Tasks;
 using INSS.EIIR.Interfaces.Services;
 using INSS.EIIR.Models.CaseModels;
-using INSS.EIIR.Models.SearchModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
