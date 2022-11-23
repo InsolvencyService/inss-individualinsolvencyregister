@@ -95,13 +95,17 @@ namespace INSS.EIIR.QA.Automation.Pages
                 string CompanyName = WebDriver.FindElement(By.XPath(CompanyNameXpath)).Text;
                 string SubscriptionEndDate = WebDriver.FindElement(By.XPath(SubscriptionEndDateXpath)).Text;
 
+                //USed for logging 
+                Console.WriteLine(SubscriberID + " Expected value us: " + subID);
+                Console.WriteLine(CompanyName + " Expected value us: " + CompName);
+                Console.WriteLine(SubscriptionEndDate + " Expected value us: " + SubEnd); 
+
                 DateTime dateTime12 = DateTime.Parse(SubEnd);
                 DateTime dateTime13 = DateTime.Parse(SubscriptionEndDate);
 
                 Assert.AreEqual(subID, SubscriberID);
                 Assert.AreEqual(CompName, CompanyName);
                 Assert.AreEqual(dateTime12, dateTime13);
-
             }
         }
 

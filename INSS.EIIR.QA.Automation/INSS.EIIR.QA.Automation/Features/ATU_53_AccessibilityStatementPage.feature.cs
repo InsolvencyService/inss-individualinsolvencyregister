@@ -20,8 +20,8 @@ namespace INSS.EIIR.QA.Automation.Features
     [System.CodeDom.Compiler.GeneratedCodeAttribute("TechTalk.SpecFlow", "3.9.0.0")]
     [System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     [NUnit.Framework.TestFixtureAttribute()]
-    [NUnit.Framework.DescriptionAttribute("Update Accessibility Statement page")]
-    public partial class UpdateAccessibilityStatementPageFeature
+    [NUnit.Framework.DescriptionAttribute("ATU_53 Update Accessibility Statement page")]
+    public partial class ATU_53UpdateAccessibilityStatementPageFeature
     {
         
         private TechTalk.SpecFlow.ITestRunner testRunner;
@@ -35,7 +35,7 @@ namespace INSS.EIIR.QA.Automation.Features
         public virtual void FeatureSetup()
         {
             testRunner = TechTalk.SpecFlow.TestRunnerManager.GetTestRunner();
-            TechTalk.SpecFlow.FeatureInfo featureInfo = new TechTalk.SpecFlow.FeatureInfo(new System.Globalization.CultureInfo("en-US"), "Features", "Update Accessibility Statement page", "\tAs Application Services\r\n    I need the accessibility statement updated (current" +
+            TechTalk.SpecFlow.FeatureInfo featureInfo = new TechTalk.SpecFlow.FeatureInfo(new System.Globalization.CultureInfo("en-US"), "Features", "ATU_53 Update Accessibility Statement page", "\tAs Application Services\r\n    I need the accessibility statement updated (current" +
                     "ly located here: www.insolvencydirect.bis.gov.uk/eiir/accessibility.asp)\r\n    So" +
                     " that it reflects any changes made that impact user accessibility ", ProgrammingLanguage.CSharp, ((string[])(null)));
             testRunner.OnFeatureStart(featureInfo);
@@ -85,16 +85,16 @@ testRunner.Given("I navigate to the Accessibility Statement Page", ((string)(nul
         }
         
         [NUnit.Framework.TestAttribute()]
-        [NUnit.Framework.DescriptionAttribute("Verify the Accessibility statement page URL, title and page heading")]
+        [NUnit.Framework.DescriptionAttribute("ATU_53 Verify the Accessibility statement page URL, title and page heading")]
         [NUnit.Framework.CategoryAttribute("AccessibilityStatement")]
         [NUnit.Framework.CategoryAttribute("Regression")]
-        public virtual void VerifyTheAccessibilityStatementPageURLTitleAndPageHeading()
+        public virtual void ATU_53VerifyTheAccessibilityStatementPageURLTitleAndPageHeading()
         {
             string[] tagsOfScenario = new string[] {
                     "AccessibilityStatement",
                     "Regression"};
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Verify the Accessibility statement page URL, title and page heading", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("ATU_53 Verify the Accessibility statement page URL, title and page heading", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
 #line 11
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
@@ -127,16 +127,18 @@ testRunner.Then("the Accessibility statement page will be displayed and the URL,
         }
         
         [NUnit.Framework.TestAttribute()]
-        [NUnit.Framework.DescriptionAttribute("Verify the navigation of the Home breadcrumb on the Accessibility statement page")]
+        [NUnit.Framework.DescriptionAttribute("ATU_53 Verify the navigation of the Home breadcrumb on the Accessibility statemen" +
+            "t page")]
         [NUnit.Framework.CategoryAttribute("AccessibilityStatement")]
         [NUnit.Framework.CategoryAttribute("Regression")]
-        public virtual void VerifyTheNavigationOfTheHomeBreadcrumbOnTheAccessibilityStatementPage()
+        public virtual void ATU_53VerifyTheNavigationOfTheHomeBreadcrumbOnTheAccessibilityStatementPage()
         {
             string[] tagsOfScenario = new string[] {
                     "AccessibilityStatement",
                     "Regression"};
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Verify the navigation of the Home breadcrumb on the Accessibility statement page", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("ATU_53 Verify the navigation of the Home breadcrumb on the Accessibility statemen" +
+                    "t page", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
 #line 15
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
@@ -172,16 +174,16 @@ testRunner.Then("the EIIR Start page will be displayed and the URL, page title a
         }
         
         [NUnit.Framework.TestAttribute()]
-        [NUnit.Framework.DescriptionAttribute("Verify the navigation of the \'how to make your device easier to use\' link")]
+        [NUnit.Framework.DescriptionAttribute("ATU_53 Verify the navigation of the \'how to make your device easier to use\' link")]
         [NUnit.Framework.CategoryAttribute("AccessibilityStatement")]
         [NUnit.Framework.CategoryAttribute("Regression")]
-        public virtual void VerifyTheNavigationOfTheHowToMakeYourDeviceEasierToUseLink()
+        public virtual void ATU_53VerifyTheNavigationOfTheHowToMakeYourDeviceEasierToUseLink()
         {
             string[] tagsOfScenario = new string[] {
                     "AccessibilityStatement",
                     "Regression"};
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Verify the navigation of the \'how to make your device easier to use\' link", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("ATU_53 Verify the navigation of the \'how to make your device easier to use\' link", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
 #line 30
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
@@ -217,16 +219,16 @@ testRunner.Then("the following URL is displayed \"https://mcmw.abilitynet.org.uk
         }
         
         [NUnit.Framework.TestAttribute()]
-        [NUnit.Framework.DescriptionAttribute("Verify the navigation of the \'general enquiry form\' link")]
+        [NUnit.Framework.DescriptionAttribute("ATU_53 Verify the navigation of the \'general enquiry form\' link")]
         [NUnit.Framework.CategoryAttribute("AccessibilityStatement")]
         [NUnit.Framework.CategoryAttribute("Regression")]
-        public virtual void VerifyTheNavigationOfTheGeneralEnquiryFormLink()
+        public virtual void ATU_53VerifyTheNavigationOfTheGeneralEnquiryFormLink()
         {
             string[] tagsOfScenario = new string[] {
                     "AccessibilityStatement",
                     "Regression"};
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Verify the navigation of the \'general enquiry form\' link", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("ATU_53 Verify the navigation of the \'general enquiry form\' link", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
 #line 35
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
@@ -262,16 +264,16 @@ testRunner.Then("the following URL is displayed \"https://www.insolvencydirect.b
         }
         
         [NUnit.Framework.TestAttribute()]
-        [NUnit.Framework.DescriptionAttribute("Verify the navigation of the \'Find out about call charges\' link")]
+        [NUnit.Framework.DescriptionAttribute("ATU_53 Verify the navigation of the \'Find out about call charges\' link")]
         [NUnit.Framework.CategoryAttribute("AccessibilityStatement")]
         [NUnit.Framework.CategoryAttribute("Regression")]
-        public virtual void VerifyTheNavigationOfTheFindOutAboutCallChargesLink()
+        public virtual void ATU_53VerifyTheNavigationOfTheFindOutAboutCallChargesLink()
         {
             string[] tagsOfScenario = new string[] {
                     "AccessibilityStatement",
                     "Regression"};
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Verify the navigation of the \'Find out about call charges\' link", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("ATU_53 Verify the navigation of the \'Find out about call charges\' link", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
 #line 40
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
@@ -307,18 +309,18 @@ testRunner.Then("the following URL is displayed \"https://www.gov.uk/call-charge
         }
         
         [NUnit.Framework.TestAttribute()]
-        [NUnit.Framework.DescriptionAttribute("Verify the navigation of the \'contact the Equality Advisory and Support Service (" +
-            "EASS)\' link")]
+        [NUnit.Framework.DescriptionAttribute("ATU_53 Verify the navigation of the \'contact the Equality Advisory and Support Se" +
+            "rvice (EASS)\' link")]
         [NUnit.Framework.CategoryAttribute("AccessibilityStatement")]
         [NUnit.Framework.CategoryAttribute("Regression")]
-        public virtual void VerifyTheNavigationOfTheContactTheEqualityAdvisoryAndSupportServiceEASSLink()
+        public virtual void ATU_53VerifyTheNavigationOfTheContactTheEqualityAdvisoryAndSupportServiceEASSLink()
         {
             string[] tagsOfScenario = new string[] {
                     "AccessibilityStatement",
                     "Regression"};
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Verify the navigation of the \'contact the Equality Advisory and Support Service (" +
-                    "EASS)\' link", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("ATU_53 Verify the navigation of the \'contact the Equality Advisory and Support Se" +
+                    "rvice (EASS)\' link", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
 #line 45
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
@@ -354,18 +356,18 @@ testRunner.Then("the following URL is displayed \"https://www.equalityadvisoryse
         }
         
         [NUnit.Framework.TestAttribute()]
-        [NUnit.Framework.DescriptionAttribute("Verify the navigation of the \'The Public Sector Bodies (Websites and Mobile Appli" +
-            "cations) (No. 2) Accessibility Regulations 2018\' link")]
+        [NUnit.Framework.DescriptionAttribute("ATU_53 Verify the navigation of the \'The Public Sector Bodies (Websites and Mobil" +
+            "e Applications) (No. 2) Accessibility Regulations 2018\' link")]
         [NUnit.Framework.CategoryAttribute("AccessibilityStatement")]
         [NUnit.Framework.CategoryAttribute("Regression")]
-        public virtual void VerifyTheNavigationOfTheThePublicSectorBodiesWebsitesAndMobileApplicationsNo_2AccessibilityRegulations2018Link()
+        public virtual void ATU_53VerifyTheNavigationOfTheThePublicSectorBodiesWebsitesAndMobileApplicationsNo_2AccessibilityRegulations2018Link()
         {
             string[] tagsOfScenario = new string[] {
                     "AccessibilityStatement",
                     "Regression"};
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Verify the navigation of the \'The Public Sector Bodies (Websites and Mobile Appli" +
-                    "cations) (No. 2) Accessibility Regulations 2018\' link", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("ATU_53 Verify the navigation of the \'The Public Sector Bodies (Websites and Mobil" +
+                    "e Applications) (No. 2) Accessibility Regulations 2018\' link", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
 #line 50
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
@@ -402,18 +404,18 @@ testRunner.Then("the following URL is displayed \"https://www.legislation.gov.uk
         }
         
         [NUnit.Framework.TestAttribute()]
-        [NUnit.Framework.DescriptionAttribute("Verify the navigation of the \'Web Content Accessibility Guidelines (WCAG) version" +
-            " 2.1\' link")]
+        [NUnit.Framework.DescriptionAttribute("ATU_53 Verify the navigation of the \'Web Content Accessibility Guidelines (WCAG) " +
+            "version 2.1\' link")]
         [NUnit.Framework.CategoryAttribute("AccessibilityStatement")]
         [NUnit.Framework.CategoryAttribute("Regression")]
-        public virtual void VerifyTheNavigationOfTheWebContentAccessibilityGuidelinesWCAGVersion2_1Link()
+        public virtual void ATU_53VerifyTheNavigationOfTheWebContentAccessibilityGuidelinesWCAGVersion2_1Link()
         {
             string[] tagsOfScenario = new string[] {
                     "AccessibilityStatement",
                     "Regression"};
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Verify the navigation of the \'Web Content Accessibility Guidelines (WCAG) version" +
-                    " 2.1\' link", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("ATU_53 Verify the navigation of the \'Web Content Accessibility Guidelines (WCAG) " +
+                    "version 2.1\' link", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
 #line 55
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
