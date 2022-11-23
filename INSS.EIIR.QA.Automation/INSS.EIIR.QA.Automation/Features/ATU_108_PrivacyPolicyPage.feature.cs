@@ -84,16 +84,16 @@ testRunner.Given("I navigate to the Privacy policy page", ((string)(null)), ((Te
         }
         
         [NUnit.Framework.TestAttribute()]
-        [NUnit.Framework.DescriptionAttribute("Verify the Privacy policy page")]
+        [NUnit.Framework.DescriptionAttribute("ATU_108 Verify the Privacy policy page")]
         [NUnit.Framework.CategoryAttribute("TermsAndConditions")]
         [NUnit.Framework.CategoryAttribute("Regression")]
-        public virtual void VerifyThePrivacyPolicyPage()
+        public virtual void ATU_108VerifyThePrivacyPolicyPage()
         {
             string[] tagsOfScenario = new string[] {
                     "TermsAndConditions",
                     "Regression"};
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Verify the Privacy policy page", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("ATU_108 Verify the Privacy policy page", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
 #line 12
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
@@ -125,16 +125,16 @@ this.FeatureBackground();
         }
         
         [NUnit.Framework.TestAttribute()]
-        [NUnit.Framework.DescriptionAttribute("Verify the breadcrumb navigation on the Privacy policy page")]
+        [NUnit.Framework.DescriptionAttribute("ATU_108 Verify the breadcrumb navigation on the Privacy policy page")]
         [NUnit.Framework.CategoryAttribute("TermsAndConditions")]
         [NUnit.Framework.CategoryAttribute("Regression")]
-        public virtual void VerifyTheBreadcrumbNavigationOnThePrivacyPolicyPage()
+        public virtual void ATU_108VerifyTheBreadcrumbNavigationOnThePrivacyPolicyPage()
         {
             string[] tagsOfScenario = new string[] {
                     "TermsAndConditions",
                     "Regression"};
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Verify the breadcrumb navigation on the Privacy policy page", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("ATU_108 Verify the breadcrumb navigation on the Privacy policy page", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
 #line 16
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
@@ -169,16 +169,16 @@ this.FeatureBackground();
         }
         
         [NUnit.Framework.TestAttribute()]
-        [NUnit.Framework.DescriptionAttribute("Verify the navigation of the \'personal information charter\' link")]
+        [NUnit.Framework.DescriptionAttribute("ATU_108 Verify the navigation of the \'personal information charter\' link")]
         [NUnit.Framework.CategoryAttribute("TermsAndConditions")]
         [NUnit.Framework.CategoryAttribute("Regression")]
-        public virtual void VerifyTheNavigationOfThePersonalInformationCharterLink()
+        public virtual void ATU_108VerifyTheNavigationOfThePersonalInformationCharterLink()
         {
             string[] tagsOfScenario = new string[] {
                     "TermsAndConditions",
                     "Regression"};
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Verify the navigation of the \'personal information charter\' link", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("ATU_108 Verify the navigation of the \'personal information charter\' link", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
 #line 21
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
@@ -214,16 +214,16 @@ this.FeatureBackground();
         }
         
         [NUnit.Framework.TestAttribute()]
-        [NUnit.Framework.DescriptionAttribute("Verify the navigation of the \'cookies on GOV UK\' link")]
+        [NUnit.Framework.DescriptionAttribute("ATU_108 Verify the navigation of the \'cookies on GOV UK\' link")]
         [NUnit.Framework.CategoryAttribute("TermsAndConditions")]
         [NUnit.Framework.CategoryAttribute("Regression")]
-        public virtual void VerifyTheNavigationOfTheCookiesOnGOVUKLink()
+        public virtual void ATU_108VerifyTheNavigationOfTheCookiesOnGOVUKLink()
         {
             string[] tagsOfScenario = new string[] {
                     "TermsAndConditions",
                     "Regression"};
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Verify the navigation of the \'cookies on GOV UK\' link", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("ATU_108 Verify the navigation of the \'cookies on GOV UK\' link", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
 #line 26
 this.ScenarioInitialize(scenarioInfo);
 #line hidden

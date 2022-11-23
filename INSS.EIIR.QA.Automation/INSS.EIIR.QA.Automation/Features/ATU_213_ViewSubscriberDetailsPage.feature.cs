@@ -93,18 +93,18 @@ testRunner.And("I click the link for subscriber \"Insolvency Service Internal Ac
         }
         
         [NUnit.Framework.TestAttribute()]
-        [NUnit.Framework.DescriptionAttribute("Verify the Subscriber details page URL, page title, header and the subscription e" +
-            "nds in X days value")]
+        [NUnit.Framework.DescriptionAttribute("ATU_213 Verify the Subscriber details page URL, page title, header and the subscr" +
+            "iption ends in X days value")]
         [NUnit.Framework.CategoryAttribute("SubscriberDetails")]
         [NUnit.Framework.CategoryAttribute("Regression")]
-        public virtual void VerifyTheSubscriberDetailsPageURLPageTitleHeaderAndTheSubscriptionEndsInXDaysValue()
+        public virtual void ATU_213VerifyTheSubscriberDetailsPageURLPageTitleHeaderAndTheSubscriptionEndsInXDaysValue()
         {
             string[] tagsOfScenario = new string[] {
                     "SubscriberDetails",
                     "Regression"};
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Verify the Subscriber details page URL, page title, header and the subscription e" +
-                    "nds in X days value", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("ATU_213 Verify the Subscriber details page URL, page title, header and the subscr" +
+                    "iption ends in X days value", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
 #line 15
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
@@ -141,16 +141,18 @@ testRunner.And("the warning for when the subscription will end is shown for subs
         }
         
         [NUnit.Framework.TestAttribute()]
-        [NUnit.Framework.DescriptionAttribute("Verify the Subscriber details page displays the correct details for a subscriber")]
+        [NUnit.Framework.DescriptionAttribute("ATU_213 Verify the Subscriber details page displays the correct details for a sub" +
+            "scriber")]
         [NUnit.Framework.CategoryAttribute("SubscriberDetails")]
         [NUnit.Framework.CategoryAttribute("Regression")]
-        public virtual void VerifyTheSubscriberDetailsPageDisplaysTheCorrectDetailsForASubscriber()
+        public virtual void ATU_213VerifyTheSubscriberDetailsPageDisplaysTheCorrectDetailsForASubscriber()
         {
             string[] tagsOfScenario = new string[] {
                     "SubscriberDetails",
                     "Regression"};
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Verify the Subscriber details page displays the correct details for a subscriber", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("ATU_213 Verify the Subscriber details page displays the correct details for a sub" +
+                    "scriber", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
 #line 20
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
@@ -187,16 +189,16 @@ testRunner.And("the correct email addressess are displayed for the subscriber \"
         }
         
         [NUnit.Framework.TestAttribute()]
-        [NUnit.Framework.DescriptionAttribute("Click the Return to admin area button")]
+        [NUnit.Framework.DescriptionAttribute("ATU_213 Click the Return to admin area button")]
         [NUnit.Framework.CategoryAttribute("SubscriberDetails")]
         [NUnit.Framework.CategoryAttribute("Regression")]
-        public virtual void ClickTheReturnToAdminAreaButton()
+        public virtual void ATU_213ClickTheReturnToAdminAreaButton()
         {
             string[] tagsOfScenario = new string[] {
                     "SubscriberDetails",
                     "Regression"};
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Click the Return to admin area button", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("ATU_213 Click the Return to admin area button", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
 #line 25
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
@@ -231,16 +233,16 @@ testRunner.Then("I am navigated to the Admin Dashboard page", ((string)(null)), 
         }
         
         [NUnit.Framework.TestAttribute()]
-        [NUnit.Framework.DescriptionAttribute("Click the View another subscriber link")]
+        [NUnit.Framework.DescriptionAttribute("ATU_213 Click the View another subscriber link")]
         [NUnit.Framework.CategoryAttribute("SubscriberDetails")]
         [NUnit.Framework.CategoryAttribute("Regression")]
-        public virtual void ClickTheViewAnotherSubscriberLink()
+        public virtual void ATU_213ClickTheViewAnotherSubscriberLink()
         {
             string[] tagsOfScenario = new string[] {
                     "SubscriberDetails",
                     "Regression"};
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Click the View another subscriber link", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("ATU_213 Click the View another subscriber link", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
 #line 30
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
@@ -275,16 +277,18 @@ testRunner.Then("I am navigated to the Admin Subscriber List page", ((string)(nu
         }
         
         [NUnit.Framework.TestAttribute()]
-        [NUnit.Framework.DescriptionAttribute("Verify the Subscribers breadcrumb navigation on the Subscriber details page")]
+        [NUnit.Framework.DescriptionAttribute("ATU_213 Verify the Subscribers breadcrumb navigation on the Subscriber details pa" +
+            "ge")]
         [NUnit.Framework.CategoryAttribute("SubscriberDetails")]
         [NUnit.Framework.CategoryAttribute("Regression")]
-        public virtual void VerifyTheSubscribersBreadcrumbNavigationOnTheSubscriberDetailsPage()
+        public virtual void ATU_213VerifyTheSubscribersBreadcrumbNavigationOnTheSubscriberDetailsPage()
         {
             string[] tagsOfScenario = new string[] {
                     "SubscriberDetails",
                     "Regression"};
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Verify the Subscribers breadcrumb navigation on the Subscriber details page", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("ATU_213 Verify the Subscribers breadcrumb navigation on the Subscriber details pa" +
+                    "ge", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
 #line 35
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
@@ -319,16 +323,16 @@ testRunner.Then("I am navigated to the Admin Subscriber List page", ((string)(nu
         }
         
         [NUnit.Framework.TestAttribute()]
-        [NUnit.Framework.DescriptionAttribute("Verify the Home breadcrumb navigation on the Subscriber details page")]
+        [NUnit.Framework.DescriptionAttribute("ATU_213 Verify the Home breadcrumb navigation on the Subscriber details page")]
         [NUnit.Framework.CategoryAttribute("SubscriberDetails")]
         [NUnit.Framework.CategoryAttribute("Regression")]
-        public virtual void VerifyTheHomeBreadcrumbNavigationOnTheSubscriberDetailsPage()
+        public virtual void ATU_213VerifyTheHomeBreadcrumbNavigationOnTheSubscriberDetailsPage()
         {
             string[] tagsOfScenario = new string[] {
                     "SubscriberDetails",
                     "Regression"};
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Verify the Home breadcrumb navigation on the Subscriber details page", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("ATU_213 Verify the Home breadcrumb navigation on the Subscriber details page", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
 #line 40
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
