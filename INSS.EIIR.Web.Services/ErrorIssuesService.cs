@@ -36,6 +36,16 @@ public class ErrorIssuesService : IErrorIssuesService
         return feedback;
     }
 
+    public async Task CreateFeedback(CreateCaseFeedback caseFeedback)
+    {
+        var apiRoot = "eiir/feedback/create";
+
+        await _settings.BaseUrl
+            .AppendPathSegment(apiRoot)
+            .WithHeader("x-functions-key", _settings.ApiKey)
+            .PostJsonAsync(caseFeedback);
+    }
+
     public async Task UpdateStatusAsync(int feedbackId, bool viewed)
     {
         var apiRoot = $"eiir/feedback/{feedbackId}/viewed/{viewed}";

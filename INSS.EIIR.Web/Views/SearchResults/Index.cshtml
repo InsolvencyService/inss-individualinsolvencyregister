@@ -32,7 +32,7 @@
             if (Model.SearchResults.Results.Any())
             {
                 <p class="govuk-body">
-                    Your search returned <span class="govuk-!-font-weight-bold">@Model.SearchResults.Paging.ResultCount</span>> records. These may include individuals with an alias or a previous name which matches your search criteria.
+                    Your search returned <span class="govuk-!-font-weight-bold">@Model.SearchResults.Paging.ResultCount</span> records. These may include individuals with an alias or a previous name which matches your search criteria.
                     If you expected to see a name in the register and it is not there, <a href="https://www.insolvencydirect.bis.gov.uk/ExternalOnlineForms/GeneralEnquiry.aspx">tell the Insolvency Service</a>.
                 </p>
 
@@ -53,7 +53,7 @@
                         {
                             var name = $"{individual.individualForenames} {individual.individualSurname}".ToTitleCase();
                             <tr class="govuk-table__row">
-                                <td class="govuk-table__cell"><a class="govuk-link--no-visited-state" href="/SearchDetails/@individual.caseNo/@individual.indivNo">@name</a></td>
+                                <td class="govuk-table__cell"><a class="govuk-link--no-visited-state" href="/case-details/@individual.caseNo/@individual.indivNo">@name</a></td>
                                 <td class="govuk-table__cell">@individual.companyName</td>
                                 <td class="govuk-table__cell">@individual.individualTown</td>
                                 <td class="govuk-table__cell">@individual.individualPostcode</td>
