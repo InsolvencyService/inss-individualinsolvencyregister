@@ -19,7 +19,7 @@ namespace INSS.EIIR.Web.Controllers
             _breadcrumbs =  BreadcrumbBuilder.BuildBreadcrumbs(showSearch: true).ToList();
         }
 
-        [HttpGet("SearchResults/{searchTerm}/{page?}")]
+        [HttpGet("search-results/{searchTerm}/{page?}")]
         public async Task<IActionResult> Index(string searchTerm, int page = 1)
         {
             var searchResults = await _individualSearch.GetIndividualsAsync(searchTerm, page);

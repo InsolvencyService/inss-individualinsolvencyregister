@@ -1,0 +1,163 @@
+﻿@using INSS.EIIR.Web.Constants
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model INSS.EIIR.Web.ViewModels.CreateFeedbackViewModel
+
+@{
+    var header = ViewBag.Header;
+    ViewData["Header"] = header;
+    ViewData["Title"] = ViewBag.Title;
+
+    var messageError = ViewContext.ModelState["CaseFeedback.Message"] != null && ViewContext.ModelState["CaseFeedback.Message"].Errors.Count > 0;
+    var reporterFullnameError = ViewContext.ModelState["CaseFeedback.ReporterFullname"] != null && ViewContext.ModelState["CaseFeedback.ReporterFullname"].Errors.Count > 0;
+    var reporterEmailAddressError = ViewContext.ModelState["CaseFeedback.ReporterEmailAddress"] != null && ViewContext.ModelState["CaseFeedback.ReporterEmailAddress"].Errors.Count > 0;
+    var reporterOrganisationError = ViewContext.ModelState["CaseFeedback.ReporterOrganisation"] != null && ViewContext.ModelState["CaseFeedback.ReporterOrganisation"].Errors.Count > 0;
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        
+        @await Html.PartialAsync("~/Areas/Admin/Shared/_ValidationSummary.cshtml", ViewData.ModelState)
+
+        <form asp-action="CreateFeedback" method="post">
+
+            <input type="hidden" asp-for="Name"/>
+            <input type="hidden" asp-for="Type"/>
+            <input type="hidden" asp-for="ArrangementDate"/>
+
+            <h1 class="govuk-heading-l">
+                Report an error or issue
+            </h1>
+
+            <p class="govuk-body">
+                Tell us about any issues or errors in the details of an insolvency or bankruptcy case. For example, if the case name is spelt incorrectly.
+            </p>
+
+            <dl class="govuk-summary-list govuk-summary-list--no-border">
+
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">
+                        Case name
+                    </dt>
+                    <dd class="govuk-summary-list__value">
+                        @Model.Name
+                    </dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">
+                        Type
+                    </dt>
+                    <dd class="govuk-summary-list__value">
+                        @Model.Type
+                    </dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">
+                        Order or arrangement date
+                    </dt>
+                    <dd class="govuk-summary-list__value">
+                        <p class="govuk-body">
+                            @Model.ArrangementDate.ToString("dd MMMM yyyy")
+                        </p>
+                    </dd>
+                </div>
+            </dl>
+
+
+            <input type="hidden" asp-for="CaseNo"/>
+            <input type="hidden" asp-for="IndivNo"/>
+            <input type="hidden" asp-for="CaseFeedback.CaseId"/>
+
+            <div class="govuk-character-count" data-module="govuk-character-count" data-maxlength="200">
+                <div class="govuk-form-group">
+                    <h2 class="govuk-label-wrapper">
+                        <label class="govuk-label govuk-label--m" for="with-hint">
+                            What is the error or issue?
+                        </label>
+                    </h2>
+                    <div id="with-hint-hint" class="govuk-hint">
+                        Do not include personal or financial information, such as your National Insurance number or credit card details.
+                    </div>
+                    @if (messageError)
+                    {
+                        @await Html.PartialAsync("~/Areas/Admin/Shared/_ValidationError.cshtml", ViewContext.ModelState["CaseFeedback.Message"].Errors)
+                    }
+                    <textarea class="govuk-textarea govuk-js-character-count" id="CaseFeedback.Message" asp-for="CaseFeedback.Message"
+                              rows="5" aria-describedby="with-hint-info with-hint-hint"></textarea>
+                    <div id="with-hint-info" class="govuk-hint govuk-character-count__message govuk-visually-hidden">
+                        You can enter up to 200 characters
+                    </div>
+                    <div class="govuk-hint govuk-character-count__message govuk-character-count__status" aria-hidden="true">
+                        You have 200 characters remaining
+                    </div>
+                    <div class="govuk-character-count__sr-status govuk-visually-hidden" aria-live="polite">
+                        You have 200 characters remaining
+                    </div>
+                </div>
+            </div>
+
+            <h2 class="govuk-heading-m">
+                Contact details
+            </h2>
+
+            <p class="govuk-body">We’ll use these to contact you if we need evidence.</p>
+
+            <div class="govuk-form-group">
+                <label class="govuk-label" for="full-name">
+                    Full name
+                </label>
+                @if (reporterFullnameError)
+                {
+                    @await Html.PartialAsync("~/Areas/Admin/Shared/_ValidationError.cshtml", ViewContext.ModelState["CaseFeedback.ReporterFullname"].Errors)
+                }
+                <input class="govuk-input" id="CaseFeedback.ReporterFullname" asp-for="CaseFeedback.ReporterFullname"
+                       type="text" spellcheck="false" autocomplete="name">
+            </div>
+
+            <div class="govuk-form-group">
+                <label class="govuk-label" for="email">
+                    Email address
+                </label>
+                @if (reporterEmailAddressError)
+                {
+                    @await Html.PartialAsync("~/Areas/Admin/Shared/_ValidationError.cshtml", ViewContext.ModelState["CaseFeedback.ReporterEmailAddress"].Errors)
+                }
+                <input class="govuk-input" id="CaseFeedback.ReporterEmailAddress" asp-for="CaseFeedback.ReporterEmailAddress"
+                       type="text" spellcheck="false" aria-describedby="email-hint" autocomplete="email">
+            </div>
+
+            <div class="govuk-form-group">
+                <fieldset class="govuk-fieldset">
+                    <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+                        <h1 class="govuk-fieldset__heading">
+                            Organisation
+                        </h1>
+                    </legend>
+                    <div id="checkbox-hint" class="govuk-hint">
+                        Select one option
+                    </div>
+                    @if (reporterOrganisationError)
+                    {
+                        @await Html.PartialAsync("~/Areas/Admin/Shared/_ValidationError.cshtml", ViewContext.ModelState["CaseFeedback.ReporterOrganisation"].Errors)
+                    }
+                    <div id="CaseFeedback.ReporterOrganisation" class="govuk-radios" data-module="govuk-radios">
+                        @foreach (var filter in FeedbackFilters.OrganisationFilters.Where(of => of.Key != 0))
+                        {
+                            <div class="govuk-radios__item">
+                                <input class="govuk-radios__input" id="organisation@(filter.Key)" asp-for="CaseFeedback.ReporterOrganisation"
+                                       type="radio" value="@filter.Key">
+                                <label class="govuk-label govuk-radios__label" for="organisation@(filter.Key)">
+                                    @filter.Value
+                                </label>
+                            </div>
+                        }
+                    </div>
+                </fieldset>
+            </div>
+
+            <button type="submit" class="govuk-button" style="text-decoration: none;">
+                Confirm and send
+            </button>
+
+        </form>
+    </div>
+</div>
