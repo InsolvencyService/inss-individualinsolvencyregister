@@ -96,6 +96,27 @@ using Microsoft.AspNetCore.Mvc;
         }
 
         [Area(AreaNames.Admin)]
+        [HttpPost(AreaNames.Admin + "/subscriber/add-subscriber")]
+        [Authorize(Roles = Role.Admin)]
+        public async Task<IActionResult> AddProfile(SubscriberProfile subscriber)
+        {
+            ValidateDates(subscriber);
+
+            if (ModelState.IsValid)
+            {
+                var createUpdateSubscriber = CreateUpdateSubscriber(subscriber);
+
+                await _subscriberService.CreateSubscriberAsync(createUpdateSubscriber);
+
+                return RedirectToAction("Index", "AdminHome");
+            }
+
+            subscriber.Breadcrumbs = BreadcrumbBuilder.BuildBreadcrumbs(isAdmin: true).ToList();
+
+            return View("ChangeProfile", subscriber);
+        }
+
+        [Area(AreaNames.Admin)]
         [HttpGet(AreaNames.Admin + "/subscriber/{subscriberId}/{page}/{active}/change-profile")]
         [Authorize(Roles = Role.Admin)]
         public async Task<IActionResult> ChangeProfile(int subscriberId, int page, string active)
@@ -148,12 +169,61 @@ using Microsoft.AspNetCore.Mvc;
             return View(subscriberProfile);
         }
 
+
         [Area(AreaNames.Admin)]
         [HttpPost(AreaNames.Admin + "/subscriber/change-profile")]
         [Authorize(Roles = Role.Admin)]
         public async Task<IActionResult> ChangeProfile(SubscriberProfile subscriber)
         {
-            if (!string.IsNullOrEmpty(subscriber.ApplicationDay) && !string.IsNullOrEmpty(subscriber.ApplicationMonth) && !string.IsNullOrEmpty(subscriber.ApplicationYear))
+            ValidateDates(subscriber);
+
+            if (ModelState.IsValid)
+            {
+               
+                var createUpdateSubscriber = CreateUpdateSubscriber(subscriber);
+
+                await _subscriberService.UpdateSubscriberAsync($"{subscriber.SubscriberId}", createUpdateSubscriber);
+
+                return RedirectToAction("Profile", new
+                {
+                    subscriberId = subscriber.SubscriberId,
+                    page = subscriber.SubscriberParameters.Page,
+                    active = subscriber.SubscriberParameters.Active
+                });
+            }
+
+            subscriber.Breadcrumbs = BreadcrumbBuilder.BuildBreadcrumbs(isAdmin: true, showSubscriberList: true, showSubscriber: true, subscriberParameters: subscriber.SubscriberParameters).ToList();
+            
+            return View(subscriber);
+        }
+
+        private static CreateUpdateSubscriber CreateUpdateSubscriber(SubscriberProfile subscriber)
+        {
+            var createUpdateSubscriber = new CreateUpdateSubscriber
+            {
+                AccountActive = subscriber.AccountActive,
+                ApplicationDate = subscriber.ApplicationDate,
+                ContactAddress1 = subscriber.ContactAddress1 ?? string.Empty,
+                ContactAddress2 = subscriber.ContactAddress2 ?? string.Empty,
+                ContactCity = subscriber.ContactCity ?? string.Empty,
+                ContactEmail = subscriber.ContactEmail ?? string.Empty,
+                ContactForename = subscriber.ContactForename ?? string.Empty,
+                ContactPostcode = subscriber.ContactPostcode ?? string.Empty,
+                ContactSurname = subscriber.ContactSurname ?? string.Empty,
+                ContactTelephone = subscriber.ContactTelephone ?? string.Empty,
+                EmailAddresses = subscriber.EmailAddresses.ToList(),
+                OrganisationName = subscriber.OrganisationName ?? string.Empty,
+                OrganisationType = subscriber.OrganisationType,
+                SubscribedFrom = subscriber.SubscribedFrom,
+                SubscribedTo = subscriber.SubscribedTo
+            };
+            return createUpdateSubscriber;
+        }
+
+        private void ValidateDates(SubscriberProfile subscriber)
+        {
+            if (!string.IsNullOrEmpty(subscriber.ApplicationDay) && !string.IsNullOrEmpty(subscriber.ApplicationMonth) &&
+                !string.IsNullOrEmpty(subscriber.ApplicationYear))
             {
                 var isDate =
                     DateTime.TryParse(
@@ -167,59 +237,16 @@ using Microsoft.AspNetCore.Mvc;
                 }
             }
 
-            var validFrom = ValidateDate(subscriber.SubscribedFromDay, subscriber.SubscribedFromMonth, subscriber.SubscribedFromYear, nameof(subscriber.SubscribedFrom), "subscription start date");
-            var validTo = ValidateDate(subscriber.SubscribedToDay, subscriber.SubscribedToMonth, subscriber.SubscribedToYear, nameof(subscriber.SubscribedTo), "subscription end date");
+            var validFrom = ValidateDate(subscriber.SubscribedFromDay, subscriber.SubscribedFromMonth,
+                subscriber.SubscribedFromYear, nameof(subscriber.SubscribedFrom), "subscription start date");
+            var validTo = ValidateDate(subscriber.SubscribedToDay, subscriber.SubscribedToMonth, subscriber.SubscribedToYear,
+                nameof(subscriber.SubscribedTo), "subscription end date");
 
             if (validFrom && validTo && subscriber.SubscribedTo < subscriber.SubscribedFrom)
             {
                 ModelState.AddModelError($"{nameof(subscriber.SubscribedTo)}Date",
                     "The subscription end date date cannot be before the subscription start date");
             }
-
-            if (ModelState.IsValid)
-            {
-               
-                var createUpdateSubscriber = new CreateUpdateSubscriber
-                {
-                    AccountActive = subscriber.AccountActive,
-                    ApplicationDate = subscriber.ApplicationDate,
-                    ContactAddress1 = subscriber.ContactAddress1 ?? string.Empty,
-                    ContactAddress2 = subscriber.ContactAddress2 ?? string.Empty,
-                    ContactCity = subscriber.ContactCity ?? string.Empty,
-                    ContactEmail = subscriber.ContactEmail ?? string.Empty,
-                    ContactForename = subscriber.ContactForename ?? string.Empty,
-                    ContactPostcode = subscriber.ContactPostcode ?? string.Empty,
-                    ContactSurname = subscriber.ContactSurname ?? string.Empty,
-                    ContactTelephone = subscriber.ContactTelephone ?? string.Empty,
-                    EmailAddresses = subscriber.EmailAddresses.ToList(),
-                    OrganisationName = subscriber.OrganisationName ?? string.Empty,
-                    OrganisationType = subscriber.OrganisationType,
-                    SubscribedFrom = subscriber.SubscribedFrom,
-                    SubscribedTo = subscriber.SubscribedTo
-                };
-
-
-                if(subscriber.SubscriberId != 0)
-                {
-                    await _subscriberService.UpdateSubscriberAsync($"{subscriber.SubscriberId}", createUpdateSubscriber);
-
-                    return RedirectToAction("Profile", new
-                    {
-                        subscriberId = subscriber.SubscriberId,
-                        page = subscriber.SubscriberParameters.Page,
-                        active = subscriber.SubscriberParameters.Active
-                    });
-                }
-
-                await _subscriberService.CreateSubscriberAsync(createUpdateSubscriber);
-
-                return RedirectToAction("Index", "AdminHome");
-            }
-
-            subscriber.Breadcrumbs =
-                BreadcrumbBuilder.BuildBreadcrumbs(isAdmin: true, showSubscriberList: true, showSubscriber: true, subscriberParameters: subscriber.SubscriberParameters).ToList();
-
-            return View(subscriber);
         }
 
         private bool ValidateDate(string day, string month, string year, string fieldName, string messageName)

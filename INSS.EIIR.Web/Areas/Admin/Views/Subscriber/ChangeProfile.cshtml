@@ -55,8 +55,12 @@
     <div class="govuk-grid-column-two-thirds">
 
         @await Html.PartialAsync("~/Areas/Admin/Shared/_ValidationSummary.cshtml", ViewData.ModelState)
+            
+        @{
+            var action = Model.SubscriberId == 0 ? "AddProfile" : "ChangeProfile";
+        }
 
-        <form asp-area="admin" asp-controller="subscriber" asp-action="ChangeProfile" method="post">
+        <form asp-area="admin" asp-controller="subscriber" asp-action="@action" method="post">
             <h1 class="govuk-heading-l govuk-!-margin-bottom-8">
                 @header
             </h1>
