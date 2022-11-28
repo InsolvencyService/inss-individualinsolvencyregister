@@ -12,10 +12,10 @@ namespace INSS.EIIR.Web.Controllers
             _caseService = caseService;
         }
 
-        [HttpGet("SearchDetails/{caseNo}/{inivNo}")]
-        public async Task<IActionResult> Index(int caseNo, int inivNo = 1)
+        [HttpGet("case-details/{caseNo}/{indivNo}")]
+        public async Task<IActionResult> Index(int caseNo, int indivNo = 1)
         {
-            var caseDetails = await _caseService.GetCaseAsync(caseNo, inivNo);
+            var caseDetails = await _caseService.GetCaseAsync(caseNo, indivNo);
 
             return View(caseDetails);
         }
