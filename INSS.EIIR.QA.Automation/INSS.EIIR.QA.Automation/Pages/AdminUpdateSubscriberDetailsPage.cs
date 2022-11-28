@@ -111,6 +111,22 @@ namespace INSS.EIIR.QA.Automation.Pages
             EnterText(applicationSubmittedYearTextBoxElement, "100");
         }
 
+        public static void EnterSubscriptionStartDateLaterThanSubscriptionEndDate()
+        {
+            ClearText(startDateDayTextBoxElement);
+            ClearText(startDateMonthTextBoxElement);
+            ClearText(startDateYearTextBoxElement);
+            ClearText(endDateDayTextBoxElement);
+            ClearText(endDateMonthTextBoxElement);
+            ClearText(endDateYearTextBoxElement);
+            EnterText(startDateDayTextBoxElement, "12");
+            EnterText(startDateMonthTextBoxElement, "2");
+            EnterText(startDateYearTextBoxElement, "2025");
+            EnterText(endDateDayTextBoxElement, "12");
+            EnterText(endDateMonthTextBoxElement, "12");
+            EnterText(endDateYearTextBoxElement, "2000");
+        }
+
         public static void EnterInvalidPostcode(string postcode)
         {
             ClearText(addressPostcodeTextBoxElement);
@@ -220,6 +236,9 @@ namespace INSS.EIIR.QA.Automation.Pages
             {
                 ClearText(organisationNameTextBoxElement);
                 EnterText(organisationNameTextBoxElement, Constants.UpdatedOrganisationName);
+
+                SelectFromDropDownByText(tradingTypeDropdownElement, Constants.UpdatedType);
+
                 ClearText(firstNameTextBoxElement);
                 EnterText(firstNameTextBoxElement, Constants.UpdatedFirstName);
                 ClearText(surnameTextBoxElement);
@@ -236,13 +255,24 @@ namespace INSS.EIIR.QA.Automation.Pages
                 EnterText(emailAddressTextBoxElement, Constants.UpdatedEmailAddress);
                 ClearText(telephoneNumberTextBoxElement);
                 EnterText(telephoneNumberTextBoxElement, Constants.UpdatedTelephoneNumber);
-                SelectFromDropDownByText(tradingTypeDropdownElement, Constants.UpdatedType);
+             
+                EnterText(applicationSubmittedDayTextBoxElement, Constants.UpdatedApplicationDateDay);
+                EnterText(applicationSubmittedMonthTextBoxElement, Constants.UpdatedApplicationDateMonth);
+                EnterText(applicationSubmittedYearTextBoxElement, Constants.UpdatedApplicationDateYear);
+                EnterText(startDateDayTextBoxElement, Constants.UpdatedStartDateDay);
+                EnterText(startDateMonthTextBoxElement, Constants.UpdatedStartDateMonth);
+                EnterText(startDateYearTextBoxElement, Constants.UpdatedStartDateYear);
+                EnterText(endDateDayTextBoxElement, Constants.UpdatedEndDateDay);
+                EnterText(endDateMonthTextBoxElement, Constants.UpdatedEndDateMonth);
+                EnterText(endDateYearTextBoxElement, Constants.UpdatedEndDateYear);
+                
                 ClickElement(statusInactiveRadioElement);
             }
             else
             {
                 ClearText(organisationNameTextBoxElement);
                 EnterText(organisationNameTextBoxElement, Constants.organisationName);
+                SelectFromDropDownByText(tradingTypeDropdownElement, Constants.type);
                 ClearText(firstNameTextBoxElement);
                 EnterText(firstNameTextBoxElement, Constants.firstName);
                 ClearText(surnameTextBoxElement);
@@ -266,7 +296,16 @@ namespace INSS.EIIR.QA.Automation.Pages
                 ClearText(emailAddress3Element);
                 EnterText(emailAddress3Element, Constants.dataExtractEmail3);
                 ClickElement(statusActiveRadioElement);
-                SelectFromDropDownByText(tradingTypeDropdownElement, Constants.type);
+                EnterText(applicationSubmittedDayTextBoxElement, Constants.ApplicationDateDay);
+                EnterText(applicationSubmittedMonthTextBoxElement, Constants.ApplicationDateMonth);
+                EnterText(applicationSubmittedYearTextBoxElement, Constants.ApplicationDateYear);
+                EnterText(startDateDayTextBoxElement, Constants.StartDateDay);
+                EnterText(startDateMonthTextBoxElement, Constants.StartDateMonth);
+                EnterText(startDateYearTextBoxElement, Constants.StartDateYear);
+                EnterText(endDateDayTextBoxElement, Constants.EndDateDay);
+                EnterText(endDateMonthTextBoxElement, Constants.EndDateMonth);
+                EnterText(endDateYearTextBoxElement, Constants.EndDateYear);
+
                 ClickSaveAndReturnToSubscriberButton();
             }
         }
@@ -299,5 +338,12 @@ namespace INSS.EIIR.QA.Automation.Pages
             }
         }
 
+        public static void verifySubStartDateLaterThanEndDateErrorMessage()
+        {
+            string SubStartDateLaterThanEndDateErrorMesage = "The subscription end date date cannot be before the subscription start date";
+
+            Assert.AreEqual(SubStartDateLaterThanEndDateErrorMesage, WebDriver.FindElement(By.XPath("//a[@href='#SubscribedToDate']")).Text);
+            Assert.AreEqual(SubStartDateLaterThanEndDateErrorMesage, WebDriver.FindElement(By.Id("organisationName-error")).Text);
+        }
     }
 }

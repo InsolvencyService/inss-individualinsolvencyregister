@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using INSS.EIIR.QA.Automation.Data;
 using INSS.EIIR.QA.Automation.TestFramework;
+using System.Globalization;
 
 namespace INSS.EIIR.QA.Automation.Pages
 {
@@ -204,14 +205,26 @@ namespace INSS.EIIR.QA.Automation.Pages
           
             string fullName = Constants.UpdatedFirstName + " " + Constants.UpdatedSurname;
             string addressLine1 = Constants.UpdatedAddressLine1;
-            string addressLine2 = Constants.UpdatedAddressLine1;
-            string addressLine3 = Constants.UpdatedAddressLine1;
-            string addressLine4 = Constants.UpdatedAddressLine1;
-            string addressLine5 = Constants.UpdatedAddressLine1;
+            string addressLine2 = Constants.UpdatedAddressLine2;
+            string addressLine3 = Constants.UpdatedTown;
+            string addressLine4 = Constants.UpdatedPostcode;
             string telephoneNumber = Constants.UpdatedTelephoneNumber;
             string emailAddress = Constants.UpdatedEmailAddress;
             string status = Constants.UpdatedStatus;
 
+
+            String ExpectedApplicationDate = Constants.UpdatedApplicationDateDay + "/" + Constants.UpdatedApplicationDateMonth + "/" + Constants.UpdatedApplicationDateYear;
+            string ExpectedApplicationDate1 = ConvertToDate(ExpectedApplicationDate);
+            DateTime ExpectedApplicationDate2 = DateTime.Parse(Convert.ToString(ExpectedApplicationDate1));
+
+            String ExpectedStartDate = Constants.UpdatedStartDateDay + "/" + Constants.UpdatedStartDateMonth + "/" + Constants.UpdatedStartDateYear;
+            string ExpectedStartDate1 = ConvertToDate(ExpectedStartDate);
+            DateTime ExpectedStartDate2 = DateTime.Parse(Convert.ToString(ExpectedStartDate1));
+
+            String ExpectedEndDate = Constants.UpdatedEndDateDay + "/" + Constants.UpdatedEndDateMonth + "/" + Constants.UpdatedEndDateYear;
+            string ExpectedEndDate1 = ConvertToDate(ExpectedEndDate);
+            DateTime ExpectedEndDate2 = DateTime.Parse(Convert.ToString(ExpectedEndDate1));
+          
             string organisationType = Constants.UpdatedType;
 
             Assert.AreEqual(organisationName, WebDriver.FindElement(organisationNameElement).Text);
@@ -222,12 +235,18 @@ namespace INSS.EIIR.QA.Automation.Pages
             Assert.IsTrue(WebDriver.FindElement(addressElement).Text.Contains(addressLine2));
             Assert.IsTrue(WebDriver.FindElement(addressElement).Text.Contains(addressLine3));
             Assert.IsTrue(WebDriver.FindElement(addressElement).Text.Contains(addressLine4));
-            Assert.IsTrue(WebDriver.FindElement(addressElement).Text.Contains(addressLine5));
+
 
             Assert.AreEqual(emailAddress, WebDriver.FindElement(emailAddressElement).Text);
             Assert.AreEqual(telephoneNumber, WebDriver.FindElement(telephoneNumberElement).Text);
                      
             Assert.AreEqual(status, WebDriver.FindElement(statusElement).Text);
+
+            //uncomment the following line once the update defect for Application submitted date is fixed. 
+
+          //Assert.AreEqual(convertDate(ExpectedApplicationDate2), convertDate(DateTime.Parse(WebDriver.FindElement(applicationSubmittedDateElement).Text)));
+            Assert.AreEqual(convertDate(ExpectedStartDate2), convertDate(DateTime.Parse(WebDriver.FindElement(startDateElement).Text)));
+            Assert.AreEqual(convertDate(ExpectedEndDate2), convertDate(DateTime.Parse(WebDriver.FindElement(endDateElement).Text)));
         }
 
         //public static void VerifySubscribersUpdatedEmailAddresses()
@@ -241,22 +260,66 @@ namespace INSS.EIIR.QA.Automation.Pages
         //    Assert.AreEqual(emailAddress3, WebDriver.FindElement(emailAddress3Element).Text);
         //}
 
-        public static void VerifySubscribersUpdatedEmailAddresses(int NoOfEmailAddresses)
+        public static string ConvertToDate(string date)
+        {
+            CultureInfo culture = new CultureInfo("es-UK");
+            DateTime date1 = DateTime.Parse(date, culture);
+            string date2 = date1.ToString("dd MMM yyyy");
+            return date2;
+        }
+
+        //public static void VerifySubscribersUpdatedEmailAddresses(int NoOfEmailAddresses)
+        //{
+        //    if (NoOfEmailAddresses == 3)
+        //    {
+        //        Assert.AreEqual(Constants.UpdatedDataExtractEmail1, WebDriver.FindElement(emailAddress1Element).Text);
+        //        Assert.AreEqual(Constants.UpdatedDataExtractEmail2, WebDriver.FindElement(emailAddress2Element).Text);
+        //        Assert.AreEqual(Constants.UpdatedDataExtractEmail3, WebDriver.FindElement(emailAddress3Element).Text);
+        //    }
+        //    else if (NoOfEmailAddresses == 2)
+        //    {
+        //        Assert.AreEqual(Constants.UpdatedDataExtractEmail1, WebDriver.FindElement(emailAddress1Element).Text);
+        //        Assert.AreEqual(Constants.UpdatedDataExtractEmail3, WebDriver.FindElement(emailAddress2Element).Text);              
+        //    }
+        //    else if (NoOfEmailAddresses == 1)
+        //    {  
+        //        Assert.AreEqual(Constants.UpdatedDataExtractEmail1, WebDriver.FindElement(emailAddress1Element).Text);            
+        //    }
+        //}
+
+        public static void VerifySubscribersUpdatedEmailAddresses1(int NoOfEmailAddresses)
         {
             if (NoOfEmailAddresses == 3)
             {
-                Assert.AreEqual(Constants.UpdatedDataExtractEmail1, WebDriver.FindElement(emailAddress1Element).Text);
-                Assert.AreEqual(Constants.UpdatedDataExtractEmail2, WebDriver.FindElement(emailAddress2Element).Text);
-                Assert.AreEqual(Constants.UpdatedDataExtractEmail3, WebDriver.FindElement(emailAddress3Element).Text);
+                string EmailAddress1 = WebDriver.FindElement(emailAddress1Element).Text;
+                string EmailAddress2 = WebDriver.FindElement(emailAddress2Element).Text;
+                string EmailAddress3 = WebDriver.FindElement(emailAddress3Element).Text;
+
+                string[] EmailAddresses = { EmailAddress1,EmailAddress2, EmailAddress3 };
+                bool Email1Present = Array.Exists(EmailAddresses, element => element == Constants.UpdatedDataExtractEmail1);
+                bool Email2Present = Array.Exists(EmailAddresses, element => element == Constants.UpdatedDataExtractEmail2);
+                bool Email3Present = Array.Exists(EmailAddresses, element => element == Constants.UpdatedDataExtractEmail3);
+
+                Assert.IsTrue(Email1Present);
+                Assert.IsTrue(Email2Present);
+                Assert.IsTrue(Email3Present);               
             }
             else if (NoOfEmailAddresses == 2)
             {
-                Assert.AreEqual(Constants.UpdatedDataExtractEmail1, WebDriver.FindElement(emailAddress1Element).Text);
-                Assert.AreEqual(Constants.UpdatedDataExtractEmail3, WebDriver.FindElement(emailAddress2Element).Text);              
+                string EmailAddress1 = WebDriver.FindElement(emailAddress1Element).Text;
+                string EmailAddress2 = WebDriver.FindElement(emailAddress2Element).Text;
+               
+                string[] EmailAddresses = { EmailAddress1, EmailAddress2};
+
+                bool Email1Present = Array.Exists(EmailAddresses, element => element == Constants.UpdatedDataExtractEmail1);
+                bool Email3Present = Array.Exists(EmailAddresses, element => element == Constants.UpdatedDataExtractEmail3);
+
+                Assert.IsTrue(Email1Present);
+                Assert.IsTrue(Email3Present);
             }
             else if (NoOfEmailAddresses == 1)
-            {  
-                Assert.AreEqual(Constants.UpdatedDataExtractEmail1, WebDriver.FindElement(emailAddress1Element).Text);            
+            {
+                Assert.AreEqual(Constants.UpdatedDataExtractEmail1, WebDriver.FindElement(emailAddress1Element).Text);
             }
         }
     }

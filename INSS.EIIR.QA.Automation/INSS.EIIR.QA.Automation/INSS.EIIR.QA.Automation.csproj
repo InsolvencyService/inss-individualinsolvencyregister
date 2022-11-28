@@ -10,6 +10,7 @@
   <ItemGroup>
     <SpecFlowObsoleteCodeBehindFiles Remove="Features\ATU_108_PrivacyPolicyPage - Copy.feature.cs" />
     <SpecFlowObsoleteCodeBehindFiles Remove="Features\ATU_15_StartPage - Copy.feature.cs" />
+    <SpecFlowObsoleteCodeBehindFiles Remove="Features\ATU_186_Admin_Logout - Copy.feature.cs" />
     <SpecFlowObsoleteCodeBehindFiles Remove="Features\ATU_213_ViewSubscriberDetailsPage - Copy.feature.cs" />
     <SpecFlowObsoleteCodeBehindFiles Remove="Features\ATU_220_AdminLandingPage - Copy.feature.cs" />
     <SpecFlowObsoleteCodeBehindFiles Remove="Features\ATU_82_ViewSubscriberListPage - Copy.feature.cs" />
@@ -41,6 +42,9 @@
 		<PackageReference Include="System.Data.SqlClient" Version="4.8.5" />
 		<Compile Update="EnvironmentData.cs">
 		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Compile>
+		<Compile Update="Features\ATU_93_CaseFeedbackPage.feature.cs">
+		  <DependentUpon>ATU_93_CaseFeedbackPage.feature</DependentUpon>
 		</Compile>
 		<Compile Update="Features\ATU_186_Admin_Logout.feature.cs">
 		  <DependentUpon>ATU_186_Admin_Logout.feature</DependentUpon>
@@ -88,6 +92,10 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <SpecFlowFeatureFiles Update="Features\ATU_93_CaseFeedbackPage.feature">
+      <Visible>$(UsingMicrosoftNETSdk)</Visible>
+      <CodeBehindFile>%(RelativeDir)%(Filename).feature$(DefaultLanguageSourceExtension)</CodeBehindFile>
+    </SpecFlowFeatureFiles>
     <SpecFlowFeatureFiles Update="Features\ATU_186_Admin_Logout.feature">
       <Visible>$(UsingMicrosoftNETSdk)</Visible>
       <CodeBehindFile>%(RelativeDir)%(Filename).feature$(DefaultLanguageSourceExtension)</CodeBehindFile>

@@ -12,6 +12,7 @@ Then I am navigated to the Admin Subscriber List page
 And the Active check box is selected by default
 And I click the link for subscriber "Insolvency Service Internal Account"
 
+
 @UpdateSubscriberDetails @Regression
 Scenario: ATU_84 Verify the breadcrumb navigation on the Update subscriber page
 When I click on the Subscriber details change link for "Organisation Name"
@@ -99,3 +100,12 @@ Examples:
 | 1							| 
 | 2							| 
 | 3							| 
+
+
+@UpdateSubscriberDetails @Regression
+Scenario:  ATU_84 Verify the subscription start date must be before subscription end date
+When I click on the Subscriber details change link for "Organisation Name"
+And I populate the subscription start date to be later than the subscription end date on the update subscriber details page
+And I press the Save and return to subscriber button 
+Then the user is shown an error message stating the subscription end date must be later than the subscription start date on the update subscriber page
+

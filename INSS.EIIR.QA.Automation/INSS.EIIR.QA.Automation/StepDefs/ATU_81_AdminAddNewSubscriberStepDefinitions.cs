@@ -18,7 +18,7 @@ namespace INSS.EIIR.QA.Automation
         [Then(@"the Add New Subscriber page is displayed with the expected URL, page title and header")]
         public void ThenTheAddNewSubscriberPageIsDisplayedWithTheExpectedURLPageTitleAndHeader()
         {
-           // AdminAddNewSubscriber.verifyUpdateSubscriberDetailsPage();
+           AdminAddNewSubscriber.verifyAddNewSubscriberPage();
         }
 
         [Then(@"the status is set to Active by default")]
@@ -55,6 +55,13 @@ namespace INSS.EIIR.QA.Automation
         {
             AdminAddNewSubscriber.EnterEmailAddresses(emailAddresses);
         }
+
+        [Given(@"I populate the subscription start date to be later than the subscription end date")]
+        public void GivenIPopulateTheSubscriptionStartDateToBeLaterThanTheSubscriptionEndDate()
+        {
+            AdminAddNewSubscriber.EnterSubscriptionStartDateLaterThanSubscriptionEndDate();
+        }
+
 
         [Given(@"I enter the application date, start date and end date")]
         public void GivenIEnterTheApplicationDateStartDateAndEndDate()
@@ -148,6 +155,13 @@ namespace INSS.EIIR.QA.Automation
         {
             AdminAddNewSubscriber.verifyInvalidApplicationDateYearErrorMessage();
         }
+
+        [Then(@"the user is shown an error message stating the subscription end date must be later than the subscription start date on the add new subscriber page")]
+        public void ThenTheUserIsShownAnErrorMessageStatingTheSubscriptionEndDateMustBeLaterThanTheSubscriptionStartDateOnTheAddNewSubscriberPage()
+        {
+            AdminAddNewSubscriber.verifySubStartDateLaterThanEndDateErrorMessage();
+        }
+
 
     }
 }

@@ -13,6 +13,7 @@ namespace INSS.EIIR.QA.Automation
         public void ThenIClickTheLinkForSubscriber(string Subscriber)
         {
             AdminViewSubscriberListPage.ClickSubscriberLink(Subscriber);
+          
         }
 
         [Then(@"the Subscriber Details page is displayed with the expected URL, page title and header")]

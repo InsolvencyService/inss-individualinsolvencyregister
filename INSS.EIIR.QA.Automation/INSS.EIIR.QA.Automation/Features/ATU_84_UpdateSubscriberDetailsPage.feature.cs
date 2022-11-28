@@ -105,7 +105,7 @@ testRunner.And("I click the link for subscriber \"Insolvency Service Internal Ac
                     "Regression"};
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("ATU_84 Verify the breadcrumb navigation on the Update subscriber page", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
-#line 16
+#line 17
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
             bool isScenarioIgnored = default(bool);
@@ -128,33 +128,33 @@ this.ScenarioInitialize(scenarioInfo);
 #line 9
 this.FeatureBackground();
 #line hidden
-#line 17
+#line 18
 testRunner.When("I click on the Subscriber details change link for \"Organisation Name\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
-#line 18
+#line 19
 testRunner.And("I click the Subscriber details breadcrumb on the Update subscriber details page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 19
+#line 20
 testRunner.Then("the Subscriber Details page for \"Insolvency Service Internal Account\" is displaye" +
                         "d with details for this subscriber", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
-#line 20
+#line 21
 testRunner.Given("I navigate back to the Update subscriber details page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
-#line 21
+#line 22
 testRunner.And("I click the Subscribers breadcrumb on the Update subscriber details page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 22
+#line 23
 testRunner.Then("I am navigated to the Admin Subscriber List page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
-#line 23
+#line 24
 testRunner.Given("I navigate back to the Update subscriber details page from the Subscriber List pa" +
                         "ge", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
-#line 24
+#line 25
 testRunner.And("I click the Home breadcrumb on the Update subscriber details page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 25
+#line 26
 testRunner.Then("the Admin landing page will be displayed and the URL, page title and H1 will be a" +
                         "s per requirements", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
@@ -173,7 +173,7 @@ testRunner.Then("the Admin landing page will be displayed and the URL, page titl
                     "Regression"};
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("ATU_84 Verify the Update subscriber details page URL, page title", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
-#line 29
+#line 30
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
             bool isScenarioIgnored = default(bool);
@@ -196,10 +196,10 @@ this.ScenarioInitialize(scenarioInfo);
 #line 9
 this.FeatureBackground();
 #line hidden
-#line 30
+#line 31
 testRunner.When("I click on the Subscriber details change link for \"Organisation Name\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
-#line 31
+#line 32
 testRunner.Then("the Update Subscriber Details page is displayed with the expected URL, page title" +
                         " and header", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
@@ -234,7 +234,7 @@ testRunner.Then("the Update Subscriber Details page is displayed with the expect
             argumentsOfScenario.Add("TextField", textField);
             argumentsOfScenario.Add("ErrorMessage", errorMessage);
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("ATU_84 Verify the error messages for the text entry fields", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
-#line 34
+#line 35
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
             bool isScenarioIgnored = default(bool);
@@ -257,16 +257,16 @@ this.ScenarioInitialize(scenarioInfo);
 #line 9
 this.FeatureBackground();
 #line hidden
-#line 35
+#line 36
 testRunner.When("I click on the Subscriber details change link for \"Organisation Name\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
-#line 36
+#line 37
 testRunner.And(string.Format("I clear the {0} field", textField), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 37
+#line 38
 testRunner.And("I press the Save and return to subscriber button", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 38
+#line 39
 testRunner.Then(string.Format("the user is shown the following error message {0}", errorMessage), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
             }
@@ -295,7 +295,7 @@ testRunner.Then(string.Format("the user is shown the following error message {0}
             argumentsOfScenario.Add("Postcode", postcode);
             argumentsOfScenario.Add("ErrorMessage", errorMessage);
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("ATU_84 Verify the incorretc postcode format error message", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
-#line 54
+#line 55
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
             bool isScenarioIgnored = default(bool);
@@ -318,19 +318,19 @@ this.ScenarioInitialize(scenarioInfo);
 #line 9
 this.FeatureBackground();
 #line hidden
-#line 55
+#line 56
 testRunner.When("I click on the Subscriber details change link for \"Organisation Name\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
-#line 56
+#line 57
 testRunner.And(string.Format("I clear the {0} field", textField), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 57
+#line 58
 testRunner.And(string.Format("I enter the following invalid {0}", postcode), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 58
+#line 59
 testRunner.And("I press the Save and return to subscriber button", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 59
+#line 60
 testRunner.Then(string.Format("the user is shown the following error message {0}", errorMessage), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
             }
@@ -348,7 +348,7 @@ testRunner.Then(string.Format("the user is shown the following error message {0}
                     "Regression"};
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("ATU_84 Verify the error messages for Application submitted date", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
-#line 70
+#line 71
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
             bool isScenarioIgnored = default(bool);
@@ -371,51 +371,51 @@ this.ScenarioInitialize(scenarioInfo);
 #line 9
 this.FeatureBackground();
 #line hidden
-#line 71
+#line 72
 testRunner.When("I click on the Subscriber details change link for \"Organisation Name\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
-#line 72
+#line 73
 testRunner.Then("the Update Subscriber Details page is displayed with the expected URL, page title" +
                         " and header", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
-#line 73
+#line 74
 testRunner.And("I update the Application Date to have a blank Day, Month and Year", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 74
-testRunner.And("I press the Save and return to subscriber button", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-#line hidden
 #line 75
-testRunner.Then("the user is shown error messages stating the Day, Month and Year are missing", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+testRunner.And("I press the Save and return to subscriber button", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
 #line 76
-testRunner.When("I enter non numeric details in to the Application submitted date fields", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+testRunner.Then("the user is shown error messages stating the Day, Month and Year are missing", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
 #line 77
-testRunner.And("I press the Save and return to subscriber button", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+testRunner.When("I enter non numeric details in to the Application submitted date fields", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
 #line 78
+testRunner.And("I press the Save and return to subscriber button", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line hidden
+#line 79
 testRunner.Then("the user is shown error messages stating which numeric values are acceptable in t" +
                         "he application submitted date", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
-#line 79
+#line 80
 testRunner.When("I enter an invalid date in to the Application submitted date fields such as \"30-0" +
                         "2-2025\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
-#line 80
+#line 81
 testRunner.And("I press the Save and return to subscriber button", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 81
+#line 82
 testRunner.Then("the user is shown error messages stating the application start date entered must " +
                         "be a real date", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
-#line 82
+#line 83
 testRunner.When("I enter an invalid year in to the Application submitted date fields for example \"" +
                         "1000\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
-#line 83
+#line 84
 testRunner.And("I press the Save and return to subscriber button", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 84
+#line 85
 testRunner.Then("the user is shown error messages stating \"the application submitted date YEAR ent" +
                         "ered must be between 1900 and 3000\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
@@ -445,7 +445,7 @@ testRunner.Then("the user is shown error messages stating \"the application subm
             argumentsOfScenario.Add("NumberOfEmailAddresses", numberOfEmailAddresses);
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("ATU_84 Update the details for a subscriber with between 1 and 3 data extract emai" +
                     "ls and verify changes are reflected on the Subscriber Details page", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
-#line 87
+#line 88
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
             bool isScenarioIgnored = default(bool);
@@ -468,30 +468,82 @@ this.ScenarioInitialize(scenarioInfo);
 #line 9
 this.FeatureBackground();
 #line hidden
-#line 88
+#line 89
 testRunner.When("I click on the Subscriber details change link for \"Organisation Name\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
-#line 89
+#line 90
 testRunner.And("I update the subscriber details using the \"Update values\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 90
+#line 91
 testRunner.And(string.Format("I update {0} email addresses on the update subscriber details", numberOfEmailAddresses), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 91
+#line 92
 testRunner.And("I press the Save and return to subscriber button", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 92
+#line 93
 testRunner.Then("the Subscriber Details page for \"Insolvency Service Internal Account\" is displaye" +
                         "d with the updated details for this subscriber", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
-#line 93
+#line 94
 testRunner.And(string.Format("the updated email addressess for {0} are displayed for the subscriber", numberOfEmailAddresses), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 94
+#line 95
 testRunner.When("I click on the Subscriber details change link for \"Organisation Name\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
-#line 95
+#line 96
 testRunner.And("I update the subscriber details using the \"Original values\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line hidden
+            }
+            this.ScenarioCleanup();
+        }
+        
+        [NUnit.Framework.TestAttribute()]
+        [NUnit.Framework.DescriptionAttribute("ATU_84 Verify the subscription start date must be before subscription end date")]
+        [NUnit.Framework.CategoryAttribute("UpdateSubscriberDetails")]
+        [NUnit.Framework.CategoryAttribute("Regression")]
+        public virtual void ATU_84VerifyTheSubscriptionStartDateMustBeBeforeSubscriptionEndDate()
+        {
+            string[] tagsOfScenario = new string[] {
+                    "UpdateSubscriberDetails",
+                    "Regression"};
+            System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("ATU_84 Verify the subscription start date must be before subscription end date", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
+#line 106
+this.ScenarioInitialize(scenarioInfo);
+#line hidden
+            bool isScenarioIgnored = default(bool);
+            bool isFeatureIgnored = default(bool);
+            if ((tagsOfScenario != null))
+            {
+                isScenarioIgnored = tagsOfScenario.Where(__entry => __entry != null).Where(__entry => String.Equals(__entry, "ignore", StringComparison.CurrentCultureIgnoreCase)).Any();
+            }
+            if ((this._featureTags != null))
+            {
+                isFeatureIgnored = this._featureTags.Where(__entry => __entry != null).Where(__entry => String.Equals(__entry, "ignore", StringComparison.CurrentCultureIgnoreCase)).Any();
+            }
+            if ((isScenarioIgnored || isFeatureIgnored))
+            {
+                testRunner.SkipScenario();
+            }
+            else
+            {
+                this.ScenarioStart();
+#line 9
+this.FeatureBackground();
+#line hidden
+#line 107
+testRunner.When("I click on the Subscriber details change link for \"Organisation Name\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+#line hidden
+#line 108
+testRunner.And("I populate the subscription start date to be later than the subscription end date" +
+                        " on the update subscriber details page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line hidden
+#line 109
+testRunner.And("I press the Save and return to subscriber button", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line hidden
+#line 110
+testRunner.Then("the user is shown an error message stating the subscription end date must be late" +
+                        "r than the subscription start date on the update subscriber page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
             }
             this.ScenarioCleanup();

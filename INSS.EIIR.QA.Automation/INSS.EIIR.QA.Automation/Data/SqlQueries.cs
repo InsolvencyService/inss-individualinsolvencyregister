@@ -12,26 +12,6 @@ namespace INSS.EIIR.QA.Automation.Data
     {
         private static readonly string ConnectionString = WebDriverFactory.Config["DBConnectionString"];
 
-        public static void Test1(string ULN)
-        {
-            var getPathwayId = "select Id from TqRegistrationPathway where TqRegistrationProfileId in (select Id from tqregistrationprofile where uniquelearnernumber = " + ULN + ")";
-            var pathwayID = SqlDatabaseConncetionHelper.ReadDataFromDataBase(getPathwayId, ConnectionString);
-            int pathwayID1 = Convert.ToInt32(pathwayID[0][0]);
-            var updateAcademicYearSQL = "update TqRegistrationPathway set AcademicYear = 2021 where Id = " + pathwayID1;
-            SqlDatabaseConncetionHelper.ExecuteSqlCommand(updateAcademicYearSQL, ConnectionString);
-        }
-
-        public static String Test2(string TLevel, string CoreGrade, string SpecialismGrade)
-        {
-            var SQLQuery1 = "Select tlup.Value from OverallGradeLookup og join TlPathway tp on og.TlPathwayId=tp.Id join TlLookup tl on og.TlLookupCoreGradeId=tl.id join TlLookup tlu on og.TlLookupSpecialismGradeId=tlu.id join TlLookup tlup on og.TlLookupOverallGradeId=tlup.id where ";
-            var SQLQuery2 = "tp.name = '" + TLevel + "' and tl.Value = '" + CoreGrade + "' and tlu.Value = '" + SpecialismGrade + "' order by tp.Name";
-            var SQLQuery3 = SQLQuery1 + SQLQuery2;
-
-            var OverallResult = SqlDatabaseConncetionHelper.ReadDataFromDataBase(SQLQuery3, ConnectionString);
-            string OverallResult1 = Convert.ToString(OverallResult[0][0]);
-            return OverallResult1;
-        }
-
         public static List<object[]> GetAllSubscribersListFromDb()
         {
             string SQLQuery = "select subscriber_id, organisation_name, subscribed_to from subscriber_account order by subscribed_to desc";
@@ -85,9 +65,51 @@ namespace INSS.EIIR.QA.Automation.Data
             }
         }
 
+        public static void createCaseFeedbackData()
+        {
+            string DeleteSQL = "delete from CI_Case_Feedback";
+            SqlDatabaseConncetionHelper.ExecuteSqlCommand(DeleteSQL, ConnectionString);
+            
+            string[] Organisation = { "Other", "Debt recovery agency", "Financial services", "Government department", "Mortgage provider", "Bank or building society", "Credit card issuer", "Credit reference agency", "Member of the public" };
 
+            string[] CaseNo = { "366226", "600000021", "11010005" };
 
+            int count = 0;
+            foreach (string member in Organisation)
+            {
+                int count1 = 0;
+                foreach (string CN in CaseNo)
+                {
 
+                    string SQLQuery1 = "insert into CI_Case_Feedback(FeedbackDate, CaseId, Message, ReporterFullname, ReporterEmailAddress, ReporterOrganisation, Viewed) values('2022-11-15'," + CaseNo[count1] +  ", 'Test Message', 'John Smith', 'jsmith@test.com','" + Organisation[count] + "', 0)";
+                    SqlDatabaseConncetionHelper.ExecuteSqlCommand(SQLQuery1, ConnectionString);
+                    count1 = count1+1;
+                }
+                count = count + 1;
+            }
+        }
 
+        public static List<object[]> GetCaseFeedbackDetails(string Organisation, string Type)
+        {
+            string Type1;
+            if (Type == "IVAs")
+            {
+                Type1 = "I";
+            }
+            else if (Type == "Bankruptcies")
+            {
+                Type1 = "B";
+            }
+            else
+            {
+                Type1 = "D";
+            }
+
+            string SQLQuery = "select CICF.ReporterFullname, CICF.ReporterEmailAddress, CICF.Viewed, CICF.ReporterOrganisation, CI.insolvency_type, CI.case_name, CICF.FeedbackDate, CICF.CaseId, cicf.Message from CI_Case_Feedback CICF, ci_case CI where CI.case_no = CICF.caseid";
+            string SQLQuery1 = SQLQuery + " and CICF.ReporterOrganisation = '" + Organisation + "' and CI.insolvency_type = '" + Type1 + "'";
+            List<object[]> result = SqlDatabaseConncetionHelper.GetFieldValue(SQLQuery1, ConnectionString);
+            return result;
+        }
+       
     }
 }
