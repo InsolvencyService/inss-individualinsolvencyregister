@@ -19,8 +19,7 @@ Then the Admin landing page will be displayed and the URL, page title and H1 wil
 @AddSubscriberDetails @Regression
 Scenario: ATU_81 Verify the Add subscriber details page URL, page title1
 Then the Add New Subscriber page is displayed with the expected URL, page title and header
-##reactivate the line below once the defect for setting the status to active by default is resolved.
-##And the status is set to Active by default
+And the status is set to Active by default
 
 @AddSubscriberDetails @Regression
 Scenario: ATU_81 Verify the error messages for the text entry fields on the add new subscriber page
@@ -90,3 +89,10 @@ Examples:
 | 1							| 
 | 2							| 
 | 3							| 
+
+@AddSubscriberDetails @Regression
+Scenario: ATU_81 Verify the subscription start date must be before subscription end date
+Given I first populate all of the fields on the Add new subscriber page
+And I populate the subscription start date to be later than the subscription end date
+And I press the Save and continue button 
+Then the user is shown an error message stating the subscription end date must be later than the subscription start date on the add new subscriber page

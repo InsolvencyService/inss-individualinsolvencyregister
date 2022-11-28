@@ -6,6 +6,8 @@ using INSS.EIIR.QA.Automation.Pages;
 using OpenQA.Selenium;
 using System.Collections.Generic;
 using System;
+using OpenQA.Selenium.Support.UI;
+using OpenQA.Selenium.Interactions;
 
 namespace INSS.EIIR.QA.Automation
 {
@@ -112,12 +114,13 @@ namespace INSS.EIIR.QA.Automation
         public void ThenTheSubscriberDetailsPageForIsDisplayedWithTheUpdatedDetailsForThisSubscriber(string subscriber)
         {
             AdminSubscriberDetailsPage.VerifyUpdatedSubscribersDetails();
+           
         }
 
         [Then(@"the updated email addressess for (.*) are displayed for the subscriber")]
         public void ThenTheUpdatedEmailAddressessForAreDisplayedForTheSubscriber(int NumberOfEmailAddresses)
         {
-            AdminSubscriberDetailsPage.VerifySubscribersUpdatedEmailAddresses(NumberOfEmailAddresses);
+            AdminSubscriberDetailsPage.VerifySubscribersUpdatedEmailAddresses1(NumberOfEmailAddresses);
         }
 
 
@@ -160,6 +163,16 @@ namespace INSS.EIIR.QA.Automation
             AdminUpdateSubscriberDetailsPage.EnterEmailAddresses(NumberOfEmailAddresses);
         }
 
+        [When(@"I populate the subscription start date to be later than the subscription end date on the update subscriber details page")]
+        public void WhenIPopulateTheSubscriptionStartDateToBeLaterThanTheSubscriptionEndDateOnTheUpdateSubscriberDetailsPage()
+        {
+            AdminUpdateSubscriberDetailsPage.EnterSubscriptionStartDateLaterThanSubscriptionEndDate();
+        }
 
+        [Then(@"the user is shown an error message stating the subscription end date must be later than the subscription start date on the update subscriber page")]
+        public void ThenTheUserIsShownAnErrorMessageStatingTheSubscriptionEndDateMustBeLaterThanTheSubscriptionStartDateOnTheUpdateSubscriberPage()
+        {
+            AdminUpdateSubscriberDetailsPage.verifySubStartDateLaterThanEndDateErrorMessage();
+        }
     }
 }

@@ -110,22 +110,24 @@ namespace INSS.EIIR.QA.Automation.Pages
         }
 
 
-
         public static void ClickSubscriberLink(string SubscriberName)
         {
+            //store the table column list in to a list
             IList<IWebElement> all = WebDriver.FindElements(By.XPath("//table/tbody//td[2]/a"));
-
-            String[] allText = new String[all.Count];
+            
+            //intialise the counter to 0
             int i = 0;
+
+            //loop through the list looking for your subscriber. Update the counter each time you loop around 
             foreach (IWebElement element in all)
             {
-
-                allText[i] = element.Text;
-                string Test = allText[i];
-       
+                //take the subscriber name from the list and store it in to the string variable
+                string ScreenText = element.Text;
+               
+                //increment the counter by 1
                 i = i + 1;
 
-                if (Test == SubscriberName)
+                if (ScreenText == SubscriberName)
                 {
                     String ExpectedXpath = "//*[@id='main-content']/div/div[2]/table/tbody/tr[" + i + "]/td[2]/a";
                     WebDriver.FindElement(By.XPath(ExpectedXpath)).Click();

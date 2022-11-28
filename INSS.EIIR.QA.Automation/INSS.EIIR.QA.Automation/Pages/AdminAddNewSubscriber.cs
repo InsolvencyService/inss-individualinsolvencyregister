@@ -9,9 +9,9 @@ namespace INSS.EIIR.QA.Automation.Pages
 {
     internal class AdminAddNewSubscriber : ElementHelper
     {
-        private static string expectedPageUrl { get; } = "https://app-uksouth-sit-eiir-web.azurewebsites.net/admin/subscriber/add-profile";
-        private static string expectedPageTitle { get; } = "Update subscriber details - Individual Insolvency Register";
-        private static string expectedPageHeader { get; } = "Update subscriber details";
+        private static string expectedPageUrl { get; } = "https://app-uksouth-sit-eiir-web.azurewebsites.net/admin/subscriber/add-subscriber";
+        private static string expectedPageTitle { get; } = "Add subscriber - Individual Insolvency Register";
+        private static string expectedPageHeader { get; } = "Add new subscriber";
         private static By pageHeaderElement { get; } = By.XPath("//*[@id='main-content']//h1");
         private static By homeBreadcrumb { get; } = By.LinkText("Home");
         private static By subscribersBreadcrumb { get; } = By.LinkText("Subscribers");
@@ -46,12 +46,10 @@ namespace INSS.EIIR.QA.Automation.Pages
 
 
 
-        public static void verifyUpdateSubscriberDetailsPage()
+        public static void verifyAddNewSubscriberPage()
         {
-            //uncomment the following assertions once the URL and page title defect is resolved.
-
-             Assert.IsTrue(WebDriver.Url.Contains(expectedPageUrl));
-             Assert.AreEqual(expectedPageTitle, WebDriver.Title);
+            Assert.IsTrue(WebDriver.Url.Contains(expectedPageUrl));
+            Assert.AreEqual(expectedPageTitle, WebDriver.Title);
             Assert.AreEqual(expectedPageHeader, WebDriver.FindElement(pageHeaderElement).Text);
         }
 
@@ -262,7 +260,31 @@ namespace INSS.EIIR.QA.Automation.Pages
             bool Status = WebDriver.FindElement(statusActiveRadioElement).Selected;
             Assert.IsTrue(Status);
             
-        }       
+        }
+
+        public static void EnterSubscriptionStartDateLaterThanSubscriptionEndDate()
+        {
+            ClearText(startDateDayTextBoxElement);
+            ClearText(startDateMonthTextBoxElement);
+            ClearText(startDateYearTextBoxElement);
+            ClearText(endDateDayTextBoxElement);
+            ClearText(endDateMonthTextBoxElement);
+            ClearText(endDateYearTextBoxElement);
+            EnterText(startDateDayTextBoxElement, "12");
+            EnterText(startDateMonthTextBoxElement, "2");
+            EnterText(startDateYearTextBoxElement, "2025");
+            EnterText(endDateDayTextBoxElement, "12");
+            EnterText(endDateMonthTextBoxElement, "12");
+            EnterText(endDateYearTextBoxElement, "2000");
+        }
+
+        public static void verifySubStartDateLaterThanEndDateErrorMessage()
+        {
+            string SubStartDateLaterThanEndDateErrorMesage = "The subscription end date date cannot be before the subscription start date";
+
+            Assert.AreEqual(SubStartDateLaterThanEndDateErrorMesage, WebDriver.FindElement(By.XPath("//a[@href='#SubscribedToDate']")).Text);
+            Assert.AreEqual(SubStartDateLaterThanEndDateErrorMesage, WebDriver.FindElement(By.Id("organisationName-error")).Text);
+        }
 
     }
 }
