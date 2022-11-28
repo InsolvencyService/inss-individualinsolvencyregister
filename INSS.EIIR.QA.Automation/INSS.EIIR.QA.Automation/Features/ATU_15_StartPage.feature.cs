@@ -20,8 +20,8 @@ namespace INSS.EIIR.QA.Automation.Features
     [System.CodeDom.Compiler.GeneratedCodeAttribute("TechTalk.SpecFlow", "3.9.0.0")]
     [System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     [NUnit.Framework.TestFixtureAttribute()]
-    [NUnit.Framework.DescriptionAttribute("Citizen - Start Page")]
-    public partial class Citizen_StartPageFeature
+    [NUnit.Framework.DescriptionAttribute("ATU_15 Citizen - Start Page")]
+    public partial class ATU_15Citizen_StartPageFeature
     {
         
         private TechTalk.SpecFlow.ITestRunner testRunner;
@@ -35,7 +35,7 @@ namespace INSS.EIIR.QA.Automation.Features
         public virtual void FeatureSetup()
         {
             testRunner = TechTalk.SpecFlow.TestRunnerManager.GetTestRunner();
-            TechTalk.SpecFlow.FeatureInfo featureInfo = new TechTalk.SpecFlow.FeatureInfo(new System.Globalization.CultureInfo("en-US"), "Features", "Citizen - Start Page", "\tAs a user\r\n\tI need the EIIR sinitial start page updated in line with the new pro" +
+            TechTalk.SpecFlow.FeatureInfo featureInfo = new TechTalk.SpecFlow.FeatureInfo(new System.Globalization.CultureInfo("en-US"), "Features", "ATU_15 Citizen - Start Page", "\tAs a user\r\n\tI need the EIIR sinitial start page updated in line with the new pro" +
                     "totype screen [URL]\r\n\tSo that I can search EIIR using this new screen design", ProgrammingLanguage.CSharp, ((string[])(null)));
             testRunner.OnFeatureStart(featureInfo);
         }
@@ -84,16 +84,16 @@ testRunner.Given("I navigate to the EIIR Start Page", ((string)(null)), ((TechTa
         }
         
         [NUnit.Framework.TestAttribute()]
-        [NUnit.Framework.DescriptionAttribute("Verify the EIIR start page URL, title and page heading")]
+        [NUnit.Framework.DescriptionAttribute("ATU_15 Verify the EIIR start page URL, title and page heading")]
         [NUnit.Framework.CategoryAttribute("StartPage")]
         [NUnit.Framework.CategoryAttribute("Regression")]
-        public virtual void VerifyTheEIIRStartPageURLTitleAndPageHeading()
+        public virtual void ATU_15VerifyTheEIIRStartPageURLTitleAndPageHeading()
         {
             string[] tagsOfScenario = new string[] {
                     "StartPage",
                     "Regression"};
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Verify the EIIR start page URL, title and page heading", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("ATU_15 Verify the EIIR start page URL, title and page heading", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
 #line 11
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
@@ -126,16 +126,16 @@ testRunner.Then("the EIIR Start page will be displayed and the URL, page title a
         }
         
         [NUnit.Framework.TestAttribute()]
-        [NUnit.Framework.DescriptionAttribute("Verify the \'Start now\' button takes the user to the Search screen")]
+        [NUnit.Framework.DescriptionAttribute("ATU_15 Verify the \'Start now\' button takes the user to the Search screen")]
         [NUnit.Framework.CategoryAttribute("StartPage")]
         [NUnit.Framework.CategoryAttribute("Regression")]
-        public virtual void VerifyTheStartNowButtonTakesTheUserToTheSearchScreen()
+        public virtual void ATU_15VerifyTheStartNowButtonTakesTheUserToTheSearchScreen()
         {
             string[] tagsOfScenario = new string[] {
                     "StartPage",
                     "Regression"};
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Verify the \'Start now\' button takes the user to the Search screen", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("ATU_15 Verify the \'Start now\' button takes the user to the Search screen", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
 #line 15
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
@@ -170,18 +170,18 @@ testRunner.Then("I am taken to the Search page", ((string)(null)), ((TechTalk.Sp
         }
         
         [NUnit.Framework.TestAttribute()]
-        [NUnit.Framework.DescriptionAttribute("Verify the navigation of the Terms and conditions footer link on the EIIR start p" +
-            "age")]
+        [NUnit.Framework.DescriptionAttribute("ATU_15 Verify the navigation of the Terms and conditions footer link on the EIIR " +
+            "start page")]
         [NUnit.Framework.CategoryAttribute("StartPage")]
         [NUnit.Framework.CategoryAttribute("Regression")]
-        public virtual void VerifyTheNavigationOfTheTermsAndConditionsFooterLinkOnTheEIIRStartPage()
+        public virtual void ATU_15VerifyTheNavigationOfTheTermsAndConditionsFooterLinkOnTheEIIRStartPage()
         {
             string[] tagsOfScenario = new string[] {
                     "StartPage",
                     "Regression"};
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Verify the navigation of the Terms and conditions footer link on the EIIR start p" +
-                    "age", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("ATU_15 Verify the navigation of the Terms and conditions footer link on the EIIR " +
+                    "start page", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
 #line 20
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
@@ -217,16 +217,16 @@ testRunner.Then("the following URL is displayed \"https://app-uksouth-sit-eiir-w
         }
         
         [NUnit.Framework.TestAttribute()]
-        [NUnit.Framework.DescriptionAttribute("Verify the navigation of the Privacy footer link on the EIIR start page")]
+        [NUnit.Framework.DescriptionAttribute("ATU_15 Verify the navigation of the Privacy footer link on the EIIR start page")]
         [NUnit.Framework.CategoryAttribute("StartPage")]
         [NUnit.Framework.CategoryAttribute("Regression")]
-        public virtual void VerifyTheNavigationOfThePrivacyFooterLinkOnTheEIIRStartPage()
+        public virtual void ATU_15VerifyTheNavigationOfThePrivacyFooterLinkOnTheEIIRStartPage()
         {
             string[] tagsOfScenario = new string[] {
                     "StartPage",
                     "Regression"};
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Verify the navigation of the Privacy footer link on the EIIR start page", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("ATU_15 Verify the navigation of the Privacy footer link on the EIIR start page", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
 #line 25
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
@@ -262,18 +262,18 @@ testRunner.Then("the following URL is displayed \"https://app-uksouth-sit-eiir-w
         }
         
         [NUnit.Framework.TestAttribute()]
-        [NUnit.Framework.DescriptionAttribute("Verify the navigation of the Accessibility Statement footer link on the EIIR star" +
-            "t page")]
+        [NUnit.Framework.DescriptionAttribute("ATU_15 Verify the navigation of the Accessibility Statement footer link on the EI" +
+            "IR start page")]
         [NUnit.Framework.CategoryAttribute("StartPage")]
         [NUnit.Framework.CategoryAttribute("Regression")]
-        public virtual void VerifyTheNavigationOfTheAccessibilityStatementFooterLinkOnTheEIIRStartPage()
+        public virtual void ATU_15VerifyTheNavigationOfTheAccessibilityStatementFooterLinkOnTheEIIRStartPage()
         {
             string[] tagsOfScenario = new string[] {
                     "StartPage",
                     "Regression"};
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Verify the navigation of the Accessibility Statement footer link on the EIIR star" +
-                    "t page", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("ATU_15 Verify the navigation of the Accessibility Statement footer link on the EI" +
+                    "IR start page", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
 #line 30
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
@@ -309,18 +309,18 @@ testRunner.Then("the following URL is displayed \"https://app-uksouth-sit-eiir-w
         }
         
         [NUnit.Framework.TestAttribute()]
-        [NUnit.Framework.DescriptionAttribute("Verify the navigation of the Terms and conditions hyperlink on the EIIR start pag" +
-            "e")]
+        [NUnit.Framework.DescriptionAttribute("ATU_15 Verify the navigation of the Terms and conditions hyperlink on the EIIR st" +
+            "art page")]
         [NUnit.Framework.CategoryAttribute("StartPage")]
         [NUnit.Framework.CategoryAttribute("Regression")]
-        public virtual void VerifyTheNavigationOfTheTermsAndConditionsHyperlinkOnTheEIIRStartPage()
+        public virtual void ATU_15VerifyTheNavigationOfTheTermsAndConditionsHyperlinkOnTheEIIRStartPage()
         {
             string[] tagsOfScenario = new string[] {
                     "StartPage",
                     "Regression"};
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Verify the navigation of the Terms and conditions hyperlink on the EIIR start pag" +
-                    "e", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("ATU_15 Verify the navigation of the Terms and conditions hyperlink on the EIIR st" +
+                    "art page", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
 #line 35
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
@@ -356,16 +356,18 @@ testRunner.Then("the following URL is displayed \"https://app-uksouth-sit-eiir-w
         }
         
         [NUnit.Framework.TestAttribute()]
-        [NUnit.Framework.DescriptionAttribute("Verify the navigation of the Insolvency Service hyperlink on the EIIR start page")]
+        [NUnit.Framework.DescriptionAttribute("ATU_15 Verify the navigation of the Insolvency Service hyperlink on the EIIR star" +
+            "t page")]
         [NUnit.Framework.CategoryAttribute("StartPage")]
         [NUnit.Framework.CategoryAttribute("Regression")]
-        public virtual void VerifyTheNavigationOfTheInsolvencyServiceHyperlinkOnTheEIIRStartPage()
+        public virtual void ATU_15VerifyTheNavigationOfTheInsolvencyServiceHyperlinkOnTheEIIRStartPage()
         {
             string[] tagsOfScenario = new string[] {
                     "StartPage",
                     "Regression"};
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Verify the navigation of the Insolvency Service hyperlink on the EIIR start page", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("ATU_15 Verify the navigation of the Insolvency Service hyperlink on the EIIR star" +
+                    "t page", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
 #line 40
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
@@ -401,18 +403,18 @@ testRunner.Then("the following URL is displayed \"https://www.gov.uk/government/
         }
         
         [NUnit.Framework.TestAttribute()]
-        [NUnit.Framework.DescriptionAttribute("Verify the (Get help from the Insolvency Service) link in the Related content sec" +
-            "tion on the EIIR start page")]
+        [NUnit.Framework.DescriptionAttribute("ATU_15 Verify the (Get help from the Insolvency Service) link in the Related cont" +
+            "ent section on the EIIR start page")]
         [NUnit.Framework.CategoryAttribute("StartPage")]
         [NUnit.Framework.CategoryAttribute("Regression")]
-        public virtual void VerifyTheGetHelpFromTheInsolvencyServiceLinkInTheRelatedContentSectionOnTheEIIRStartPage()
+        public virtual void ATU_15VerifyTheGetHelpFromTheInsolvencyServiceLinkInTheRelatedContentSectionOnTheEIIRStartPage()
         {
             string[] tagsOfScenario = new string[] {
                     "StartPage",
                     "Regression"};
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Verify the (Get help from the Insolvency Service) link in the Related content sec" +
-                    "tion on the EIIR start page", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("ATU_15 Verify the (Get help from the Insolvency Service) link in the Related cont" +
+                    "ent section on the EIIR start page", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
 #line 45
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
@@ -447,18 +449,18 @@ testRunner.Then("the following URL is displayed \"https://www.gov.uk/get-help-in
         }
         
         [NUnit.Framework.TestAttribute()]
-        [NUnit.Framework.DescriptionAttribute("Verify the (Find out more about bankruptcy and insolvency) link in the Related co" +
-            "ntent section on the EIIR start page")]
+        [NUnit.Framework.DescriptionAttribute("ATU_15 Verify the (Find out more about bankruptcy and insolvency) link in the Rel" +
+            "ated content section on the EIIR start page")]
         [NUnit.Framework.CategoryAttribute("StartPage")]
         [NUnit.Framework.CategoryAttribute("Regression")]
-        public virtual void VerifyTheFindOutMoreAboutBankruptcyAndInsolvencyLinkInTheRelatedContentSectionOnTheEIIRStartPage()
+        public virtual void ATU_15VerifyTheFindOutMoreAboutBankruptcyAndInsolvencyLinkInTheRelatedContentSectionOnTheEIIRStartPage()
         {
             string[] tagsOfScenario = new string[] {
                     "StartPage",
                     "Regression"};
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Verify the (Find out more about bankruptcy and insolvency) link in the Related co" +
-                    "ntent section on the EIIR start page", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("ATU_15 Verify the (Find out more about bankruptcy and insolvency) link in the Rel" +
+                    "ated content section on the EIIR start page", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
 #line 50
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
@@ -495,18 +497,18 @@ testRunner.Then("the following URL is displayed \"https://www.gov.uk/browse/tax/
         }
         
         [NUnit.Framework.TestAttribute()]
-        [NUnit.Framework.DescriptionAttribute("Verify the (Give feedback about the Individual Insolvency Register) link in the R" +
-            "elated content section on the EIIR start page")]
+        [NUnit.Framework.DescriptionAttribute("ATU_15 Verify the (Give feedback about the Individual Insolvency Register) link i" +
+            "n the Related content section on the EIIR start page")]
         [NUnit.Framework.CategoryAttribute("StartPage")]
         [NUnit.Framework.CategoryAttribute("Regression")]
-        public virtual void VerifyTheGiveFeedbackAboutTheIndividualInsolvencyRegisterLinkInTheRelatedContentSectionOnTheEIIRStartPage()
+        public virtual void ATU_15VerifyTheGiveFeedbackAboutTheIndividualInsolvencyRegisterLinkInTheRelatedContentSectionOnTheEIIRStartPage()
         {
             string[] tagsOfScenario = new string[] {
                     "StartPage",
                     "Regression"};
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Verify the (Give feedback about the Individual Insolvency Register) link in the R" +
-                    "elated content section on the EIIR start page", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("ATU_15 Verify the (Give feedback about the Individual Insolvency Register) link i" +
+                    "n the Related content section on the EIIR start page", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
 #line 55
 this.ScenarioInitialize(scenarioInfo);
 #line hidden

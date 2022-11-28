@@ -20,8 +20,8 @@ namespace INSS.EIIR.QA.Automation.Features
     [System.CodeDom.Compiler.GeneratedCodeAttribute("TechTalk.SpecFlow", "3.9.0.0")]
     [System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     [NUnit.Framework.TestFixtureAttribute()]
-    [NUnit.Framework.DescriptionAttribute("Citizen - Search via single search box")]
-    public partial class Citizen_SearchViaSingleSearchBoxFeature
+    [NUnit.Framework.DescriptionAttribute("ATU_175 Citizen - Search via single search box")]
+    public partial class ATU_175Citizen_SearchViaSingleSearchBoxFeature
     {
         
         private TechTalk.SpecFlow.ITestRunner testRunner;
@@ -35,7 +35,7 @@ namespace INSS.EIIR.QA.Automation.Features
         public virtual void FeatureSetup()
         {
             testRunner = TechTalk.SpecFlow.TestRunnerManager.GetTestRunner();
-            TechTalk.SpecFlow.FeatureInfo featureInfo = new TechTalk.SpecFlow.FeatureInfo(new System.Globalization.CultureInfo("en-US"), "Features", "Citizen - Search via single search box", "\tAs a user\r\n\tI need the EIIR search screen updated in line with the new prototype" +
+            TechTalk.SpecFlow.FeatureInfo featureInfo = new TechTalk.SpecFlow.FeatureInfo(new System.Globalization.CultureInfo("en-US"), "Features", "ATU_175 Citizen - Search via single search box", "\tAs a user\r\n\tI need the EIIR search screen updated in line with the new prototype" +
                     " screen\r\n\tSo that I can search EIIR using this new screen design", ProgrammingLanguage.CSharp, ((string[])(null)));
             testRunner.OnFeatureStart(featureInfo);
         }
@@ -84,16 +84,16 @@ testRunner.Given("I navigate to the Citizen Search page", ((string)(null)), ((Te
         }
         
         [NUnit.Framework.TestAttribute()]
-        [NUnit.Framework.DescriptionAttribute("Verify the Citizen Search page")]
+        [NUnit.Framework.DescriptionAttribute("ATU_175 Verify the Citizen Search page")]
         [NUnit.Framework.CategoryAttribute("CitizenSearchPage")]
         [NUnit.Framework.CategoryAttribute("Regression")]
-        public virtual void VerifyTheCitizenSearchPage()
+        public virtual void ATU_175VerifyTheCitizenSearchPage()
         {
             string[] tagsOfScenario = new string[] {
                     "CitizenSearchPage",
                     "Regression"};
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Verify the Citizen Search page", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("ATU_175 Verify the Citizen Search page", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
 #line 11
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
@@ -125,16 +125,16 @@ testRunner.Then("the URL, page title and page heading will be as per the require
         }
         
         [NUnit.Framework.TestAttribute()]
-        [NUnit.Framework.DescriptionAttribute("Verify error message when pressing search without entering a search term")]
+        [NUnit.Framework.DescriptionAttribute("ATU_175 Verify error message when pressing search without entering a search term")]
         [NUnit.Framework.CategoryAttribute("CitizenSearchPage")]
         [NUnit.Framework.CategoryAttribute("Regression")]
-        public virtual void VerifyErrorMessageWhenPressingSearchWithoutEnteringASearchTerm()
+        public virtual void ATU_175VerifyErrorMessageWhenPressingSearchWithoutEnteringASearchTerm()
         {
             string[] tagsOfScenario = new string[] {
                     "CitizenSearchPage",
                     "Regression"};
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Verify error message when pressing search without entering a search term", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("ATU_175 Verify error message when pressing search without entering a search term", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
 #line 15
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
@@ -169,16 +169,16 @@ testRunner.Then("I am shown an error message stating a name or trading name must
         }
         
         [NUnit.Framework.TestAttribute()]
-        [NUnit.Framework.DescriptionAttribute("Search using a term which doesn\'t return any results")]
+        [NUnit.Framework.DescriptionAttribute("ATU_175 Search using a term which doesn\'t return any results")]
         [NUnit.Framework.CategoryAttribute("CitizenSearchPage")]
         [NUnit.Framework.CategoryAttribute("Regression")]
-        public virtual void SearchUsingATermWhichDoesntReturnAnyResults()
+        public virtual void ATU_175SearchUsingATermWhichDoesntReturnAnyResults()
         {
             string[] tagsOfScenario = new string[] {
                     "CitizenSearchPage",
                     "Regression"};
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Search using a term which doesn\'t return any results", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("ATU_175 Search using a term which doesn\'t return any results", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
 #line 20
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
@@ -213,16 +213,16 @@ testRunner.Then("I am shown a message stating no results have been returned", ((
         }
         
         [NUnit.Framework.TestAttribute()]
-        [NUnit.Framework.DescriptionAttribute("Click the Home breadcrumb")]
+        [NUnit.Framework.DescriptionAttribute("ATU_175 Click the Home breadcrumb")]
         [NUnit.Framework.CategoryAttribute("CitizenSearchPage")]
         [NUnit.Framework.CategoryAttribute("Regression")]
-        public virtual void ClickTheHomeBreadcrumb()
+        public virtual void ATU_175ClickTheHomeBreadcrumb()
         {
             string[] tagsOfScenario = new string[] {
                     "CitizenSearchPage",
                     "Regression"};
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Click the Home breadcrumb", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("ATU_175 Click the Home breadcrumb", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
 #line 25
 this.ScenarioInitialize(scenarioInfo);
 #line hidden

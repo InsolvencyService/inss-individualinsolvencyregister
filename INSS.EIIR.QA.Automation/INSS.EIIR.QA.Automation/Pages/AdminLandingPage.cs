@@ -10,6 +10,7 @@ namespace INSS.EIIR.QA.Automation.Pages
     internal class AdminLandingPage : ElementHelper
     {
         private static string expectedPageUrl { get; } = string.Concat(Constants.StartPageUrl, "admin/admin-area");
+        //private static string expectedPageUrl { get; } = "admin/admin-area";
         private static string expectedPageTitle { get; } = "Admin area - Individual Insolvency Register";
         private static string expectedPageHeader { get; } = "Admin area";
         private static By PageHeader { get; } = By.XPath("//*[@id='main-content']//h1");

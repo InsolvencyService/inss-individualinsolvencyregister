@@ -147,13 +147,13 @@ namespace INSS.EIIR.QA.Automation.Pages
             string ApplicationYearErrorMesage = "The application submitted date must include a year";
 
             Assert.AreEqual(ApplicationDayErrorMesage, WebDriver.FindElement(By.XPath("//a[@href='#ApplicationDay']")).Text);
-            Assert.AreEqual(ApplicationDayErrorMesage, WebDriver.FindElement(By.XPath("//*[@id='organisationName-error'][2]")).Text);
+            Assert.AreEqual(ApplicationDayErrorMesage, WebDriver.FindElement(By.XPath("//*[@id='organisationName-error'][1]")).Text);
 
             Assert.AreEqual(ApplicationMonthErrorMesage, WebDriver.FindElement(By.XPath("//a[@href='#ApplicationMonth']")).Text);
-            Assert.AreEqual(ApplicationMonthErrorMesage, WebDriver.FindElement(By.XPath("//*[@id='organisationName-error'][3]")).Text);
+            Assert.AreEqual(ApplicationMonthErrorMesage, WebDriver.FindElement(By.XPath("//*[@id='organisationName-error'][2]")).Text);
 
             Assert.AreEqual(ApplicationYearErrorMesage, WebDriver.FindElement(By.XPath("//a[@href='#ApplicationYear']")).Text);
-            Assert.AreEqual(ApplicationYearErrorMesage, WebDriver.FindElement(By.XPath("//*[@id='organisationName-error'][4]")).Text);
+            Assert.AreEqual(ApplicationYearErrorMesage, WebDriver.FindElement(By.XPath("//*[@id='organisationName-error'][3]")).Text);
         }
 
 
@@ -165,7 +165,7 @@ namespace INSS.EIIR.QA.Automation.Pages
 
         public static void EnterNewSubscriberDetails()
         { 
-                EnterText(organisationNameTextBoxElement, Constants.UpdatedOrganisationName);
+                EnterText(organisationNameTextBoxElement, Constants.NewOrganisationName);
                 EnterText(firstNameTextBoxElement, Constants.UpdatedFirstName);
                 EnterText(surnameTextBoxElement, Constants.UpdatedSurname);
                 EnterText(addressLine1TextBoxElement, Constants.UpdatedAddressLine1);

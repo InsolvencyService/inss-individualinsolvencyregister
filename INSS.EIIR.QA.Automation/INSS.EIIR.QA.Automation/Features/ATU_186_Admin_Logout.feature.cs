@@ -88,16 +88,16 @@ testRunner.Then("the Admin landing page will be displayed and the URL, page titl
         }
         
         [NUnit.Framework.TestAttribute()]
-        [NUnit.Framework.DescriptionAttribute("Verify the Admin pages cannot be accessed once the user signs out")]
+        [NUnit.Framework.DescriptionAttribute("ATU_186 Verify the Admin pages cannot be accessed once the user signs out")]
         [NUnit.Framework.CategoryAttribute("AdminLogout")]
         [NUnit.Framework.CategoryAttribute("Regression")]
-        public virtual void VerifyTheAdminPagesCannotBeAccessedOnceTheUserSignsOut()
+        public virtual void ATU_186VerifyTheAdminPagesCannotBeAccessedOnceTheUserSignsOut()
         {
             string[] tagsOfScenario = new string[] {
                     "AdminLogout",
                     "Regression"};
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Verify the Admin pages cannot be accessed once the user signs out", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("ATU_186 Verify the Admin pages cannot be accessed once the user signs out", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
 #line 12
 this.ScenarioInitialize(scenarioInfo);
 #line hidden

@@ -74,12 +74,15 @@ namespace INSS.EIIR.QA.Automation.Data
         {
             var SQLQuery1 = "SELECT * FROM subscriber_account where organisation_name = '" + subscriber + "'";
             var subscriberID = SqlDatabaseConncetionHelper.ReadDataFromDataBase(SQLQuery1, ConnectionString);
-            string SQLQuery2 = "delete from subscriber_contact where subscriber_id = '" + subscriberID[0][0] + "'";
-            string SQLQuery3 = "delete from subscriber_application where subscriber_id = '" + subscriberID[0][0] + "'";
-            string SQLQuery4 = "delete from subscriber_account where subscriber_id = '" + subscriberID[0][0] + "'";
-            SqlDatabaseConncetionHelper.ExecuteSqlCommand(SQLQuery2, ConnectionString);
-            SqlDatabaseConncetionHelper.ExecuteSqlCommand(SQLQuery3, ConnectionString);
-            SqlDatabaseConncetionHelper.ExecuteSqlCommand(SQLQuery4, ConnectionString);
+            if (subscriberID.Count > 0)
+            {
+                string SQLQuery2 = "delete from subscriber_contact where subscriber_id = '" + subscriberID[0][0] + "'";
+                string SQLQuery3 = "delete from subscriber_application where subscriber_id = '" + subscriberID[0][0] + "'";
+                string SQLQuery4 = "delete from subscriber_account where subscriber_id = '" + subscriberID[0][0] + "'";
+                SqlDatabaseConncetionHelper.ExecuteSqlCommand(SQLQuery2, ConnectionString);
+                SqlDatabaseConncetionHelper.ExecuteSqlCommand(SQLQuery3, ConnectionString);
+                SqlDatabaseConncetionHelper.ExecuteSqlCommand(SQLQuery4, ConnectionString);
+            }
         }
 
 

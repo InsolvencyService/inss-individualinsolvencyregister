@@ -84,16 +84,16 @@ testRunner.Given("I navigate to the Admin Login page", ((string)(null)), ((TechT
         }
         
         [NUnit.Framework.TestAttribute()]
-        [NUnit.Framework.DescriptionAttribute("Verify the Admin login page header, URL and page title")]
+        [NUnit.Framework.DescriptionAttribute("ATU_46 Verify the Admin login page header, URL and page title")]
         [NUnit.Framework.CategoryAttribute("Admin")]
         [NUnit.Framework.CategoryAttribute("Regression")]
-        public virtual void VerifyTheAdminLoginPageHeaderURLAndPageTitle()
+        public virtual void ATU_46VerifyTheAdminLoginPageHeaderURLAndPageTitle()
         {
             string[] tagsOfScenario = new string[] {
                     "Admin",
                     "Regression"};
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Verify the Admin login page header, URL and page title", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("ATU_46 Verify the Admin login page header, URL and page title", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
 #line 11
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
@@ -125,16 +125,16 @@ testRunner.Then("I am navigated Admin Login page", ((string)(null)), ((TechTalk.
         }
         
         [NUnit.Framework.TestAttribute()]
-        [NUnit.Framework.DescriptionAttribute("Click the Sign in button without entering a Username")]
+        [NUnit.Framework.DescriptionAttribute("ATU_46 Click the Sign in button without entering a Username")]
         [NUnit.Framework.CategoryAttribute("Admin")]
         [NUnit.Framework.CategoryAttribute("Regression")]
-        public virtual void ClickTheSignInButtonWithoutEnteringAUsername()
+        public virtual void ATU_46ClickTheSignInButtonWithoutEnteringAUsername()
         {
             string[] tagsOfScenario = new string[] {
                     "Admin",
                     "Regression"};
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Click the Sign in button without entering a Username", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("ATU_46 Click the Sign in button without entering a Username", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
 #line 15
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
@@ -169,16 +169,16 @@ testRunner.Then("I am shown the enter username error message", ((string)(null)),
         }
         
         [NUnit.Framework.TestAttribute()]
-        [NUnit.Framework.DescriptionAttribute("Click the Sign in button without entering a password")]
+        [NUnit.Framework.DescriptionAttribute("ATU_46 Click the Sign in button without entering a password")]
         [NUnit.Framework.CategoryAttribute("Admin")]
         [NUnit.Framework.CategoryAttribute("Regression")]
-        public virtual void ClickTheSignInButtonWithoutEnteringAPassword()
+        public virtual void ATU_46ClickTheSignInButtonWithoutEnteringAPassword()
         {
             string[] tagsOfScenario = new string[] {
                     "Admin",
                     "Regression"};
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Click the Sign in button without entering a password", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("ATU_46 Click the Sign in button without entering a password", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
 #line 20
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
@@ -213,16 +213,16 @@ testRunner.Then("I am shown the enter password error message", ((string)(null)),
         }
         
         [NUnit.Framework.TestAttribute()]
-        [NUnit.Framework.DescriptionAttribute("Click the Sign in button without entering a Username or password")]
+        [NUnit.Framework.DescriptionAttribute("ATU_46 Click the Sign in button without entering a Username or password")]
         [NUnit.Framework.CategoryAttribute("Admin")]
         [NUnit.Framework.CategoryAttribute("Regression")]
-        public virtual void ClickTheSignInButtonWithoutEnteringAUsernameOrPassword()
+        public virtual void ATU_46ClickTheSignInButtonWithoutEnteringAUsernameOrPassword()
         {
             string[] tagsOfScenario = new string[] {
                     "Admin",
                     "Regression"};
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Click the Sign in button without entering a Username or password", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("ATU_46 Click the Sign in button without entering a Username or password", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
 #line 25
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
@@ -257,16 +257,16 @@ testRunner.Then("I am shown the enter username and enter password error messages
         }
         
         [NUnit.Framework.TestAttribute()]
-        [NUnit.Framework.DescriptionAttribute("Click the Sign in button after entering an invalid Username and password")]
+        [NUnit.Framework.DescriptionAttribute("ATU_46 Click the Sign in button after entering an invalid Username and password")]
         [NUnit.Framework.CategoryAttribute("Admin")]
         [NUnit.Framework.CategoryAttribute("Regression")]
-        public virtual void ClickTheSignInButtonAfterEnteringAnInvalidUsernameAndPassword()
+        public virtual void ATU_46ClickTheSignInButtonAfterEnteringAnInvalidUsernameAndPassword()
         {
             string[] tagsOfScenario = new string[] {
                     "Admin",
                     "Regression"};
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Click the Sign in button after entering an invalid Username and password", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("ATU_46 Click the Sign in button after entering an invalid Username and password", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
 #line 30
 this.ScenarioInitialize(scenarioInfo);
 #line hidden

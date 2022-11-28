@@ -48,6 +48,7 @@ namespace INSS.EIIR.QA.Automation.Pages
 
         public static void verifySubscriberDetailsPage()
         {
+            Console.WriteLine(expectedPageUrl);
             Assert.IsTrue(WebDriver.Url.Contains(expectedPageUrl));
             Assert.AreEqual(expectedPageTitle, WebDriver.Title);
             Assert.AreEqual(expectedPageHeader, WebDriver.FindElement(pageHeaderElement).Text);
@@ -128,6 +129,12 @@ namespace INSS.EIIR.QA.Automation.Pages
         public static void VerifySubscribersEmailAddresses(string Subscriber)
         {
             result = SqlQueries.GetSubscriberEmailAddresses(Subscriber);
+
+            if (Subscriber == Constants.NewOrganisationName)
+            {
+                SqlQueries.DeleteSubscriber(Subscriber);
+            }
+
             int emailCount = result.Count;
             if (emailCount == 1)
             {
