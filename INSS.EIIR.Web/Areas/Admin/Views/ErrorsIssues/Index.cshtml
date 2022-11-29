@@ -147,7 +147,10 @@
                             Order or arrangement date
                         </dt>
                         <dd class="govuk-summary-list__value">
-                            @*@feedback.*@
+                            @{
+                                var orderDate = feedback.OrderDate == null ? "" : feedback.OrderDate.Value.ToString("dd MMMM yyyy");
+                            }
+                            @orderDate
                         </dd>
                     </div>
                     <div class="govuk-summary-list__row">

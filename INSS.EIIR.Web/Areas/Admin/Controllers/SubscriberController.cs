@@ -113,6 +113,9 @@ using Microsoft.AspNetCore.Mvc;
 
             subscriber.Breadcrumbs = BreadcrumbBuilder.BuildBreadcrumbs(isAdmin: true).ToList();
 
+            ViewBag.Header = "Add new subscriber";
+            ViewBag.Title = "Add subscriber";
+
             return View("ChangeProfile", subscriber);
         }
 
@@ -193,7 +196,10 @@ using Microsoft.AspNetCore.Mvc;
             }
 
             subscriber.Breadcrumbs = BreadcrumbBuilder.BuildBreadcrumbs(isAdmin: true, showSubscriberList: true, showSubscriber: true, subscriberParameters: subscriber.SubscriberParameters).ToList();
-            
+
+            ViewBag.Header = "Update subscriber details";
+            ViewBag.Title = "Update subscriber details";
+
             return View(subscriber);
         }
 
@@ -245,7 +251,7 @@ using Microsoft.AspNetCore.Mvc;
             if (validFrom && validTo && subscriber.SubscribedTo < subscriber.SubscribedFrom)
             {
                 ModelState.AddModelError($"{nameof(subscriber.SubscribedTo)}Date",
-                    "The subscription end date date cannot be before the subscription start date");
+                    "Enter a subscription end date which is the same as or after the subscription start date");
             }
         }
 

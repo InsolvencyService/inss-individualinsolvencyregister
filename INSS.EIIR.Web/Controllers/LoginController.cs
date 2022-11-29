@@ -17,7 +17,7 @@ namespace INSS.EIIR.Web.Controllers
             _authenticationProvider = authenticationProvider;
         }
 
-        [HttpGet("Admin")]
+        [HttpGet("admin")]
         public IActionResult Admin()
         {
             return View("Admin");
