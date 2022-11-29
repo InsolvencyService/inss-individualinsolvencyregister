@@ -22,7 +22,7 @@ namespace INSS.EIIR.Web.Areas.Admin.Controllers
         }
 
         [HttpGet(AreaNames.Admin + "/errors-or-issues/{page?}/{insolvencyType?}/{organisation?}/{status?}")]
-        public async Task<IActionResult> Index(int page = 1, string insolvencyType = "", int organisation = 0, int status = 0)
+        public async Task<IActionResult> Index(int page = 1, string insolvencyType = "A", int organisation = 0, int status = 0)
         {
             var feedback = new FeedbackViewModel
             {
