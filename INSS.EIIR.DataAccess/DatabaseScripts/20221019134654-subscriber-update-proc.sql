@@ -80,7 +80,8 @@ INSERT INTO @updateEmailContacts
 DELETE FROM subscriber_contact 
 WHERE email_address NOT IN (
 	SELECT email_address FROM @updateEmailContacts
-)
+) 
+AND subscriber_id = @SubscriberId
 
 INSERT INTO subscriber_contact
 	SELECT ec.subscriber_id, ec.email_address, ec.created_on
