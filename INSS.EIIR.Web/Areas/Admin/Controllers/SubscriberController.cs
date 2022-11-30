@@ -102,6 +102,8 @@ using Microsoft.AspNetCore.Mvc;
         {
             ValidateDates(subscriber);
 
+            ValidateEmails(subscriber);
+
             if (ModelState.IsValid)
             {
                 var createUpdateSubscriber = CreateUpdateSubscriber(subscriber);
@@ -180,6 +182,8 @@ using Microsoft.AspNetCore.Mvc;
         {
             ValidateDates(subscriber);
 
+            ValidateEmails(subscriber);
+
             if (ModelState.IsValid)
             {
                
@@ -252,6 +256,17 @@ using Microsoft.AspNetCore.Mvc;
             {
                 ModelState.AddModelError($"{nameof(subscriber.SubscribedTo)}Date",
                     "Enter a subscription end date which is the same as or after the subscription start date");
+            }
+        }
+
+        private void ValidateEmails(SubscriberProfile subscriber)
+        {
+            if (subscriber.EmailAddress1 == subscriber.EmailAddress2 ||
+                subscriber.EmailAddress1 == subscriber.EmailAddress3 ||
+                subscriber.EmailAddress2 == subscriber.EmailAddress3)
+            {
+                ModelState.AddModelError($"{nameof(subscriber.EmailAddress1)}",
+                    "The email address entered for each data extract email address must be unique");
             }
         }
 
