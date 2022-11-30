@@ -261,11 +261,11 @@ using Microsoft.AspNetCore.Mvc;
 
         private void ValidateEmails(SubscriberProfile subscriber)
         {
-            if (subscriber.EmailAddress1 == subscriber.EmailAddress2 ||
-                subscriber.EmailAddress1 == subscriber.EmailAddress3 ||
-                subscriber.EmailAddress2 == subscriber.EmailAddress3)
+            if ((subscriber.EmailAddress1 == subscriber.EmailAddress2 && !string.IsNullOrEmpty(subscriber.EmailAddress2)) ||
+                (subscriber.EmailAddress1 == subscriber.EmailAddress3 && !string.IsNullOrEmpty(subscriber.EmailAddress3)) ||
+                (subscriber.EmailAddress2 == subscriber.EmailAddress3 && !string.IsNullOrEmpty(subscriber.EmailAddress2) && !string.IsNullOrEmpty(subscriber.EmailAddress3)))
             {
-                ModelState.AddModelError($"{nameof(subscriber.EmailAddress1)}",
+                ModelState.AddModelError("EmailAddresses",
                     "The email address entered for each data extract email address must be unique");
             }
         }
