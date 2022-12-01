@@ -19,7 +19,7 @@ public class CaseResult
 
     public string? individualGender { get; set; }
 
-    public DateTime? individualDOB { get; set; }
+    public string? individualDOB { get; set; }
 
     public string? individualOccupation { get; set; }
     public string? individualAddress { get; set; }
@@ -38,7 +38,7 @@ public class CaseResult
     public string? insolvencyType { get; set; }
 
     public DateTime? notificationDate { get; set; }
-    public DateTime? insolvencyDate { get; set; }
+    public string? insolvencyDate { get; set; }
 
     public string? caseStatus { get; set; }
     public string? caseDescription { get; set; }

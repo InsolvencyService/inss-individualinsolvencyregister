@@ -43,7 +43,7 @@ public class IndividualSearch
     public string? AddressWithheld { get; set; }
 
     [SimpleField]
-    public DateTime DateOfBirth { get; set; }
+    public string DateOfBirth { get; set; }
 
     [SimpleField]
     public string CaseName { get; set; }
@@ -52,7 +52,7 @@ public class IndividualSearch
     public string Court { get; set; }
 
     [SimpleField(IsFilterable = true, IsSortable = true)]
-    public int CourtNumber { get; set; }
+    public string CourtNumber { get; set; }
 
     [SimpleField]
     public string CaseYear { get; set; }
@@ -67,7 +67,12 @@ public class IndividualSearch
     public DateTime EndDate { get; set; }
 
     [SimpleField]
-    public DateTime InsolvencyDate { get; set; }
+    public String InsolvencyDate { get; set; }
+
+
+    [SimpleField]
+    public DateTime NotificationDate { get; set; }
+
 
     [SimpleField(IsFilterable = true)]
     public string CaseStatus { get; set; }
