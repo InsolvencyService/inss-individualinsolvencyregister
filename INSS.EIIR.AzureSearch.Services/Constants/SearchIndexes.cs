@@ -2,5 +2,5 @@
 
 public class SearchIndexes
 {
-    public const string IndividualSearch = "individual_search";
+    public const string EiirIndividuals = "eiir_individuals";
 }

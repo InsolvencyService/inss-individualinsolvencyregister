@@ -15,7 +15,7 @@ public class IndividualQueryService : BaseQueryService, IIndividualQueryService
 
     private const int PageSize = 10;
 
-    protected override string IndexName => SearchIndexes.IndividualSearch;
+    protected override string IndexName => SearchIndexes.EiirIndividuals;
 
     public IndividualQueryService(
         IMapper mapper,
