@@ -5,6 +5,8 @@
     var header = "Errors or issues";
     ViewData["Header"] = header;
     ViewData["Title"] = header;
+
+    var pageNo = Model.FeedbackWithPaging.Paging.Page;
 }
 
 @section AdminBreadcrumb
@@ -131,7 +133,7 @@
                             Case name
                         </dt>
                         <dd class="govuk-summary-list__value">
-                            <a href="/SearchDetails/@feedback.CaseId/@feedback.IndivNo">@feedback.CaseName</a>
+                            <a href="/case-details/@pageNo/true/@feedback.CaseId/@feedback.IndivNo/a/@Model.InsolvencyTypeFilter/@Model.OrganisationFilter/@Model.StatusFilter">@feedback.CaseName</a>
                         </dd>
                     </div>
                     <div class="govuk-summary-list__row">

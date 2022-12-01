@@ -4,10 +4,13 @@
 
 @{
     ViewData["Title"] = "Search results";
+
+    var pageNo = Model.SearchResults.Paging.Page;
+    var searchTerm = Model.SearchResults.Paging.SearchTerm;
 }
 
 @section Breadcrumb
-    {
+{
     <partial name="_Breadcrumb" model="Model.Breadcrumbs" />
 }
 
@@ -52,8 +55,13 @@
                         @foreach (var individual in Model.SearchResults.Results)
                         {
                             var name = $"{individual.individualForenames} {individual.individualSurname}".ToTitleCase();
+
+
                             <tr class="govuk-table__row">
-                                <td class="govuk-table__cell"><a class="govuk-link--no-visited-state" href="/case-details/@individual.caseNo/@individual.indivNo">@name</a></td>
+                                <td class="govuk-table__cell">
+                                    <a class="govuk-link--no-visited-state" 
+                                       href="/case-details/@individual.caseNo/@individual.indivNo/@searchTerm/@pageNo">@name</a>
+                                </td>
                                 <td class="govuk-table__cell">@individual.companyName</td>
                                 <td class="govuk-table__cell">@individual.individualTown</td>
                                 <td class="govuk-table__cell">@individual.individualPostcode</td>
