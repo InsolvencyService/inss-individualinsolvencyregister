@@ -30,7 +30,7 @@ namespace INSS.EIIR.Web.Controllers
                 IndivNo = indivNo,
                 Name = caseDetails.caseName,
                 Type = caseDetails.insolvencyType,
-                ArrangementDate = caseDetails.insolvencyDate ?? DateTime.MinValue,
+                ArrangementDate = DateTime.MinValue,
                 CaseFeedback = new CreateCaseFeedback
                 {
                     CaseId = caseDetails.caseNo

@@ -47,7 +47,7 @@
               </div>
               <div class="govuk-summary-list__row">
                 <dt class="govuk-summary-list__key"> Date of birth </dt>
-                <dd class="govuk-summary-list__value"> @if (@Model.individualDOB.HasValue) { @Model.individualDOB.Value.ToString("dd MMMM yyyy") } </dd>
+                <dd class="govuk-summary-list__value"> @Model.individualDOB </dd>
               </div>
               <div class="govuk-summary-list__row">
                 <dt class="govuk-summary-list__key"> Last known address </dt>
@@ -87,7 +87,7 @@
               </div>
               <div class="govuk-summary-list__row">
                 <dt class="govuk-summary-list__key"> Arrangement date </dt>
-                <dd class="govuk-summary-list__value"> @if (@Model.insolvencyDate.HasValue) { @Model.insolvencyDate.Value.ToString("dd MMMM yyyy") } </dd>
+                <dd class="govuk-summary-list__value"> @Model.insolvencyDate</dd>
               </div>
               <div class="govuk-summary-list__row">
                 <dt class="govuk-summary-list__key"> Status </dt>
