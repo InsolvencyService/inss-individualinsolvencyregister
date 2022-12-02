@@ -1,19 +1,36 @@
-﻿using INSS.EIIR.Interfaces.Web.Services;
+﻿using System.Net.Mime;
+using Flurl;
+using Flurl.Http;
+using INSS.EIIR.Interfaces.Web.Services;
+using INSS.EIIR.Models.Configuration;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 
 namespace INSS.EIIR.Web.Services;
 
 public class ExtractService : IExtractService
 {
-    private readonly IClientService _clientService;
+    private readonly ApiSettings _settings;
 
-    public ExtractService(IClientService clientService)
+    public ExtractService(IOptions<ApiSettings> settings)
     {
-        _clientService = clientService;
+        _settings = settings.Value;
     }
 
     public async Task<IActionResult> GetLatestExtractAsync(string subscriberId)
     {
-        return await _clientService.GetAsync<IActionResult>($"eiir/{subscriberId}/downloads/latest", new List<string>());
+        var result = await _settings.BaseUrl
+            .AppendPathSegment($"eiir/{subscriberId}/downloads/latest")
+            .WithHeader("x-functions-key", _settings.ApiKey)
+            .GetStreamAsync();
+
+        byte[] bytes;
+        using (var ms = new MemoryStream())
+        {
+            await result.CopyToAsync(ms);
+            bytes = ms.ToArray();
+        }
+
+        return new FileContentResult(bytes, MediaTypeNames.Application.Zip);
     }
 }
