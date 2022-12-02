@@ -102,7 +102,7 @@ void ConfigureServices(IServiceCollection services)
             {
                 if (IsAdminContext(context))
                 {
-                    context.Response.Redirect("/Admin");
+                    context.Response.Redirect("/admin");
                 }
 
                 return Task.CompletedTask;
