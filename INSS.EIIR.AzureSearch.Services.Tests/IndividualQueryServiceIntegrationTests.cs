@@ -62,7 +62,7 @@ public class IndividualQueryServiceIntegrationTests
                         responseMock.Object)));
 
         var indexClientMock = new Mock<SearchIndexClient>();
-        indexClientMock.Setup(m => m.GetSearchClient(SearchIndexes.IndividualSearch)).Returns(searchClientMock.Object);
+        indexClientMock.Setup(m => m.GetSearchClient(SearchIndexes.EiirIndividuals)).Returns(searchClientMock.Object);
 
         
         var formattingServiceMock = new Mock<ISearchTermFormattingService>();

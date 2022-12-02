@@ -1,5 +1,6 @@
 ﻿using INSS.EIIR.Data.Models;
 using INSS.EIIR.Interfaces.DataAccess;
+using INSS.EIIR.Models.CaseModels;
 using INSS.EIIR.Models.SearchModels;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
@@ -15,16 +16,16 @@ public class IndividualRepository : IIndividualRepository
         _context = context;
     }
 
-    public IEnumerable<SearchResult> BuildEiirSearchIndex()
+    public IEnumerable<CaseResult> BuildEiirIndex()
     {
-        List<SearchResult> results;
+        List<CaseResult> results;
 
         using (_context)
         {
             _context.Database.SetCommandTimeout(600);
 
-            results = _context.SearchResults
-                .FromSqlRaw("exec getEiirSearchIndex")
+            results = _context.CaseResults
+                .FromSqlRaw("exec getEiirIndex")
                 .ToList();
         }
 
