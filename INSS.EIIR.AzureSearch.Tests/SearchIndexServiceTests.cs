@@ -40,7 +40,7 @@ namespace INSS.EIIR.AzureSearch.Tests
             
             var indexClientMock = new Mock<SearchIndexClient>();
             indexClientMock
-                .Setup(m => m.GetSearchClient("eiir_index"))
+                .Setup(m => m.GetSearchClient("eiir_individuals"))
                 .Returns(indexerMock.Object);
             
             var service = GetService(indexClientMock.Object, mapperMock.Object, dataProviderMock.Object);
@@ -52,7 +52,7 @@ namespace INSS.EIIR.AzureSearch.Tests
             dataProviderMock.Verify(m => m.GetIndividualSearchData(), Times.Once);
             mapperMock.Verify(m => m.Map<IEnumerable<CaseResult>, IEnumerable<IndividualSearch>>(rawData), Times.Once);
 
-            indexClientMock.Verify(m => m.GetSearchClient("eiir_index"), Times.Once);
+            indexClientMock.Verify(m => m.GetSearchClient("eiir_individuals"), Times.Once);
             indexerMock.Verify(m => m.MergeOrUploadDocumentsAsync(mappedData, null, default(CancellationToken)), Times.Once);
 
         }
