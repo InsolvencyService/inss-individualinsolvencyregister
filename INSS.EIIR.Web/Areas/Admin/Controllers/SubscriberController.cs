@@ -118,6 +118,8 @@ using Microsoft.AspNetCore.Mvc;
             ViewBag.Header = "Add new subscriber";
             ViewBag.Title = "Add subscriber";
 
+            GetSortedErrors();
+
             return View("ChangeProfile", subscriber);
         }
 
@@ -198,6 +200,8 @@ using Microsoft.AspNetCore.Mvc;
                     active = subscriber.SubscriberParameters.Active
                 });
             }
+
+            GetSortedErrors();
 
             subscriber.Breadcrumbs = BreadcrumbBuilder.BuildBreadcrumbs(isAdmin: true, showSubscriberList: true, showSubscriber: true, subscriberParameters: subscriber.SubscriberParameters).ToList();
 
@@ -305,6 +309,27 @@ using Microsoft.AspNetCore.Mvc;
             }
 
             return false;
+        }
+
+        private void GetSortedErrors()
+        {
+            if (ModelState.ErrorCount > 0)
+            {
+                ViewBag.SortedErrors = ModelState
+                    .Select(m => new
+                    {
+                        Key = m.Key,
+                        Order = ValidationOrder.SubscriberFieldValidationOrder.IndexOf(m.Key),
+                        Error = m.Value
+                    })
+                    .SelectMany(m => m.Error.Errors.Select(e => new
+                    {
+                        m.Key,
+                        m.Order,
+                        e.ErrorMessage
+                    }))
+                    .OrderBy(m => m.Order);
+            }
         }
     }
 }

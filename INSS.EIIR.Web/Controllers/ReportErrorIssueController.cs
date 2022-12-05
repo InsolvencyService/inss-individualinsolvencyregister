@@ -6,6 +6,7 @@ using INSS.EIIR.Web.Constants;
 using INSS.EIIR.Web.Helper;
 using INSS.EIIR.Web.ViewModels;
 using Microsoft.AspNetCore.Mvc;
+using System.Globalization;
 
 namespace INSS.EIIR.Web.Controllers
 {
@@ -40,7 +41,7 @@ namespace INSS.EIIR.Web.Controllers
                 IndivNo = indivNo,
                 Name = caseDetails.caseName,
                 Type = caseDetails.insolvencyType,
-                ArrangementDate = caseDetails.insolvencyDate ?? DateTime.MinValue,
+                ArrangementDate = DateTime.MinValue, //TODO
                 CaseFeedback = new CreateCaseFeedback
                 {
                     CaseId = caseDetails.caseNo
