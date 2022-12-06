@@ -1,6 +1,8 @@
 using System.IO;
 using System.Net;
 using System.Threading.Tasks;
+using Azure.Search.Documents.Models;
+using INSS.EIIR.Interfaces.AzureSearch;
 using INSS.EIIR.Interfaces.Services;
 using INSS.EIIR.Models.CaseModels;
 using Microsoft.AspNetCore.Http;
@@ -18,13 +20,13 @@ namespace INSS.EIIR.Functions.Functions
     public class CaseDetails
     {
         private readonly ILogger<CaseDetails> _logger;
-        private readonly ICaseDataProvider _caseDataProvider;
+        private readonly IIndividualQueryService _queryService;
 
-        public CaseDetails(ILogger<CaseDetails> log, 
-            ICaseDataProvider caseDataProvider)
+        public CaseDetails(ILogger<CaseDetails> log,
+           IIndividualQueryService queryService)
         {
             _logger = log;
-            _caseDataProvider = caseDataProvider;
+            _queryService = queryService;
         }
 
         [FunctionName("CaseDetails")]
@@ -45,7 +47,7 @@ namespace INSS.EIIR.Functions.Functions
 
             var caseRequest = JsonConvert.DeserializeObject<CaseRequest>(requestBody);
 
-            var result = await _caseDataProvider.GetCaseByCaseNoIndivNoAsync(caseRequest);
+            var result = await _queryService.SearchDetailIndexAsync(caseRequest);
 
             return new OkObjectResult(result);
 

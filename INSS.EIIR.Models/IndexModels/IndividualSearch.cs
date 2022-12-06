@@ -6,12 +6,12 @@ namespace INSS.EIIR.Models.IndexModels;
 [ExcludeFromCodeCoverage]
 public class IndividualSearch
 {
-    [SimpleField(IsSortable = true, IsKey = true)]
+    [SearchableField(IsSortable = true, IsKey = true)]
     public string CaseNumber { get; set; }
 
-    [SimpleField(IsSortable = true)]
+    [SearchableField(IsSortable = true)]
     public string IndividualNumber { get; set; }
-
+    
     [SearchableField(IsSortable = true)]
     public string FirstName { get; set; }
 
