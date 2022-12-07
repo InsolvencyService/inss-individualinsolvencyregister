@@ -1,6 +1,9 @@
 ﻿using INSS.EIIR.Interfaces.Web.Services;
+using INSS.EIIR.Models.Breadcrumb;
 using INSS.EIIR.Models.FeedbackModels;
+using INSS.EIIR.Models.SearchModels;
 using INSS.EIIR.Web.Constants;
+using INSS.EIIR.Web.Helper;
 using INSS.EIIR.Web.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using System.Globalization;
@@ -20,8 +23,15 @@ namespace INSS.EIIR.Web.Controllers
             _caseService = caseService;
         }
 
-        [HttpGet("report-an-error/{caseNo}/{indivNo}/")]
-        public async Task<IActionResult> Index(int caseNo, int indivNo)
+        [HttpGet("report-an-error/{page}/{fromAdmin}/{caseNo?}/{indivNo?}/{searchTerm?}/{insolvencyType?}/{organisation?}/{status?}")]
+        public async Task<IActionResult> Index(int page,
+            bool fromAdmin = false,
+            int caseNo = 0,
+            int indivNo = 0,
+            string searchTerm = "",
+            string insolvencyType = "A",
+            int organisation = 0,
+            int status = 0)
         {
             var caseDetails = await _caseService.GetCaseAsync(caseNo, indivNo);
 
@@ -37,6 +47,41 @@ namespace INSS.EIIR.Web.Controllers
                     CaseId = caseDetails.caseNo
                 }
             };
+
+            List<BreadcrumbLink> breadcrumbs;
+
+            if (fromAdmin)
+            {
+                breadcrumbs = BreadcrumbBuilder.BuildBreadcrumbs(
+                    isAdmin: true,
+                    showErrorList: true,
+                    showSearchDetails: true,
+                    errorListParameters: new ErrorListParameters
+                    {
+                        Page = page,
+                        InsolvencyType = insolvencyType,
+                        Organisation = organisation,
+                        Status = status,
+                        CaseNo = caseNo,
+                        IndivNo = indivNo
+                    }).ToList();
+            }
+            else
+            {
+                breadcrumbs = BreadcrumbBuilder.BuildBreadcrumbs(
+                    showSearch: true,
+                    showSearchList: true,
+                    showSearchDetails: true,
+                    searchParameters: new SearchParameters
+                    {
+                        Page = page,
+                        SearchTerm = searchTerm,
+                        CaseNo = caseNo,
+                        IndivNo = indivNo
+                    }).ToList();
+            }
+
+            model.Breadcrumbs = breadcrumbs;
 
             ViewBag.Title = "Report an error or issue";
             ViewBag.Header = "Report an error or issue";
