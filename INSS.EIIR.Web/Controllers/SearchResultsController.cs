@@ -24,7 +24,7 @@ namespace INSS.EIIR.Web.Controllers
         {
             var searchResults = await _individualSearch.GetIndividualsAsync(searchTerm, page);
 
-            searchResults.Paging.RootUrl = "SearchResults";
+            searchResults.Paging.RootUrl = "search-results";
             searchResults.Paging.SearchTerm = searchTerm;
 
             var viewModel = new IndividualListViewModel
