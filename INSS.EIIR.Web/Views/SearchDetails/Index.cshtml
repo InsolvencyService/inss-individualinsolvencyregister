@@ -50,7 +50,7 @@
               </div>
               <div class="govuk-summary-list__row">
                 <dt class="govuk-summary-list__key"> Date of birth </dt>
-                <dd class="govuk-summary-list__value"> @Html.DisplayFor(model => model.individualDOB) </dd>
+                <dd class="govuk-summary-list__value"> @Html.DisplayFor(model => model.CaseDetails.individualDOB) </dd>
               </div>
               <div class="govuk-summary-list__row">
                 <dt class="govuk-summary-list__key"> Last known address </dt>
@@ -90,7 +90,7 @@
               </div>
               <div class="govuk-summary-list__row">
                 <dt class="govuk-summary-list__key"> Arrangement date </dt>
-                <dd class="govuk-summary-list__value"> @Html.DisplayFor(model => model.insolvencyDate) </dd>
+                <dd class="govuk-summary-list__value"> @Html.DisplayFor(model => model.CaseDetails.insolvencyDate) </dd>
               </div>
               <div class="govuk-summary-list__row">
                 <dt class="govuk-summary-list__key"> Status </dt>
