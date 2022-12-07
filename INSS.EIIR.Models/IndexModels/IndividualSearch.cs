@@ -33,6 +33,9 @@ public class IndividualSearch
     [SimpleField]
     public string Occupation { get; set; }
 
+    [SearchableField(IsSortable = true)]
+    public string LastKnownTown { get; set; }
+
     [SimpleField]
     public string LastKnownAddress { get; set; }
 
