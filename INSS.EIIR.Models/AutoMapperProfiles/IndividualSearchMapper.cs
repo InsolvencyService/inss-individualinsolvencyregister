@@ -18,6 +18,7 @@ public class IndividualSearchMapper : Profile
             .ForMember(m => m.individualGender, opt => opt.MapFrom(s => s.Gender))
             .ForMember(m => m.individualDOB, opt => opt.MapFrom(s => s.DateOfBirth))
             .ForMember(m => m.individualOccupation, opt => opt.MapFrom(s => s.Occupation))
+            .ForMember(m => m.individualTown, opt => opt.MapFrom(s => s.LastKnownTown))
             .ForMember(m => m.individualAddress, opt => opt.MapFrom(s => s.LastKnownAddress))
             .ForMember(m => m.individualPostcode, opt => opt.MapFrom(s => s.LastKnownPostcode))
             .ForMember(m => m.individualAddressWithheld, opt => opt.MapFrom(s => s.AddressWithheld))
@@ -50,7 +51,7 @@ public class IndividualSearchMapper : Profile
             .ForMember(m => m.individualSurname, opt => opt.MapFrom(s => s.FamilyName))
             .ForMember(m => m.individualAlias, opt => opt.MapFrom(s => s.AlternativeNames))
             .ForMember(m => m.companyName, opt => opt.MapFrom(s => s.InsolvencyTradeName))
-            .ForMember(m => m.individualTown, opt => opt.MapFrom(s => s.LastKnownAddress))
+            .ForMember(m => m.individualTown, opt => opt.MapFrom(s => s.LastKnownTown))
             .ForMember(m => m.individualPostcode, opt => opt.MapFrom(s => s.LastKnownPostcode))
             .ForMember(m => m.caseNo, opt => opt.MapFrom(s => s.CaseNumber))
             .ForMember(m => m.indivNo, opt => opt.MapFrom(s => s.IndividualNumber)).ReverseMap();

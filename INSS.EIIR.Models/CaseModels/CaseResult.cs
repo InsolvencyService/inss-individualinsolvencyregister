@@ -23,6 +23,7 @@ public class CaseResult
 
     public string? individualOccupation { get; set; }
     public string? individualAddress { get; set; }
+    public string? individualTown { get; set; }
 
     public string? individualPostcode { get; set; }
 

@@ -18,6 +18,7 @@ AS
             individualGender,
             individualDOB,
             individualOccupation,
+            individualTown,
             individualAddress,
             individualPostcode,
             individualAddressWithheld,
@@ -62,6 +63,7 @@ AS
         
         CONVERT(CHAR(10), individual.date_of_birth, 103) AS individualDOB, 
         individual.job_title AS individualOccupation,
+        individual.address_line_3 AS individualTown,
         CONCAT(individual.address_line_1, ' ', individual.address_line_2, ' ', individual.address_line_3, ' ', individual.address_line_4, ' ', individual.address_line_5) AS individualAddress,
         individual.postcode AS individualPostcode, 
         individual.address_withheld_flag AS individualAddressWithheld, 
@@ -216,6 +218,7 @@ AS
             individualGender,
             individualDOB,
             individualOccupation,
+            individualTown,
             individualAddress,
             individualPostcode,
             individualAddressWithheld,
