@@ -146,8 +146,6 @@ namespace INSS.EIIR.Functions
             builder.Services.AddTransient<ISearchTermFormattingService, SearchTermFormattingService>();
             builder.Services.AddTransient<ISearchCleaningService, SearchCleaningService>();
             
-            builder.Services.AddScoped<ICaseDataProvider, CaseDataProvider>();
-            builder.Services.AddTransient<ICaseQueryRepository, CaseQueryRepository>();
             builder.Services.AddScoped(typeof(ITableStorageRepository<>), typeof(AzureTableStorageRepository<>));
 
         }

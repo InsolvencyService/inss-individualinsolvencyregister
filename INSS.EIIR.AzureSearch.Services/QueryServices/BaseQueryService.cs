@@ -3,6 +3,7 @@ using Azure.Search.Documents;
 using Azure.Search.Documents.Indexes;
 using Azure.Search.Documents.Models;
 using INSS.EIIR.Interfaces.AzureSearch;
+using INSS.EIIR.Models.CaseModels;
 
 namespace INSS.EIIR.AzureSearch.Services.QueryServices;
 
@@ -61,6 +62,18 @@ public abstract class BaseQueryService
             .Select(d => _mapper.Map<T, TR>(d));
 
         return mappedResults;
+    }
+
+    public async Task<TR> SearchIndexDetailAsync<T, TR>(CaseRequest caseModel, SearchOptions options)
+    {
+        var searchTerm = String.Format("(CaseNumber eq {0}) + (IndividualNumber eq {1})", caseModel.CaseNo, caseModel.IndivNo);
+        var searchClient = _indexClient.GetSearchClient(IndexName);
+        var result = await searchClient.SearchAsync<T>(searchTerm, options);
+
+        var mappedResults = result.Value.GetResults().Select(r => r.Document)
+            .Select(d => _mapper.Map<T, TR>(d));
+
+        return mappedResults.FirstOrDefault();
     }
 
     public async Task<TR> GetAsync<T, TR>(string key)

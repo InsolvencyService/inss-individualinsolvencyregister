@@ -4,6 +4,7 @@ using Azure.Search.Documents.Indexes;
 using INSS.EIIR.AzureSearch.Services.Constants;
 using INSS.EIIR.Interfaces.AzureSearch;
 using INSS.EIIR.Models;
+using INSS.EIIR.Models.CaseModels;
 using INSS.EIIR.Models.IndexModels;
 using INSS.EIIR.Models.SearchModels;
 
@@ -47,6 +48,15 @@ public class IndividualQueryService : BaseQueryService, IIndividualQueryService
         };
 
         return results;
+    }
+
+    public async Task<CaseResult> SearchDetailIndexAsync(CaseRequest caseModel)
+    {
+        var options = GetDefaultSearchOptions();
+
+        var result = (await SearchIndexDetailAsync<IndividualSearch, CaseResult>(caseModel, options));
+
+        return result;
     }
 
     private string GetFilter(IndividualSearchModel searchModel)
