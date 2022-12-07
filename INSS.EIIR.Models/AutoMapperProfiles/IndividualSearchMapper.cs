@@ -22,7 +22,7 @@ public class IndividualSearchMapper : Profile
             .ForMember(m => m.individualAddress, opt => opt.MapFrom(s => s.LastKnownAddress))
             .ForMember(m => m.individualPostcode, opt => opt.MapFrom(s => s.LastKnownPostcode))
             .ForMember(m => m.individualAddressWithheld, opt => opt.MapFrom(s => s.AddressWithheld))
-            .ForMember(m => m.caseName, opt => opt.MapFrom(s => s.LastKnownPostcode))
+            .ForMember(m => m.caseName, opt => opt.MapFrom(s => s.CaseName))
             .ForMember(m => m.courtName, opt => opt.MapFrom(s => s.Court))
             .ForMember(m => m.courtNumber, opt => opt.MapFrom(s => s.CourtNumber))
             .ForMember(m => m.caseYear, opt => opt.MapFrom(s => s.CaseYear))
