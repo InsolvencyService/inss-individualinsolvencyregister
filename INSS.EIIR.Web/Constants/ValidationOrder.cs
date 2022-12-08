@@ -31,4 +31,12 @@ public static class ValidationOrder
         "EmailAddress2",
         "EmailAddress3"
     };
+
+    public static List<string> ErrorReportFieldValidationOrder = new()
+    {
+        "CaseFeedback.Message",
+        "CaseFeedback.ReporterFullname",
+        "CaseFeedback.ReporterEmailAddress",
+        "CaseFeedback.ReporterOrganisation"
+    };
 }

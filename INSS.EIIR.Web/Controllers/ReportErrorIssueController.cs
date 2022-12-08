@@ -41,7 +41,8 @@ namespace INSS.EIIR.Web.Controllers
                 IndivNo = indivNo,
                 Name = caseDetails.caseName,
                 Type = caseDetails.insolvencyType,
-                ArrangementDate = DateTime.MinValue, //TODO
+                ArrangementDate = DateTime.Now,
+                FromAdmin = fromAdmin,
                 CaseFeedback = new CreateCaseFeedback
                 {
                     CaseId = caseDetails.caseNo
@@ -52,33 +53,41 @@ namespace INSS.EIIR.Web.Controllers
 
             if (fromAdmin)
             {
+                var errorParams = new ErrorListParameters
+                {
+                    Page = page,
+                    InsolvencyType = insolvencyType,
+                    Organisation = organisation,
+                    Status = status,
+                    CaseNo = caseNo,
+                    IndivNo = indivNo
+                };
+
                 breadcrumbs = BreadcrumbBuilder.BuildBreadcrumbs(
                     isAdmin: true,
                     showErrorList: true,
                     showSearchDetails: true,
-                    errorListParameters: new ErrorListParameters
-                    {
-                        Page = page,
-                        InsolvencyType = insolvencyType,
-                        Organisation = organisation,
-                        Status = status,
-                        CaseNo = caseNo,
-                        IndivNo = indivNo
-                    }).ToList();
+                    errorListParameters: errorParams).ToList();
+
+                model.ErrorListParameters = errorParams;
             }
             else
             {
+                var searchParams = new SearchParameters
+                {
+                    Page = page,
+                    SearchTerm = searchTerm,
+                    CaseNo = caseNo,
+                    IndivNo = indivNo
+                };
+
                 breadcrumbs = BreadcrumbBuilder.BuildBreadcrumbs(
                     showSearch: true,
                     showSearchList: true,
                     showSearchDetails: true,
-                    searchParameters: new SearchParameters
-                    {
-                        Page = page,
-                        SearchTerm = searchTerm,
-                        CaseNo = caseNo,
-                        IndivNo = indivNo
-                    }).ToList();
+                    searchParameters: searchParams).ToList();
+
+                model.SearchParameters = searchParams;
             }
 
             model.Breadcrumbs = breadcrumbs;
@@ -105,13 +114,57 @@ namespace INSS.EIIR.Web.Controllers
 
                 await _feedbackService.CreateFeedback(feedback.CaseFeedback);
 
-                return RedirectToAction("Index", "SearchDetails", new { feedback.CaseNo, feedback.IndivNo });
+                if (!feedback.FromAdmin)
+                {
+                    return RedirectToAction("Index", "SearchDetails", new
+                    {
+                        page = feedback.SearchParameters.Page,
+                        fromAdmin = false,
+                        caseNo = feedback.CaseNo,
+                        indivNo = feedback.IndivNo,
+                        searchTerm = feedback.SearchParameters.SearchTerm
+                    });
+                }
+
+                return RedirectToAction("Index", "SearchDetails", new
+                {
+                    page = feedback.ErrorListParameters.Page,
+                    fromAdmin = true,
+                    caseNo = feedback.CaseNo,
+                    indivNo = feedback.IndivNo,
+                    searchTerm = "a",
+                    insolvencyType = feedback.ErrorListParameters.InsolvencyType,
+                    organisation = feedback.ErrorListParameters.Organisation, 
+                    status = feedback.ErrorListParameters.Status });
             }
 
             ViewBag.Title = "Report an error or issue";
             ViewBag.Header = "Report an error or issue";
 
+            GetSortedErrors();
+
             return View("Index", feedback);
+        }
+
+        private void GetSortedErrors()
+        {
+            if (ModelState.ErrorCount > 0)
+            {
+                ViewBag.SortedErrors = ModelState
+                    .Select(m => new
+                    {
+                        Key = m.Key,
+                        Order = ValidationOrder.ErrorReportFieldValidationOrder.IndexOf(m.Key),
+                        Error = m.Value
+                    })
+                    .SelectMany(m => m.Error.Errors.Select(e => new
+                    {
+                        m.Key,
+                        m.Order,
+                        e.ErrorMessage
+                    }))
+                    .OrderBy(m => m.Order);
+            }
         }
     }
 }
