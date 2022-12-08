@@ -28,6 +28,20 @@
             <input type="hidden" asp-for="Name"/>
             <input type="hidden" asp-for="Type"/>
             <input type="hidden" asp-for="ArrangementDate"/>
+            <input type="hidden" asp-for="FromAdmin" />
+            
+            @if (!Model.FromAdmin)
+            {
+                <input type="hidden" asp-for="SearchParameters.Page" />
+                <input type="hidden" asp-for="SearchParameters.SearchTerm" />
+            }
+            else
+            {
+                <input type="hidden" asp-for="ErrorListParameters.Page" />
+                <input type="hidden" asp-for="ErrorListParameters.InsolvencyType" />
+                <input type="hidden" asp-for="ErrorListParameters.Organisation" />
+                <input type="hidden" asp-for="ErrorListParameters.Status" />
+            }
 
             <h1 class="govuk-heading-l">
                 Report an error or issue
