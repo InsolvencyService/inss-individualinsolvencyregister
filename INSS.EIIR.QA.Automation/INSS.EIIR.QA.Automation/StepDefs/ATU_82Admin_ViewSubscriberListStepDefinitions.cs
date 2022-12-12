@@ -76,9 +76,5 @@ namespace INSS.EIIR.QA.Automation
         {
             AdminLandingPage.verifyAdminLandingPage();
         }
-
-
-
-
     }
 }

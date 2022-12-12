@@ -105,11 +105,18 @@ namespace INSS.EIIR.QA.Automation.Data
                 Type1 = "D";
             }
 
-            string SQLQuery = "select CICF.ReporterFullname, CICF.ReporterEmailAddress, CICF.Viewed, CICF.ReporterOrganisation, CI.insolvency_type, CI.case_name, CICF.FeedbackDate, CICF.CaseId, cicf.Message from CI_Case_Feedback CICF, ci_case CI where CI.case_no = CICF.caseid";
+            string SQLQuery = "select CICF.ReporterFullname, CICF.ReporterEmailAddress, CICF.Viewed, CICF.ReporterOrganisation, CI.insolvency_type, CI.case_name, CICF.FeedbackDate, CICF.CaseId, cicf.Message, CI.insolvency_date from CI_Case_Feedback CICF, ci_case CI where CI.case_no = CICF.caseid";
             string SQLQuery1 = SQLQuery + " and CICF.ReporterOrganisation = '" + Organisation + "' and CI.insolvency_type = '" + Type1 + "'";
             List<object[]> result = SqlDatabaseConncetionHelper.GetFieldValue(SQLQuery1, ConnectionString);
             return result;
         }
-       
+
+        public static List<object[]> GetLatestCaseFeedbackRecord()
+        {
+            string SQLQuery = "SELECT TOP 1 FeedbackDate, CaseId, Message, ReporterFullname, ReporterEmailAddress, ReporterOrganisation FROM CI_Case_Feedback order by feedbackDate desc";
+            List<object[]> result = SqlDatabaseConncetionHelper.GetFieldValue(SQLQuery, ConnectionString);
+            return result;
+        }
+
     }
 }

@@ -55,6 +55,19 @@ Examples:
 | "Postcode"              | "!!!"          | "Enter the postcode in the correct format"					|
 
 
+@AddSubscriberDetails @Regression
+Scenario: ATU_81 Verify the data extract email addresses errors
+Given I first populate all of the fields on the Add new subscriber page
+And I add the <DateExtractEmailField> Data extract email address with <EmailAddress>
+And I press the Save and continue button 
+Then the user is shown the following error message <ErrorMessage> on Add new subscriber page
+
+Examples: 
+| DateExtractEmailField | EmailAddress | ErrorMessage                                               |
+| "1"                   | "Invalid@"   | "Enter data extract email address 1 in the correct format" |
+| "2"                   | "Invalid"    | "Enter data extract email address 2 in the correct format" |
+| "3"                   | "@test.com"  | "Enter data extract email address 3 in the correct format" |
+
 
 @AddSubscriberDetails @Regression
 Scenario: ATU_81 Verify the error messages for Application submitted date on the Add New Subscriber page
@@ -96,3 +109,16 @@ Given I first populate all of the fields on the Add new subscriber page
 And I populate the subscription start date to be later than the subscription end date
 And I press the Save and continue button 
 Then the user is shown an error message stating the subscription end date must be later than the subscription start date on the add new subscriber page
+
+
+@AddSubscriberDetails @Regression
+Scenario: ATU_81 Verify duplicate data extract email addresses cannot be added on the Add New Subscriber page
+Given I first populate all of the fields on the Add new subscriber page
+And I enter the following <NumberOfEmailAddresses> identical data extract emails
+And I press the Save and continue button 
+Then the user is shown the following error message <ErrorMessage> on Add new subscriber page
+
+Examples: 
+| NumberOfEmailAddresses    | ErrorMessage																     | 
+| 2							| "The email address entered for each data extract email address must be unique" |
+| 3							| "The email address entered for each data extract email address must be unique" |

@@ -129,36 +129,43 @@ testRunner.Given("I navigate to the update subscriber page and capture the URLs 
 testRunner.When("I click the Sign out link", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
 #line 15
-testRunner.Then("I am navigated Admin Login page (use this temporarily until the capital A is remo" +
-                        "ved from the URL", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+testRunner.Then("I am navigated Admin Login page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
 #line 16
 testRunner.When("I attempt to access the Admin landing page using the URL", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
 #line 17
-testRunner.Then("I am navigated Admin Login page (use this temporarily until the capital A is remo" +
-                        "ved from the URL", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+testRunner.Then("I am navigated Admin Login page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
-#line 19
+#line 18
 testRunner.When("I attempt to access the subscriber list page using the URL", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
-#line 20
-testRunner.Then("I am navigated Admin Login page (use this temporarily until the capital A is remo" +
-                        "ved from the URL", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+#line 19
+testRunner.Then("I am navigated Admin Login page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
-#line 22
+#line 20
 testRunner.When("I attempt to access the subscriber details page using the URL", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
-#line 23
-testRunner.Then("I am navigated Admin Login page (use this temporarily until the capital A is remo" +
-                        "ved from the URL", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+#line 21
+testRunner.Then("I am navigated Admin Login page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
-#line 25
+#line 22
 testRunner.When("I attempt to access the update subscriber details page using the URL", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
+#line 23
+testRunner.Then("I am navigated Admin Login page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+#line hidden
+#line 24
+testRunner.When("I attempt to access the View feedback page using the URL", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+#line hidden
+#line 25
+testRunner.Then("I am navigated Admin Login page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+#line hidden
+#line 26
+testRunner.When("I attempt to access the Add subscriber page using the URL", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+#line hidden
 #line 27
-testRunner.Then("I am navigated Admin Login page (use this temporarily until the capital A is remo" +
-                        "ved from the URL", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+testRunner.Then("I am navigated Admin Login page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
             }
             this.ScenarioCleanup();

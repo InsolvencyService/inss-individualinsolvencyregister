@@ -45,12 +45,14 @@ namespace INSS.EIIR.QA.Automation
             AdminCaseFeedbackPage.SelectOrganisation(OrganisationType);
         }
 
+        [When(@"I select the ""([^""]*)"" dropdown list in the organisation dropdown on the Case Feedback page")]
         [Given(@"I select the ""([^""]*)"" dropdown list in the organisation dropdown on the Case Feedback page")]
         public void GivenISelectTheDropdownListInTheOrganisationDropdownOnTheCaseFeedbackPage(string organisation)
         {
             AdminCaseFeedbackPage.SelectOrganisation(organisation);
         }
 
+        [When(@"I select the ""([^""]*)"" dropdpwn in the organisation dropdown on the Case Feedback page")]
         [Given(@"I select the ""([^""]*)"" dropdpwn in the organisation dropdown on the Case Feedback page")]
         public void GivenISelectTheDropdpwnInTheOrganisationDropdownOnTheCaseFeedbackPage(string type)
         {
@@ -62,5 +64,37 @@ namespace INSS.EIIR.QA.Automation
         {
             AdminCaseFeedbackPage.verifyCaseDetailsCorrectlyDisplayed(Organisation, Type);
         }
+
+        [Given(@"I select ""([^""]*)"" in the status dropdown")]
+        public void GivenISelectInTheStatusDropdown(string statusOption)
+        {
+            AdminCaseFeedbackPage.SelectStatusOption(statusOption);
+        }
+
+        [When(@"I click the Change to viewed link")]
+        public void WhenIClickTheChangeToViewedLink()
+        {
+            AdminCaseFeedbackPage.clickChangeViewedStatus();
+        }
+
+        [When(@"I select ""([^""]*)"" in the status dropdown")]
+        public void WhenISelectInTheStatusDropdown(string statusOption)
+        {
+            AdminCaseFeedbackPage.SelectStatusOption(statusOption);
+        }
+
+        [Then(@"the case status will show ""([^""]*)""")]
+        public void ThenTheCaseStatusWillShow(string Status)
+        {
+            AdminCaseFeedbackPage.verifyStatus(Status);
+        }
+
+        [Then(@"the case feedback page will show no results for the options selected")]
+        public void ThenTheCaseFeedbackPageWillShowNoResultsForTheOptionsSelected()
+        {
+            AdminCaseFeedbackPage.VerifyNoCaseResultsShown();
+        }
+
+
     }
 }

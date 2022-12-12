@@ -201,6 +201,26 @@ namespace INSS.EIIR.QA.Automation.Pages
             }
         }
 
+        public static void EnterDuplicateEmailAddresses(int emailAddresses)
+        {
+            if (emailAddresses == 3)
+            {
+                ClearText(emailAddress1Element);
+                EnterText(emailAddress1Element, Constants.UpdatedDataExtractEmail1);
+                ClearText(emailAddress2Element);
+                EnterText(emailAddress2Element, Constants.UpdatedDataExtractEmail1);
+                ClearText(emailAddress3Element);
+                EnterText(emailAddress3Element, Constants.UpdatedDataExtractEmail1);
+            }
+            else if (emailAddresses == 2)
+            {
+                ClearText(emailAddress1Element);
+                EnterText(emailAddress1Element, Constants.UpdatedDataExtractEmail1);
+                ClearText(emailAddress3Element);
+                EnterText(emailAddress3Element, Constants.UpdatedDataExtractEmail1);
+            }        
+        }
+
         public static void EnterDates()
         {
             EnterText(applicationSubmittedDayTextBoxElement, Constants.UpdatedApplicationDateDay);
@@ -284,6 +304,34 @@ namespace INSS.EIIR.QA.Automation.Pages
 
             Assert.AreEqual(SubStartDateLaterThanEndDateErrorMesage, WebDriver.FindElement(By.XPath("//a[@href='#SubscribedToDate']")).Text);
             Assert.AreEqual(SubStartDateLaterThanEndDateErrorMesage, WebDriver.FindElement(By.Id("organisationName-error")).Text);
+        }
+
+        public static void EnterInvalidDataExtractEmailAddresses(string emailNo, string EmailAddress)
+        {
+            if (emailNo == "1")
+            {
+                ClearText(emailAddress1Element);
+                ClearText(emailAddress2Element);
+                ClearText(emailAddress3Element);
+                EnterText(emailAddress1Element, EmailAddress);
+            }
+            else if (emailNo == "2")
+            {
+                ClearText(emailAddress1Element);
+                ClearText(emailAddress2Element);
+                ClearText(emailAddress3Element);
+                EnterText(emailAddress2Element, EmailAddress);
+                EnterText(emailAddress1Element, Constants.UpdatedDataExtractEmail1);
+
+            }
+            else if (emailNo == "3")
+            {
+                ClearText(emailAddress1Element);
+                ClearText(emailAddress2Element);
+                ClearText(emailAddress3Element);
+                EnterText(emailAddress3Element, EmailAddress);
+                EnterText(emailAddress1Element, Constants.UpdatedDataExtractEmail1);
+            }
         }
 
     }

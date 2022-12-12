@@ -308,19 +308,28 @@ testRunner.Then(string.Format("the user is shown the following error message {0}
         }
         
         [NUnit.Framework.TestAttribute()]
-        [NUnit.Framework.DescriptionAttribute("ATU_81 Verify the error messages for Application submitted date on the Add New Su" +
-            "bscriber page")]
+        [NUnit.Framework.DescriptionAttribute("ATU_81 Verify the data extract email addresses errors")]
         [NUnit.Framework.CategoryAttribute("AddSubscriberDetails")]
         [NUnit.Framework.CategoryAttribute("Regression")]
-        public virtual void ATU_81VerifyTheErrorMessagesForApplicationSubmittedDateOnTheAddNewSubscriberPage()
+        [NUnit.Framework.TestCaseAttribute("\"1\"", "\"Invalid@\"", "\"Enter data extract email address 1 in the correct format\"", null)]
+        [NUnit.Framework.TestCaseAttribute("\"2\"", "\"Invalid\"", "\"Enter data extract email address 2 in the correct format\"", null)]
+        [NUnit.Framework.TestCaseAttribute("\"3\"", "\"@test.com\"", "\"Enter data extract email address 3 in the correct format\"", null)]
+        public virtual void ATU_81VerifyTheDataExtractEmailAddressesErrors(string dateExtractEmailField, string emailAddress, string errorMessage, string[] exampleTags)
         {
-            string[] tagsOfScenario = new string[] {
+            string[] @__tags = new string[] {
                     "AddSubscriberDetails",
                     "Regression"};
+            if ((exampleTags != null))
+            {
+                @__tags = System.Linq.Enumerable.ToArray(System.Linq.Enumerable.Concat(@__tags, exampleTags));
+            }
+            string[] tagsOfScenario = @__tags;
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("ATU_81 Verify the error messages for Application submitted date on the Add New Su" +
-                    "bscriber page", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
-#line 60
+            argumentsOfScenario.Add("DateExtractEmailField", dateExtractEmailField);
+            argumentsOfScenario.Add("EmailAddress", emailAddress);
+            argumentsOfScenario.Add("ErrorMessage", errorMessage);
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("ATU_81 Verify the data extract email addresses errors", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
+#line 59
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
             bool isScenarioIgnored = default(bool);
@@ -343,50 +352,102 @@ this.ScenarioInitialize(scenarioInfo);
 #line 8
 this.FeatureBackground();
 #line hidden
-#line 61
+#line 60
 testRunner.Given("I first populate all of the fields on the Add new subscriber page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
+#line 61
+testRunner.And(string.Format("I add the {0} Data extract email address with {1}", dateExtractEmailField, emailAddress), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line hidden
 #line 62
+testRunner.And("I press the Save and continue button", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line hidden
+#line 63
+testRunner.Then(string.Format("the user is shown the following error message {0} on Add new subscriber page", errorMessage), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+#line hidden
+            }
+            this.ScenarioCleanup();
+        }
+        
+        [NUnit.Framework.TestAttribute()]
+        [NUnit.Framework.DescriptionAttribute("ATU_81 Verify the error messages for Application submitted date on the Add New Su" +
+            "bscriber page")]
+        [NUnit.Framework.CategoryAttribute("AddSubscriberDetails")]
+        [NUnit.Framework.CategoryAttribute("Regression")]
+        public virtual void ATU_81VerifyTheErrorMessagesForApplicationSubmittedDateOnTheAddNewSubscriberPage()
+        {
+            string[] tagsOfScenario = new string[] {
+                    "AddSubscriberDetails",
+                    "Regression"};
+            System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("ATU_81 Verify the error messages for Application submitted date on the Add New Su" +
+                    "bscriber page", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
+#line 73
+this.ScenarioInitialize(scenarioInfo);
+#line hidden
+            bool isScenarioIgnored = default(bool);
+            bool isFeatureIgnored = default(bool);
+            if ((tagsOfScenario != null))
+            {
+                isScenarioIgnored = tagsOfScenario.Where(__entry => __entry != null).Where(__entry => String.Equals(__entry, "ignore", StringComparison.CurrentCultureIgnoreCase)).Any();
+            }
+            if ((this._featureTags != null))
+            {
+                isFeatureIgnored = this._featureTags.Where(__entry => __entry != null).Where(__entry => String.Equals(__entry, "ignore", StringComparison.CurrentCultureIgnoreCase)).Any();
+            }
+            if ((isScenarioIgnored || isFeatureIgnored))
+            {
+                testRunner.SkipScenario();
+            }
+            else
+            {
+                this.ScenarioStart();
+#line 8
+this.FeatureBackground();
+#line hidden
+#line 74
+testRunner.Given("I first populate all of the fields on the Add new subscriber page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+#line hidden
+#line 75
 testRunner.When("I update the Add new subscriber page Application Date to have a blank Day, Month " +
                         "and Year", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
-#line 63
+#line 76
 testRunner.And("I press the Save and continue button", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 64
+#line 77
 testRunner.Then("the user is shown error messages stating the Day, Month and Year are missing on t" +
                         "he Add new subscriber page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
-#line 65
+#line 78
 testRunner.When("I enter non numeric details in to the Application submitted date fields on the Ad" +
                         "d new subscriber page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
-#line 66
+#line 79
 testRunner.And("I press the Save and continue button", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 67
+#line 80
 testRunner.Then("the user is shown error messages stating which numeric values are acceptable in t" +
                         "he application submitted date on the Add new subscriber page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
-#line 68
+#line 81
 testRunner.When("I enter an invalid date in to the on the Add new subscriber page Application subm" +
                         "itted date fields such as \"30-02-2025\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
-#line 69
+#line 82
 testRunner.And("I press the Save and continue button", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 70
+#line 83
 testRunner.Then("the user is shown error messages stating the Add new subscriber page, application" +
                         " start date entered must be a real date", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
-#line 71
+#line 84
 testRunner.When("I enter an invalid year in to the Add new subscriber page, Application submitted " +
                         "date fields for example \"1000\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
-#line 72
+#line 85
 testRunner.And("I press the Save and continue button", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 73
+#line 86
 testRunner.Then("the user is shown an error message stating \"the application submitted date YEAR e" +
                         "ntered must be between 1900 and 3000\" on the Add new subscriber page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
@@ -416,7 +477,7 @@ testRunner.Then("the user is shown an error message stating \"the application su
             argumentsOfScenario.Add("NumberOfEmailAddresses", numberOfEmailAddresses);
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("ATU_81 Add a new subscriber with between 1 and 3 data extract emails and verify t" +
                     "he new subscriber details are reflected on the Subscriber Details page", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
-#line 76
+#line 89
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
             bool isScenarioIgnored = default(bool);
@@ -439,34 +500,34 @@ this.ScenarioInitialize(scenarioInfo);
 #line 8
 this.FeatureBackground();
 #line hidden
-#line 77
+#line 90
 testRunner.Given("I enter new subscriber details in the text fields", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
-#line 78
+#line 91
 testRunner.And("I enter the application date, start date and end date", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 79
+#line 92
 testRunner.And(string.Format("I enter {0} email addresses", numberOfEmailAddresses), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 80
+#line 93
 testRunner.And("I press the Save and continue button", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 81
+#line 94
 testRunner.Then("I am navigated to the Admin landing page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
-#line 82
+#line 95
 testRunner.When("I navigate to the Subscriber List page and I search for my new subscriber \"New Up" +
                         "dated Subscriber\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
-#line 83
+#line 96
 testRunner.Then("the Subscriber Details page for \"New Updated Subscriber\" is displayed with detail" +
                         "s for this subscriber", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
-#line 84
+#line 97
 testRunner.And("the correct email addressess are displayed for the subscriber \"New Updated Subscr" +
                         "iber\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 85
+#line 98
 testRunner.And("the new subscription for subscriber \"New Updated Subscriber\" is deleted in readin" +
                         "ess for the next test run", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
@@ -485,7 +546,7 @@ testRunner.And("the new subscription for subscriber \"New Updated Subscriber\" i
                     "Regression"};
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("ATU_81 Verify the subscription start date must be before subscription end date", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
-#line 94
+#line 107
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
             bool isScenarioIgnored = default(bool);
@@ -508,19 +569,80 @@ this.ScenarioInitialize(scenarioInfo);
 #line 8
 this.FeatureBackground();
 #line hidden
-#line 95
+#line 108
 testRunner.Given("I first populate all of the fields on the Add new subscriber page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
-#line 96
+#line 109
 testRunner.And("I populate the subscription start date to be later than the subscription end date" +
                         "", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 97
+#line 110
 testRunner.And("I press the Save and continue button", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 98
+#line 111
 testRunner.Then("the user is shown an error message stating the subscription end date must be late" +
                         "r than the subscription start date on the add new subscriber page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+#line hidden
+            }
+            this.ScenarioCleanup();
+        }
+        
+        [NUnit.Framework.TestAttribute()]
+        [NUnit.Framework.DescriptionAttribute("ATU_81 Verify duplicate data extract email addresses cannot be added on the Add N" +
+            "ew Subscriber page")]
+        [NUnit.Framework.CategoryAttribute("AddSubscriberDetails")]
+        [NUnit.Framework.CategoryAttribute("Regression")]
+        [NUnit.Framework.TestCaseAttribute("2", "\"The email address entered for each data extract email address must be unique\"", null)]
+        [NUnit.Framework.TestCaseAttribute("3", "\"The email address entered for each data extract email address must be unique\"", null)]
+        public virtual void ATU_81VerifyDuplicateDataExtractEmailAddressesCannotBeAddedOnTheAddNewSubscriberPage(string numberOfEmailAddresses, string errorMessage, string[] exampleTags)
+        {
+            string[] @__tags = new string[] {
+                    "AddSubscriberDetails",
+                    "Regression"};
+            if ((exampleTags != null))
+            {
+                @__tags = System.Linq.Enumerable.ToArray(System.Linq.Enumerable.Concat(@__tags, exampleTags));
+            }
+            string[] tagsOfScenario = @__tags;
+            System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
+            argumentsOfScenario.Add("NumberOfEmailAddresses", numberOfEmailAddresses);
+            argumentsOfScenario.Add("ErrorMessage", errorMessage);
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("ATU_81 Verify duplicate data extract email addresses cannot be added on the Add N" +
+                    "ew Subscriber page", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
+#line 115
+this.ScenarioInitialize(scenarioInfo);
+#line hidden
+            bool isScenarioIgnored = default(bool);
+            bool isFeatureIgnored = default(bool);
+            if ((tagsOfScenario != null))
+            {
+                isScenarioIgnored = tagsOfScenario.Where(__entry => __entry != null).Where(__entry => String.Equals(__entry, "ignore", StringComparison.CurrentCultureIgnoreCase)).Any();
+            }
+            if ((this._featureTags != null))
+            {
+                isFeatureIgnored = this._featureTags.Where(__entry => __entry != null).Where(__entry => String.Equals(__entry, "ignore", StringComparison.CurrentCultureIgnoreCase)).Any();
+            }
+            if ((isScenarioIgnored || isFeatureIgnored))
+            {
+                testRunner.SkipScenario();
+            }
+            else
+            {
+                this.ScenarioStart();
+#line 8
+this.FeatureBackground();
+#line hidden
+#line 116
+testRunner.Given("I first populate all of the fields on the Add new subscriber page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+#line hidden
+#line 117
+testRunner.And(string.Format("I enter the following {0} identical data extract emails", numberOfEmailAddresses), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line hidden
+#line 118
+testRunner.And("I press the Save and continue button", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line hidden
+#line 119
+testRunner.Then(string.Format("the user is shown the following error message {0} on Add new subscriber page", errorMessage), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
             }
             this.ScenarioCleanup();
