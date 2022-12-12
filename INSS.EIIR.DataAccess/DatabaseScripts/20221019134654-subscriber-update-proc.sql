@@ -1,11 +1,8 @@
-﻿/****** Object:  StoredProcedure [dbo].[subscriber_update]    Script Date: 19/10/2022 13:48:52 ******/
+﻿/****** Object:  StoredProcedure [dbo].[subscriber_update]    Script Date: 29/11/2022 10:31:07 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
-
-/****** Object:  Stored Procedure dbo.subscr_appl_INS    Script Date: 15/06/2010 09:37:32 ******/
 
 
 CREATE OR ALTER PROCEDURE [dbo].[subscriber_update]
@@ -49,7 +46,8 @@ SET
        contact_postcode     = @ContactPostcode,
        contact_telephone    = @ContactTelephone,
        contact_email	    = @ContactEmail,
-       application_approved = @AccountActive
+       application_approved = @AccountActive,
+       application_date     = @ApplicationDate
 WHERE
       subscriber_id = @SubscriberId
        
@@ -82,7 +80,8 @@ INSERT INTO @updateEmailContacts
 DELETE FROM subscriber_contact 
 WHERE email_address NOT IN (
 	SELECT email_address FROM @updateEmailContacts
-)
+) 
+AND subscriber_id = @SubscriberId
 
 INSERT INTO subscriber_contact
 	SELECT ec.subscriber_id, ec.email_address, ec.created_on

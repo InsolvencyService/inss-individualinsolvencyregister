@@ -102,7 +102,7 @@ void ConfigureServices(IServiceCollection services)
             {
                 if (IsAdminContext(context))
                 {
-                    context.Response.Redirect("/Admin");
+                    context.Response.Redirect("/admin");
                 }
 
                 return Task.CompletedTask;
@@ -159,7 +159,7 @@ void ConfigureServices(IServiceCollection services)
     services.AddTransient<ISubscriberService, SubscriberService>();
     services.AddTransient<ISubscriberSearch, SubscriberSearch>();
     services.AddTransient<ICaseService, CaseService>();
-
+    services.AddTransient<IExtractService, ExtractService>();
 }
 
 static bool IsAdminContext(RedirectContext<CookieAuthenticationOptions> context)

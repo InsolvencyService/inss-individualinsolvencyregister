@@ -2,6 +2,7 @@
 using Azure.Search.Documents.Indexes;
 using INSS.EIIR.AzureSearch.Services.Constants;
 using INSS.EIIR.Interfaces.Services;
+using INSS.EIIR.Models.CaseModels;
 using INSS.EIIR.Models.IndexModels;
 using INSS.EIIR.Models.SearchModels;
 using Microsoft.Extensions.Logging;
@@ -10,7 +11,7 @@ namespace INSS.EIIR.AzureSearch.Services;
 
 public class IndividualSearchIndexService : BaseIndexService<IndividualSearch>
 {
-    protected override string IndexName => SearchIndexes.IndividualSearch;
+    protected override string IndexName => SearchIndexes.EiirIndividuals;
 
     private const int PageSize = 2000;
 
@@ -33,7 +34,7 @@ public class IndividualSearchIndexService : BaseIndexService<IndividualSearch>
         var data = _searchDataProvider.GetIndividualSearchData();
 
         logger.LogDebug("Map Data");
-        var indexData = _mapper.Map<IEnumerable<SearchResult>, IEnumerable<IndividualSearch>>(data).ToList();
+        var indexData = _mapper.Map<IEnumerable<CaseResult>, IEnumerable<IndividualSearch>>(data).ToList();
 
         var pages = indexData.Count / PageSize;
 

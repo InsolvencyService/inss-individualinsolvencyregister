@@ -19,10 +19,11 @@ public class CaseResult
 
     public string? individualGender { get; set; }
 
-    public DateTime? individualDOB { get; set; }
+    public string? individualDOB { get; set; }
 
     public string? individualOccupation { get; set; }
     public string? individualAddress { get; set; }
+    public string? individualTown { get; set; }
 
     public string? individualPostcode { get; set; }
 
@@ -32,14 +33,17 @@ public class CaseResult
 
     public string? caseName { get; set; }
     public string? courtName { get; set; }
+    public string? courtNumber { get; set; }
+    public string? caseYear { get; set; }
 
     public string? insolvencyType { get; set; }
 
     public DateTime? notificationDate { get; set; }
+    public string? insolvencyDate { get; set; }
 
     public string? caseStatus { get; set; }
-
-    public DateTime? insolvencyDate { get; set; }
+    public string? caseDescription { get; set; }
+    public string? tradingNames { get; set; }
 
     public string? insolvencyPractitionerName { get; set; }
 

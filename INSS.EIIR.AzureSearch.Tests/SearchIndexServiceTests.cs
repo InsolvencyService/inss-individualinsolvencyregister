@@ -6,6 +6,7 @@ using INSS.EIIR.AzureSearch.Services;
 using INSS.EIIR.Interfaces.Services;
 using INSS.EIIR.Models.IndexModels;
 using INSS.EIIR.Models.SearchModels;
+using INSS.EIIR.Models.CaseModels;
 using Microsoft.Extensions.Logging;
 using Moq;
 using Xunit;
@@ -28,7 +29,7 @@ namespace INSS.EIIR.AzureSearch.Tests
 
             var mapperMock = new Mock<IMapper>();
             mapperMock
-                .Setup(m => m.Map<IEnumerable<SearchResult>, IEnumerable<IndividualSearch>>(rawData))
+                .Setup(m => m.Map<IEnumerable<CaseResult>, IEnumerable<IndividualSearch>>(rawData))
                 .Returns(mappedData);
 
             var indexingResultMock = new Mock<Azure.Response<IndexDocumentsResult>>();
@@ -39,7 +40,7 @@ namespace INSS.EIIR.AzureSearch.Tests
             
             var indexClientMock = new Mock<SearchIndexClient>();
             indexClientMock
-                .Setup(m => m.GetSearchClient("individual_search"))
+                .Setup(m => m.GetSearchClient("eiir_individuals"))
                 .Returns(indexerMock.Object);
             
             var service = GetService(indexClientMock.Object, mapperMock.Object, dataProviderMock.Object);
@@ -49,9 +50,9 @@ namespace INSS.EIIR.AzureSearch.Tests
 
             //Assert
             dataProviderMock.Verify(m => m.GetIndividualSearchData(), Times.Once);
-            mapperMock.Verify(m => m.Map<IEnumerable<SearchResult>, IEnumerable<IndividualSearch>>(rawData), Times.Once);
+            mapperMock.Verify(m => m.Map<IEnumerable<CaseResult>, IEnumerable<IndividualSearch>>(rawData), Times.Once);
 
-            indexClientMock.Verify(m => m.GetSearchClient("individual_search"), Times.Once);
+            indexClientMock.Verify(m => m.GetSearchClient("eiir_individuals"), Times.Once);
             indexerMock.Verify(m => m.MergeOrUploadDocumentsAsync(mappedData, null, default(CancellationToken)), Times.Once);
 
         }
@@ -64,9 +65,9 @@ namespace INSS.EIIR.AzureSearch.Tests
             return new IndividualSearchIndexService(indexClient, mapper, searchDataProvider);
         }
 
-        private IEnumerable<SearchResult> GetData()
+        private IEnumerable<CaseResult> GetData()
         {
-            return new List<SearchResult>
+            return new List<CaseResult>
             {
                 new()
                 {

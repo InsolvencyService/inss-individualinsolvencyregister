@@ -5,6 +5,8 @@
     var header = "Errors or issues";
     ViewData["Header"] = header;
     ViewData["Title"] = header;
+
+    var pageNo = Model.FeedbackWithPaging.Paging.Page;
 }
 
 @section AdminBreadcrumb
@@ -113,7 +115,7 @@
                             <strong class="govuk-tag govuk-tag--grey" id="report-status">@viewed</strong>
                         </dd>
                         <dd class="govuk-summary-list__actions">
-                            <a href="/admin/errors-or-issues/update-status/@feedback.FeedbackId/@(!feedback.Viewed)">
+                            <a href="/admin/errors-or-issues/update-status/@feedback.FeedbackId/@(!feedback.Viewed)/@Model.InsolvencyTypeFilter/@Model.OrganisationFilter/@Model.StatusFilter">
                                 Change to @change
                             </a>
                         </dd>
@@ -131,7 +133,7 @@
                             Case name
                         </dt>
                         <dd class="govuk-summary-list__value">
-                            <a href="/SearchDetails/@feedback.CaseId/@feedback.IndivNo">@feedback.CaseName</a>
+                            <a href="/case-details/@pageNo/true/@feedback.CaseId/@feedback.IndivNo/a/@Model.InsolvencyTypeFilter/@Model.OrganisationFilter/@Model.StatusFilter">@feedback.CaseName</a>
                         </dd>
                     </div>
                     <div class="govuk-summary-list__row">
@@ -147,7 +149,10 @@
                             Order or arrangement date
                         </dt>
                         <dd class="govuk-summary-list__value">
-                            @*@feedback.*@
+                            @{
+                                var orderDate = feedback.OrderDate == null ? "" : feedback.OrderDate.Value.ToString("dd MMMM yyyy");
+                            }
+                            @orderDate
                         </dd>
                     </div>
                     <div class="govuk-summary-list__row">

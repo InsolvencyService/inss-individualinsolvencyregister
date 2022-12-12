@@ -22,7 +22,7 @@ namespace INSS.EIIR.Web.Areas.Admin.Controllers
         }
 
         [HttpGet(AreaNames.Admin + "/errors-or-issues/{page?}/{insolvencyType?}/{organisation?}/{status?}")]
-        public async Task<IActionResult> Index(int page = 1, string insolvencyType = "", int organisation = 0, int status = 0)
+        public async Task<IActionResult> Index(int page = 1, string insolvencyType = "A", int organisation = 0, int status = 0)
         {
             var feedback = new FeedbackViewModel
             {
@@ -42,12 +42,12 @@ namespace INSS.EIIR.Web.Areas.Admin.Controllers
             return View(feedback);
         }
 
-        [HttpGet(AreaNames.Admin + "/errors-or-issues/update-status/{feedbackId}/{viewed}")]
-        public async Task<IActionResult> UpdateStatus(int feedbackId, bool viewed)
+        [HttpGet(AreaNames.Admin + "/errors-or-issues/update-status/{feedbackId}/{viewed}/{insolvencyType?}/{organisation?}/{status?}")]
+        public async Task<IActionResult> UpdateStatus(int feedbackId, bool viewed, string insolvencyType = "A", int organisation = 0, int status = 0)
         {
             await _errorIssuesService.UpdateStatusAsync(feedbackId, viewed);
 
-            return RedirectToAction("Index");
+            return RedirectToAction("Index", new { page = 1, insolvencyType, organisation, status });
         }
 
         private static FeedbackBody CreateParameters(int page, string insolvencyType, int organisation, int status)
