@@ -1,9 +1,4 @@
-using System.IO;
-using System.Net;
-using System.Threading.Tasks;
-using Azure.Search.Documents.Models;
 using INSS.EIIR.Interfaces.AzureSearch;
-using INSS.EIIR.Interfaces.Services;
 using INSS.EIIR.Models.CaseModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -14,6 +9,9 @@ using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Enums;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
+using System.IO;
+using System.Net;
+using System.Threading.Tasks;
 
 namespace INSS.EIIR.Functions.Functions
 {
@@ -32,7 +30,7 @@ namespace INSS.EIIR.Functions.Functions
         [FunctionName("CaseDetails")]
         [OpenApiOperation(operationId: "Run", tags: new[] { "Case" })]
         [OpenApiSecurity("function_key", SecuritySchemeType.ApiKey, Name = "code", In = OpenApiSecurityLocationType.Query)]
-        [OpenApiParameter(name: "CaseRequest", In = ParameterLocation.Header, Required = true, Type = typeof(CaseRequest), Description = "The CaseRequest parameter")]
+        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(CaseRequest), Description = "The CaseRequest parameter", Required = true)]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "text/plain", bodyType: typeof(string), Description = "The OK response")]
         public async Task<IActionResult> GetCaseDetails([HttpTrigger(AuthorizationLevel.Function, "post", Route = null)] HttpRequest req)
         {
@@ -47,11 +45,10 @@ namespace INSS.EIIR.Functions.Functions
 
             var caseRequest = JsonConvert.DeserializeObject<CaseRequest>(requestBody);
 
-            var result = await _queryService.SearchDetailIndexAsync(caseRequest);
+            var result = await _queryService.GetAsync(new Models.IndexModels.IndividualSearch { CaseNumber = caseRequest.CaseNo.ToString() });
 
             return new OkObjectResult(result);
 
         }
     }
 }
-
