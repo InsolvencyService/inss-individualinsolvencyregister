@@ -17,7 +17,7 @@ public class ExtractDataProvider : IExtractDataProvider
 {
     private readonly ILogger _logger;
     private readonly IExtractRepository _extractRepository;
-    private readonly ArrayList _blockIDArrayList;
+    private readonly IList<string> _blockIDList;
     private readonly DatabaseConfig _dbConfig;
     private readonly BlobServiceClient _blobServiceClient;
     private readonly BlobContainerClient _containerClient;
@@ -33,7 +33,7 @@ public class ExtractDataProvider : IExtractDataProvider
     {
         _logger = loggerFactory.CreateLogger<ExtractDataProvider>();
         _extractRepository = extractRepository;
-        _blockIDArrayList = new();
+        _blockIDList = new List<string>();
         _dbConfig = dbOptions.Value;
         _blobServiceClient = blobServiceClient;
         _blobContainerName = Environment.GetEnvironmentVariable("blobcontainername");
@@ -70,7 +70,8 @@ public class ExtractDataProvider : IExtractDataProvider
                 do
                 {
                     charsRead = await data.ReadAsync(buffer, 0, buffer.Length);
-                    await UploadToBlobInBlocks(filename, buffer, false);
+                    byte[] byteArray = Encoding.UTF8.GetBytes(buffer, 0, charsRead);
+                    await UploadToBlobInBlocks(filename, byteArray, false);
                 } while (charsRead > 0);
                 await UploadToBlobInBlocks(filename, null, true);
             }
@@ -81,26 +82,24 @@ public class ExtractDataProvider : IExtractDataProvider
         }
     }
 
-    private async Task UploadToBlobInBlocks(string filename, char[] buffer, bool commit = false)
+    private async Task UploadToBlobInBlocks(string filename, byte[] byteArray, bool commit = false)
     {
         try
         {
             BlockBlobClient blobClient = _containerClient.GetBlockBlobClient($"{filename}.xml");
-            if (buffer != null)
+            if (byteArray != null)
             {
-                byte[] byteArray = Encoding.UTF8.GetBytes(buffer);
                 using var stream = new MemoryStream(byteArray);
 
                 string blockID = Convert.ToBase64String(Encoding.UTF8.GetBytes(Guid.NewGuid().ToString()));
-                _blockIDArrayList.Add(blockID);
+                _blockIDList.Add(blockID);
 
                 await blobClient.StageBlockAsync(blockID, stream);
             }
 
             if (commit)
             {
-                string[] blockIDArray = (string[])_blockIDArrayList.ToArray(typeof(string));
-                var responseXml = await blobClient.CommitBlockListAsync(blockIDArray);
+                var responseXml = await blobClient.CommitBlockListAsync(_blockIDList);
                 await CreateAndUploadZip(filename);
             }
         }
