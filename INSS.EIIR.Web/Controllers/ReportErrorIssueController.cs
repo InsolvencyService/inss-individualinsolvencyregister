@@ -6,7 +6,6 @@ using INSS.EIIR.Web.Constants;
 using INSS.EIIR.Web.Helper;
 using INSS.EIIR.Web.ViewModels;
 using Microsoft.AspNetCore.Mvc;
-using System.Globalization;
 
 namespace INSS.EIIR.Web.Controllers
 {
@@ -51,43 +50,35 @@ namespace INSS.EIIR.Web.Controllers
 
             List<BreadcrumbLink> breadcrumbs;
 
-            if (fromAdmin)
+            if (!fromAdmin)
             {
-                var errorParams = new ErrorListParameters
+                breadcrumbs = CreateBreadcrumbs(
+                    false,
+                    page,
+                    caseNo,
+                    indivNo,
+                    searchTerm);
+
+                model.ErrorListParameters = new ErrorListParameters
                 {
-                    Page = page,
-                    InsolvencyType = insolvencyType,
-                    Organisation = organisation,
-                    Status = status,
-                    CaseNo = caseNo,
-                    IndivNo = indivNo
+                    Page = page, CaseNo = caseNo, IndivNo = indivNo, InsolvencyType = insolvencyType, Organisation = organisation, Status = status
                 };
-
-                breadcrumbs = BreadcrumbBuilder.BuildBreadcrumbs(
-                    isAdmin: true,
-                    showErrorList: true,
-                    showSearchDetails: true,
-                    errorListParameters: errorParams).ToList();
-
-                model.ErrorListParameters = errorParams;
             }
             else
             {
-                var searchParams = new SearchParameters
+                breadcrumbs = CreateBreadcrumbs(
+                    true,
+                    page,
+                    caseNo,
+                    indivNo,
+                    insolvencyType: insolvencyType,
+                    organisation: organisation,
+                    status: status);
+
+                model.SearchParameters = new SearchParameters
                 {
-                    Page = page,
-                    SearchTerm = searchTerm,
-                    CaseNo = caseNo,
-                    IndivNo = indivNo
+                    Page = page, CaseNo = caseNo, IndivNo = indivNo, SearchTerm = searchTerm
                 };
-
-                breadcrumbs = BreadcrumbBuilder.BuildBreadcrumbs(
-                    showSearch: true,
-                    showSearchList: true,
-                    showSearchDetails: true,
-                    searchParameters: searchParams).ToList();
-
-                model.SearchParameters = searchParams;
             }
 
             model.Breadcrumbs = breadcrumbs;
@@ -141,9 +132,76 @@ namespace INSS.EIIR.Web.Controllers
             ViewBag.Title = "Report an error or issue";
             ViewBag.Header = "Report an error or issue";
 
+            if (!feedback.FromAdmin)
+            {
+                feedback.Breadcrumbs = CreateBreadcrumbs(
+                    feedback.FromAdmin,
+                    feedback.SearchParameters.Page,
+                    feedback.CaseNo,
+                    feedback.IndivNo,
+                    feedback.SearchParameters.SearchTerm);
+            }
+            else
+            {
+                feedback.Breadcrumbs = CreateBreadcrumbs(
+                    feedback.FromAdmin,
+                    feedback.ErrorListParameters.Page,
+                    feedback.CaseNo,
+                    feedback.IndivNo,
+                    insolvencyType: feedback.ErrorListParameters.InsolvencyType,
+                    organisation: feedback.ErrorListParameters.Organisation,
+                    status: feedback.ErrorListParameters.Status);
+            }
+
             GetSortedErrors();
 
             return View("Index", feedback);
+        }
+
+        private static List<BreadcrumbLink> CreateBreadcrumbs(
+            bool fromAdmin,
+            int page,
+            int caseNo,
+            int indivNo,
+            string searchTerm = "a",
+            string insolvencyType = "A",
+            int organisation = 0,
+            int status = 0)
+        {
+            if (fromAdmin)
+            {
+                var errorParams = new ErrorListParameters
+                {
+                    Page = page,
+                    InsolvencyType = insolvencyType,
+                    Organisation = organisation,
+                    Status = status,
+                    CaseNo = caseNo,
+                    IndivNo = indivNo
+                };
+
+                return BreadcrumbBuilder.BuildBreadcrumbs(
+                    isAdmin: true,
+                    showErrorList: true,
+                    showSearchDetails: true,
+                    errorListParameters: errorParams).ToList();
+            }
+            else
+            {
+                var searchParams = new SearchParameters
+                {
+                    Page = page,
+                    SearchTerm = searchTerm,
+                    CaseNo = caseNo,
+                    IndivNo = indivNo
+                };
+
+                return BreadcrumbBuilder.BuildBreadcrumbs(
+                    showSearch: true,
+                    showSearchList: true,
+                    showSearchDetails: true,
+                    searchParameters: searchParams).ToList();
+            }
         }
 
         private void GetSortedErrors()
