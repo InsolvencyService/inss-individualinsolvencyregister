@@ -70,8 +70,10 @@ public class ExtractDataProvider : IExtractDataProvider
                 do
                 {
                     charsRead = await data.ReadAsync(buffer, 0, buffer.Length);
-                    byte[] byteArray = Encoding.UTF8.GetBytes(buffer, 0, charsRead);
-                    await UploadToBlobInBlocks(filename, byteArray, false);
+                    if (charsRead > 0) { 
+                        byte[] byteArray = Encoding.UTF8.GetBytes(buffer, 0, charsRead);
+                        await UploadToBlobInBlocks(filename, byteArray, false);
+                    }
                 } while (charsRead > 0);
                 await UploadToBlobInBlocks(filename, null, true);
             }
