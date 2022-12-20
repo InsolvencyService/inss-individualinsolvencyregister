@@ -1,4 +1,4 @@
-/****** Object:  StoredProcedure [dbo].[getEiirExtractXml]    Script Date: 13/12/2022 07:01:04 ******/
+/****** Object:  StoredProcedure [dbo].[getEiirExtractXml]    Script Date: 19/12/2022 15:49:37 ******/
 SET ANSI_NULLS OFF
 GO
 SET QUOTED_IDENTIFIER OFF
@@ -279,13 +279,21 @@ CREATE TABLE #Temp
         ELSE 'No Gender Found'
     END AS individualGender,
         
-    ISNULL(NULLIF(CONVERT(CHAR(10), individual.date_of_birth, 103), ''), 'No Date of Birth Found') AS individualDOB, 
+    ISNULL(NULLIF(CONVERT(CHAR(30), individual.date_of_birth, 103), ''), 'No Date of Birth Found') AS individualDOB, 
     ISNULL(NULLIF(individual.job_title, ''), 'No Occupation Found') AS individualOccupation,
 
     CASE WHEN wflag = 'Y' 
-		THEN '(Sorry - this Address has been withheld)'
-		ELSE  CONCAT(individual.address_line_1, ' ', individual.address_line_2, ' ', individual.address_line_3, ' ', individual.address_line_4, ' ', individual.address_line_5) 
-	END AS individualAddress,
+        THEN '(Sorry - this Address has been withheld)'
+        ELSE  
+            (SELECT CASE 
+               WHEN CHARINDEX(',',REVERSE(REPLACE(TRIM(CONCAT(individual.address_line_1, ', ', individual.address_line_2, ', ', individual.address_line_3, ', ', individual.address_line_4, ' ', individual.address_line_5)), ' ,', '')))=1 
+			   THEN 
+					LEFT(REPLACE(TRIM(CONCAT(individual.address_line_1, ', ', individual.address_line_2, ', ', individual.address_line_3, ', ', individual.address_line_4, ', ', individual.address_line_5)), ' ,', ''),
+					LEN(REPLACE(TRIM(CONCAT(individual.address_line_1, ', ', individual.address_line_2, ', ', individual.address_line_3, ', ', individual.address_line_4, ', ', individual.address_line_5)), ' ,', ''))-1) 
+               ELSE 
+					REPLACE(TRIM(CONCAT(individual.address_line_1, ', ', individual.address_line_2, ', ', individual.address_line_3, ', ', individual.address_line_4, ', ', individual.address_line_5)), ' ,', '')
+           END)             
+    END AS individualAddress,
 
 	CASE WHEN wflag = 'Y' 
 		THEN '(Sorry - this Address has been withheld)'
@@ -296,7 +304,7 @@ CREATE TABLE #Temp
 
 	(SELECT 
 		CASE WHEN 
-		(SELECT STRING_AGG(UPPER(ci_other_name.surname) + ' ' + (UPPER(ci_other_name.forenames)), ', ') FROM ci_other_name  WHERE ci_other_name.case_no = snap.CaseNo AND ci_other_name.indiv_no = snap.IndivNo) IS NULL THEN 'No Other Names Found'
+		(SELECT STRING_AGG(UPPER(ci_other_name.surname) + ' ' + (UPPER(ci_other_name.forenames)), ', ') FROM ci_other_name  WHERE ci_other_name.case_no = snap.CaseNo AND ci_other_name.indiv_no = snap.IndivNo) IS NULL THEN 'No OtherNames Found'
 		ELSE
 		(SELECT STRING_AGG(UPPER(ci_other_name.surname) + ' ' + (UPPER(ci_other_name.forenames)), ', ') FROM ci_other_name  WHERE ci_other_name.case_no = snap.CaseNo AND ci_other_name.indiv_no = snap.IndivNo)
 	END) AS individualAlias,    
@@ -398,7 +406,7 @@ CREATE TABLE #Temp
 	END AS previousIDRROEndDate,
 
     --  Insolvency case details
-    UPPER(inscase.case_name) AS caseName, 
+    inscase.case_name AS caseName, 
 
 	CASE
 		WHEN insolvency_type = 'I' OR insolvency_type = 'B'
@@ -472,6 +480,19 @@ CREATE TABLE #Temp
 		WHEN cp.BROPrintCaseDetails = 'Y' AND insolvency_type = 'I'
 			THEN (select SelectionValue from #StatusCodes WHERE SelectionCode = 'O1')
 
+		WHEN (cp.BROPrintCaseDetails = 'Y' AND insolvency_type = 'B' AND CONVERT(CHAR(10), DateofOrder, 103) >= '01/04/2004'
+			AND AnnulmentTypeCASE = '' AND cp.dischargeDate <= GETDATE() 
+			AND cp.dischargeDate < (DATEADD(month, 12, DateofOrder)))
+			THEN 'Discharge Suspended Indefinitely (from ' + CONVERT(CHAR(10), cp.suspensionDate, 103) + ') (Early Discharge)'
+
+		WHEN (cp.BROPrintCaseDetails = 'Y' AND insolvency_type = 'B' AND cp.suspensionDate IS NOT NULL AND cp.suspensionEndDate IS NOT NULL
+			AND ISNULL(CONVERT(CHAR(10), cp.suspensionEndDate, 103), '') = '31/12/2099')
+			THEN 'Discharge Suspended Indefinitely (from ' + CONVERT(CHAR(10), cp.suspensionDate, 103) + ')'
+
+		WHEN (cp.BROPrintCaseDetails = 'Y' AND insolvency_type = 'B' AND cp.dischargeDate IS NULL 
+			AND cp.suspensionDate IS NOT NULL AND cp.suspensionEndDate IS NOT NULL)
+			THEN 'Discharge Fixed Length Suspension (from ' + CONVERT(CHAR(10), cp.suspensionDate, 103) + ' to ' +  CONVERT(CHAR(10), cp.suspensionEndDate, 103) + ')'
+
 		WHEN (cp.BROPrintCaseDetails = 'Y' AND insolvency_type = 'B' AND AnnulmentTypeCASE = '' AND cp.dischargeDate <= GETDATE())
 			THEN (select SelectionValue from #StatusCodes WHERE SelectionCode = 'D') + ' On ' + CONVERT(CHAR(10), cp.dischargeDate, 103)
 		WHEN (cp.BROPrintCaseDetails = 'Y' AND insolvency_type = 'B' AND AnnulmentTypeCASE = '' AND cp.dischargeDate > GETDATE())
@@ -480,19 +501,6 @@ CREATE TABLE #Temp
 			THEN (select SelectionValue from #StatusCodes WHERE SelectionCode = 'O3') 
 		WHEN (cp.BROPrintCaseDetails = 'Y' AND insolvency_type = 'B' AND cp.dischargeDate IS NULL AND cp.dischargeType = 'G')
 			THEN (select SelectionValue from #StatusCodes WHERE SelectionCode = 'O4') 
-
-		WHEN (cp.BROPrintCaseDetails = 'Y' AND insolvency_type = 'B' AND cp.dischargeDate IS NULL 
-			AND cp.suspensionDate IS NOT NULL AND cp.suspensionEndDate IS NOT NULL)
-			THEN 'Discharge Fixed Length Suspension (from ' + CONVERT(CHAR(10), cp.suspensionDate, 103) + ' to ' +  CONVERT(CHAR(10), cp.suspensionEndDate, 103) + ')'
-
-		WHEN (cp.BROPrintCaseDetails = 'Y' AND insolvency_type = 'B' AND cp.suspensionDate IS NOT NULL AND cp.suspensionEndDate IS NOT NULL
-			AND ISNULL(CONVERT(CHAR(10), cp.suspensionEndDate, 103), '') = '31/12/2099')
-			THEN 'Discharge Suspended Indefinitely (from ' + CONVERT(CHAR(10), cp.suspensionDate, 103) + ')'
-
-		WHEN (cp.BROPrintCaseDetails = 'Y' AND insolvency_type = 'B' AND CONVERT(CHAR(10), DateofOrder, 103) >= '01/04/2004'
-			AND AnnulmentTypeCASE = '' AND cp.dischargeDate <= GETDATE() 
-			AND cp.dischargeDate < (DATEADD(month, 12, DateofOrder)))
-			THEN 'Discharge Suspended Indefinitely (from ' + CONVERT(CHAR(10), cp.suspensionDate, 103) + ') (Early Discharge)'
 
 		WHEN (cp.BROPrintCaseDetails = 'Y' AND insolvency_type = 'B' AND AnnulmentTypeCASE = 'P')
 			THEN (select SelectionValue from #StatusCodes WHERE SelectionCode = 'A1') + ' On ' + CONVERT(CHAR(10), AnnulmentDateCASE, 103)
@@ -550,7 +558,7 @@ CREATE TABLE #Temp
 
     CASE WHEN (SELECT 
 		CASE WHEN 
-			ci_trade.trading_name IS NULL THEN 'No Trading Names'
+			ci_trade.trading_name IS NULL THEN 'No Trading Names Found'
 		ELSE ci_trade.trading_name
 		END AS TradingName,       
         
@@ -561,11 +569,11 @@ CREATE TABLE #Temp
 
 		FROM ci_trade 
 		where ci_trade.case_no = snap.CaseNo
-		FOR XML PATH('')) IS NULL THEN 'No Trading Names'
+		FOR XML PATH('')) IS NULL THEN 'No Trading Names Found'
 
 	ELSE (SELECT 
 		CASE WHEN 
-			ci_trade.trading_name IS NULL THEN 'No Trading Names'
+			ci_trade.trading_name IS NULL THEN 'No Trading Names Found'
 		ELSE ci_trade.trading_name
 		END AS TradingName,       
         
@@ -580,9 +588,15 @@ CREATE TABLE #Temp
 	END AS tradingNames,
 
     --  Insolvency practitioner contact details
-    TRIM((SELECT STRING_AGG( ISNULL(UPPER(ci_ip.surname) +' '+ UPPER(ci_ip.forenames), ' '), ', ' ) FROM ci_ip  WHERE ci_ip.ip_no = insolvencyAppointment.ip_no and insolvencyAppointment.ip_appt_type = 'M' and insolvencyAppointment.appt_end_date IS NULL)) AS insolvencyPractitionerName,
+    TRIM((SELECT STRING_AGG( ISNULL(ci_ip.forenames +' '+ ci_ip.surname, ' '), ', ' ) FROM ci_ip  WHERE ci_ip.ip_no = insolvencyAppointment.ip_no and insolvencyAppointment.ip_appt_type = 'M' and insolvencyAppointment.appt_end_date IS NULL)) AS insolvencyPractitionerName,
     TRIM((SELECT TOP 1 ip_firm_name FROM ci_ip_address WHERE ci_ip_address.ip_no = insolvencyAppointment.ip_no and insolvencyAppointment.ip_appt_type = 'M' and insolvencyAppointment.appt_end_date IS NULL)) AS insolvencyPractitionerFirmName,
-    TRIM((SELECT TOP 1 CONCAT(ci_ip_address.address_line_1,  ' ', ci_ip_address.address_line_2,  ' ', ci_ip_address.address_line_3, ' ',  ci_ip_address.address_line_4,  ' ', ci_ip_address.address_line_5) FROM ci_ip_address WHERE ci_ip_address.ip_no = insolvencyAppointment.ip_no and insolvencyAppointment.ip_appt_type = 'M' and insolvencyAppointment.appt_end_date IS NULL)) AS insolvencyPractitionerAddress,
+
+	CASE 
+           WHEN CHARINDEX(',',REVERSE(TRIM((SELECT TOP 1 CONCAT(ci_ip_address.address_line_1,  ', ', ci_ip_address.address_line_2,  ', ', ci_ip_address.address_line_3, ', ',  ci_ip_address.address_line_4,  ', ', ci_ip_address.address_line_5) FROM ci_ip_address WHERE ci_ip_address.ip_no = insolvencyAppointment.ip_no and insolvencyAppointment.ip_appt_type = 'M' and insolvencyAppointment.appt_end_date IS NULL)))) = 1 
+           THEN LEFT(TRIM((SELECT TOP 1 CONCAT(ci_ip_address.address_line_1,  ', ', ci_ip_address.address_line_2,  ', ', ci_ip_address.address_line_3, ', ',  ci_ip_address.address_line_4,  ', ', ci_ip_address.address_line_5) FROM ci_ip_address WHERE ci_ip_address.ip_no = insolvencyAppointment.ip_no and insolvencyAppointment.ip_appt_type = 'M' and insolvencyAppointment.appt_end_date IS NULL)),LEN(TRIM((SELECT TOP 1 CONCAT(ci_ip_address.address_line_1,  ', ', ci_ip_address.address_line_2,  ', ', ci_ip_address.address_line_3, ', ',  ci_ip_address.address_line_4,  ', ', ci_ip_address.address_line_5) FROM ci_ip_address WHERE ci_ip_address.ip_no = insolvencyAppointment.ip_no and insolvencyAppointment.ip_appt_type = 'M' and insolvencyAppointment.appt_end_date IS NULL)))-1) 
+           ELSE TRIM((SELECT TOP 1 CONCAT(ci_ip_address.address_line_1,  ', ', ci_ip_address.address_line_2,  ', ', ci_ip_address.address_line_3, ', ',  ci_ip_address.address_line_4,  ', ', ci_ip_address.address_line_5) FROM ci_ip_address WHERE ci_ip_address.ip_no = insolvencyAppointment.ip_no and insolvencyAppointment.ip_appt_type = 'M' and insolvencyAppointment.appt_end_date IS NULL)) 
+    END insolvencyPractitionerAddress,
+
     TRIM((SELECT TOP 1 postcode FROM ci_ip_address WHERE ci_ip_address.ip_no = insolvencyAppointment.ip_no and insolvencyAppointment.ip_appt_type = 'M' and insolvencyAppointment.appt_end_date IS NULL))  AS insolvencyPractitionerPostcode,
     TRIM((SELECT TOP 1 phone FROM ci_ip_address WHERE ci_ip_address.ip_no = insolvencyAppointment.ip_no and insolvencyAppointment.ip_appt_type = 'M' and insolvencyAppointment.appt_end_date IS NULL)) AS insolvencyPractitionerTelephone, 
 
@@ -600,10 +614,10 @@ CREATE TABLE #Temp
 	END AS insolvencyServiceContact,
 
 	CASE WHEN insolvency_type = 'D' THEN 
-		ISNULL((SELECT CONCAT(address_line_1,  ' ', address_line_2,  ' ', address_line_3,  ' ', address_line_4,  ' ', address_line_5) 
+		ISNULL((SELECT CONCAT(address_line_1,  ', ', address_line_2,  ', ', address_line_3,  ', ', address_line_4,  ', ', address_line_5) 
 		from ci_office where office_name LIKE 'DRO%'), '')
 		ELSE 
-		ISNULL((CONCAT(insolvencyService.address_line_1,  ' ', insolvencyService.address_line_2,  ' ', insolvencyService.address_line_3,  ' ', insolvencyService.address_line_4,  ' ', insolvencyService.address_line_5)), '')
+		ISNULL((CONCAT(insolvencyService.address_line_1,  ', ', insolvencyService.address_line_2,  ', ', insolvencyService.address_line_3,  ', ', insolvencyService.address_line_4,  ', ', insolvencyService.address_line_5)), '')
 	END AS insolvencyServiceAddress,
 
 	CASE WHEN insolvency_type = 'D' THEN 
@@ -657,9 +671,9 @@ SET @resultXML = (SELECT
         individualForenames AS FirstName,
         individualSurname AS Surname,
 		individualOccupation AS Occupation,
-        individualDOB AS DateofBirth,
-        individualAddress AS LastKnownAddress,
-        individualPostcode AS LastKnownPostCode,
+        TRIM(individualDOB) AS DateofBirth,
+        REPLACE(TRIM(individualAddress), ' ,', '') AS LastKnownAddress,
+        TRIM(individualPostcode) AS LastKnownPostCode,
         individualAlias AS OtherNames
 			FOR XML PATH ('IndividualDetails'), TYPE),
 
@@ -736,21 +750,26 @@ SET @resultXML = (SELECT
 					FOR XML PATH ('CaseDetails'), TYPE)
 			ELSE NULL END),
 
-        'Insolvency Practitioner Contact Details' AS InsolvencyPractitionerText,
-        (select 
-			t.caseNo AS CaseNoIP,
-            TRIM(insolvencyPractitionerName) AS MainIP,
-            TRIM(insolvencyPractitionerFirmName) AS MainIPFirm,
-            TRIM(insolvencyPractitionerAddress) AS MainIPFirmAddress,
-            TRIM(insolvencyPractitionerPostcode) AS MainIPFirmPostCode,
-            TRIM(insolvencyPractitionerTelephone) AS MainIPFirmTelephone
-			FOR XML PATH ('IP'), TYPE),
+		(SELECT CASE WHEN insolvencyPractitionerName IS NOT NULL 
+			THEN 'Insolvency Practitioner Contact Details' ELSE NULL END) AS InsolvencyPractitionerText,
+
+		(SELECT CASE WHEN insolvencyPractitionerName IS NOT NULL
+			THEN (SELECT t.caseNo AS CaseNoIP,
+				TRIM(insolvencyPractitionerName) AS MainIP,
+				TRIM(insolvencyPractitionerFirmName) AS MainIPFirm,
+				REPLACE(TRIM(insolvencyPractitionerAddress), ' ,', '') AS MainIPFirmAddress,
+				TRIM(insolvencyPractitionerPostcode) AS MainIPFirmPostCode,
+				TRIM(insolvencyPractitionerTelephone) AS MainIPFirmTelephone
+				FOR XML PATH ('IP'), TYPE)
+			ELSE NULL
+		END),
+
         'Insolvency Service Contact Details' as InsolvencyContactText,
         (SELECT 
 			t.caseNo AS CaseNoContact,
             TRIM(insolvencyServiceOffice) AS InsolvencyServiceOffice,
             TRIM(insolvencyServiceContact) AS Contact,
-            TRIM(insolvencyServiceAddress) AS ContactAddress,
+            REPLACE(TRIM(insolvencyServiceAddress), ' ,', '') AS ContactAddress,
             TRIM(insolvencyServicePostcode) AS ContactPostCode,
             TRIM(insolvencyServicePhone) AS ContactTelephone 
 			FOR XML PATH ('InsolvencyContact'), TYPE)
@@ -758,11 +777,9 @@ SET @resultXML = (SELECT
 		inner join #caseParams cp on cp.caseNo = t.caseNo
         FOR XML PATH ('ReportRequest'), TYPE, ELEMENTS))
 
-	SET @outputWrapper = (SELECT @resultXML FOR XML PATH ('ReportDetails'), TYPE, ELEMENTS)
+	SET @outputWrapper = (SELECT @resultExtractXML, @resultDisclaimerXML, @resultXML FOR XML PATH ('ReportDetails'), TYPE, ELEMENTS)
 
-	SET @outputXML = (select (select @resultExtractXML, @resultDisclaimerXML, @outputWrapper FOR XML PATH (''), TYPE, ELEMENTS) AS 'Result')
-
-	SELECT ((SELECT '<?xml version=''1.0'' encoding=''utf-8''?>') + CAST(@outputXML as varchar(MAX)))
+	SELECT ((SELECT '<?xml version=''1.0'' encoding=''utf-8''?>') + CAST(@outputWrapper as varchar(MAX)))  AS 'Result'
 
 If(OBJECT_ID('tempdb..#Temp') Is Not Null)
 Begin
