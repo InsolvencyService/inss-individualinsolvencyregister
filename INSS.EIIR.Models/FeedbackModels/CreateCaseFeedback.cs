@@ -9,11 +9,11 @@ namespace INSS.EIIR.Models.FeedbackModels
         public DateTime FeedbackDate { get; set; }
 
         [Required(ErrorMessage = "Enter an error or issue")]
-        [RegularExpression("^[a-zA-Z ]+(([',.\\-][a-zA-Z ])?[a-zA-Z ]*)*$", ErrorMessage = "Enter only letters, numbers, - , or '")]
+        [RegularExpression("^[a-zA-Z0-9 ]+(([',.\\-][a-zA-Z0-9 ])?[a-zA-Z0-9 ]*)*$", ErrorMessage = "Enter only letters, numbers, - , or '")]
         public string Message { get; set; } = null!;
 
         [Required(ErrorMessage = "Enter full name")]
-        [RegularExpression("^[a-zA-Z ]+(([',.\\-][a-zA-Z ])?[a-zA-Z ]*)*$", ErrorMessage = "Enter only letters, numbers, - , or '")]
+        [RegularExpression("^[a-zA-Z0-9 ]+(([',.\\-][a-zA-Z0-9 ])?[a-zA-Z0-9 ]*)*$", ErrorMessage = "Enter only letters, numbers, - , or '")]
         public string ReporterFullname { get; set; } = null!;
 
         [Required(ErrorMessage = "Enter an email address")]

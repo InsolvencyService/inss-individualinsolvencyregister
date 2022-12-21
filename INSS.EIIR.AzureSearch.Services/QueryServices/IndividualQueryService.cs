@@ -59,6 +59,13 @@ public class IndividualQueryService : BaseQueryService, IIndividualQueryService
         return result;
     }
 
+    public async Task<CaseResult> GetAsync(IndividualSearch individualSearch)
+    {
+        var result = await GetAsync<IndividualSearch, CaseResult>(individualSearch.CaseNumber);
+
+        return result;
+    }
+
     private string GetFilter(IndividualSearchModel searchModel)
     {
         var filterBuilder = new StringBuilder();

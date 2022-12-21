@@ -94,7 +94,7 @@ namespace INSS.EIIR.Functions.Functions
             var extractBytes = await _extractDataProvider.DownloadLatestExtractAsync(latestFile);
             
             var extractFileDownload = new FileContentResult(extractBytes, "application/octet-stream") { FileDownloadName = latestFile };
-            var SubscriberDownloadModel = new SubscriberDownloadDetail(latestExtract.ExtractId, latestExtract.DownloadZiplink, GetIPFromRequestHeaders(req), GetServerIP());
+            var SubscriberDownloadModel = new SubscriberDownloadDetail(latestExtract.ExtractId, GetIPFromRequestHeaders(req), GetServerIP(), latestExtract.DownloadZiplink);
 
             await _subscriberDataProvider.CreateSubscriberDownload(subscriberId, SubscriberDownloadModel);
 

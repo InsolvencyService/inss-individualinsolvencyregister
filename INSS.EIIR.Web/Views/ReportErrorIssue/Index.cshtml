@@ -11,6 +11,11 @@
     var reporterFullnameError = ViewContext.ModelState["CaseFeedback.ReporterFullname"] != null && ViewContext.ModelState["CaseFeedback.ReporterFullname"].Errors.Count > 0;
     var reporterEmailAddressError = ViewContext.ModelState["CaseFeedback.ReporterEmailAddress"] != null && ViewContext.ModelState["CaseFeedback.ReporterEmailAddress"].Errors.Count > 0;
     var reporterOrganisationError = ViewContext.ModelState["CaseFeedback.ReporterOrganisation"] != null && ViewContext.ModelState["CaseFeedback.ReporterOrganisation"].Errors.Count > 0;
+
+    var messageGroupClass = messageError ? ValidationClasses.GroupErrorClass : ValidationClasses.GroupClass;
+    var reporterFullnameGroupClass = reporterFullnameError ? ValidationClasses.GroupErrorClass : ValidationClasses.GroupClass;
+    var reporterEmailAddressGroupClass = reporterEmailAddressError ? ValidationClasses.GroupErrorClass : ValidationClasses.GroupClass;
+    var reporterOrganisationGroupClass = reporterOrganisationError ? ValidationClasses.GroupErrorClass : ValidationClasses.GroupClass;
 }
 
 @section Breadcrumb
@@ -87,7 +92,7 @@
             <input type="hidden" asp-for="CaseFeedback.CaseId"/>
 
             <div class="govuk-character-count" data-module="govuk-character-count" data-maxlength="200">
-                <div class="govuk-form-group">
+                <div class="@messageGroupClass">
                     <h2 class="govuk-label-wrapper">
                         <label class="govuk-label govuk-label--m" for="with-hint">
                             What is the error or issue?
@@ -120,7 +125,7 @@
 
             <p class="govuk-body">We’ll use these to contact you if we need evidence.</p>
 
-            <div class="govuk-form-group">
+            <div class="@reporterFullnameGroupClass">
                 <label class="govuk-label" for="full-name">
                     Full name
                 </label>
@@ -132,7 +137,7 @@
                        type="text" spellcheck="false" autocomplete="name">
             </div>
 
-            <div class="govuk-form-group">
+            <div class="@reporterEmailAddressGroupClass">
                 <label class="govuk-label" for="email">
                     Email address
                 </label>
@@ -144,7 +149,7 @@
                        type="text" spellcheck="false" aria-describedby="email-hint" autocomplete="email">
             </div>
 
-            <div class="govuk-form-group">
+            <div class="@reporterOrganisationGroupClass">
                 <fieldset class="govuk-fieldset">
                     <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
                         <h1 class="govuk-fieldset__heading">
