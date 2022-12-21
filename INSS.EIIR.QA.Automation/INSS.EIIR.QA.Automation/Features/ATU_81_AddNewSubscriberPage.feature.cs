@@ -309,6 +309,7 @@ testRunner.Then(string.Format("the user is shown the following error message {0}
         
         [NUnit.Framework.TestAttribute()]
         [NUnit.Framework.DescriptionAttribute("ATU_81 Verify the data extract email addresses errors")]
+        [NUnit.Framework.IgnoreAttribute("Ignored scenario")]
         [NUnit.Framework.CategoryAttribute("AddSubscriberDetails")]
         [NUnit.Framework.CategoryAttribute("Regression")]
         [NUnit.Framework.TestCaseAttribute("\"1\"", "\"Invalid@\"", "\"Enter data extract email address 1 in the correct format\"", null)]
@@ -317,6 +318,7 @@ testRunner.Then(string.Format("the user is shown the following error message {0}
         public virtual void ATU_81VerifyTheDataExtractEmailAddressesErrors(string dateExtractEmailField, string emailAddress, string errorMessage, string[] exampleTags)
         {
             string[] @__tags = new string[] {
+                    "Ignore",
                     "AddSubscriberDetails",
                     "Regression"};
             if ((exampleTags != null))
@@ -458,6 +460,7 @@ testRunner.Then("the user is shown an error message stating \"the application su
         [NUnit.Framework.TestAttribute()]
         [NUnit.Framework.DescriptionAttribute("ATU_81 Add a new subscriber with between 1 and 3 data extract emails and verify t" +
             "he new subscriber details are reflected on the Subscriber Details page")]
+        [NUnit.Framework.IgnoreAttribute("Ignored scenario")]
         [NUnit.Framework.CategoryAttribute("AddSubscriberDetails")]
         [NUnit.Framework.CategoryAttribute("Regression")]
         [NUnit.Framework.TestCaseAttribute("1", null)]
@@ -466,6 +469,7 @@ testRunner.Then("the user is shown an error message stating \"the application su
         public virtual void ATU_81AddANewSubscriberWithBetween1And3DataExtractEmailsAndVerifyTheNewSubscriberDetailsAreReflectedOnTheSubscriberDetailsPage(string numberOfEmailAddresses, string[] exampleTags)
         {
             string[] @__tags = new string[] {
+                    "Ignore",
                     "AddSubscriberDetails",
                     "Regression"};
             if ((exampleTags != null))

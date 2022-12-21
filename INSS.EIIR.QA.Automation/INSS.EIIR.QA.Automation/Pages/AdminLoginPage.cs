@@ -101,7 +101,7 @@ namespace INSS.EIIR.QA.Automation.Pages
         public static void verifyInvalidLoginDetailsErrorMessage()
         {
             Assert.AreEqual(expectedIncorrectUsernamePasswordMessage, WebDriver.FindElement(mainErrorMessageElement1).Text);
-            Assert.AreEqual(expectedIncorrectUsernamePasswordMessage, WebDriver.FindElement(subErrorMessageIncorrectLoginDetailsMessage).Text);
+          //  Assert.AreEqual(expectedIncorrectUsernamePasswordMessage, WebDriver.FindElement(subErrorMessageIncorrectLoginDetailsMessage).Text);
         }
         public static void clickTellTheInsolvencyServiceLink()
         {

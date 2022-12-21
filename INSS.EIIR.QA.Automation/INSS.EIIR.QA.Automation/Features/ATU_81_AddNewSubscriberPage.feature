@@ -55,7 +55,7 @@ Examples:
 | "Postcode"              | "!!!"          | "Enter the postcode in the correct format"					|
 
 
-@AddSubscriberDetails @Regression
+@Ignore @AddSubscriberDetails @Regression
 Scenario: ATU_81 Verify the data extract email addresses errors
 Given I first populate all of the fields on the Add new subscriber page
 And I add the <DateExtractEmailField> Data extract email address with <EmailAddress>
@@ -85,7 +85,7 @@ When I enter an invalid year in to the Add new subscriber page, Application subm
 And I press the Save and continue button 
 Then the user is shown an error message stating "the application submitted date YEAR entered must be between 1900 and 3000" on the Add new subscriber page
 
-@AddSubscriberDetails @Regression
+@Ignore @AddSubscriberDetails @Regression
 Scenario: ATU_81 Add a new subscriber with between 1 and 3 data extract emails and verify the new subscriber details are reflected on the Subscriber Details page 
 Given I enter new subscriber details in the text fields
 And I enter the application date, start date and end date

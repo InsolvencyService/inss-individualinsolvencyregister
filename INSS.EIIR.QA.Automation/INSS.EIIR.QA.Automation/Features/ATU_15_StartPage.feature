@@ -54,5 +54,5 @@ Then the following URL is displayed "https://www.gov.uk/browse/tax/court-claims-
 @StartPage @Regression
 Scenario: ATU_15 Verify the (Give feedback about the Individual Insolvency Register) link in the Related content section on the EIIR start page
 When I click the "Related content - Give feedback about the Individual Insolvency Register" link
-Then the following URL is displayed "https://www.insolvencydirect.bis.gov.uk/eiir/IIRFeedbackPage.asp"
+Then the following URL is displayed "https://www.insolvencydirect.bis.gov.uk/ExternalOnlineForms/GeneralEnquiry.aspx"
 

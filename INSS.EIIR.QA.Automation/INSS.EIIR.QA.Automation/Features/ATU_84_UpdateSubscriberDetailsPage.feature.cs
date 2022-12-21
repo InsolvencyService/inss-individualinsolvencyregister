@@ -339,6 +339,7 @@ testRunner.Then(string.Format("the user is shown the following error message {0}
         
         [NUnit.Framework.TestAttribute()]
         [NUnit.Framework.DescriptionAttribute("ATU_84 Verify the data extract email addresses errors")]
+        [NUnit.Framework.IgnoreAttribute("Ignored scenario")]
         [NUnit.Framework.CategoryAttribute("UpdateSubscriberDetails")]
         [NUnit.Framework.CategoryAttribute("Regression")]
         [NUnit.Framework.TestCaseAttribute("\"1\"", "\"Invalid@\"", "\"Enter data extract email address 1 in the correct format\"", null)]
@@ -347,6 +348,7 @@ testRunner.Then(string.Format("the user is shown the following error message {0}
         public virtual void ATU_84VerifyTheDataExtractEmailAddressesErrors(string dateExtractEmailField, string emailAddress, string errorMessage, string[] exampleTags)
         {
             string[] @__tags = new string[] {
+                    "Ignore",
                     "UpdateSubscriberDetails",
                     "Regression"};
             if ((exampleTags != null))
