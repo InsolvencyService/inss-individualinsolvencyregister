@@ -57,4 +57,10 @@ public static class Constants
     public static string UpdatedEndDateYear = "2028";
     public static string UpdatedStatus = "Inactive";
     public static string NewOrganisationName = "New Updated Subscriber";
+    //Report an error page variables
+    public static string ReportAnErrorMessage = "Test Message";
+    public static string ReportAnErrorFullName = "Test Name";
+    public static string ReportAnErrorEmail = "test@test.com";
+    public static string ReportAnErrorCaseID_FromStartPage = "42046891";
+    public static string ReportAnErrorCaseID_FromCaseFeedbackPage = "366226";
 }

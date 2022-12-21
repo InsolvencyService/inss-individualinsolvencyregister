@@ -56,6 +56,13 @@ namespace INSS.EIIR.QA.Automation
             AdminAddNewSubscriber.EnterEmailAddresses(emailAddresses);
         }
 
+        [Given(@"I enter the following (.*) identical data extract emails")]
+        public void GivenIEnterTheFollowingIdenticalDataExtractEmails(int emailAddresses)
+        {
+            AdminAddNewSubscriber.EnterDuplicateEmailAddresses(emailAddresses);
+        }
+
+
         [Given(@"I populate the subscription start date to be later than the subscription end date")]
         public void GivenIPopulateTheSubscriptionStartDateToBeLaterThanTheSubscriptionEndDate()
         {
@@ -160,6 +167,12 @@ namespace INSS.EIIR.QA.Automation
         public void ThenTheUserIsShownAnErrorMessageStatingTheSubscriptionEndDateMustBeLaterThanTheSubscriptionStartDateOnTheAddNewSubscriberPage()
         {
             AdminAddNewSubscriber.verifySubStartDateLaterThanEndDateErrorMessage();
+        }
+
+        [Given(@"I add the ""([^""]*)"" Data extract email address with ""([^""]*)""")]
+        public void GivenIAddTheDataExtractEmailAddressWith(string emailNo, string EmailAddress)
+        {
+            AdminAddNewSubscriber.EnterInvalidDataExtractEmailAddresses(emailNo, EmailAddress);
         }
 
 

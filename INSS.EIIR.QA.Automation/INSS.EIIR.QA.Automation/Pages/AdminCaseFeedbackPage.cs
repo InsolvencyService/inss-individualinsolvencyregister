@@ -21,11 +21,18 @@ namespace INSS.EIIR.QA.Automation.Pages
         private static By changeViewedStatusLink { get; } = By.LinkText("Change to viewed");
         private static By messageElement { get; } = By.Id("more-detail");
         private static By caseIDText { get; } = By.XPath("//*[@id='main-content']//h2");
-
+        private static By caseStatus { get; } = By.Id("report-status");
+        private static By caseLink { get; } = By.LinkText("Mark Wilkinson");
+        private static By caseNameLink { get; } = By.XPath("//*[@id='main-content']/div[2]/div[2]/dl/div[3]/dd/a");
 
         public static void clickHomeBreadcrumb()
         {
             WebDriver.FindElement(homeBreadcrumb).Click();
+        }
+
+        public static void clickCaseLink()
+        {
+            ClickElement(caseLink);
         }
 
         public static void clickChangeViewedStatus()
@@ -54,6 +61,15 @@ namespace INSS.EIIR.QA.Automation.Pages
             string caseID = Convert.ToString(SqlResults[0][7]);
             string message = Convert.ToString(SqlResults[0][8]);
 
+            DateTime orderOfArrangementDate;
+            string orderOfArrangementDate1 = "";
+            var order = Convert.ToString(SqlResults[0][9]);
+            if (order != "" )
+            {
+                orderOfArrangementDate = DateTime.Parse(Convert.ToString(SqlResults[0][9]));
+                orderOfArrangementDate1 = orderOfArrangementDate.ToString("dd MMMM yyyy");
+            }   
+
             if (Type1 == "I") { Type1 = "IVA"; } else if (Type1 == "D") { Type1 = "Debt relief order"; }  else if (Type1 == "B") { Type1 = "Bankruptcy"; }
 
             if (status == "False") { status = "NOT VIEWED"; } else if (status == "True") { status = "VIEWED"; } 
@@ -66,8 +82,11 @@ namespace INSS.EIIR.QA.Automation.Pages
             Assert.IsTrue(WebDriver.FindElement(caseDetailsElement).Text.Contains(reporterName));
             Assert.IsTrue(WebDriver.FindElement(caseDetailsElement).Text.Contains(emailAddress));
             Assert.IsTrue(WebDriver.FindElement(caseDetailsElement).Text.Contains(organisation1));
-            Assert.IsTrue(WebDriver.FindElement(messageElement).Text.Contains(message));     
-
+            Assert.IsTrue(WebDriver.FindElement(messageElement).Text.Contains(message));
+            if (order != "")
+            {
+                Assert.IsTrue(WebDriver.FindElement(caseDetailsElement).Text.Contains(orderOfArrangementDate1));
+            }
         }
 
         public static void SelectOrganisation(string Organisation)
@@ -118,6 +137,27 @@ namespace INSS.EIIR.QA.Automation.Pages
                     SelectFromDropDownByText(typeDropdownElement, Type);
                     break;
             }
+        }
+
+        public static void SelectStatusOption (string statusOption)
+        {
+            SelectFromDropDownByText(statusDropdownElement, statusOption);
+        }
+
+        public static void verifyStatus(string Status)
+        {
+            Assert.IsTrue(WebDriver.FindElement(caseStatus).Text.Contains(Status));
+        }
+
+        public static void VerifyNoCaseResultsShown()
+        {
+            bool CaseDetailsPresent = IsPresent(caseDetailsElement);
+            Assert.IsFalse(CaseDetailsPresent);
+        }
+
+        public static void ClickCaseNameLink()
+        {
+            ClickElement(caseNameLink);
         }
     }
 }

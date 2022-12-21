@@ -52,7 +52,7 @@ Examples:
 
 
 @UpdateSubscriberDetails @Regression
-Scenario: ATU_84 Verify the incorretc postcode format error message
+Scenario: ATU_84 Verify the incorrect postcode format error message
 When I click on the Subscriber details change link for "Organisation Name"
 And I clear the <TextField> field
 And I enter the following invalid <Postcode>
@@ -65,6 +65,19 @@ Examples:
 | "Postcode"              | "B"            | "Enter the postcode in the correct format"					|
 | "Postcode"              | "!!!"          | "Enter the postcode in the correct format"					|
 
+
+@UpdateSubscriberDetails @Regression
+Scenario: ATU_84 Verify the data extract email addresses errors
+When I click on the Subscriber details change link for "Organisation Name"
+And I update the <DateExtractEmailField> Data extract email address with <EmailAddress>
+And I press the Save and return to subscriber button 
+Then the user is shown the following error message for invalid data extract email address <ErrorMessage>
+
+Examples: 
+| DateExtractEmailField | EmailAddress | ErrorMessage                                               |
+| "1"                   | "Invalid@"   | "Enter data extract email address 1 in the correct format" |
+| "2"                   | "Invalid"    | "Enter data extract email address 2 in the correct format" |
+| "3"                   | "@test.com"  | "Enter data extract email address 3 in the correct format" |
 
 
 @UpdateSubscriberDetails @Regression
@@ -109,3 +122,15 @@ And I populate the subscription start date to be later than the subscription end
 And I press the Save and return to subscriber button 
 Then the user is shown an error message stating the subscription end date must be later than the subscription start date on the update subscriber page
 
+@UpdateSubscriberDetails @Regression
+Scenario: ATU_84 Verify the duplicate data extract email addresses cannot be added
+When I click on the Subscriber details change link for "Organisation Name"
+And I update the subscriber details using the "Update values"
+And I update <NumberOfEmailAddresses> email addresses on the update subscriber details with uplicate email addresses
+And I press the Save and return to subscriber button 
+Then the user is shown the following error message <ErrorMessage>
+
+Examples: 
+| NumberOfEmailAddresses    | ErrorMessage																     | 
+| 2							| "The email address entered for each data extract email address must be unique" |
+| 3							| "The email address entered for each data extract email address must be unique" |

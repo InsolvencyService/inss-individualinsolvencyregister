@@ -37,6 +37,28 @@ Examples:
 | "Member of the public"	  | "Debt relief orders" |
 
 
+@AdminCaseFeedback @Regression
+Scenario: ATU_93 Verify the Case Status is displayed correctly on the Feedback Page
+Given I create case feedback data for this test
+And I click the View feedback link
+And I select the <Organisation> dropdown list in the organisation dropdown on the Case Feedback page
+And I select the <Type> dropdpwn in the organisation dropdown on the Case Feedback page
+And I select "Not viewed" in the status dropdown
+Then the case feedback details are displayed <Organisation> <Type>
+And the case status will show "NOT VIEWED"
+When I click the Change to viewed link
+And I select "Viewed" in the status dropdown
+Then the case feedback details are displayed <Organisation> <Type>
+And the case status will show "VIEWED"
+When I select "Not viewed" in the status dropdown
+And I select the <Organisation> dropdown list in the organisation dropdown on the Case Feedback page
+And I select the <Type> dropdpwn in the organisation dropdown on the Case Feedback page
+Then the case feedback page will show no results for the options selected
+
+Examples: 
+| Organisation                | Type			     | 
+| "Other"				      | "IVAs"			     |
+
 
            
 

@@ -113,12 +113,12 @@ namespace INSS.EIIR.QA.Automation.Pages
             WebDriver.FindElement(homeBreadcrumb).Click();
         }
 
-        public static void verifyAdminLoginPage1()
-        {
-            Assert.IsTrue(WebDriver.Url.Contains(string.Concat(Constants.StartPageUrl, "Admin")));
-            Assert.AreEqual(expectedPageTitle, WebDriver.Title);
-            Assert.AreEqual(expectedPageHeader, WebDriver.FindElement(PageHeader).Text);
-        }
+        //public static void verifyAdminLoginPage1()
+        //{
+        //    Assert.IsTrue(WebDriver.Url.Contains(string.Concat(Constants.StartPageUrl, "Admin")));
+        //    Assert.AreEqual(expectedPageTitle, WebDriver.Title);
+        //    Assert.AreEqual(expectedPageHeader, WebDriver.FindElement(PageHeader).Text);
+        //}
 
     }
 }

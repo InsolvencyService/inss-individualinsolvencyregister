@@ -242,9 +242,7 @@ namespace INSS.EIIR.QA.Automation.Pages
                      
             Assert.AreEqual(status, WebDriver.FindElement(statusElement).Text);
 
-            //uncomment the following line once the update defect for Application submitted date is fixed. 
-
-          //Assert.AreEqual(convertDate(ExpectedApplicationDate2), convertDate(DateTime.Parse(WebDriver.FindElement(applicationSubmittedDateElement).Text)));
+            Assert.AreEqual(convertDate(ExpectedApplicationDate2), convertDate(DateTime.Parse(WebDriver.FindElement(applicationSubmittedDateElement).Text)));
             Assert.AreEqual(convertDate(ExpectedStartDate2), convertDate(DateTime.Parse(WebDriver.FindElement(startDateElement).Text)));
             Assert.AreEqual(convertDate(ExpectedEndDate2), convertDate(DateTime.Parse(WebDriver.FindElement(endDateElement).Text)));
         }

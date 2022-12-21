@@ -163,6 +163,13 @@ namespace INSS.EIIR.QA.Automation
             AdminUpdateSubscriberDetailsPage.EnterEmailAddresses(NumberOfEmailAddresses);
         }
 
+        [When(@"I update (.*) email addresses on the update subscriber details with uplicate email addresses")]
+        public void WhenIUpdateEmailAddressesOnTheUpdateSubscriberDetailsWithUplicateEmailAddresses(int NumberOfEmailAddresses)
+        {
+            AdminUpdateSubscriberDetailsPage.EnterDuplicateEmailAddresses(NumberOfEmailAddresses);
+        }
+
+
         [When(@"I populate the subscription start date to be later than the subscription end date on the update subscriber details page")]
         public void WhenIPopulateTheSubscriptionStartDateToBeLaterThanTheSubscriptionEndDateOnTheUpdateSubscriberDetailsPage()
         {
@@ -174,5 +181,19 @@ namespace INSS.EIIR.QA.Automation
         {
             AdminUpdateSubscriberDetailsPage.verifySubStartDateLaterThanEndDateErrorMessage();
         }
+
+        [When(@"I update the ""([^""]*)"" Data extract email address with ""([^""]*)""")]
+        public void WhenIUpdateTheDataExtractEmailAddressWith(string EmailField, string EmailAddress)
+        {
+            AdminUpdateSubscriberDetailsPage.EnterInvalidDataExtractEmailAddresses(EmailField, EmailAddress);
+        }
+
+        [Then(@"the user is shown the following error message for invalid data extract email address ""([^""]*)""")]
+        public void ThenTheUserIsShownTheFollowingErrorMessageForInvalidDataExtractEmailAddress(string ErrorMessage)
+        {
+            AdminUpdateSubscriberDetailsPage.ValidateTextFieldErrorMessage(ErrorMessage);
+        }
+
+
     }
 }

@@ -20,23 +20,22 @@ namespace INSS.EIIR.QA.Automation.Features
     [System.CodeDom.Compiler.GeneratedCodeAttribute("TechTalk.SpecFlow", "3.9.0.0")]
     [System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     [NUnit.Framework.TestFixtureAttribute()]
-    [NUnit.Framework.DescriptionAttribute("ATU_175 Citizen - Search via single search box")]
-    public partial class ATU_175Citizen_SearchViaSingleSearchBoxFeature
+    [NUnit.Framework.DescriptionAttribute("ATU_333 EIIR Search results page aligned with consolidated index model")]
+    public partial class ATU_333EIIRSearchResultsPageAlignedWithConsolidatedIndexModelFeature
     {
         
         private TechTalk.SpecFlow.ITestRunner testRunner;
         
         private string[] _featureTags = ((string[])(null));
         
-#line 1 "ATU_175_CitizenSearchPage.feature"
+#line 1 "ATU_333_SearchResultsPage.feature"
 #line hidden
         
         [NUnit.Framework.OneTimeSetUpAttribute()]
         public virtual void FeatureSetup()
         {
             testRunner = TechTalk.SpecFlow.TestRunnerManager.GetTestRunner();
-            TechTalk.SpecFlow.FeatureInfo featureInfo = new TechTalk.SpecFlow.FeatureInfo(new System.Globalization.CultureInfo("en-US"), "Features", "ATU_175 Citizen - Search via single search box", "\tAs a user\r\n\tI need the EIIR search screen updated in line with the new prototype" +
-                    " screen\r\n\tSo that I can search EIIR using this new screen design", ProgrammingLanguage.CSharp, ((string[])(null)));
+            TechTalk.SpecFlow.FeatureInfo featureInfo = new TechTalk.SpecFlow.FeatureInfo(new System.Globalization.CultureInfo("en-US"), "Features", "ATU_333 EIIR Search results page aligned with consolidated index model", "\tEIIR Search results page aligned with consolidated index model", ProgrammingLanguage.CSharp, ((string[])(null)));
             testRunner.OnFeatureStart(featureInfo);
         }
         
@@ -76,25 +75,25 @@ namespace INSS.EIIR.QA.Automation.Features
         
         public virtual void FeatureBackground()
         {
-#line 6
+#line 4
 #line hidden
-#line 7
-testRunner.Given("I navigate to the Citizen Search page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+#line 5
+testRunner.Given("I navigate to the Search results page by searching for \"Adrian Adams\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
         }
         
         [NUnit.Framework.TestAttribute()]
-        [NUnit.Framework.DescriptionAttribute("ATU_175 Verify the Citizen Search page")]
-        [NUnit.Framework.CategoryAttribute("CitizenSearchPage")]
+        [NUnit.Framework.DescriptionAttribute("ATU_333 Verify the Search results page")]
+        [NUnit.Framework.CategoryAttribute("CitizenSearchResultsPage")]
         [NUnit.Framework.CategoryAttribute("Regression")]
-        public virtual void ATU_175VerifyTheCitizenSearchPage()
+        public virtual void ATU_333VerifyTheSearchResultsPage()
         {
             string[] tagsOfScenario = new string[] {
-                    "CitizenSearchPage",
+                    "CitizenSearchResultsPage",
                     "Regression"};
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("ATU_175 Verify the Citizen Search page", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
-#line 11
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("ATU_333 Verify the Search results page", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
+#line 9
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
             bool isScenarioIgnored = default(bool);
@@ -114,28 +113,29 @@ this.ScenarioInitialize(scenarioInfo);
             else
             {
                 this.ScenarioStart();
-#line 6
+#line 4
 this.FeatureBackground();
 #line hidden
-#line 12
-testRunner.Then("the URL, page title and page heading will be as per the requirements", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+#line 10
+testRunner.Then("the URL, page title and page heading will be displayed for the Search results pag" +
+                        "e", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
             }
             this.ScenarioCleanup();
         }
         
         [NUnit.Framework.TestAttribute()]
-        [NUnit.Framework.DescriptionAttribute("ATU_175 Verify error message when pressing search without entering a search term")]
-        [NUnit.Framework.CategoryAttribute("CitizenSearchPage")]
+        [NUnit.Framework.DescriptionAttribute("ATU_333 Verify the Search results page breadcrumbs and links")]
+        [NUnit.Framework.CategoryAttribute("CitizenSearchResultsPage")]
         [NUnit.Framework.CategoryAttribute("Regression")]
-        public virtual void ATU_175VerifyErrorMessageWhenPressingSearchWithoutEnteringASearchTerm()
+        public virtual void ATU_333VerifyTheSearchResultsPageBreadcrumbsAndLinks()
         {
             string[] tagsOfScenario = new string[] {
-                    "CitizenSearchPage",
+                    "CitizenSearchResultsPage",
                     "Regression"};
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("ATU_175 Verify error message when pressing search without entering a search term", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
-#line 15
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("ATU_333 Verify the Search results page breadcrumbs and links", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
+#line 14
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
             bool isScenarioIgnored = default(bool);
@@ -155,103 +155,78 @@ this.ScenarioInitialize(scenarioInfo);
             else
             {
                 this.ScenarioStart();
-#line 6
+#line 4
 this.FeatureBackground();
+#line hidden
+#line 15
+testRunner.Then("the breadcrumb text will be as expected", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
 #line 16
-testRunner.When("I click the Search button without entering any text", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+testRunner.And("I click the Search the Individual Insolvency Register breadcrumb", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
 #line 17
-testRunner.Then("I am shown an error message stating a name or trading name must be entered", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+testRunner.Then("the Search page for EIIR will be displayed", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
-            }
-            this.ScenarioCleanup();
-        }
-        
-        [NUnit.Framework.TestAttribute()]
-        [NUnit.Framework.DescriptionAttribute("ATU_175 Search using a term which doesn\'t return any results")]
-        [NUnit.Framework.CategoryAttribute("CitizenSearchPage")]
-        [NUnit.Framework.CategoryAttribute("Regression")]
-        public virtual void ATU_175SearchUsingATermWhichDoesntReturnAnyResults()
-        {
-            string[] tagsOfScenario = new string[] {
-                    "CitizenSearchPage",
-                    "Regression"};
-            System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("ATU_175 Search using a term which doesn\'t return any results", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
+#line 18
+testRunner.Given("I navigate to the Search results page by searching for \"Adrian Adams\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+#line hidden
+#line 19
+testRunner.And("I click the Home breadcrumb on the Search results page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line hidden
 #line 20
-this.ScenarioInitialize(scenarioInfo);
-#line hidden
-            bool isScenarioIgnored = default(bool);
-            bool isFeatureIgnored = default(bool);
-            if ((tagsOfScenario != null))
-            {
-                isScenarioIgnored = tagsOfScenario.Where(__entry => __entry != null).Where(__entry => String.Equals(__entry, "ignore", StringComparison.CurrentCultureIgnoreCase)).Any();
-            }
-            if ((this._featureTags != null))
-            {
-                isFeatureIgnored = this._featureTags.Where(__entry => __entry != null).Where(__entry => String.Equals(__entry, "ignore", StringComparison.CurrentCultureIgnoreCase)).Any();
-            }
-            if ((isScenarioIgnored || isFeatureIgnored))
-            {
-                testRunner.SkipScenario();
-            }
-            else
-            {
-                this.ScenarioStart();
-#line 6
-this.FeatureBackground();
-#line hidden
-#line 21
-testRunner.When("I enter a search term which returns no results", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
-#line hidden
-#line 22
-testRunner.Then("I am shown a message stating no results have been returned", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
-#line hidden
-            }
-            this.ScenarioCleanup();
-        }
-        
-        [NUnit.Framework.TestAttribute()]
-        [NUnit.Framework.DescriptionAttribute("ATU_175 Click the Home breadcrumb")]
-        [NUnit.Framework.CategoryAttribute("CitizenSearchPage")]
-        [NUnit.Framework.CategoryAttribute("Regression")]
-        public virtual void ATU_175ClickTheHomeBreadcrumb()
-        {
-            string[] tagsOfScenario = new string[] {
-                    "CitizenSearchPage",
-                    "Regression"};
-            System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("ATU_175 Click the Home breadcrumb", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
-#line 25
-this.ScenarioInitialize(scenarioInfo);
-#line hidden
-            bool isScenarioIgnored = default(bool);
-            bool isFeatureIgnored = default(bool);
-            if ((tagsOfScenario != null))
-            {
-                isScenarioIgnored = tagsOfScenario.Where(__entry => __entry != null).Where(__entry => String.Equals(__entry, "ignore", StringComparison.CurrentCultureIgnoreCase)).Any();
-            }
-            if ((this._featureTags != null))
-            {
-                isFeatureIgnored = this._featureTags.Where(__entry => __entry != null).Where(__entry => String.Equals(__entry, "ignore", StringComparison.CurrentCultureIgnoreCase)).Any();
-            }
-            if ((isScenarioIgnored || isFeatureIgnored))
-            {
-                testRunner.SkipScenario();
-            }
-            else
-            {
-                this.ScenarioStart();
-#line 6
-this.FeatureBackground();
-#line hidden
-#line 26
-testRunner.When("I click the Home breadcrumb on the Citizen Search page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
-#line hidden
-#line 27
 testRunner.Then("the EIIR Start page will be displayed and the URL, page title and H1 will be as p" +
                         "er requirements", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+#line hidden
+#line 21
+testRunner.Given("I navigate to the Search results page by searching for \"Adrian Adams\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+#line hidden
+#line 22
+testRunner.And("I click the Tell the Insolvency Service link", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line hidden
+#line 23
+testRunner.Then("the following URL is displayed \"https://www.insolvencydirect.bis.gov.uk/ExternalO" +
+                        "nlineForms/GeneralEnquiry.aspx\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+#line hidden
+            }
+            this.ScenarioCleanup();
+        }
+        
+        [NUnit.Framework.TestAttribute()]
+        [NUnit.Framework.DescriptionAttribute("ATU_333")]
+        [NUnit.Framework.CategoryAttribute("CitizenSearchResultsPage")]
+        [NUnit.Framework.CategoryAttribute("Regression")]
+        public virtual void ATU_333()
+        {
+            string[] tagsOfScenario = new string[] {
+                    "CitizenSearchResultsPage",
+                    "Regression"};
+            System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("ATU_333", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
+#line 27
+this.ScenarioInitialize(scenarioInfo);
+#line hidden
+            bool isScenarioIgnored = default(bool);
+            bool isFeatureIgnored = default(bool);
+            if ((tagsOfScenario != null))
+            {
+                isScenarioIgnored = tagsOfScenario.Where(__entry => __entry != null).Where(__entry => String.Equals(__entry, "ignore", StringComparison.CurrentCultureIgnoreCase)).Any();
+            }
+            if ((this._featureTags != null))
+            {
+                isFeatureIgnored = this._featureTags.Where(__entry => __entry != null).Where(__entry => String.Equals(__entry, "ignore", StringComparison.CurrentCultureIgnoreCase)).Any();
+            }
+            if ((isScenarioIgnored || isFeatureIgnored))
+            {
+                testRunner.SkipScenario();
+            }
+            else
+            {
+                this.ScenarioStart();
+#line 4
+this.FeatureBackground();
+#line hidden
+#line 28
+testRunner.When("I click the individual link with postcode \"PL20 7PE\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
             }
             this.ScenarioCleanup();

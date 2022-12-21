@@ -48,9 +48,5 @@ namespace INSS.EIIR.QA.Automation.StepDefs
             SearchPage.verifyEIIRSearchPage();
         }
 
-
-
-
-
     }
 }

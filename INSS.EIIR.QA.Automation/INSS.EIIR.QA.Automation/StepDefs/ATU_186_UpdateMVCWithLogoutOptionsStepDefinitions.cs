@@ -12,6 +12,8 @@ namespace INSS.EIIR.QA.Automation
         string subscriberListPageURL;
         string subscriberDetailsPageURL;
         string updateSubscriberDetailsPageURL;
+        string addSubscriberPageURL;
+        string errorsOrIssuesPageURL;
 
         [When(@"I click the Sign out link")]
         public void WhenIClickTheSignOutLink()
@@ -28,7 +30,7 @@ namespace INSS.EIIR.QA.Automation
         [When(@"I attempt to access the subscriber list page using the URL")]
         public void WhenIAttemptToAccessTheSubscriberListPageUsingTheURL()
         {
-            WebDriver.Navigate().GoToUrl(adminLandingPageURL);
+            WebDriver.Navigate().GoToUrl(subscriberListPageURL);
         }
 
         [When(@"I attempt to access the subscriber details page using the URL")]
@@ -43,6 +45,19 @@ namespace INSS.EIIR.QA.Automation
             WebDriver.Navigate().GoToUrl(updateSubscriberDetailsPageURL);
         }
 
+        [When(@"I attempt to access the View feedback page using the URL")]
+        public void WhenIAttemptToAccessTheViewFeedbackPageUsingTheURL()
+        {
+            WebDriver.Navigate().GoToUrl(errorsOrIssuesPageURL);
+        }
+
+        [When(@"I attempt to access the Add subscriber page using the URL")]
+        public void WhenIAttemptToAccessTheAddSubscriberPageUsingTheURL()
+        {
+            WebDriver.Navigate().GoToUrl(addSubscriberPageURL);
+        }
+
+
         [Given(@"I navigate to the update subscriber page and capture the URLs on the way so I can try and access them once logged out")]
         public void GivenINavigateToTheUpdateSubscriberPageAndCaptureTheURLsOnTheWaySoICanTryAndAccessThemOnceLoggedOut()
         {
@@ -52,15 +67,19 @@ namespace INSS.EIIR.QA.Automation
             AdminViewSubscriberListPage.ClickSubscriberLink("Insolvency Service Internal Account");
             subscriberDetailsPageURL = WebDriver.Url;
             AdminSubscriberDetailsPage.ClickChangeLink("Organisation Name");
-            updateSubscriberDetailsPageURL = WebDriver.Url;   
+            updateSubscriberDetailsPageURL = WebDriver.Url;
+            AdminUpdateSubscriberDetailsPage.clickHomeBreadcrumb();
+            AdminLandingPage.clickaddNewSubscriberLink();
+            addSubscriberPageURL = WebDriver.Url;
+            AdminAddNewSubscriber.clickHomeBreadcrumb();
+            AdminLandingPage.clickViewFeedbackLink();
+            errorsOrIssuesPageURL = WebDriver.Url;
         }
 
-        [Then(@"I am navigated Admin Login page \(use this temporarily until the capital A is removed from the URL")]
-        public void ThenIAmNavigatedAdminLoginPageUseThisTemporarilyUntilTheCapitalAIsRemovedFromTheURL()
-        {
-            AdminLoginPage.verifyAdminLoginPage1();
-        }
-
-
+        //[Then(@"I am navigated Admin Login page \(use this temporarily until the capital A is removed from the URL")]
+        //public void ThenIAmNavigatedAdminLoginPageUseThisTemporarilyUntilTheCapitalAIsRemovedFromTheURL()
+        //{
+        //    AdminLoginPage.verifyAdminLoginPage1();
+        //}
     }
 }
