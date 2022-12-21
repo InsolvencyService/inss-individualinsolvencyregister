@@ -81,7 +81,7 @@ namespace INSS.EIIR.QA.Automation.Data
                 foreach (string CN in CaseNo)
                 {
 
-                    string SQLQuery1 = "insert into CI_Case_Feedback(FeedbackDate, CaseId, Message, ReporterFullname, ReporterEmailAddress, ReporterOrganisation, Viewed) values('2022-11-15'," + CaseNo[count1] +  ", 'Test Message', 'John Smith', 'jsmith@test.com','" + Organisation[count] + "', 0)";
+                    string SQLQuery1 = "insert into CI_Case_Feedback(FeedbackDate, CaseId, Message, ReporterFullname, ReporterEmailAddress, ReporterOrganisation, Viewed) values('2022-12-14 14:48:00.820'," + CaseNo[count1] +  ", 'Test Message', 'John Smith', 'jsmith@test.com','" + Organisation[count] + "', 0)";
                     SqlDatabaseConncetionHelper.ExecuteSqlCommand(SQLQuery1, ConnectionString);
                     count1 = count1+1;
                 }
@@ -116,6 +116,12 @@ namespace INSS.EIIR.QA.Automation.Data
             string SQLQuery = "SELECT TOP 1 FeedbackDate, CaseId, Message, ReporterFullname, ReporterEmailAddress, ReporterOrganisation FROM CI_Case_Feedback order by feedbackDate desc";
             List<object[]> result = SqlDatabaseConncetionHelper.GetFieldValue(SQLQuery, ConnectionString);
             return result;
+        }
+
+        public static void deleteFeedbackData()
+        {
+            string DeleteSQL = "delete from CI_Case_Feedback";
+            SqlDatabaseConncetionHelper.ExecuteSqlCommand(DeleteSQL, ConnectionString);          
         }
 
     }

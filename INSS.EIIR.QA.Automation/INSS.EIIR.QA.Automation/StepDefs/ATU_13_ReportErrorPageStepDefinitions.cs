@@ -2,6 +2,7 @@ using TechTalk.SpecFlow;
 using INSS.EIIR.QA.Automation.Helpers;
 using INSS.EIIR.QA.Automation.TestFramework;
 using INSS.EIIR.QA.Automation.Pages;
+using INSS.EIIR.QA.Automation.Data;
 
 namespace INSS.EIIR.QA.Automation
 {
@@ -160,5 +161,18 @@ namespace INSS.EIIR.QA.Automation
             ReportAnErrorPage.SelectAnOrganisationField();
             ReportAnErrorPage.ClickConfirmAndSendButton();
         }
+
+        [Given(@"I first clear the database records for Case Feedback")]
+        public void GivenIFirstClearTheDatabaseRecordsForCaseFeedback()
+        {
+            SqlQueries.deleteFeedbackData();
+        }
+
+        [Given(@"I click the case name link")]
+        public void GivenIClickTheCaseNameLink()
+        {
+            AdminCaseFeedbackPage.ClickCaseNameLink();
+        }
+
     }
 }

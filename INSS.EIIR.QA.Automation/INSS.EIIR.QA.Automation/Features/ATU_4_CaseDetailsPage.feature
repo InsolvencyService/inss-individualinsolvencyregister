@@ -27,12 +27,15 @@ Then the URL, page title and page heading will be displayed for the Search resul
 
 @CitizenSearchResultsPage @Regression
 Scenario: ATU_4 Verify the Search results page breadcrumbs - Journey from Case Feedback page
+Given I first clear the database records for Case Feedback 
+And I navigate to the Search results page by searching for "Adrian Adams"
+When I click the individual link with postcode "PL20 7PE"
+And I click the Report an error or issue link on the Case Details page
+And I fill in all of the fields with valid values and press Confirm and send
 Given I login as an admin user and navigate to the Admin landing page
-And I create case feedback data for this test
 And I click the View feedback link
-And I click the case name "Mark Wilkinson"
-##Then the breadcrumb text will be as expected on the Case Details page when coming to this page from the Case Feedback page
-
+And I click the case name link
+Then the breadcrumb text will be as expected on the Case Details page when coming to this page from the Case Feedback page
 
 @CitizenSearchResultsPage @Regression
 Scenario: ATU_4 Clicking the Start new search button takes the user to the Search page

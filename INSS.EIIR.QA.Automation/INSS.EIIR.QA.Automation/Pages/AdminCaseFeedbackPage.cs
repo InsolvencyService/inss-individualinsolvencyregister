@@ -23,6 +23,7 @@ namespace INSS.EIIR.QA.Automation.Pages
         private static By caseIDText { get; } = By.XPath("//*[@id='main-content']//h2");
         private static By caseStatus { get; } = By.Id("report-status");
         private static By caseLink { get; } = By.LinkText("Mark Wilkinson");
+        private static By caseNameLink { get; } = By.XPath("//*[@id='main-content']/div[2]/div[2]/dl/div[3]/dd/a");
 
         public static void clickHomeBreadcrumb()
         {
@@ -152,6 +153,11 @@ namespace INSS.EIIR.QA.Automation.Pages
         {
             bool CaseDetailsPresent = IsPresent(caseDetailsElement);
             Assert.IsFalse(CaseDetailsPresent);
+        }
+
+        public static void ClickCaseNameLink()
+        {
+            ClickElement(caseNameLink);
         }
     }
 }

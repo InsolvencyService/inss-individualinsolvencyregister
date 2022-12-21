@@ -18,12 +18,14 @@ namespace INSS.EIIR.QA.Automation.Pages
         private static By SearchTheInsolvencyRegisterBreadcrumbElement { get; } = By.LinkText("Search the Individual Insolvency Register");
         private static By SearchResultsBreadcrumb { get; } = By.LinkText("Search results");
         private static By CaseDetailsBreadcrumb { get; } = By.XPath("/html/body/div/div/ol/li[4]");
-            
+        private static By CaseDetailsBreadcrumbFromCaseFeedback { get; } = By.XPath("/html/body/div/div/ol/li[3]");
+        private static By errorsOrIssuesBreadcrumbElement { get; } = By.LinkText("Errors or issues");
+
         private static string expectedHomeBreadcrumbText { get; } = "Home";
         private static string expectedSearchInsolvencyRegisterBreadcrumbText { get; } = "Search the Individual Insolvency Register";
         private static string expectedSearchResultsBreadcrumbText { get; } = "Search results";
-        private static string expectedCaseDetailsBreadcrumbText { get; } = "Case Details";
-
+        private static string expectedCaseDetailsBreadcrumbText { get; } = "Case Details"; 
+        private static string expectedErrorsOrIssuesBreadcrumbText { get; } = "Errors or issues";
         private static By startNewSearchButton { get; } = By.Id("newSearch");
         private static By reportErrorOrIssueLink { get; } = By.LinkText("Report an error or issue");
 
@@ -79,6 +81,13 @@ namespace INSS.EIIR.QA.Automation.Pages
             Assert.AreEqual(expectedSearchInsolvencyRegisterBreadcrumbText, WebDriver.FindElement(SearchTheInsolvencyRegisterBreadcrumbElement).Text);
             Assert.AreEqual(expectedSearchResultsBreadcrumbText, WebDriver.FindElement(SearchResultsBreadcrumb).Text);
             Assert.AreEqual(expectedCaseDetailsBreadcrumbText, WebDriver.FindElement(CaseDetailsBreadcrumb).Text);
+        }
+
+        public static void verifyBreadcrumbTextWhenComingFromCaseFeedbackPage()
+        {
+            Assert.AreEqual(expectedHomeBreadcrumbText, WebDriver.FindElement(homeBreadcrumbElement).Text);
+            Assert.AreEqual(expectedErrorsOrIssuesBreadcrumbText, WebDriver.FindElement(errorsOrIssuesBreadcrumbElement).Text);
+            Assert.AreEqual(expectedCaseDetailsBreadcrumbText, WebDriver.FindElement(CaseDetailsBreadcrumbFromCaseFeedback).Text);
         }
 
 

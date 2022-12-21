@@ -59,6 +59,13 @@ namespace INSS.EIIR.QA.Automation
             CaseDetailsPage.verifyIndividualDetails();
         }
 
+        [Then(@"the breadcrumb text will be as expected on the Case Details page when coming to this page from the Case Feedback page")]
+        public void ThenTheBreadcrumbTextWillBeAsExpectedOnTheCaseDetailsPageWhenComingToThisPageFromTheCaseFeedbackPage()
+        {
+            CaseDetailsPage.verifyBreadcrumbTextWhenComingFromCaseFeedbackPage();
+        }
+
+
 
     }
 }

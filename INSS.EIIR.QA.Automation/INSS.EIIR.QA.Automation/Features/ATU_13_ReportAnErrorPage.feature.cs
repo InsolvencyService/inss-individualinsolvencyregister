@@ -214,18 +214,16 @@ testRunner.And("the Individual case details are displayed", ((string)(null)), ((
         }
         
         [NUnit.Framework.TestAttribute()]
-        [NUnit.Framework.DescriptionAttribute("ATU_13 Verify the Report an error page breadcrumbs - Journey from the View feedba" +
-            "ck Page")]
+        [NUnit.Framework.DescriptionAttribute("ATU_13 Verify the error messages for field validation on the Report error page")]
         [NUnit.Framework.CategoryAttribute("ReportErrorPage")]
         [NUnit.Framework.CategoryAttribute("Regression")]
-        public virtual void ATU_13VerifyTheReportAnErrorPageBreadcrumbs_JourneyFromTheViewFeedbackPage()
+        public virtual void ATU_13VerifyTheErrorMessagesForFieldValidationOnTheReportErrorPage()
         {
             string[] tagsOfScenario = new string[] {
                     "ReportErrorPage",
                     "Regression"};
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("ATU_13 Verify the Report an error page breadcrumbs - Journey from the View feedba" +
-                    "ck Page", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("ATU_13 Verify the error messages for field validation on the Report error page", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
 #line 36
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
@@ -247,108 +245,54 @@ this.ScenarioInitialize(scenarioInfo);
             {
                 this.ScenarioStart();
 #line 37
-testRunner.Given("I login as an admin user and navigate to the Admin landing page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
-#line hidden
-#line 38
-testRunner.And("I create case feedback data for this test", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-#line hidden
-#line 39
-testRunner.And("I click the View feedback link", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-#line hidden
-#line 40
-testRunner.And("I click the case name \"Mark Wilkinson\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-#line hidden
-#line 41
-testRunner.And("I click the Report an error or issue link on the Case Details page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-#line hidden
-#line 42
-testRunner.Then("the breadcrumb text will be as expected on the Report an error page when the jour" +
-                        "ney started from the Feedback page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
-#line hidden
-            }
-            this.ScenarioCleanup();
-        }
-        
-        [NUnit.Framework.TestAttribute()]
-        [NUnit.Framework.DescriptionAttribute("ATU_13 Verify the error messages for field validation on the Report error page")]
-        [NUnit.Framework.CategoryAttribute("ReportErrorPage")]
-        [NUnit.Framework.CategoryAttribute("Regression")]
-        public virtual void ATU_13VerifyTheErrorMessagesForFieldValidationOnTheReportErrorPage()
-        {
-            string[] tagsOfScenario = new string[] {
-                    "ReportErrorPage",
-                    "Regression"};
-            System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("ATU_13 Verify the error messages for field validation on the Report error page", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
-#line 45
-this.ScenarioInitialize(scenarioInfo);
-#line hidden
-            bool isScenarioIgnored = default(bool);
-            bool isFeatureIgnored = default(bool);
-            if ((tagsOfScenario != null))
-            {
-                isScenarioIgnored = tagsOfScenario.Where(__entry => __entry != null).Where(__entry => String.Equals(__entry, "ignore", StringComparison.CurrentCultureIgnoreCase)).Any();
-            }
-            if ((this._featureTags != null))
-            {
-                isFeatureIgnored = this._featureTags.Where(__entry => __entry != null).Where(__entry => String.Equals(__entry, "ignore", StringComparison.CurrentCultureIgnoreCase)).Any();
-            }
-            if ((isScenarioIgnored || isFeatureIgnored))
-            {
-                testRunner.SkipScenario();
-            }
-            else
-            {
-                this.ScenarioStart();
-#line 46
 testRunner.Given("I navigate to the Search results page by searching for \"Adrian Adams\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
-#line 47
+#line 38
 testRunner.When("I click the individual link with postcode \"PL20 7PE\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
-#line 48
+#line 39
 testRunner.And("I click the Report an error or issue link on the Case Details page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 49
+#line 40
 testRunner.When("I don\'t select an organisation and I press Confirm and send", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
-#line 50
+#line 41
 testRunner.Then("the user is shown the following error \"Select an organisation\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
-#line 51
+#line 42
 testRunner.When("I don\'t enter a description and I press Confirm and send", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
-#line 52
+#line 43
 testRunner.Then("the user is shown the following error \"Enter an error or issue\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
-#line 53
+#line 44
 testRunner.When("I enter a description with invalid characters and I press Confirm and send", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
-#line 54
+#line 45
 testRunner.Then("the user is shown the following error \"Enter only letters, numbers, - , or \'\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
-#line 55
+#line 46
 testRunner.When("I don\'t enter a Full name and I press Confirm and send", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
-#line 56
+#line 47
 testRunner.Then("the user is shown the following error \"Enter full name\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
-#line 57
+#line 48
 testRunner.When("I enter a Full name with invalid characters and I press Confirm and send", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
-#line 58
+#line 49
 testRunner.Then("the user is shown the following error \"Enter only letters, numbers, - , or \'\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
-#line 59
+#line 50
 testRunner.When("I don\'t enter an email address and I press Confirm and send", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
-#line 60
+#line 51
 testRunner.Then("the user is shown the following error \"Enter an email address\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
-#line 61
+#line 52
 testRunner.When("I enter an invalid email address and I press Confirm and send", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
-#line 62
+#line 53
 testRunner.Then("the user is shown the following error \"Enter an email address in the correct form" +
                         "at, like name@example.com\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
@@ -369,7 +313,7 @@ testRunner.Then("the user is shown the following error \"Enter an email address 
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("ATU_13 Submit an error report and validate against the database (journey from sta" +
                     "rt page)", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
-#line 65
+#line 56
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
             bool isScenarioIgnored = default(bool);
@@ -389,8 +333,64 @@ this.ScenarioInitialize(scenarioInfo);
             else
             {
                 this.ScenarioStart();
-#line 66
+#line 57
 testRunner.Given("I navigate to the Search results page by searching for \"Adrian Adams\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+#line hidden
+#line 58
+testRunner.When("I click the individual link with postcode \"PL20 7PE\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+#line hidden
+#line 59
+testRunner.And("I click the Report an error or issue link on the Case Details page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line hidden
+#line 60
+testRunner.And("I fill in all of the fields with valid values and press Confirm and send", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line hidden
+#line 61
+testRunner.Then("the Report an error record will be written to the database using case data from \"" +
+                        "Start page\" journey", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+#line hidden
+            }
+            this.ScenarioCleanup();
+        }
+        
+        [NUnit.Framework.TestAttribute()]
+        [NUnit.Framework.DescriptionAttribute("ATU_13 Verify the Report an error page breadcrumbs - Journey from the View feedba" +
+            "ck Page")]
+        [NUnit.Framework.CategoryAttribute("ReportErrorPage")]
+        [NUnit.Framework.CategoryAttribute("Regression")]
+        public virtual void ATU_13VerifyTheReportAnErrorPageBreadcrumbs_JourneyFromTheViewFeedbackPage()
+        {
+            string[] tagsOfScenario = new string[] {
+                    "ReportErrorPage",
+                    "Regression"};
+            System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("ATU_13 Verify the Report an error page breadcrumbs - Journey from the View feedba" +
+                    "ck Page", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
+#line 64
+this.ScenarioInitialize(scenarioInfo);
+#line hidden
+            bool isScenarioIgnored = default(bool);
+            bool isFeatureIgnored = default(bool);
+            if ((tagsOfScenario != null))
+            {
+                isScenarioIgnored = tagsOfScenario.Where(__entry => __entry != null).Where(__entry => String.Equals(__entry, "ignore", StringComparison.CurrentCultureIgnoreCase)).Any();
+            }
+            if ((this._featureTags != null))
+            {
+                isFeatureIgnored = this._featureTags.Where(__entry => __entry != null).Where(__entry => String.Equals(__entry, "ignore", StringComparison.CurrentCultureIgnoreCase)).Any();
+            }
+            if ((isScenarioIgnored || isFeatureIgnored))
+            {
+                testRunner.SkipScenario();
+            }
+            else
+            {
+                this.ScenarioStart();
+#line 65
+testRunner.Given("I first clear the database records for Case Feedback", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+#line hidden
+#line 66
+testRunner.And("I navigate to the Search results page by searching for \"Adrian Adams\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
 #line 67
 testRunner.When("I click the individual link with postcode \"PL20 7PE\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
@@ -402,67 +402,20 @@ testRunner.And("I click the Report an error or issue link on the Case Details pa
 testRunner.And("I fill in all of the fields with valid values and press Confirm and send", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
 #line 70
-testRunner.Then("the Report an error record will be written to the database using case data from \"" +
-                        "Start page\" journey", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
-#line hidden
-            }
-            this.ScenarioCleanup();
-        }
-        
-        [NUnit.Framework.TestAttribute()]
-        [NUnit.Framework.DescriptionAttribute("ATU_13 Submit an error report and validate against the database (journey from fee" +
-            "dback page)")]
-        [NUnit.Framework.CategoryAttribute("ReportErrorPage")]
-        [NUnit.Framework.CategoryAttribute("Regression")]
-        public virtual void ATU_13SubmitAnErrorReportAndValidateAgainstTheDatabaseJourneyFromFeedbackPage()
-        {
-            string[] tagsOfScenario = new string[] {
-                    "ReportErrorPage",
-                    "Regression"};
-            System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("ATU_13 Submit an error report and validate against the database (journey from fee" +
-                    "dback page)", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
-#line 73
-this.ScenarioInitialize(scenarioInfo);
-#line hidden
-            bool isScenarioIgnored = default(bool);
-            bool isFeatureIgnored = default(bool);
-            if ((tagsOfScenario != null))
-            {
-                isScenarioIgnored = tagsOfScenario.Where(__entry => __entry != null).Where(__entry => String.Equals(__entry, "ignore", StringComparison.CurrentCultureIgnoreCase)).Any();
-            }
-            if ((this._featureTags != null))
-            {
-                isFeatureIgnored = this._featureTags.Where(__entry => __entry != null).Where(__entry => String.Equals(__entry, "ignore", StringComparison.CurrentCultureIgnoreCase)).Any();
-            }
-            if ((isScenarioIgnored || isFeatureIgnored))
-            {
-                testRunner.SkipScenario();
-            }
-            else
-            {
-                this.ScenarioStart();
-#line 74
 testRunner.Given("I login as an admin user and navigate to the Admin landing page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
-#line 75
-testRunner.And("I create case feedback data for this test", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-#line hidden
-#line 76
+#line 71
 testRunner.And("I click the View feedback link", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 77
-testRunner.And("I click the case name \"Mark Wilkinson\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line 72
+testRunner.And("I click the case name link", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 78
+#line 73
 testRunner.And("I click the Report an error or issue link on the Case Details page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 79
-testRunner.And("I fill in all of the fields with valid values and press Confirm and send", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-#line hidden
-#line 80
-testRunner.Then("the Report an error record will be written to the database using case data from \"" +
-                        "Case Feedback page\" journey", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+#line 74
+testRunner.Then("the breadcrumb text will be as expected on the Report an error page when the jour" +
+                        "ney started from the Feedback page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
             }
             this.ScenarioCleanup();

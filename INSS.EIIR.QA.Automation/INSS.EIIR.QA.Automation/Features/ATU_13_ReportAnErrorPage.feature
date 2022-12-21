@@ -33,15 +33,6 @@ And the Individual case details are displayed
 
 
 @ReportErrorPage @Regression
-Scenario: ATU_13 Verify the Report an error page breadcrumbs - Journey from the View feedback Page
-Given I login as an admin user and navigate to the Admin landing page
-And I create case feedback data for this test
-And I click the View feedback link
-And I click the case name "Mark Wilkinson"
-And I click the Report an error or issue link on the Case Details page
-Then the breadcrumb text will be as expected on the Report an error page when the journey started from the Feedback page
-
-@ReportErrorPage @Regression
 Scenario: ATU_13 Verify the error messages for field validation on the Report error page
 Given I navigate to the Search results page by searching for "Adrian Adams"
 When I click the individual link with postcode "PL20 7PE"
@@ -70,12 +61,17 @@ And I fill in all of the fields with valid values and press Confirm and send
 Then the Report an error record will be written to the database using case data from "Start page" journey
 
 @ReportErrorPage @Regression
-Scenario: ATU_13 Submit an error report and validate against the database (journey from feedback page)
-Given I login as an admin user and navigate to the Admin landing page
-And I create case feedback data for this test
-And I click the View feedback link
-And I click the case name "Mark Wilkinson"
+Scenario: ATU_13 Verify the Report an error page breadcrumbs - Journey from the View feedback Page
+Given I first clear the database records for Case Feedback 
+And I navigate to the Search results page by searching for "Adrian Adams"
+When I click the individual link with postcode "PL20 7PE"
 And I click the Report an error or issue link on the Case Details page
 And I fill in all of the fields with valid values and press Confirm and send
-Then the Report an error record will be written to the database using case data from "Case Feedback page" journey
+Given I login as an admin user and navigate to the Admin landing page
+And I click the View feedback link
+And I click the case name link
+And I click the Report an error or issue link on the Case Details page
+Then the breadcrumb text will be as expected on the Report an error page when the journey started from the Feedback page
+
+
 

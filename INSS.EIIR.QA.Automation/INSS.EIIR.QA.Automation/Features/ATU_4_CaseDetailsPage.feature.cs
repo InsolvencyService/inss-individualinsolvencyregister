@@ -230,18 +230,30 @@ this.ScenarioInitialize(scenarioInfo);
             {
                 this.ScenarioStart();
 #line 30
-testRunner.Given("I login as an admin user and navigate to the Admin landing page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+testRunner.Given("I first clear the database records for Case Feedback", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
 #line 31
-testRunner.And("I create case feedback data for this test", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+testRunner.And("I navigate to the Search results page by searching for \"Adrian Adams\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
 #line 32
-testRunner.And("I click the View feedback link", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+testRunner.When("I click the individual link with postcode \"PL20 7PE\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
 #line 33
-testRunner.And("I click the case name \"Mark Wilkinson\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+testRunner.And("I click the Report an error or issue link on the Case Details page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
 #line 34
+testRunner.And("I fill in all of the fields with valid values and press Confirm and send", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line hidden
+#line 35
+testRunner.Given("I login as an admin user and navigate to the Admin landing page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+#line hidden
+#line 36
+testRunner.And("I click the View feedback link", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line hidden
+#line 37
+testRunner.And("I click the case name link", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line hidden
+#line 38
 testRunner.Then("the breadcrumb text will be as expected on the Case Details page when coming to t" +
                         "his page from the Case Feedback page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
@@ -260,7 +272,7 @@ testRunner.Then("the breadcrumb text will be as expected on the Case Details pag
                     "Regression"};
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("ATU_4 Clicking the Start new search button takes the user to the Search page", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
-#line 38
+#line 41
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
             bool isScenarioIgnored = default(bool);
@@ -280,16 +292,16 @@ this.ScenarioInitialize(scenarioInfo);
             else
             {
                 this.ScenarioStart();
-#line 39
+#line 42
 testRunner.Given("I navigate to the Search results page by searching for \"Adrian Adams\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
-#line 40
+#line 43
 testRunner.When("I click the individual link with postcode \"PL20 7PE\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
-#line 41
+#line 44
 testRunner.Given("I click the Start new search button on the Case Details page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
-#line 42
+#line 45
 testRunner.Then("the Search page for EIIR will be displayed", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
             }
