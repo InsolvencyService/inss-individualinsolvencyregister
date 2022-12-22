@@ -537,8 +537,8 @@ testRunner.When("I click the \"Related content - Give feedback about the Individ
                         "ster\" link", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
 #line 57
-testRunner.Then("the following URL is displayed \"https://www.insolvencydirect.bis.gov.uk/eiir/IIRF" +
-                        "eedbackPage.asp\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+testRunner.Then("the following URL is displayed \"https://www.insolvencydirect.bis.gov.uk/ExternalO" +
+                        "nlineForms/GeneralEnquiry.aspx\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
             }
             this.ScenarioCleanup();

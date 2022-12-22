@@ -41,7 +41,7 @@ public static class Constants
     public static string UpdatedAddressLine2 = "Updated Area";
     public static string UpdatedTown = "Updated City";
     public static string UpdatedPostcode = "U43 6UU";
-    public static string UpdatedEmailAddress = "Updated@Email.com";
+    public static string UpdatedEmailAddress = "updated@email.com";
     public static string UpdatedTelephoneNumber = "1234567890";
     public static string UpdatedDataExtractEmail1 = "Updated1@test.com";
     public static string UpdatedDataExtractEmail2 = "Updated2@test.com";

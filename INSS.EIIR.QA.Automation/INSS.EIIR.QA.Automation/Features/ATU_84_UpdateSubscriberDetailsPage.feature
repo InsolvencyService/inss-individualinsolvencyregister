@@ -66,7 +66,7 @@ Examples:
 | "Postcode"              | "!!!"          | "Enter the postcode in the correct format"					|
 
 
-@UpdateSubscriberDetails @Regression
+@Ignore @UpdateSubscriberDetails @Regression 
 Scenario: ATU_84 Verify the data extract email addresses errors
 When I click on the Subscriber details change link for "Organisation Name"
 And I update the <DateExtractEmailField> Data extract email address with <EmailAddress>
