@@ -9,4 +9,7 @@ public interface IIndexService
     Task DeleteIndexAsync(ILogger logger);
 
     Task PopulateIndexAsync(ILogger logger);
+
+    Task UploadSynonymMapAsync(ILogger logger);
+
 }

@@ -10,7 +10,7 @@ namespace INSS.EIIR.AzureSearch.Services;
 
 public abstract class BaseIndexService<T> : IIndexService
 {
-    private readonly SearchIndexClient _searchClient;
+    protected readonly SearchIndexClient _searchClient;
     
     protected abstract string IndexName { get; }
 
@@ -40,7 +40,7 @@ public abstract class BaseIndexService<T> : IIndexService
     }
 
     [ExcludeFromCodeCoverage]
-    public async Task DeleteIndexAsync(ILogger logger)
+    public virtual async Task DeleteIndexAsync(ILogger logger)
     {
         try
         {
@@ -59,6 +59,8 @@ public abstract class BaseIndexService<T> : IIndexService
 
     public abstract Task PopulateIndexAsync(ILogger logger);
 
+    public abstract Task UploadSynonymMapAsync(ILogger logger);
+    
     [ExcludeFromCodeCoverage]
     protected async Task IndexBatchAsync(int page, IEnumerable<IndividualSearch> data, ILogger logger)
     {

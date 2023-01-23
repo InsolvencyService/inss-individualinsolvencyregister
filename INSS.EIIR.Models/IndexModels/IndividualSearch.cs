@@ -39,7 +39,7 @@ public class IndividualSearch
     [SimpleField]
     public string LastKnownAddress { get; set; }
 
-    [SimpleField]
+    [SearchableField(IsSortable = true)]
     public string LastKnownPostcode { get; set; }
 
     [SimpleField]

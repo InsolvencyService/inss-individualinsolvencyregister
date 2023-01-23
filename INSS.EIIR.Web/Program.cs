@@ -1,7 +1,7 @@
 using AspNetCore.SEOHelper;
 using AutoMapper;
-using INSS.EIIR.Data.AutoMapperProfiles;
 using Flurl.Http;
+using INSS.EIIR.Data.AutoMapperProfiles;
 using INSS.EIIR.Data.Models;
 using INSS.EIIR.DataAccess;
 using INSS.EIIR.Interfaces.DataAccess;
@@ -88,6 +88,8 @@ app.Run();
 
 void ConfigureServices(IServiceCollection services)
 {
+    services.AddApplicationInsightsTelemetry();
+
     services.AddCsp(nonceByteAmount: 32);
 
     services.AddCors();
@@ -115,8 +117,8 @@ void ConfigureServices(IServiceCollection services)
         options.FormFieldName = "AntiforgeryFieldname";
         options.HeaderName = "X-CSRF-TOKEN-HEADERNAME";
         options.SuppressXFrameOptionsHeader = false;
-    });
-
+    });    
+    
     services.AddControllersWithViews();
 
     FlurlHttp.Configure(settings =>
@@ -159,7 +161,7 @@ void ConfigureServices(IServiceCollection services)
     services.AddTransient<ISubscriberService, SubscriberService>();
     services.AddTransient<ISubscriberSearch, SubscriberSearch>();
     services.AddTransient<ICaseService, CaseService>();
-    services.AddTransient<IExtractService, ExtractService>();
+    services.AddTransient<IExtractService, ExtractService>();    
 }
 
 static bool IsAdminContext(RedirectContext<CookieAuthenticationOptions> context)
