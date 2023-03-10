@@ -1,10 +1,8 @@
-/****** Object:  Stored Procedure dbo.getEiirIndex    Script Date: 24/11/2022 08:11:59 ******/
+/****** Object:  StoredProcedure [dbo].[getEiirIndex]    Script Date: 04/01/2023 10:37:08 ******/
 SET ANSI_NULLS OFF
 GO
 SET QUOTED_IDENTIFIER OFF
 GO
-
-
 
 CREATE OR ALTER PROCEDURE [dbo].[getEiirIndex]
 AS
@@ -216,7 +214,7 @@ FROM #Cases c
 
 	CASE WHEN wflag = 'Y' 
 		THEN '(Sorry - this Address has been withheld)'
-		ELSE  ISNULL(individual.address_line_3, 'No Last Known PostCode Found')
+		ELSE  ISNULL(individual.address_line_3, 'No Last Known Town Found')
 	END AS individualTown, 
 
     CASE WHEN wflag = 'Y' 
@@ -246,6 +244,7 @@ FROM #Cases c
 		(SELECT STRING_AGG(UPPER(ci_other_name.surname) + ' ' + (UPPER(ci_other_name.forenames)), ', ') FROM ci_other_name  WHERE ci_other_name.case_no = snap.CaseNo AND ci_other_name.indiv_no = snap.IndivNo)
 	END) AS individualAlias,    
 	
+	ISNULL(CONVERT(CHAR(10), snap.Deceased, 103), '') AS deceasedDate,
 
     --  Insolvency case details
     inscase.case_name AS caseName, 
@@ -288,79 +287,71 @@ FROM #Cases c
 
     ivaCase.date_of_notification AS notificationDate,
     ISNULL(CONVERT(CHAR(10), inscase.insolvency_date, 103), '') AS insolvencyDate,
-        
-    CASE case_status
-        WHEN 'N' THEN 'Unknown'
-        WHEN 'A' THEN 'Unknown'
-        WHEN 'D' THEN 'Declined'
-		ELSE 'CURRENT' 
-    END AS caseStatus,
-
-	
+        	
 	CASE WHEN cp.BROPrintCaseDetails = 'Y' AND insolvency_type = 'D' AND cp.RevokedDate IS NULL AND cp.MoratoriumPeriodEndingDate > GETDATE()
-			THEN (select SelectionValue from #StatusCodes WHERE SelectionCode = 'DRO1') + ' will end on ' + CONVERT(CHAR(10), cp.MoratoriumPeriodEndingDate, 103)
+			THEN TRIM((select TRIM(SelectionValue) from #StatusCodes WHERE SelectionCode = 'DRO1') + ' will end on ' + CONVERT(CHAR(10), cp.MoratoriumPeriodEndingDate, 103))
 		WHEN cp.BROPrintCaseDetails = 'Y' AND insolvency_type = 'D' AND cp.RevokedDate IS NULL AND cp.MoratoriumPeriodEndingDate <= GETDATE()
-			THEN (select SelectionValue from #StatusCodes WHERE SelectionCode = 'DRO1') + ' ended on ' + CONVERT(CHAR(10), cp.MoratoriumPeriodEndingDate, 103)
+			THEN TRIM((select TRIM(SelectionValue) from #StatusCodes WHERE SelectionCode = 'DRO1') + ' ended on ' + CONVERT(CHAR(10), cp.MoratoriumPeriodEndingDate, 103))
 		WHEN cp.BROPrintCaseDetails = 'Y' AND insolvency_type = 'D' AND cp.RevokedDate IS NOT NULL 
-			THEN (select SelectionValue from #StatusCodes WHERE SelectionCode = 'DRO2') + ' on ' + CONVERT(CHAR(10), cp.MoratoriumPeriodEndingDate, 103)
+			THEN TRIM((select TRIM(SelectionValue) from #StatusCodes WHERE SelectionCode = 'DRO2') + ' on ' + CONVERT(CHAR(10), cp.MoratoriumPeriodEndingDate, 103))
 		
 		WHEN cp.BROPrintCaseDetails = 'Y' AND insolvency_type = 'D' AND DateofOrder IS NOT NULL AND cp.MoratoriumPeriodEndingDate IS NOT NULL
 			AND  DateDiff(day, DATEADD(month, 12, DateofOrder), cp.MoratoriumPeriodEndingDate) > 1 
-			THEN  ('Extended From ' + CONVERT(CHAR(10), (DATEADD(month, 12, DateofOrder))) + ' To ' + CONVERT(CHAR(10), cp.MoratoriumPeriodEndingDate, 103))		
+			THEN  TRIM(('Extended From ' + CONVERT(CHAR(10), (DATEADD(month, 12, DateofOrder))) + ' To ' + CONVERT(CHAR(10), cp.MoratoriumPeriodEndingDate, 103)))		
 		
 		WHEN cp.BROPrintCaseDetails = 'Y' AND insolvency_type = 'I' AND ivaCase.date_of_failure IS NOT NULL 
-			THEN  (SELECT SelectionValue from #StatusCodes WHERE SelectionCode = 'F') + ' On ' + CONVERT(CHAR(10), ivaCase.date_of_failure, 103)
+			THEN  TRIM((SELECT TRIM(SelectionValue) from #StatusCodes WHERE SelectionCode = 'F') + ' On ' + CONVERT(CHAR(10), ivaCase.date_of_failure, 103))
 		WHEN cp.BROPrintCaseDetails = 'Y' AND insolvency_type = 'I' AND ivaCase.date_of_completion IS NOT NULL 
-			THEN  (SELECT SelectionValue from #StatusCodes WHERE SelectionCode = 'C') + ' On ' + CONVERT(CHAR(10), ivaCase.date_of_completion, 103)
+			THEN  TRIM((SELECT TRIM(SelectionValue) from #StatusCodes WHERE SelectionCode = 'C') + ' On ' + CONVERT(CHAR(10), ivaCase.date_of_completion, 103))
 		WHEN cp.BROPrintCaseDetails = 'Y' AND insolvency_type = 'I' AND ivaCase. date_of_revocation IS NOT NULL 
-			THEN  (SELECT SelectionValue from #StatusCodes WHERE SelectionCode = 'R') + ' On ' + CONVERT(CHAR(10), ivaCase.date_of_revocation, 103)
+			THEN  TRIM((SELECT TRIM(SelectionValue) from #StatusCodes WHERE SelectionCode = 'R') + ' On ' + CONVERT(CHAR(10), ivaCase.date_of_revocation, 103))
 
 		WHEN cp.BROPrintCaseDetails = 'Y' AND insolvency_type = 'I' AND ivaCase.date_of_suspension IS NOT NULL AND ivaCase.date_suspension_lifted IS NULL
-			THEN  (SELECT SelectionValue from #StatusCodes WHERE SelectionCode = 'O5') + ' On ' + CONVERT(CHAR(10), ivaCase.date_of_suspension, 103)
+			THEN  TRIM((SELECT TRIM(SelectionValue) from #StatusCodes WHERE SelectionCode = 'O5') + ' On ' + CONVERT(CHAR(10), ivaCase.date_of_suspension, 103))
 		WHEN cp.BROPrintCaseDetails = 'Y' AND insolvency_type = 'I' AND ivaCase.date_of_suspension IS NOT NULL AND ivaCase.date_suspension_lifted IS NOT NULL
-			THEN  (SELECT SelectionValue from #StatusCodes WHERE SelectionCode = 'O6') + ' On ' + CONVERT(CHAR(10), ivaCase.date_suspension_lifted, 103)
+			THEN  TRIM((SELECT TRIM(SelectionValue) from #StatusCodes WHERE SelectionCode = 'O6') + ' On ' + CONVERT(CHAR(10), ivaCase.date_suspension_lifted, 103))
 		WHEN cp.BROPrintCaseDetails = 'Y' AND insolvency_type = 'I'
-			THEN (select SelectionValue from #StatusCodes WHERE SelectionCode = 'O1')
+			THEN TRIM((select TRIM(SelectionValue) from #StatusCodes WHERE SelectionCode = 'O1'))
 
 		WHEN (cp.BROPrintCaseDetails = 'Y' AND insolvency_type = 'B' AND CONVERT(CHAR(10), DateofOrder, 103) >= '01/04/2004'
 			AND AnnulmentTypeCASE = '' AND cp.dischargeDate <= GETDATE() 
 			AND cp.dischargeDate < (DATEADD(month, 12, DateofOrder)))
-			THEN 'Discharge Suspended Indefinitely (from ' + CONVERT(CHAR(10), cp.suspensionDate, 103) + ') (Early Discharge)'
+			THEN TRIM('Discharge Suspended Indefinitely (from ' + CONVERT(CHAR(10), cp.suspensionDate, 103) + ') (Early Discharge)')
 
 		WHEN (cp.BROPrintCaseDetails = 'Y' AND insolvency_type = 'B' AND cp.suspensionDate IS NOT NULL AND cp.suspensionEndDate IS NOT NULL
 			AND ISNULL(CONVERT(CHAR(10), cp.suspensionEndDate, 103), '') = '31/12/2099')
-			THEN 'Discharge Suspended Indefinitely (from ' + CONVERT(CHAR(10), cp.suspensionDate, 103) + ')'
+			THEN TRIM('Discharge Suspended Indefinitely (from ' + CONVERT(CHAR(10), cp.suspensionDate, 103) + ')')
 
 		WHEN (cp.BROPrintCaseDetails = 'Y' AND insolvency_type = 'B' AND cp.dischargeDate IS NULL 
 			AND cp.suspensionDate IS NOT NULL AND cp.suspensionEndDate IS NOT NULL)
-			THEN 'Discharge Fixed Length Suspension (from ' + CONVERT(CHAR(10), cp.suspensionDate, 103) + ' to ' +  CONVERT(CHAR(10), cp.suspensionEndDate, 103) + ')'
+			THEN TRIM('Discharge Fixed Length Suspension (from ' + CONVERT(CHAR(10), cp.suspensionDate, 103) + ' to ' +  CONVERT(CHAR(10), cp.suspensionEndDate, 103) + ')')
 
 		WHEN (cp.BROPrintCaseDetails = 'Y' AND insolvency_type = 'B' AND AnnulmentTypeCASE = '' AND cp.dischargeDate <= GETDATE())
-			THEN (select SelectionValue from #StatusCodes WHERE SelectionCode = 'D') + ' On ' + CONVERT(CHAR(10), cp.dischargeDate, 103)
+			THEN TRIM((select TRIM(SelectionValue) from #StatusCodes WHERE SelectionCode = 'D') + ' On ' + CONVERT(CHAR(10), cp.dischargeDate, 103))
 		WHEN (cp.BROPrintCaseDetails = 'Y' AND insolvency_type = 'B' AND AnnulmentTypeCASE = '' AND cp.dischargeDate > GETDATE())
-			THEN (select SelectionValue from #StatusCodes WHERE SelectionCode = 'O2') + ' will be ' + CONVERT(CHAR(10), cp.dischargeDate, 103)
+			THEN TRIM((select TRIM(SelectionValue) from #StatusCodes WHERE SelectionCode = 'O2') + ' will be ' + CONVERT(CHAR(10), cp.dischargeDate, 103))
 		WHEN (cp.BROPrintCaseDetails = 'Y' AND insolvency_type = 'B' AND cp.dischargeDate IS NULL AND cp.dischargeType = 'A')
-			THEN (select SelectionValue from #StatusCodes WHERE SelectionCode = 'O3') 
+			THEN TRIM((select TRIM(SelectionValue) from #StatusCodes WHERE SelectionCode = 'O3')) 
 		WHEN (cp.BROPrintCaseDetails = 'Y' AND insolvency_type = 'B' AND cp.dischargeDate IS NULL AND cp.dischargeType = 'G')
-			THEN (select SelectionValue from #StatusCodes WHERE SelectionCode = 'O4') 
+			THEN TRIM((select TRIM(SelectionValue) from #StatusCodes WHERE SelectionCode = 'O4')) 
 
 		WHEN (cp.BROPrintCaseDetails = 'Y' AND insolvency_type = 'B' AND AnnulmentTypeCASE = 'P')
-			THEN (select SelectionValue from #StatusCodes WHERE SelectionCode = 'A1') + ' On ' + CONVERT(CHAR(10), AnnulmentDateCASE, 103)
+			THEN TRIM((select TRIM(SelectionValue) from #StatusCodes WHERE SelectionCode = 'A1') + ' On ' + CONVERT(CHAR(10), AnnulmentDateCASE, 103))
 		WHEN (cp.BROPrintCaseDetails = 'Y' AND insolvency_type = 'B' AND AnnulmentTypeCASE = 'V')
-			THEN (select SelectionValue from #StatusCodes WHERE SelectionCode = 'A2') + ' On ' + CONVERT(CHAR(10), AnnulmentDateCASE, 103)
+			THEN TRIM((select TRIM(SelectionValue) from #StatusCodes WHERE SelectionCode = 'A2') + ' On ' + CONVERT(CHAR(10), AnnulmentDateCASE, 103))
 		WHEN (cp.BROPrintCaseDetails = 'Y' AND insolvency_type = 'B' AND AnnulmentTypeCASE = 'R')
-			THEN (select SelectionValue from #StatusCodes WHERE SelectionCode = 'A3') + ' On ' + CONVERT(CHAR(10), AnnulmentDateCASE, 103)
+			THEN TRIM((select TRIM(SelectionValue) from #StatusCodes WHERE SelectionCode = 'A3') + ' On ' + CONVERT(CHAR(10), AnnulmentDateCASE, 103))
 		WHEN (cp.BROPrintCaseDetails = 'Y' AND insolvency_type = 'B' AND AnnulmentTypeCASE = 'A')
-			THEN (select SelectionValue from #StatusCodes WHERE SelectionCode = 'A4') + ' On ' + + CONVERT(CHAR(10), AnnulmentDateCASE, 103)
+			THEN TRIM((select TRIM(SelectionValue) from #StatusCodes WHERE SelectionCode = 'A4') + ' On ' + + CONVERT(CHAR(10), AnnulmentDateCASE, 103))
 		WHEN (cp.BROPrintCaseDetails = 'Y' AND insolvency_type = 'B' AND AnnulmentTypePARTNER = 'P')
-			THEN (select SelectionValue from #StatusCodes WHERE SelectionCode = 'A1') + ' On ' + CONVERT(CHAR(10), AnnulmentDatePARTNER, 103)
+			THEN TRIM((select TRIM(SelectionValue) from #StatusCodes WHERE SelectionCode = 'A1') + ' On ' + CONVERT(CHAR(10), AnnulmentDatePARTNER, 103))
 		WHEN (cp.BROPrintCaseDetails = 'Y' AND insolvency_type = 'B' AND AnnulmentTypeCASE = 'V')
-			THEN (select SelectionValue from #StatusCodes WHERE SelectionCode = 'A2') + ' On ' + CONVERT(CHAR(10), AnnulmentDatePARTNER, 103)
+			THEN TRIM((select TRIM(SelectionValue) from #StatusCodes WHERE SelectionCode = 'A2') + ' On ' + CONVERT(CHAR(10), AnnulmentDatePARTNER, 103))
 		WHEN (cp.BROPrintCaseDetails = 'Y' AND insolvency_type = 'B' AND AnnulmentTypeCASE = 'R')
-			THEN (select SelectionValue from #StatusCodes WHERE SelectionCode = 'A3') + ' On ' + CONVERT(CHAR(10), AnnulmentDatePARTNER, 103)
+			THEN TRIM((select TRIM(SelectionValue) from #StatusCodes WHERE SelectionCode = 'A3') + ' On ' + CONVERT(CHAR(10), AnnulmentDatePARTNER, 103))
 		WHEN (cp.BROPrintCaseDetails = 'Y' AND insolvency_type = 'B' AND AnnulmentTypeCASE = 'A')
-			THEN (select SelectionValue from #StatusCodes WHERE SelectionCode = 'A4') + ' On ' + CONVERT(CHAR(10), AnnulmentDatePARTNER, 103)
-	END AS caseStatusXml,
+			THEN TRIM((select TRIM(SelectionValue) from #StatusCodes WHERE SelectionCode = 'A4') + ' On ' + CONVERT(CHAR(10), AnnulmentDatePARTNER, 103))
+	END AS caseStatus,
 
 	CASE WHEN (cp.BROPrintCaseDetails = 'Y' AND insolvency_type = 'B' AND AnnulmentTypeCASE <> '')
 			THEN ISNULL(CONVERT(CHAR(10), AnnulmentDateCASE, 103), '')
@@ -406,7 +397,7 @@ FROM #Cases c
         
 		CASE 
 			WHEN ci_trade.trading_name is NULL THEN NULL
-			ELSE CONCAT(ci_trade.address_line_1,  ', ', ci_trade.address_line_2,  ', ', ci_trade.address_line_3,  ', ', ci_trade.address_line_4,  ', ', ci_trade.address_line_5, ', ', ci_trade.postcode) 
+			ELSE REPLACE(TRIM(CONCAT(ci_trade.address_line_1,  ', ', ci_trade.address_line_2,  ', ', ci_trade.address_line_3,  ', ', ci_trade.address_line_4,  ', ', ci_trade.address_line_5, ', ', ci_trade.postcode)), ' ,', '') 
 			END AS TradingAddress
 
 		FROM ci_trade 
@@ -421,7 +412,7 @@ FROM #Cases c
         
 		CASE 
 			WHEN ci_trade.trading_name is NULL THEN NULL
-			ELSE CONCAT(ci_trade.address_line_1,  ', ', ci_trade.address_line_2,  ', ', ci_trade.address_line_3,  ', ', ci_trade.address_line_4,  ', ', ci_trade.address_line_5, ', ', ci_trade.postcode) 
+			ELSE REPLACE(TRIM(CONCAT(ci_trade.address_line_1,  ', ', ci_trade.address_line_2,  ', ', ci_trade.address_line_3,  ', ', ci_trade.address_line_4,  ', ', ci_trade.address_line_5, ', ', ci_trade.postcode)), ' ,', '')  
 			END AS TradingAddress
 
 		FROM ci_trade 
@@ -434,9 +425,9 @@ FROM #Cases c
     TRIM((SELECT TOP 1 ip_firm_name FROM ci_ip_address WHERE ci_ip_address.ip_no = insolvencyAppointment.ip_no and insolvencyAppointment.ip_appt_type = 'M' and insolvencyAppointment.appt_end_date IS NULL)) AS insolvencyPractitionerFirmName,
 
 	CASE 
-           WHEN CHARINDEX(',',REVERSE(TRIM((SELECT TOP 1 CONCAT(ci_ip_address.address_line_1,  ', ', ci_ip_address.address_line_2,  ', ', ci_ip_address.address_line_3, ', ',  ci_ip_address.address_line_4,  ', ', ci_ip_address.address_line_5) FROM ci_ip_address WHERE ci_ip_address.ip_no = insolvencyAppointment.ip_no and insolvencyAppointment.ip_appt_type = 'M' and insolvencyAppointment.appt_end_date IS NULL)))) = 1 
-           THEN LEFT(TRIM((SELECT TOP 1 CONCAT(ci_ip_address.address_line_1,  ', ', ci_ip_address.address_line_2,  ', ', ci_ip_address.address_line_3, ', ',  ci_ip_address.address_line_4,  ', ', ci_ip_address.address_line_5) FROM ci_ip_address WHERE ci_ip_address.ip_no = insolvencyAppointment.ip_no and insolvencyAppointment.ip_appt_type = 'M' and insolvencyAppointment.appt_end_date IS NULL)),LEN(TRIM((SELECT TOP 1 CONCAT(ci_ip_address.address_line_1,  ', ', ci_ip_address.address_line_2,  ', ', ci_ip_address.address_line_3, ', ',  ci_ip_address.address_line_4,  ', ', ci_ip_address.address_line_5) FROM ci_ip_address WHERE ci_ip_address.ip_no = insolvencyAppointment.ip_no and insolvencyAppointment.ip_appt_type = 'M' and insolvencyAppointment.appt_end_date IS NULL)))-1) 
-           ELSE TRIM((SELECT TOP 1 CONCAT(ci_ip_address.address_line_1,  ', ', ci_ip_address.address_line_2,  ', ', ci_ip_address.address_line_3, ', ',  ci_ip_address.address_line_4,  ', ', ci_ip_address.address_line_5) FROM ci_ip_address WHERE ci_ip_address.ip_no = insolvencyAppointment.ip_no and insolvencyAppointment.ip_appt_type = 'M' and insolvencyAppointment.appt_end_date IS NULL)) 
+           WHEN CHARINDEX(',',REVERSE(TRIM((SELECT TOP 1 REPLACE(TRIM(CONCAT(ci_ip_address.address_line_1,  ', ', ci_ip_address.address_line_2,  ', ', ci_ip_address.address_line_3, ', ',  ci_ip_address.address_line_4,  ', ', ci_ip_address.address_line_5)), ' ,', '') FROM ci_ip_address WHERE ci_ip_address.ip_no = insolvencyAppointment.ip_no and insolvencyAppointment.ip_appt_type = 'M' and insolvencyAppointment.appt_end_date IS NULL)))) = 1 
+           THEN LEFT(TRIM((SELECT TOP 1 REPLACE(TRIM(CONCAT(TRIM(ci_ip_address.address_line_1),  ', ', TRIM(ci_ip_address.address_line_2),  ', ', TRIM(ci_ip_address.address_line_3), ', ',  TRIM(ci_ip_address.address_line_4),  ', ', TRIM(ci_ip_address.address_line_5))), ' ,', '') FROM ci_ip_address WHERE ci_ip_address.ip_no = insolvencyAppointment.ip_no and insolvencyAppointment.ip_appt_type = 'M' and insolvencyAppointment.appt_end_date IS NULL)),LEN(TRIM((SELECT TOP 1 REPLACE(TRIM(CONCAT(TRIM(ci_ip_address.address_line_1),  ', ', TRIM(ci_ip_address.address_line_2),  ', ', TRIM(ci_ip_address.address_line_3), ', ',  TRIM(ci_ip_address.address_line_4),  ', ', TRIM(ci_ip_address.address_line_5))), ' ,', '')  FROM ci_ip_address WHERE ci_ip_address.ip_no = insolvencyAppointment.ip_no and insolvencyAppointment.ip_appt_type = 'M' and insolvencyAppointment.appt_end_date IS NULL)))-1) 
+           ELSE TRIM((SELECT TOP 1 REPLACE(TRIM(CONCAT(TRIM(ci_ip_address.address_line_1),  ', ', TRIM(ci_ip_address.address_line_2),  ', ', TRIM(ci_ip_address.address_line_3), ', ',  TRIM(ci_ip_address.address_line_4),  ', ', TRIM(ci_ip_address.address_line_5))), ' ,', '') FROM ci_ip_address WHERE ci_ip_address.ip_no = insolvencyAppointment.ip_no and insolvencyAppointment.ip_appt_type = 'M' and insolvencyAppointment.appt_end_date IS NULL)) 
     END insolvencyPractitionerAddress,
 
     TRIM((SELECT TOP 1 postcode FROM ci_ip_address WHERE ci_ip_address.ip_no = insolvencyAppointment.ip_no and insolvencyAppointment.ip_appt_type = 'M' and insolvencyAppointment.appt_end_date IS NULL))  AS insolvencyPractitionerPostcode,
@@ -456,10 +447,10 @@ FROM #Cases c
 	END AS insolvencyServiceContact,
 
 	CASE WHEN insolvency_type = 'D' THEN 
-		ISNULL((SELECT CONCAT(address_line_1,  ', ', address_line_2,  ', ', address_line_3,  ', ', address_line_4,  ', ', address_line_5) 
+		ISNULL((SELECT REPLACE(TRIM(CONCAT(address_line_1,  ', ', address_line_2,  ', ', address_line_3,  ', ', address_line_4,  ', ', address_line_5)), ' ,', '') 
 		from ci_office where office_name LIKE 'DRO%'), '')
 		ELSE 
-		ISNULL((CONCAT(insolvencyService.address_line_1,  ', ', insolvencyService.address_line_2,  ', ', insolvencyService.address_line_3,  ', ', insolvencyService.address_line_4,  ', ', insolvencyService.address_line_5)), '')
+		ISNULL((REPLACE(TRIM(CONCAT(insolvencyService.address_line_1,  ', ', insolvencyService.address_line_2,  ', ', insolvencyService.address_line_3,  ', ', insolvencyService.address_line_4,  ', ', insolvencyService.address_line_5)), ' ,', '')), '')
 	END AS insolvencyServiceAddress,
 
 	CASE WHEN insolvency_type = 'D' THEN 
@@ -485,7 +476,6 @@ FROM #Cases c
 	LEFT JOIN ci_ip cip ON insolvencyAppointment.ip_no = cip.ip_no
 	LEFT JOIN ci_ip_address cipa ON insolvencyAppointment.ip_no = cipa.ip_no
     LEFT JOIN ci_iva_case ivaCase ON ivaCase.case_no = inscase.case_no
-
 
 If(OBJECT_ID('tempdb..#Temp') Is Not Null)
 Begin
