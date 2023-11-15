@@ -60,31 +60,26 @@ jobs:
                 appSettings:
                   [
                     {
-
                       "name": "functionapikey",
                       "value": "$(functionapikey)",
                       "slotSetting": false
                     },
                     {
-
                       "name": "notify__connectionstring",
                       "value": "$(notify__connectionstring)",
                       "slotSetting": false
                     },
                     {
-
                       "name": "notify__subscriberEmailTemplateId",
                       "value": "$(notify__subscriberEmailTemplateId)",
                       "slotSetting": false
                     },
                     {
-
                       "name": "EIIRIndexUrl",
                       "value": "$(EIIRIndexUrl)",
                       "slotSetting": false
                     },
                     {
-
                       "name": "EIIRApiKey",
                       "value": "$(EIIRApiKey)",
                       "slotSetting": false
