@@ -50,8 +50,6 @@ jobs:
                   resourceGroupName: 'rg-eiir-${{ lower(parameters.environment) }}'
                   slotName: 'staging'
                   package: '$(Pipeline.Workspace)/**/${{ parameters.Searchindexer }}'
-                  appSettings: >
-                    -FUNCTIONS_EXTENSION_VERSION "${{ parameters.runtime }}"
 
             - task: AzureAppServiceSettings@1
               displayName: Apply App Service Settings
@@ -59,7 +57,7 @@ jobs:
                 azureSubscription: ${{ parameters.azureSubscription }}
                 appName: 'func-eiir-${{ lower(parameters.environment) }}'
                 slotName: 'staging'
-                appSettings: |
+                appSettings:
                   [
                     {
 
