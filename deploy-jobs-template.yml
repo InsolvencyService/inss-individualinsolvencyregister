@@ -45,9 +45,9 @@ jobs:
                 inputs:
                   azureSubscription: ${{ parameters.azureSubscription }}
                   appType: 'functionApp'
-                  appName: 'func-${{ parameters.location }}-${{ lower(parameters.environment) }}-eiir'
+                  appName: 'func-eiir-${{ lower(parameters.environment) }}'
                   deployToSlotOrASE: true
-                  resourceGroupName: 'rg-${{ parameters.location }}-${{ lower(parameters.environment) }}-eiir'
+                  resourceGroupName: 'rg-eiir-${{ lower(parameters.environment) }}'
                   slotName: 'staging'
                   package: '$(Pipeline.Workspace)/**/${{ parameters.Searchindexer }}'
                   appSettings: >
@@ -77,8 +77,8 @@ jobs:
                 inputs:
                   azureSubscription: ${{ parameters.azureSubscription }}
                   Action: 'Start Azure App Service'
-                  WebAppName: 'func-${{ parameters.location }}-${{ lower(parameters.environment) }}-eiir'
-                  ResourceGroupName: 'rg-${{ parameters.location }}-${{ lower(parameters.environment) }}-eiir'              
+                  WebAppName: 'func-eiir-${{ lower(parameters.environment) }}'
+                  ResourceGroupName: 'rg-eiir-${{ lower(parameters.environment) }}'              
                   SpecifySlotOrASE: true
                   Slot: 'staging'
 
@@ -91,7 +91,7 @@ jobs:
                   targetType: 'filePath'
                   filePath: $(System.DefaultWorkingDirectory)\powershell\InvokeRequestWithRetry.ps1
                   arguments: > # Use this to avoid newline characters in multi-line string
-                    -URI "https://func-${{ parameters.location }}-${{ lower(parameters.environment) }}-eiir-staging.azurewebsites.net/"
+                    -URI "https://func-eiir-${{ lower(parameters.environment) }}-staging.azurewebsites.net/"
                     -Method "${{ parameters.method }}"
                     -Retries ${{ parameters.retries }}
                     -SecondsDelay ${{ parameters.secondsDelay }}
@@ -102,8 +102,8 @@ jobs:
                 inputs:
                   azureSubscription: ${{ parameters.azureSubscription }}
                   Action: 'Swap Slots'
-                  WebAppName: 'func-${{ parameters.location }}-${{ lower(parameters.environment) }}-eiir'
-                  ResourceGroupName: 'rg-${{ parameters.location }}-${{ lower(parameters.environment) }}-eiir'
+                  WebAppName: 'func-eiir-${{ lower(parameters.environment) }}'
+                  ResourceGroupName: 'rg-eiir-${{ lower(parameters.environment) }}'
                   SourceSlot: 'staging'
                   SwapWithProduction: true
 
@@ -114,7 +114,7 @@ jobs:
                   targetType: 'filePath'
                   filePath: $(System.DefaultWorkingDirectory)\powershell\InvokeRequestWithRetry.ps1
                   arguments: > # Use this to avoid newline characters in multi-line string
-                    -URI "https://func-${{ parameters.location }}-${{ lower(parameters.environment) }}-eiir.azurewebsites.net/"
+                    -URI "https://func-eiir-${{ lower(parameters.environment) }}.azurewebsites.net/"
                     -Method "${{ parameters.method }}"
                     -Retries ${{ parameters.retries }}
                     -SecondsDelay ${{ parameters.secondsDelay }}
@@ -125,8 +125,8 @@ jobs:
                 inputs:
                   azureSubscription: ${{ parameters.azureSubscription }}
                   Action: 'Stop Azure App Service'
-                  WebAppName: 'func-${{ parameters.location }}-${{ lower(parameters.environment) }}-eiir'
-                  ResourceGroupName: 'rg-${{ parameters.location }}-${{ lower(parameters.environment) }}-eiir'              
+                  WebAppName: 'func-eiir-${{ lower(parameters.environment) }}'
+                  ResourceGroupName: 'rg-eiir-${{ lower(parameters.environment) }}'              
                   SpecifySlotOrASE: true
                   Slot: 'staging'
 
@@ -146,9 +146,9 @@ jobs:
                   ConnectionType: 'AzureRM'
                   azureSubscription: ${{ parameters.azureSubscription }}
                   appType: 'webApp'
-                  WebAppName: 'app-${{ parameters.location }}-${{ lower(parameters.environment) }}-eiir-web'
+                  WebAppName: 'app-eiir-web-${{ lower(parameters.environment) }}'
                   deployToSlotOrASE: true
-                  resourceGroupName: 'rg-${{ parameters.location }}-${{ lower(parameters.environment) }}-eiir'
+                  resourceGroupName: 'rg-eiir-${{ lower(parameters.environment) }}'
                   slotName: 'staging'
                   package: '$(Pipeline.Workspace)/**/${{ parameters.appZipFile }}'
                   appSettings: >
@@ -162,8 +162,8 @@ jobs:
                 inputs:
                   azureSubscription: ${{ parameters.azureSubscription }}
                   Action: 'Start Azure App Service'
-                  WebAppName: 'app-${{ parameters.location }}-${{ lower(parameters.environment) }}-eiir-web'
-                  ResourceGroupName: 'rg-${{ parameters.location }}-${{ lower(parameters.environment) }}-eiir'              
+                  WebAppName: 'app-eiir-web-${{ lower(parameters.environment) }}'
+                  ResourceGroupName: 'rg-eiir-${{ lower(parameters.environment) }}'              
                   SpecifySlotOrASE: true
                   Slot: 'staging'
 
@@ -176,7 +176,7 @@ jobs:
                   targetType: 'filePath'
                   filePath: $(System.DefaultWorkingDirectory)\powershell\InvokeRequestWithRetry.ps1
                   arguments: > # Use this to avoid newline characters in multi-line string
-                    -URI "https://app-${{ parameters.location }}-${{ lower(parameters.environment) }}-eiir-web-staging.azurewebsites.net/"
+                    -URI "https://app-eiir-web-${{ lower(parameters.environment) }}-staging.azurewebsites.net/"
                     -Method "${{ parameters.method }}"
                     -Retries ${{ parameters.retries }}
                     -SecondsDelay ${{ parameters.secondsDelay }}
@@ -187,8 +187,8 @@ jobs:
                 inputs:
                   azureSubscription: ${{ parameters.azureSubscription }}
                   Action: 'Swap Slots'
-                  WebAppName: 'app-${{ parameters.location }}-${{ lower(parameters.environment) }}-eiir-web'
-                  ResourceGroupName: 'rg-${{ parameters.location }}-${{ lower(parameters.environment) }}-eiir'
+                  WebAppName: 'app-eiir-web-${{ lower(parameters.environment) }}'
+                  ResourceGroupName: 'rg-eiir-${{ lower(parameters.environment) }}'
                   SourceSlot: 'staging'
                   SwapWithProduction: true
 
@@ -199,7 +199,7 @@ jobs:
                   targetType: 'filePath'
                   filePath: $(System.DefaultWorkingDirectory)\powershell\InvokeRequestWithRetry.ps1
                   arguments: > # Use this to avoid newline characters in multi-line string
-                    -URI "https://app-${{ parameters.location }}-${{ lower(parameters.environment) }}-eiir-web.azurewebsites.net/"
+                    -URI "https://app-eiir-web-${{ lower(parameters.environment) }}.azurewebsites.net/"
                     -Method "${{ parameters.method }}"
                     -Retries ${{ parameters.retries }}
                     -SecondsDelay ${{ parameters.secondsDelay }}
@@ -210,7 +210,7 @@ jobs:
                 inputs:
                   azureSubscription: ${{ parameters.azureSubscription }}
                   Action: 'Stop Azure App Service'
-                  WebAppName: 'app-${{ parameters.location }}-${{ lower(parameters.environment) }}-eiir-web'
-                  ResourceGroupName: 'rg-${{ parameters.location }}-${{ lower(parameters.environment) }}-eiir'              
+                  WebAppName: 'app-eiir-web-${{ lower(parameters.environment) }}'
+                  ResourceGroupName: 'rg-eiir-${{ lower(parameters.environment) }}'              
                   SpecifySlotOrASE: true
                   Slot: 'staging'
