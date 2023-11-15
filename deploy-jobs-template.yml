@@ -57,7 +57,7 @@ jobs:
                 azureSubscription: ${{ parameters.azureSubscription }}
                 appName: 'func-eiir-${{ lower(parameters.environment) }}'
                 slotName: 'staging'
-                appSettings:
+                appSettings: |
                   [
                     {
                       "name": "functionapikey",
