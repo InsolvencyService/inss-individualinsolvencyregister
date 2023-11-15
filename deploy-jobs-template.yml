@@ -125,11 +125,6 @@ jobs:
                       "slotSetting": false
                     },
                     {
-                      "name": "servicebus__topic",
-                      "value": "${{ parameters.sbQueue }}",
-                      "slotSetting": false
-                    },
-                    {
                       "name": "servicebus__notifyqueue",
                       "value": "$(servicebus__notifyqueue)",
                       "slotSetting": false
