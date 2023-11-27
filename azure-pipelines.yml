@@ -80,6 +80,28 @@ stages:
           arguments: '--configuration $(BuildConfiguration) --output $(Build.ArtifactStagingDirectory)'
         env:
           MSBUILDSINGLELOADCONTEXT: '1' 
+
+      - task: PowerShell@2
+        displayName: 'Check appsettings.json existence'
+        inputs:
+            targetType: 'inline'
+            script: |
+              $appSettingsPath = "$(System.DefaultWorkingDirectory)\INSS.EIIR.Functions.Tests\appsettings.json"
+              
+              if (Test-Path $appSettingsPath) {
+                Write-Host "appsettings.json found in $appSettingsPath"
+              } else {
+                Write-Host "appsettings.json not found in $appSettingsPath"
+                exit 1  
+              }
+      - task: DotNetCoreCLI@2
+        displayName: 'Run Tests'
+        inputs:
+          command: test
+          projects: '**/*Tests/*.csproj'
+          arguments: '--configuration $(buildConfiguration) --collect "Code coverage"'
+      
+
       - task: PublishPipelineArtifact@1
         displayName: 'Publish Artifact'
         inputs:
