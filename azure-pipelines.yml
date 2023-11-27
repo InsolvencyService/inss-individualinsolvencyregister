@@ -89,7 +89,7 @@ stages:
 
 - stage: DeployDev
   displayName: 'Deploy to Dev'
-  condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
+  condition: succeeded()
   variables:
     - group: EIIR-Dev
   jobs:
@@ -101,7 +101,7 @@ stages:
 
 - stage: DeploySit
   displayName: 'Deploy to Sit'
-  condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
+  condition: and(succeeded(), eq(variables['Build.SourceBranchName'], 'develop'))
   variables:
     - group: EIIR-Sit
   jobs:
@@ -113,7 +113,7 @@ stages:
 
 - stage: RunIntTest
   displayName: 'Int Tests'
-  condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
+  condition: and(succeeded(), eq(variables['Build.SourceBranchName'], 'develop'))
   variables:
     - group: EIIR-int-test-Sit
   jobs:
@@ -167,7 +167,7 @@ stages:
 
 - stage: DeployPreProd
   displayName: 'Deploy to PreProd'
-  condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
+  condition: and(succeeded(), contains(variables['build.sourceBranch'], 'refs/heads/release/'))
   variables:
     - group: EIIR-PreProd
   jobs:
