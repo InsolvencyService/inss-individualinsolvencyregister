@@ -88,11 +88,6 @@ stages:
           projects: '**/*Tests/*.csproj'
           arguments: '--configuration $(buildConfiguration) --collect "Code coverage"'
         
-      - script: |
-          echo "Listing files in test project directory"
-          ls -R $(Build.SourcesDirectory)/*Tests/
-        displayName: 'Debug: List Files in Test Project Directory'
-        continueOnError: always()
       - task: PublishPipelineArtifact@1
         displayName: 'Publish Artifact'
         inputs:
