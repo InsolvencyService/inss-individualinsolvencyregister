@@ -92,6 +92,7 @@ stages:
           echo "Listing files in test project directory"
           ls -R $(Build.SourcesDirectory)/*Tests/
         displayName: 'Debug: List Files in Test Project Directory'
+        continueOnError: true
       - task: PublishPipelineArtifact@1
         displayName: 'Publish Artifact'
         inputs:
