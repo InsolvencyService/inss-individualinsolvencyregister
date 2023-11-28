@@ -68,7 +68,7 @@ stages:
           command: test
           projects: '**/*Tests/*.csproj'
           arguments: '--configuration $(buildConfiguration) --collect "Code coverage"'
-          env:
+        env:
             ASPNETCORE_ENVIRONMENT: 'Dev'
 
       - task: DotNetCoreCLI@2
