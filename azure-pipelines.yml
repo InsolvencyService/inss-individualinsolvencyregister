@@ -67,7 +67,9 @@ stages:
         inputs:
           command: test
           projects: '**/*Tests/*.csproj'
-          arguments: '--configuration $(buildConfiguration) --collect "Code coverage" --configfile D:\a\1\s\INSS.EIIR.DataAccess.Tests\appsettings-template.json'
+          arguments: '--configuration $(buildConfiguration) --collect "Code coverage"'
+          env:
+            ASPNETCORE_ENVIRONMENT: 'Dev'
 
       - task: DotNetCoreCLI@2
         displayName: 'Publish Project'
