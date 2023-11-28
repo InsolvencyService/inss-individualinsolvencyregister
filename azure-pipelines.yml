@@ -62,12 +62,12 @@ stages:
         env:
           MSBUILDSINGLELOADCONTEXT: '1'       
 
-      #- task: DotNetCoreCLI@2
-      #  displayName: 'Run Tests'
-      #  inputs:
-      #    command: test
-      #    projects: '**/*Tests/*.csproj'
-      #    arguments: '--configuration $(buildConfiguration) --collect "Code coverage"'
+      # - task: DotNetCoreCLI@2
+      #   displayName: 'Run Tests'
+      #   inputs:
+      #     command: test
+      #     projects: '**/*Tests/*.csproj'
+      #     arguments: '--configuration $(buildConfiguration) --collect "Code coverage"'
 
       - task: DotNetCoreCLI@2
         displayName: 'Publish Project'
@@ -80,6 +80,20 @@ stages:
           arguments: '--configuration $(BuildConfiguration) --output $(Build.ArtifactStagingDirectory)'
         env:
           MSBUILDSINGLELOADCONTEXT: '1' 
+
+      - task: DotNetCoreCLI@2
+        displayName: 'Run Tests'
+        inputs:
+          command: test
+          projects: '**/*Tests/*.csproj'
+          arguments: '--configuration $(buildConfiguration) --collect "Code coverage"'
+      
+      - powershell: |
+          Write-Host "Working Directory Contents:"
+          Get-ChildItem -Path $(System.DefaultWorkingDirectory) -Recurse
+        displayName: 'Print Working Directory Contents'
+        condition: succeededOrFailed() 
+
       - task: PublishPipelineArtifact@1
         displayName: 'Publish Artifact'
         inputs:
