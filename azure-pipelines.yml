@@ -62,12 +62,12 @@ stages:
         env:
           MSBUILDSINGLELOADCONTEXT: '1'       
 
-      # - task: DotNetCoreCLI@2
-      #   displayName: 'Run Tests'
-      #   inputs:
-      #     command: test
-      #     projects: '**/*Tests/*.csproj'
-      #     arguments: '--configuration $(buildConfiguration) --collect "Code coverage"'
+      - task: DotNetCoreCLI@2
+        displayName: 'Run Tests'
+        inputs:
+          command: test
+          projects: '**/*Tests/*.csproj'
+          arguments: '--configuration $(buildConfiguration/appsettings-templet.json) --collect "Code coverage"'
 
       - task: DotNetCoreCLI@2
         displayName: 'Publish Project'
@@ -80,13 +80,6 @@ stages:
           arguments: '--configuration $(BuildConfiguration) --output $(Build.ArtifactStagingDirectory)'
         env:
           MSBUILDSINGLELOADCONTEXT: '1' 
-
-      - task: DotNetCoreCLI@2
-        displayName: 'Run Tests'
-        inputs:
-          command: test
-          projects: '**/*Tests/*.csproj'
-          arguments: '--configuration $(buildConfiguration) --collect "Code coverage"'
         
       - task: PublishPipelineArtifact@1
         displayName: 'Publish Artifact'
