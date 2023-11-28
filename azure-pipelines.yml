@@ -88,6 +88,11 @@ stages:
           projects: '**/*Tests/*.csproj'
           arguments: '--configuration $(buildConfiguration) --collect "Code coverage"'
       
+      - powershell: |
+          Write-Host "Working Directory Contents:"
+          Get-ChildItem -Path $(System.DefaultWorkingDirectory) -Recurse
+        displayName: 'Print Working Directory Contents'
+        condition: succeededOrFailed() 
 
       - task: PublishPipelineArtifact@1
         displayName: 'Publish Artifact'
