@@ -81,19 +81,6 @@ stages:
         env:
           MSBUILDSINGLELOADCONTEXT: '1' 
 
-      - task: PowerShell@2
-        displayName: 'Check appsettings.json existence'
-        inputs:
-            targetType: 'inline'
-            script: |
-              $appSettingsPath = "$(System.DefaultWorkingDirectory)\INSS.EIIR.Functions.Tests\appsettings.json"
-              
-              if (Test-Path $appSettingsPath) {
-                Write-Host "appsettings.json found in $appSettingsPath"
-              } else {
-                Write-Host "appsettings.json not found in $appSettingsPath"
-                exit 1  
-              }
       - task: DotNetCoreCLI@2
         displayName: 'Run Tests'
         inputs:
