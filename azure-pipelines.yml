@@ -87,13 +87,11 @@ stages:
           command: test
           projects: '**/*Tests/*.csproj'
           arguments: '--configuration $(buildConfiguration) --collect "Code coverage"'
-      
-      - powershell: |
-          Write-Host "Working Directory Contents:"
-          Get-ChildItem -Path $(System.DefaultWorkingDirectory) -Recurse
-        displayName: 'Print Working Directory Contents'
-        condition: succeededOrFailed() 
-
+        
+      - script: |
+          echo "Listing files in test project directory"
+          ls -R $(Build.SourcesDirectory)/*Tests/
+        displayName: 'Debug: List Files in Test Project Directory'
       - task: PublishPipelineArtifact@1
         displayName: 'Publish Artifact'
         inputs:
