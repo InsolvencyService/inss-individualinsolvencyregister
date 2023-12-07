@@ -62,12 +62,14 @@ stages:
         env:
           MSBUILDSINGLELOADCONTEXT: '1'       
 
-      # - task: DotNetCoreCLI@2
-      #   displayName: 'Run Tests'
-      #   inputs:
-      #     command: test
-      #     projects: '**/*Tests/*.csproj'
-      #     arguments: '--configuration $(buildConfiguration) --collect "Code coverage"'
+      - task: DotNetCoreCLI@2
+        displayName: 'Run Tests'
+        inputs:
+          command: test
+          projects: '**/*Tests/*.csproj'
+          arguments: '--configuration $(buildConfiguration) --collect "Code coverage"'
+        env:
+            ASPNETCORE_ENVIRONMENT: 'Dev'
 
       - task: DotNetCoreCLI@2
         displayName: 'Publish Project'
@@ -80,6 +82,7 @@ stages:
           arguments: '--configuration $(BuildConfiguration) --output $(Build.ArtifactStagingDirectory)'
         env:
           MSBUILDSINGLELOADCONTEXT: '1' 
+        
       - task: PublishPipelineArtifact@1
         displayName: 'Publish Artifact'
         inputs:
@@ -89,31 +92,33 @@ stages:
 
 - stage: DeployDev
   displayName: 'Deploy to Dev'
-  condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
+  condition: succeeded()
   variables:
     - group: EIIR-Dev
   jobs:
     - template: deploy-jobs-template.yml
       parameters:
         environment: 'Dev'
+        azureSubscription: 'AppServicesDevOps-NonProd'
         deployWebapp: true
         deployfuncapp: true
 
 - stage: DeploySit
   displayName: 'Deploy to Sit'
-  condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
+  condition: and(succeeded(), eq(variables['Build.SourceBranchName'], 'develop'))
   variables:
     - group: EIIR-Sit
   jobs:
     - template: deploy-jobs-template.yml
       parameters:
         environment: 'Sit'
+        azureSubscription: 'AppServicesDevOps-NonProd'
         deployWebapp: ${{ parameters.deployWebapp }}
         deployfuncapp: ${{ parameters.deployfuncapp }}
 
 - stage: RunIntTest
   displayName: 'Int Tests'
-  condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
+  condition: and(succeeded(), eq(variables['Build.SourceBranchName'], 'develop'))
   variables:
     - group: EIIR-int-test-Sit
   jobs:
@@ -167,15 +172,29 @@ stages:
 
 - stage: DeployPreProd
   displayName: 'Deploy to PreProd'
-  condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
+  condition: and(succeeded(), contains(variables['build.sourceBranch'], 'refs/heads/release/'))
   variables:
     - group: EIIR-PreProd
   jobs:
     - template: deploy-jobs-template.yml
       parameters:
         environment: 'PreProd'
+        azureSubscription: 'AppServicesDevOps-NonProd'
         deployWebapp: ${{ parameters.deployWebapp }}
         deployfuncapp: ${{ parameters.deployfuncapp }}
+
+#- stage: DeployProd
+#  displayName: 'Deploy to Prod'
+#  condition: and(succeeded(), contains(variables['build.sourceBranch'], 'refs/heads/release/'))
+#  variables:
+#    - group: EIIR-Prod
+#  jobs:
+#    - template: deploy-jobs-template.yml
+#      parameters:
+#        environment: 'Prod'
+#        azureSubscription: 'AppServicesDevOps-Prod'
+#        deployWebapp: ${{ parameters.deployWebapp }}
+#        deployfuncapp: ${{ parameters.deployfuncapp }}
 
 
 

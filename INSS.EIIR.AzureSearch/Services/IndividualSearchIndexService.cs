@@ -6,6 +6,7 @@ using INSS.EIIR.Interfaces.Services;
 using INSS.EIIR.Models.CaseModels;
 using INSS.EIIR.Models.IndexModels;
 using Microsoft.Extensions.Logging;
+using System.Reflection;
 
 namespace INSS.EIIR.AzureSearch.Services;
 
@@ -78,7 +79,8 @@ public class IndividualSearchIndexService : BaseIndexService<IndividualSearch>
 
     public override async Task UploadSynonymMapAsync(ILogger logger)
     {
-        string path = Environment.CurrentDirectory;
+        var assemblyInfo = new FileInfo(Assembly.GetExecutingAssembly().Location);
+        string path = assemblyInfo.Directory.Parent.FullName;
         var synonymMapContent = File.ReadAllText(Path.Combine(path, FirstNameSynonymsFilename));
 
         var synonymMap = new SynonymMap(FirstNameSynonymMapName, synonymMapContent);
