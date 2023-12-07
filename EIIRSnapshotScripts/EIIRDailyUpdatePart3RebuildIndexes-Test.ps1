@@ -2,8 +2,8 @@
 # trigger Rebuild Indexes Process
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 
-$uri = 'https://func-uksouth-dev-eiir.azurewebsites.net/api/EiirOrchestrator_Start'
-$key = ''
+$uri = 'https://func-eiir-dev.azurewebsites.net/api/EiirOrchestrator_Start'
+$key = 'bIegDZv4jH9xb9AIBc9hU10B74uwsBySzZj1YtrlJX3wAzFuteCyew==' 
 
 $headers = @{
 'x-functions-key'= $key
