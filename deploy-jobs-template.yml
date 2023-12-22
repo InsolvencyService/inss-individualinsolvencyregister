@@ -276,18 +276,18 @@ jobs:
                   SourceSlot: 'staging'
                   SwapWithProduction: true
 
-              - task: PowerShell@2
-                displayName: 'Performing Health Check - Production'    
-                inputs:
-                  failOnStderr: true
-                  targetType: 'filePath'
-                  filePath: $(System.DefaultWorkingDirectory)\powershell\InvokeRequestWithRetry.ps1
-                  arguments: > # Use this to avoid newline characters in multi-line string
-                    -URI "https://app-eiir-web-${{ lower(parameters.environment) }}.azurewebsites.net/"
-                    -Method "${{ parameters.method }}"
-                    -Retries ${{ parameters.retries }}
-                    -SecondsDelay ${{ parameters.secondsDelay }}
-                    -TimeoutSec ${{ parameters.timeoutSec }} 
+             # - task: PowerShell@2
+               # displayName: 'Performing Health Check - Production'    
+               # inputs:
+               #   failOnStderr: true
+                #  targetType: 'filePath'
+                #  filePath: $(System.DefaultWorkingDirectory)\powershell\InvokeRequestWithRetry.ps1
+                #  arguments: > # Use this to avoid newline characters in multi-line string
+                #    -URI "https://app-eiir-web-${{ lower(parameters.environment) }}.azurewebsites.net/"
+                  #  -Method "${{ parameters.method }}"
+                  #  -Retries ${{ parameters.retries }}
+                  #  -SecondsDelay ${{ parameters.secondsDelay }}
+                  #  -TimeoutSec ${{ parameters.timeoutSec }} 
 
               - task: AzureAppServiceManage@0
                 displayName: Stop Staging Slot
