@@ -17,6 +17,7 @@ namespace INSS.EIIR.Functions
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "Health/Ping")] HttpRequest req,
             ILogger log)
         {
+            log.LogInformation("Health Check Pinged");
             return new OkResult();
         }
     }

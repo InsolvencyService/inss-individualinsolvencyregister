@@ -2,7 +2,7 @@
 # trigger ExtractJob Process
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 
-$uri = 'https://func-uksouth-dev-eiir.azurewebsites.net/api/ExtractJobTrigger'
+$uri = 'https://func-eiir-dev.azurewebsites.net/api/ExtractJobTrigger'
 $key = ''
 
 $headers = @{

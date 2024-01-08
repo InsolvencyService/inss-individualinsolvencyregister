@@ -42,7 +42,7 @@ namespace INSS.EIIR.Functions.Functions
                 // The extract job trigger currently doesn't use the index and is trigger by a separate 
                 // powershell script. Once the extract job is changed to use the index we will need 
                 // to orchestrate the extract job here so it runs after the index has been built.
-                // await context.CallActivityAsync<string>(nameof(ExtractJobTrigger), "ExtractJobTrigger")
+                //await context.CallActivityAsync<string>(nameof(ExtractJobTrigger), "ExtractJobTrigger")
             };
 
             return outputs;
