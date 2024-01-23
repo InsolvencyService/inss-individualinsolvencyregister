@@ -102,7 +102,7 @@ public class IndividualSearchIndexService : BaseIndexService<IndividualSearch>
                 {
                     {  "CombinedName",50 },
                     {  "FullName", 30 },
-                    {  "IndividualPostcode", 20 },
+                    {  "LastKnownPostcode", 20 },
                     {  "FamilyName", 6 },
                     {  "CaseNumber", 5 },
                     {  "IndividualNumber", 5 },

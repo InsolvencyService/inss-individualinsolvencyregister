@@ -17,11 +17,13 @@ public class IndividualSearch
     {
         get { return $"{FirstName} {MiddleName} {FamilyName}"; }
     }
+
     [SearchableField(IsSortable = true)]
     public string CombinedName
     {
         get { return $"{FirstName} {FamilyName}"; }
     }
+
     [SearchableField(IsSortable = true)]
     public string FirstName { get; set; }
 
