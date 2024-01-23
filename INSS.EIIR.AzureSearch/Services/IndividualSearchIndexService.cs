@@ -100,6 +100,9 @@ public class IndividualSearchIndexService : BaseIndexService<IndividualSearch>
             {
                 TextWeights = new TextWeights(new Dictionary<string, double>()
                 {
+                    {  "CombinedName",50 },
+                    {  "FullName", 30 },
+                    {  "IndividualPostcode", 20 },
                     {  "FamilyName", 6 },
                     {  "CaseNumber", 5 },
                     {  "IndividualNumber", 5 },
