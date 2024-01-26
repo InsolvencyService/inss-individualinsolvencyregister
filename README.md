@@ -14,4 +14,4 @@ Please install the visual studio extension "NPM Task Runner". <br />
 Once installed go to View -> Other Windows -> Task Runner Explorer. <br />
 You should see "Before Build" and "Project Open" bindings as defined in the package.json.
 
-When you build or change the sass file and save it should automatically compile the sass into css.
+When you build or change the sass file and save it should automatically compile the sass into css. 
