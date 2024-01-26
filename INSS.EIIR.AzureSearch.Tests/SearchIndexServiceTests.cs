@@ -52,6 +52,7 @@ namespace INSS.EIIR.AzureSearch.Tests
 
             Assert.Equal(caseData.FullName, string.Join(" ", caseData.FirstName, caseData.MiddleName, caseData.FamilyName));
             Assert.Equal(caseData.CombinedName, string.Join(" ", caseData.FirstName, caseData.FamilyName));
+
             dataProviderMock.Verify(m => m.GetIndividualSearchData(), Times.Once);
             mapperMock.Verify(m => m.Map<IEnumerable<CaseResult>, IEnumerable<IndividualSearch>>(rawData), Times.Once);
             indexClientMock.Verify(m => m.GetSearchClient("eiir_individuals"), Times.Once);
