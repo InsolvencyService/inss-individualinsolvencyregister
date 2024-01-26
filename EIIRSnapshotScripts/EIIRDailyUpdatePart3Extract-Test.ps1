@@ -3,7 +3,7 @@
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 
 $uri = 'https://func-eiir-dev.azurewebsites.net/api/ExtractJobTrigger'
-$key = 'bIegDZv4jH9xb9AIBc9hU10B74uwsBySzZj1YtrlJX3wAzFuteCyew=='
+$key = ''
 
 $headers = @{
 'x-functions-key'= $key
