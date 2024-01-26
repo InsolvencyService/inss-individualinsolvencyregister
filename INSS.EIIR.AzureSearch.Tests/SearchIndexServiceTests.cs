@@ -22,9 +22,6 @@ namespace INSS.EIIR.AzureSearch.Tests
             var mappedData = GetMappedData();
             var caseData = mappedData.FirstOrDefault();
 
-            Assert.Equal(caseData.FullName, string.Join(" ", caseData.FirstName, caseData.MiddleName, caseData.FamilyName));
-            Assert.Equal(caseData.CombinedName, string.Join(" ", caseData.FirstName, caseData.FamilyName));
-
             var dataProviderMock = new Mock<ISearchDataProvider>();
             dataProviderMock
                 .Setup(m => m.GetIndividualSearchData())
@@ -52,9 +49,11 @@ namespace INSS.EIIR.AzureSearch.Tests
             await service.PopulateIndexAsync(Mock.Of<ILogger>());
 
             //Assert
+
+            Assert.Equal(caseData.FullName, string.Join(" ", caseData.FirstName, caseData.MiddleName, caseData.FamilyName));
+            Assert.Equal(caseData.CombinedName, string.Join(" ", caseData.FirstName, caseData.FamilyName));
             dataProviderMock.Verify(m => m.GetIndividualSearchData(), Times.Once);
             mapperMock.Verify(m => m.Map<IEnumerable<CaseResult>, IEnumerable<IndividualSearch>>(rawData), Times.Once);
-
             indexClientMock.Verify(m => m.GetSearchClient("eiir_individuals"), Times.Once);
             indexerMock.Verify(m => m.MergeOrUploadDocumentsAsync(mappedData, null, default(CancellationToken)), Times.Once);
 
