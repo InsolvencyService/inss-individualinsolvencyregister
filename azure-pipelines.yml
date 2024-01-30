@@ -105,7 +105,7 @@ stages:
         azureSubscription: 'AppServicesDevOps-NonProd'
         deployWebapp: ${{ parameters.deployWebapp }}
         deployfuncapp: ${{ parameters.deployfuncapp }}
-        deployDailyExtract: ${{ (parameters.deployDailyExtract }}
+        deployDailyExtract: ${{ parameters.deployDailyExtract }}
 
 - stage: DeploySit
   displayName: 'Deploy to Sit'
@@ -119,7 +119,7 @@ stages:
         azureSubscription: 'AppServicesDevOps-NonProd'
         deployWebapp: ${{ parameters.deployWebapp }}
         deployfuncapp: ${{ parameters.deployfuncapp }}
-        deployDailyExtract: ${{ (parameters.deployDailyExtract }}
+        deployDailyExtract: ${{ parameters.deployDailyExtract }}
 
 - stage: RunIntTest
   displayName: 'Int Tests'
@@ -187,7 +187,7 @@ stages:
         azureSubscription: 'AppServicesDevOps-NonProd'
         deployWebapp: ${{ parameters.deployWebapp }}
         deployfuncapp: ${{ parameters.deployfuncapp }}
-        deployDailyExtract: ${{ (parameters.deployDailyExtract }}
+        deployDailyExtract: ${{ parameters.deployDailyExtract }}
 
 #- stage: DeployProd
 #  displayName: 'Deploy to Prod'
@@ -201,6 +201,7 @@ stages:
 #        azureSubscription: 'AppServicesDevOps-Prod'
 #        deployWebapp: ${{ parameters.deployWebapp }}
 #        deployfuncapp: ${{ parameters.deployfuncapp }}
+#        deployDailyExtract: ${{ parameters.deployDailyExtract }}
 
 
 
