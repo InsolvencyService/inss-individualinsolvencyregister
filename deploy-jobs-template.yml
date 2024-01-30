@@ -245,100 +245,55 @@ jobs:
                 appName: 'func-eiir-daily-extract-${{ lower(parameters.environment) }}'
                 slotName: 'staging'
                 appSettings: |
-                  [
-                    {
-                      "name": "functionapikey",
-                      "value": "$(functionapikey)",
-                      "slotSetting": false
-                    },
-                    {
-                      "name": "notify__connectionstring",
-                      "value": "$(notify__connectionstring)",
-                      "slotSetting": false
-                    },
-                    {
-                      "name": "notify__subscriberEmailTemplateId",
-                      "value": "$(notify__subscriberEmailTemplateId)",
-                      "slotSetting": false
-                    },
-                    {
-                      "name": "EIIRIndexUrl",
-                      "value": "$(EIIRIndexUrl)",
-                      "slotSetting": false
-                    },
-                    {
-                      "name": "EIIRApiKey",
-                      "value": "$(EIIRApiKey)",
-                      "slotSetting": false
-                    },
-                    {
-                      "name": "database__connectionstring",
-                      "value": "$(database__connectionstring)",
-                      "slotSetting": false
-                    },
-                    {
-                      "name": "database__databuffersize",
-                      "value": "$(database__databuffersize)",
-                      "slotSetting": false
-                    },
-                    {
-                      "name": "database__updateextractavailableprocedure",
-                      "value": "$(database__updateextractavailableprocedure)",
-                      "slotSetting": false
-                    },
-                    {
-                      "name": "database__getextractavailableprocedure",
-                      "value": "${database__getextractavailableprocedure}",
-                      "slotSetting": false
-                    },
-                    {
-                      "name": "database__getxmldataprocedure",
-                      "value": "$(database__getxmldataprocedure)",
-                      "slotSetting": false
-                    },
-                    {
-                      "name": "database__commandtimeout",
-                      "value": "$(database__commandtimeout)",
-                      "slotSetting": false
-                    },
-                   {
-                      "name": "servicebus__publisherconnectionstring",
-                      "value": "$(servicebus__publisherconnectionstring)",
-                      "slotSetting": false
-                    },
-                    {
-                      "name": "servicebussubscriberconnectionstring",
-                      "value": "$(servicebus__subscriberconnectionstring)",
-                      "slotSetting": false
-                    },
-                    {
-                      "name": "servicebus__notifyqueue",
-                      "value": "$(servicebus__notifyqueue)",
-                      "slotSetting": false
-                    },
-                    {
-                      "name": "servicebusextractjobqueue",
-                      "value": "$(servicebusextractjobqueue)",
-                      "slotSetting": false
-                    },
-                    {
-                      "name": "storageconnectionstring",
-                      "value": "$(storageconnectionstring)",
-                      "slotSetting": false
-                    },
-                    {
-                      "name": "blobcontainername",
-                      "value": "$(blobcontainername)",
-                      "slotSetting": false
-                    },
-                    {
-                      "name": "extractjobserviceurl",
-                       "value": "$(extractjobserviceurl)",
-                      "slotSetting": false
-                    },
+                  [                   
                     {
                       "name": "extractjobtimercron",
                       "value": "${extractjobtimercron}",
+                      "slotSetting": false
+                    },
+                    {
+                      "name": "AzureWebJobsStorage",
+                      "value": "UseDevelopmentStorage=true",
+                      "slotSetting": false
+                    },
+                    {
+                      "name": "TargetBlobConnectionString",
+                      "value": "targetBlobConnectionString",
+                      "slotSetting": false
+                    },
+                    {
+                      "name": "SourceBlobConnectionString",
+                      "value": "sourceBlobConnectionString",
+                      "slotSetting": false
+                    },
+                    {
+                      "name": "BlobContainer",
+                      "value": "eiir/{name}",
+                      "slotSetting": false
+                    },
+                    {
+                      "name": "SourceContainer",
+                      "value": "eiir",
+                      "slotSetting": false
+                    },
+                    {
+                      "name": "TargetContainer",
+                      "value": "eiir-archive",
+                      "slotSetting": false
+                    },
+                    {
+                      "name": "DeleteSourceAfterCopy",
+                      "value": "1",
+                      "slotSetting": false
+                    },
+                    {
+                      "name": "SqlConnectionString",
+                      "value": "SQL Connection",
+                      "slotSetting": false
+                    },
+                    {
+                      "name": "FUNCTIONS_WORKER_RUNTIME",
+                      "value": "dotnet",
                       "slotSetting": false
                     }
                   ]
