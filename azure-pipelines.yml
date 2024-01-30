@@ -17,7 +17,7 @@ parameters:
   default: true
 - name: deployDailyExtract   
   type: boolean    
-  default: false
+  default: true
 - name: RunIntTest    
   type: boolean    
   default: true
@@ -103,8 +103,9 @@ stages:
       parameters:
         environment: 'Dev'
         azureSubscription: 'AppServicesDevOps-NonProd'
-        deployWebapp: true
-        deployfuncapp: true
+        deployWebapp: ${{ parameters.deployWebapp }}
+        deployfuncapp: ${{ parameters.deployfuncapp }}
+        deployDailyExtract: ${{ (parameters.deployDailyExtract }}
 
 - stage: DeploySit
   displayName: 'Deploy to Sit'
@@ -118,6 +119,7 @@ stages:
         azureSubscription: 'AppServicesDevOps-NonProd'
         deployWebapp: ${{ parameters.deployWebapp }}
         deployfuncapp: ${{ parameters.deployfuncapp }}
+        deployDailyExtract: ${{ (parameters.deployDailyExtract }}
 
 - stage: RunIntTest
   displayName: 'Int Tests'
@@ -185,6 +187,7 @@ stages:
         azureSubscription: 'AppServicesDevOps-NonProd'
         deployWebapp: ${{ parameters.deployWebapp }}
         deployfuncapp: ${{ parameters.deployfuncapp }}
+        deployDailyExtract: ${{ (parameters.deployDailyExtract }}
 
 #- stage: DeployProd
 #  displayName: 'Deploy to Prod'
