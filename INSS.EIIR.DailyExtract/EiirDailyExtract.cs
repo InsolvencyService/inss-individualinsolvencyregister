@@ -36,6 +36,7 @@ namespace INSS.EIIR.DailyExtract
             catch (Exception ex)
             {
                 log.LogError($"ERROR: Update of snapshot {name} failed with exception ({ex.Message}");
+                throw ex;
             }
 
         }

@@ -30,6 +30,7 @@ namespace INSS.EIIR.DailyExtract
             catch (Exception ex)
             {
                 log.LogError(ex.Message);
+                throw(new Exception(ex.Message));
             }
         }
     }
