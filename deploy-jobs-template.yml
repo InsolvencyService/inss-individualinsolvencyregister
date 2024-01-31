@@ -352,87 +352,86 @@ jobs:
                     Slot: 'staging'
 
   - deployment:
-    - ${{ if eq(parameters.deployWebapp, true) }}:
-      displayName: Deploy Eiir Web App
-      environment: ${{ parameters.environment }}
-      strategy:
-        runOnce:
-          deploy:
-            steps:
+    displayName: Deploy Eiir Web App
+    environment: ${{ parameters.environment }}
+    strategy:
+      runOnce:
+        deploy:
+          steps:
 
-              - ${{ if eq(parameters.deployWebapp, true) }}:
+            - ${{ if eq(parameters.deployWebapp, true) }}:
 
-                - task: AzureRmWebAppDeployment@4
-                  displayName: EiiR Web App Deploy
-                  inputs:
-                    ConnectionType: 'AzureRM'
-                    azureSubscription: ${{ parameters.azureSubscription }}
-                    appType: 'webApp'
-                    WebAppName: 'app-eiir-web-${{ lower(parameters.environment) }}'
-                    deployToSlotOrASE: true
-                    resourceGroupName: 'rg-eiir-${{ lower(parameters.environment) }}'
-                    slotName: 'staging'
-                    package: '$(Pipeline.Workspace)/**/${{ parameters.appZipFile }}'
-                    appSettings: >
-                      -ConnectionStrings__iirwebdbContextConnectionString "$(iirwebdbContextConnectionString)"
-                      -ApiSettings__ApiKey "$(functionapikey)"
-                      -ApiSettings__BaseUrl "$(functionBaseUrl)"
+              - task: AzureRmWebAppDeployment@4
+                displayName: EiiR Web App Deploy
+                inputs:
+                  ConnectionType: 'AzureRM'
+                  azureSubscription: ${{ parameters.azureSubscription }}
+                  appType: 'webApp'
+                  WebAppName: 'app-eiir-web-${{ lower(parameters.environment) }}'
+                  deployToSlotOrASE: true
+                  resourceGroupName: 'rg-eiir-${{ lower(parameters.environment) }}'
+                  slotName: 'staging'
+                  package: '$(Pipeline.Workspace)/**/${{ parameters.appZipFile }}'
+                  appSettings: >
+                    -ConnectionStrings__iirwebdbContextConnectionString "$(iirwebdbContextConnectionString)"
+                    -ApiSettings__ApiKey "$(functionapikey)"
+                    -ApiSettings__BaseUrl "$(functionBaseUrl)"
 
 
-                - task: AzureAppServiceManage@0
-                  displayName: Start Staging Slot
-                  inputs:
-                    azureSubscription: ${{ parameters.azureSubscription }}
-                    Action: 'Start Azure App Service'
-                    WebAppName: 'app-eiir-web-${{ lower(parameters.environment) }}'
-                    ResourceGroupName: 'rg-eiir-${{ lower(parameters.environment) }}'              
-                    SpecifySlotOrASE: true
-                    Slot: 'staging'
+              - task: AzureAppServiceManage@0
+                displayName: Start Staging Slot
+                inputs:
+                  azureSubscription: ${{ parameters.azureSubscription }}
+                  Action: 'Start Azure App Service'
+                  WebAppName: 'app-eiir-web-${{ lower(parameters.environment) }}'
+                  ResourceGroupName: 'rg-eiir-${{ lower(parameters.environment) }}'              
+                  SpecifySlotOrASE: true
+                  Slot: 'staging'
 
-                - checkout: inss-devops-common-lib
+              - checkout: inss-devops-common-lib
 
-                - task: PowerShell@2
-                  displayName: 'Performing Health Check - Staging'    
-                  inputs:
-                    failOnStderr: true
-                    targetType: 'filePath'
-                    filePath: $(System.DefaultWorkingDirectory)\powershell\InvokeRequestWithRetry.ps1
-                    arguments: > # Use this to avoid newline characters in multi-line string
-                      -URI "https://app-eiir-web-${{ lower(parameters.environment) }}-staging.azurewebsites.net/"
-                      -Method "${{ parameters.method }}"
-                      -Retries ${{ parameters.retries }}
-                      -SecondsDelay ${{ parameters.secondsDelay }}
-                      -TimeoutSec ${{ parameters.timeoutSec }} 
-                  
-                - task: AzureAppServiceManage@0
-                  displayName: Swap Staging Slot into Production
-                  inputs:
-                    azureSubscription: ${{ parameters.azureSubscription }}
-                    Action: 'Swap Slots'
-                    WebAppName: 'app-eiir-web-${{ lower(parameters.environment) }}'
-                    ResourceGroupName: 'rg-eiir-${{ lower(parameters.environment) }}'
-                    SourceSlot: 'staging'
-                    SwapWithProduction: true
+              - task: PowerShell@2
+                displayName: 'Performing Health Check - Staging'    
+                inputs:
+                  failOnStderr: true
+                  targetType: 'filePath'
+                  filePath: $(System.DefaultWorkingDirectory)\powershell\InvokeRequestWithRetry.ps1
+                  arguments: > # Use this to avoid newline characters in multi-line string
+                    -URI "https://app-eiir-web-${{ lower(parameters.environment) }}-staging.azurewebsites.net/"
+                    -Method "${{ parameters.method }}"
+                    -Retries ${{ parameters.retries }}
+                    -SecondsDelay ${{ parameters.secondsDelay }}
+                    -TimeoutSec ${{ parameters.timeoutSec }} 
+                
+              - task: AzureAppServiceManage@0
+                displayName: Swap Staging Slot into Production
+                inputs:
+                  azureSubscription: ${{ parameters.azureSubscription }}
+                  Action: 'Swap Slots'
+                  WebAppName: 'app-eiir-web-${{ lower(parameters.environment) }}'
+                  ResourceGroupName: 'rg-eiir-${{ lower(parameters.environment) }}'
+                  SourceSlot: 'staging'
+                  SwapWithProduction: true
 
-              # - task: PowerShell@2
-                # displayName: 'Performing Health Check - Production'    
-                # inputs:
-                #   failOnStderr: true
-                  #  targetType: 'filePath'
-                  #  filePath: $(System.DefaultWorkingDirectory)\powershell\InvokeRequestWithRetry.ps1
-                  #  arguments: > # Use this to avoid newline characters in multi-line string
-                  #    -URI "https://app-eiir-web-${{ lower(parameters.environment) }}.azurewebsites.net/"
-                    #  -Method "${{ parameters.method }}"
-                    #  -Retries ${{ parameters.retries }}
-                    #  -SecondsDelay ${{ parameters.secondsDelay }}
-                    #  -TimeoutSec ${{ parameters.timeoutSec }} 
+             # - task: PowerShell@2
+               # displayName: 'Performing Health Check - Production'    
+               # inputs:
+               #   failOnStderr: true
+                #  targetType: 'filePath'
+                #  filePath: $(System.DefaultWorkingDirectory)\powershell\InvokeRequestWithRetry.ps1
+                #  arguments: > # Use this to avoid newline characters in multi-line string
+                #    -URI "https://app-eiir-web-${{ lower(parameters.environment) }}.azurewebsites.net/"
+                  #  -Method "${{ parameters.method }}"
+                  #  -Retries ${{ parameters.retries }}
+                  #  -SecondsDelay ${{ parameters.secondsDelay }}
+                  #  -TimeoutSec ${{ parameters.timeoutSec }} 
 
-                - task: AzureAppServiceManage@0
-                  displayName: Stop Staging Slot
-                  inputs:
-                    azureSubscription: ${{ parameters.azureSubscription }}
-                    Action: 'Stop Azure App Service'
-                    WebAppName: 'app-eiir-web-${{ lower(parameters.environment) }}'
-                    ResourceGroupName: 'rg-eiir-${{ lower(parameters.environment) }}'              
-                    SpecifySlotOrASE: true
-                    Slot: 'staging'
+              - task: AzureAppServiceManage@0
+                displayName: Stop Staging Slot
+                inputs:
+                  azureSubscription: ${{ parameters.azureSubscription }}
+                  Action: 'Stop Azure App Service'
+                  WebAppName: 'app-eiir-web-${{ lower(parameters.environment) }}'
+                  ResourceGroupName: 'rg-eiir-${{ lower(parameters.environment) }}'              
+                  SpecifySlotOrASE: true
+                  Slot: 'staging'
