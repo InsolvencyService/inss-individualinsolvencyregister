@@ -2,7 +2,7 @@
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
     <AzureFunctionsVersion>v4</AzureFunctionsVersion>
-    <RootNamespace>inss_eiir_daily_extract</RootNamespace>
+    <RootNamespace>INSS.EIIR.DailyExtract</RootNamespace>
     <UserSecretsId>5d1fc878-32fa-43f5-a67d-58a75e7cdc60</UserSecretsId>
   </PropertyGroup>
   <ItemGroup>

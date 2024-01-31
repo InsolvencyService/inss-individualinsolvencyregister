@@ -227,7 +227,7 @@ jobs:
         deploy:
           steps:
             - ${{ if eq(parameters.deployDailyExtract, true) }}:
-              - task: AzureFunctionApp@1
+              - task: AzureFunctionApp@2
                 displayName: Deploy EiiR Daily Extract Function
                 inputs:
                   azureSubscription: ${{ parameters.azureSubscription }}
@@ -247,23 +247,18 @@ jobs:
                 appSettings: |
                   [                   
                     {
-                      "name": "extractjobtimercron",
-                      "value": "${extractjobtimercron}",
-                      "slotSetting": false
-                    },
-                    {
-                      "name": "AzureWebJobsStorage",
-                      "value": "UseDevelopmentStorage=true",
+                      "name": "snapshotTimercron",
+                      "value": "${snapshotTimercron}",
                       "slotSetting": false
                     },
                     {
                       "name": "TargetBlobConnectionString",
-                      "value": "targetBlobConnectionString",
+                      "value": "$(targetstorageconnectionstring)",
                       "slotSetting": false
                     },
                     {
                       "name": "SourceBlobConnectionString",
-                      "value": "sourceBlobConnectionString",
+                      "value": "$(storageconnectionstring)",
                       "slotSetting": false
                     },
                     {
