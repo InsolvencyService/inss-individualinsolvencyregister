@@ -3,6 +3,11 @@ using Microsoft.Extensions.Logging;
 using System.IO;
 using Azure.Storage.Blobs;
 using Microsoft.Data.SqlClient;
+using Microsoft.SqlServer.Management.Smo;
+using Microsoft.SqlServer.Server;
+using Microsoft.SqlServer.Management.Sdk.Sfc;
+using Microsoft.SqlServer.Management.Common;
+
 
 
 namespace INSS.EIIR.DailyExtract
@@ -34,16 +39,10 @@ namespace INSS.EIIR.DailyExtract
                 // Update database with received script
                 string SqlConnectionString = Environment.GetEnvironmentVariable("SQLConnectionString");
 
-                using (SqlConnection conn = new (SqlConnectionString))
-                {
-                    conn.Open();
-
-                    using (SqlCommand command = new (script,conn))
-                    {
-                        // Execute the supplied script against the database
-                        command.ExecuteNonQuery();
-                    }
-                }
+                SqlConnection conn = new SqlConnection(SqlConnectionString);
+                ServerConnection svrConnection = new ServerConnection(conn);
+                Server server = new Server(svrConnection);
+                server.ConnectionContext.ExecuteNonQuery(script);
             }
 
         }
