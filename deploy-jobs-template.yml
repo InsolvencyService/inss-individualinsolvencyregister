@@ -283,7 +283,7 @@ jobs:
                       },
                       {
                         "name": "SqlConnectionString",
-                        "value": "SQL Connection",
+                        "value": "$(database__connectionstring)",
                         "slotSetting": false
                       },
                       {
