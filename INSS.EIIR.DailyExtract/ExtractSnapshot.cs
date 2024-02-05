@@ -34,9 +34,11 @@ namespace INSS.EIIR.DailyExtract
                 // Update database with received script
                 string SqlConnectionString = Environment.GetEnvironmentVariable("SQLConnectionString");
 
-                using (SqlConnection conn = new SqlConnection(SqlConnectionString))
+                using (SqlConnection conn = new (SqlConnectionString))
                 {
-                    using (SqlCommand command = new SqlCommand(script))
+                    conn.OpenAsync();
+
+                    using (SqlCommand command = new (script,conn))
                     {
                         // Execute the supplied script against the database
                         command.ExecuteNonQuery();

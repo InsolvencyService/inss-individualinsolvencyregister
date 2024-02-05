@@ -106,7 +106,7 @@ jobs:
                       },
                       {
                         "name": "database__getextractavailableprocedure",
-                        "value": "${database__getextractavailableprocedure}",
+                        "value": "$(database__getextractavailableprocedure)",
                         "slotSetting": false
                       },
                       {
@@ -156,7 +156,7 @@ jobs:
                       },
                       {
                         "name": "extractjobtimercron",
-                        "value": "${extractjobtimercron}",
+                        "value": "$(extractjobtimercron)",
                         "slotSetting": false
                       }
                     ]
@@ -248,7 +248,7 @@ jobs:
                     [                   
                       {
                         "name": "snapshotTimercron",
-                        "value": "${snapshotTimercron}",
+                        "value": "$(snapshotTimercron)",
                         "slotSetting": false
                       },
                       {
