@@ -36,7 +36,7 @@ namespace INSS.EIIR.DailyExtract
 
                 using (SqlConnection conn = new (SqlConnectionString))
                 {
-                    conn.OpenAsync();
+                    conn.Open();
 
                     using (SqlCommand command = new (script,conn))
                     {
