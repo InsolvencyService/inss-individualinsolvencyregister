@@ -2,7 +2,7 @@
 using Microsoft.Extensions.Logging;
 using System.IO;
 using Azure.Storage.Blobs;
-using System.Data.SqlClient;
+using Microsoft.Data.SqlClient;
 
 
 namespace INSS.EIIR.DailyExtract

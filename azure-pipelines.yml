@@ -189,19 +189,19 @@ stages:
         deployfuncapp: ${{ parameters.deployfuncapp }}
         deployDailyExtract: ${{ parameters.deployDailyExtract }}
 
-#- stage: DeployProd
-#  displayName: 'Deploy to Prod'
-#  condition: and(succeeded(), contains(variables['build.sourceBranch'], 'refs/heads/release/'))
-#  variables:
-#    - group: EIIR-Prod
-#  jobs:
-#    - template: deploy-jobs-template.yml
-#      parameters:
-#        environment: 'Prod'
-#        azureSubscription: 'AppServicesDevOps-Prod'
-#        deployWebapp: ${{ parameters.deployWebapp }}
-#        deployfuncapp: ${{ parameters.deployfuncapp }}
-#        deployDailyExtract: ${{ parameters.deployDailyExtract }}
+- stage: DeployProd
+  displayName: 'Deploy to Prod'
+  condition: and(succeeded(), contains(variables['build.sourceBranch'], 'refs/heads/release/'))
+  variables:
+    - group: EIIR-Prod
+  jobs:
+    - template: deploy-jobs-template.yml
+      parameters:
+        environment: 'Prod'
+        azureSubscription: 'AppServicesDevOps-Prod'
+        deployWebapp: ${{ parameters.deployWebapp }}
+        deployfuncapp: ${{ parameters.deployfuncapp }}
+        deployDailyExtract: ${{ parameters.deployDailyExtract }}
 
 
 
