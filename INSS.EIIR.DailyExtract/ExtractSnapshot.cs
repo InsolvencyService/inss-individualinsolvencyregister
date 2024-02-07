@@ -39,14 +39,23 @@ namespace INSS.EIIR.DailyExtract
                 // Update database with received script
                 string SqlConnectionString = Environment.GetEnvironmentVariable("SQLConnectionString");
 
-                _log.LogInformation("SQL Connection Opening");
                 SqlConnection conn = new SqlConnection(SqlConnectionString);
-                conn.Open();
-                _log.LogInformation("SQL Connection Opened");
-
                 ServerConnection svrConnection = new ServerConnection(conn);
                 Server server = new Server(svrConnection);
-                server.ConnectionContext.ExecuteNonQuery(script);
+                try
+                {
+                    server.ConnectionContext.BeginTransaction();
+                    _log.LogInformation("Executing script");
+                    server.ConnectionContext.ExecuteNonQuery(script);
+                    _log.LogInformation("Executed Script");
+                    server.ConnectionContext.CommitTransaction();
+                }
+                catch (Exception ex)
+                {
+                    server.ConnectionContext.RollBackTransaction();
+                    _log.LogError("Execution of script failed with message : " + ex.Message);
+                    throw ex;
+                }
             }
 
         }
