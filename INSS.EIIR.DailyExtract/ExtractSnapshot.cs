@@ -4,8 +4,6 @@ using System.IO;
 using Azure.Storage.Blobs;
 using Microsoft.Data.SqlClient;
 using Microsoft.SqlServer.Management.Smo;
-using Microsoft.SqlServer.Server;
-using Microsoft.SqlServer.Management.Sdk.Sfc;
 using Microsoft.SqlServer.Management.Common;
 
 
@@ -44,18 +42,19 @@ namespace INSS.EIIR.DailyExtract
                 Server server = new Server(svrConnection);
                 try
                 {
-                    //server.ConnectionContext.BeginTransaction();
                     _log.LogInformation("Executing script");
+
                     server.ConnectionContext.ExecuteNonQuery(script);
                     _log.LogInformation("Executed Script");
-                    //server.ConnectionContext.CommitTransaction();
+
                 }
                 catch (Exception ex)
                 {
-                    //server.ConnectionContext.RollBackTransaction();
-                    _log.LogError("Execution of script failed with message : " + ex.Message);
+                    _log.LogError("Execution of script errored with message : " + ex.Message);
                     //throw ex;
                 }
+
+                server.ConnectionContext.SqlConnectionObject.Close();
             }
 
         }
