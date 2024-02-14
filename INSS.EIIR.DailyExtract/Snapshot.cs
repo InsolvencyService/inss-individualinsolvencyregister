@@ -5,6 +5,8 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Data.SqlClient;
 using Microsoft.SqlServer.Management.Smo;
 using Microsoft.SqlServer.Management.Common;
+using System.Net.Http;
+using System.IO;
 
 namespace INSS.EIIR.DailyExtract
 {
@@ -23,6 +25,14 @@ namespace INSS.EIIR.DailyExtract
                 
                 runProceedure("extr_avail_INS");
                 log.LogInformation("extr_avail_INS execution sucessfull");
+
+                //start orchestration
+                log.LogInformation("Calling Start Orchestration");
+                callHttpFunction("EiirOrchestrator_Start");
+
+                //rebuild Indexes
+                log.LogInformation("Calling Extract Job Trigger");
+                callHttpFunction("ExtractJobTrigger");
 
             }
             catch (Exception ex)
@@ -48,7 +58,18 @@ namespace INSS.EIIR.DailyExtract
 
             server.ConnectionContext.ExecuteNonQuery("exec " + proceedureName);
             server.ConnectionContext.SqlConnectionObject.Close();
+        }
 
+        private async void callHttpFunction(string function)
+        {
+            string functionURL = Environment.GetEnvironmentVariable("functionURL");
+            string apiKey = Environment.GetEnvironmentVariable("functionAPIKey");
+
+            HttpClient client = new HttpClient();
+            client.DefaultRequestHeaders.Add("x-functions-key", apiKey);
+
+            string functionEndpoint = functionURL + function;
+            await client.GetAsync(functionEndpoint);
         }
     }
 }

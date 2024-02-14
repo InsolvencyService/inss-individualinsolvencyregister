@@ -245,7 +245,17 @@ jobs:
                   appName: 'func-eiir-daily-extract-${{ lower(parameters.environment) }}'
                   slotName: 'staging'
                   appSettings: |
-                    [                   
+                    [  
+                      {
+                        "name": "functionURL",
+                        "value": "$(functionBaseUrl)",
+                        "slotSetting": false
+                      },
+                      {
+                        "name": "functionAPIKey",
+                        "value": "$(EIIRApiKey)",
+                        "slotSetting": false
+                      },                 
                       {
                         "name": "snapshotTimercron",
                         "value": "$(snapshotTimercron)",
