@@ -7,6 +7,7 @@ using Microsoft.SqlServer.Management.Smo;
 using Microsoft.SqlServer.Management.Common;
 using System.Net.Http;
 using System.IO;
+using System.Net;
 
 namespace INSS.EIIR.DailyExtract
 {
@@ -90,22 +91,27 @@ namespace INSS.EIIR.DailyExtract
         {
             string functionURL = Environment.GetEnvironmentVariable("functionURL");
             string apiKey = Environment.GetEnvironmentVariable("functionAPIKey");
-
-            HttpClient client = new HttpClient();
-            client.DefaultRequestHeaders.Add("x-functions-key", apiKey);
-
             string functionEndpoint = functionURL + function;
-            var response = await client.GetAsync(functionEndpoint);
 
-            if (response.IsSuccessStatusCode)
+            using (var client = new HttpClient())
             {
-                _log.LogInformation($"{functionEndpoint} called.");
-            }
-            else
-            {
-                _log.LogInformation($"{functionEndpoint} failed with. {response.StatusCode}");
+                // Setting the function key header
+                client.DefaultRequestHeaders.Add("x-functions-key", apiKey);
 
+                // Making the POST request
+                var response = await client.PostAsync(functionEndpoint, new StringContent("", System.Text.Encoding.UTF8, "application/json"));
+
+                // Writing the responsefunctionEndpoint
+                if (response.IsSuccessStatusCode)
+                {
+                    _log.LogInformation($"{functionEndpoint} called.");
+                }
+                else
+                {
+                    _log.LogInformation($"{functionEndpoint} failed with. {response.StatusCode}");
+                }
             }
+
         }
     }
 }
