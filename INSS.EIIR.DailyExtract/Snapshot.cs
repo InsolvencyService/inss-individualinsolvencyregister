@@ -32,11 +32,11 @@ namespace INSS.EIIR.DailyExtract
 
                 //start orchestration
                 _log.LogInformation("Calling Start Orchestration");
-                callHttpFunction("EiirOrchestrator_Start");
+                callPostHttpFunction("EiirOrchestrator_Start");
 
                 //rebuild Indexes
                 _log.LogInformation("Calling Extract Job Trigger");
-                callHttpFunction("ExtractJobTrigger");
+                callGetHttpFunction("ExtractJobTrigger");
 
             }
             catch (Exception ex)
@@ -64,7 +64,29 @@ namespace INSS.EIIR.DailyExtract
             server.ConnectionContext.SqlConnectionObject.Close();
         }
 
-        private async void callHttpFunction(string function)
+        private async void callGetHttpFunction(string function)
+        {
+            string functionURL = Environment.GetEnvironmentVariable("functionURL");
+            string apiKey = Environment.GetEnvironmentVariable("functionAPIKey");
+
+            HttpClient client = new HttpClient();
+            client.DefaultRequestHeaders.Add("x-functions-key", apiKey);
+
+            string functionEndpoint = functionURL + function;
+            var response = await client.GetAsync(functionEndpoint);
+
+            if (response.IsSuccessStatusCode)
+            {
+                _log.LogInformation($"{functionEndpoint} called.");
+            }
+            else
+            {
+                _log.LogInformation($"{functionEndpoint} failed with. {response.StatusCode}");
+
+            }
+        }
+
+        private async void callPostHttpFunction(string function)
         {
             string functionURL = Environment.GetEnvironmentVariable("functionURL");
             string apiKey = Environment.GetEnvironmentVariable("functionAPIKey");
