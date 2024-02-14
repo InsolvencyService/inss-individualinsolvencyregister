@@ -12,32 +12,36 @@ namespace INSS.EIIR.DailyExtract
 {
     public class Snapshot
     {
+
+        private ILogger _log;
+
         [FunctionName("Snapshot")]
         public void Run([TimerTrigger("%snapshotTimercron%")] TimerInfo myTimer, ILogger log)
         {
             try
             {
-                log.LogInformation($"EIIR Daily Extract Snapshot function executed at: {DateTime.Now}");
-                log.LogInformation($"Next EIIR Daily Extract Snapshot scheduled for: {myTimer.ScheduleStatus.Next}");
+                _log = log;
+                _log.LogInformation($"EIIR Daily Extract Snapshot function executed at: {DateTime.Now}");
+                _log.LogInformation($"Next EIIR Daily Extract Snapshot scheduled for: {myTimer.ScheduleStatus.Next}");
 
                 runProceedure("createeiirSnapshotTABLE");
-                log.LogInformation("createeiirSnapshotTABLE execution successfull");
+                _log.LogInformation("createeiirSnapshotTABLE execution successfull");
                 
                 runProceedure("extr_avail_INS");
-                log.LogInformation("extr_avail_INS execution sucessfull");
+                _log.LogInformation("extr_avail_INS execution sucessfull");
 
                 //start orchestration
-                log.LogInformation("Calling Start Orchestration");
+                _log.LogInformation("Calling Start Orchestration");
                 callHttpFunction("EiirOrchestrator_Start");
 
                 //rebuild Indexes
-                log.LogInformation("Calling Extract Job Trigger");
+                _log.LogInformation("Calling Extract Job Trigger");
                 callHttpFunction("ExtractJobTrigger");
 
             }
             catch (Exception ex)
             {
-                log.LogError(ex.Message);
+                _log.LogError(ex.Message);
                 throw(new Exception(ex.Message));
             }
         }
@@ -69,7 +73,17 @@ namespace INSS.EIIR.DailyExtract
             client.DefaultRequestHeaders.Add("x-functions-key", apiKey);
 
             string functionEndpoint = functionURL + function;
-            await client.GetAsync(functionEndpoint);
+            var response = await client.GetAsync(functionEndpoint);
+
+            if (response.IsSuccessStatusCode)
+            {
+                _log.LogInformation($"{functionEndpoint} called.");
+            }
+            else
+            {
+                _log.LogInformation($"{functionEndpoint} failed with. {response.StatusCode}");
+
+            }
         }
     }
 }
