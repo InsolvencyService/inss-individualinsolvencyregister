@@ -253,7 +253,7 @@ jobs:
                       },
                       {
                         "name": "functionAPIKey",
-                        "value": "$(EIIRApiKey)",
+                        "value": "$(functionapikey)",
                         "slotSetting": false
                       },                 
                       {
