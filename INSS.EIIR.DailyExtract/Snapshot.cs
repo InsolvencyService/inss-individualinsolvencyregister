@@ -36,8 +36,8 @@ namespace INSS.EIIR.DailyExtract
                 callPostHttpFunction("EiirOrchestrator_Start");
 
                 //rebuild Indexes
-                _log.LogInformation("Calling Extract Job Trigger");
-                callGetHttpFunction("ExtractJobTrigger");
+               // _log.LogInformation("Calling Extract Job Trigger");
+               // callGetHttpFunction("ExtractJobTrigger");
 
             }
             catch (Exception ex)
