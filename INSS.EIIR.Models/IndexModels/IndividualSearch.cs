@@ -11,7 +11,27 @@ public class IndividualSearch
 
     [SearchableField(IsSortable = true)]
     public string IndividualNumber { get; set; }
-    
+
+    [SearchableField(IsSortable = true)]
+    public string FullName
+    {
+        get
+        {
+            string fullName = $"{FirstName?.Trim()} {MiddleName?.Trim()} {FamilyName?.Trim()}";
+            return string.Join(" ", fullName.Split(default(string[]), StringSplitOptions.RemoveEmptyEntries));
+        }
+    }
+
+    [SearchableField(IsSortable = true)]
+    public string CombinedName
+    {
+        get
+        {
+            string combinedName = $"{FirstName?.Trim()} {FamilyName?.Trim()}";
+            return string.Join(" ", combinedName.Split(default(string[]), StringSplitOptions.RemoveEmptyEntries));
+        }
+    }
+
     [SearchableField(IsSortable = true)]
     public string FirstName { get; set; }
 
