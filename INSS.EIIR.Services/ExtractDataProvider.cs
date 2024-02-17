@@ -55,7 +55,7 @@ public class ExtractDataProvider : IExtractDataProvider
         await connection.OpenAsync();
         using SqlCommand command = new($"EXEC {_dbConfig.GetXmlDataProcedure}", connection) { CommandTimeout = _dbConfig.CommandTimeout };
 
-        await _containerClient.CreateIfNotExistsAsync();
+        // await _containerClient.CreateIfNotExistsAsync();
 
         // The reader needs to be executed with the SequentialAccess behavior to enable network streaming
         // Otherwise ReadAsync will buffer the entire text document into memory which can cause scalability issues or even OutOfMemoryExceptions

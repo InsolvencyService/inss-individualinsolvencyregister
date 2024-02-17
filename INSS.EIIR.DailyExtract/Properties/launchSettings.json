@@ -1,0 +1,9 @@
+{
+  "profiles": {
+    "INSS.EIIR.DailyExtract": {
+      "commandName": "Project",
+      "commandLineArgs": "--port 7222",
+      "launchBrowser": false
+    }
+  }
+}
