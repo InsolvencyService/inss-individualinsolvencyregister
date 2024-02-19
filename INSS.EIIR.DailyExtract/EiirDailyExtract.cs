@@ -29,7 +29,7 @@ namespace INSS.EIIR.DailyExtract
                 Archive the received snapshot file
                 */
             snapshot.Archive();
-            log.LogInformation($"    - Snapshot archived to XXXX");
+            log.LogInformation($"    - Snapshot archived.");
             log.LogInformation($"Update of Snapshot {name} successfull");
 
         }
