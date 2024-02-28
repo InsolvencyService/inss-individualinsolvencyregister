@@ -1,0 +1,74 @@
+﻿@using INSS.EIIR.Web.Constants
+@model INSS.EIIR.Models.Home.StaticContent
+@{
+    ViewData["Title"] = "Search the Individual Insolvency Register";
+
+    var searchError = ViewContext.ModelState["InvalidSearch"] != null;
+
+    var searchInputClass = searchError ? $"{ValidationClasses.InputErrorClass} {ValidationClasses.ThirtyWidthClass}" : $"{ValidationClasses.InputClass} {ValidationClasses.ThirtyWidthClass}";
+    var searchGroupClass = searchError ? ValidationClasses.GroupErrorClass : ValidationClasses.GroupClass;
+}
+
+@section Breadcrumb
+    {
+    <partial name="_Breadcrumb" model="Model.Breadcrumbs" />
+}
+
+@if (searchError)
+{
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <div class="govuk-error-summary" aria-labelledby="error-summary-title" role="alert" data-disable-auto-focus="true" data-module="govuk-error-summary">
+                <h2 class="govuk-error-summary__title" id="error-summary-title">
+                    There is a problem
+                </h2>
+                <div class="govuk-error-summary__body">
+                    <ul class="govuk-list govuk-error-summary__list">
+
+                        <li>
+                            <a href="#searchTerm">Enter the name of an individual or their trading name</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <h1 class="govuk-heading-l">
+            Search the Individual Insolvency Register
+        </h1>
+    </div>
+    <div class="govuk-grid-column-one-third">
+    </div>
+</div>
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+        <form asp-action="Search">
+            <div class="@searchGroupClass">
+
+                <label class="govuk-label" for="search-name">
+                    Name of individual or trading name
+                </label>
+                @if (searchError)
+                {
+                    <p id="search-error" class="govuk-error-message">
+                        <span>Enter the name of an individual or their trading name</span>
+                    </p>
+                }
+                <input class="@searchInputClass" id="searchTerm" name="searchTerm" type="text" spellcheck="false" aria-describedby="search">
+            </div>
+
+            <button class="govuk-button" type="submit" id="searchButton">
+                Search
+            </button>
+        </form>
+    </div>
+
+    <partial name="_RelatedContent" />
+
+</div>

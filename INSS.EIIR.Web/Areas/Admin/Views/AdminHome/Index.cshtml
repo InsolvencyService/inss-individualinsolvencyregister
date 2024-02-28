@@ -1,0 +1,32 @@
+﻿@{
+    var header = "Admin area";
+    ViewData["Header"] = header;
+    ViewData["Title"] = $"{header}";
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <h1 class="govuk-heading-l">
+            @header
+        </h1>
+    </div>
+</div>
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-one-third">
+      <h2 class="govuk-heading-m">Errors or issues</h2>
+      <p class="govuk-body">View reports of errors or issues from citizens and organisations.</p>
+        <p class="govuk-body">
+            <a href="@Url.Action("Index", "ErrorsIssues")" class="govuk-link govuk-!-font-weight-bold">View feedback</a>
+        </p>
+    </div>
+    <div class="govuk-grid-column-one-third">
+      <h2 class="govuk-heading-m">Subscribers</h2>
+      <p class="govuk-body">View and update subscribers or add new subscribers to the system.</p>
+        <p class="govuk-body">
+            <a href="@Url.Action("Index", "Subscriber")" class="govuk-link govuk-!-font-weight-bold">View and update subscribers</a><br>
+        </p>
+        <p class="govuk-body">
+            <a href="@Url.Action("AddProfile", "Subscriber")" class="govuk-link govuk-!-font-weight-bold">Add new subscriber</a>
+        </p>
+    </div>
+</div>

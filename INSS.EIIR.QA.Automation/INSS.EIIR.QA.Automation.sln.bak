@@ -1,0 +1,37 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.4.32804.182
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "INSS.EIIR.QA.Automation", "TechUpliftAutomation\INSS.EIIR.QA.Automation.csproj", "{045622CF-6D19-452E-9671-6C2F4920DD98}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Development|Any CPU = Development|Any CPU
+		InSSAppSettings|Any CPU = InSSAppSettings|Any CPU
+		Release|Any CPU = Release|Any CPU
+		Test|Any CPU = Test|Any CPU
+		Uat|Any CPU = Uat|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{045622CF-6D19-452E-9671-6C2F4920DD98}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{045622CF-6D19-452E-9671-6C2F4920DD98}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{045622CF-6D19-452E-9671-6C2F4920DD98}.Development|Any CPU.ActiveCfg = Development|Any CPU
+		{045622CF-6D19-452E-9671-6C2F4920DD98}.Development|Any CPU.Build.0 = Development|Any CPU
+		{045622CF-6D19-452E-9671-6C2F4920DD98}.InSSAppSettings|Any CPU.ActiveCfg = InSSAppSettings|Any CPU
+		{045622CF-6D19-452E-9671-6C2F4920DD98}.InSSAppSettings|Any CPU.Build.0 = InSSAppSettings|Any CPU
+		{045622CF-6D19-452E-9671-6C2F4920DD98}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{045622CF-6D19-452E-9671-6C2F4920DD98}.Release|Any CPU.Build.0 = Release|Any CPU
+		{045622CF-6D19-452E-9671-6C2F4920DD98}.Test|Any CPU.ActiveCfg = Test|Any CPU
+		{045622CF-6D19-452E-9671-6C2F4920DD98}.Test|Any CPU.Build.0 = Test|Any CPU
+		{045622CF-6D19-452E-9671-6C2F4920DD98}.Uat|Any CPU.ActiveCfg = Uat|Any CPU
+		{045622CF-6D19-452E-9671-6C2F4920DD98}.Uat|Any CPU.Build.0 = Uat|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {FCA5A5BC-7F2D-4E26-8A29-9C467EDE4F27}
+	EndGlobalSection
+EndGlobal

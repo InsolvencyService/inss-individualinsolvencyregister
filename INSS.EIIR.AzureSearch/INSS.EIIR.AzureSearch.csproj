@@ -1,0 +1,31 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="SynonymMaps\FirstName-Synonyms.txt" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AspNetCore.SEOHelper" Version="1.0.1" />
+    <PackageReference Include="Azure.Search.Documents" Version="11.4.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\INSS.EIIR.AzureSearch.Services\INSS.EIIR.AzureSearch.Services.csproj" />
+    <ProjectReference Include="..\INSS.EIIR.Interfaces\INSS.EIIR.Interfaces.csproj" />
+    <ProjectReference Include="..\INSS.EIIR.Models\INSS.EIIR.Models.csproj" />
+    <ProjectReference Include="..\INSS.EIIR.Services\INSS.EIIR.Services.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="SynonymMaps\FirstName-Synonyms.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,8 @@
+﻿@model Microsoft.AspNetCore.Mvc.ModelBinding.ModelErrorCollection
+
+@foreach (var error in Model)
+{
+    <p id="organisationName-error" class="govuk-error-message">
+        <span>@error.ErrorMessage</span>
+    </p>
+}

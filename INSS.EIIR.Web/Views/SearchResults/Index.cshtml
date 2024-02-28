@@ -1,0 +1,90 @@
+﻿@using INSS.EIIR.Web.Extensions
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model INSS.EIIR.Web.ViewModels.IndividualListViewModel
+
+@{
+    ViewData["Title"] = "Search results";
+
+    var pageNo = Model.SearchResults.Paging.Page;
+    var searchTerm = Model.SearchResults.Paging.SearchTerm;
+}
+@using INSS.EIIR.Web.Helper;
+
+@section Breadcrumb
+{
+    <partial name="_Breadcrumb" model="Model.Breadcrumbs" />
+}
+
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+
+            <h1 class="govuk-heading-l">
+                @ViewData["Title"]
+            </h1>
+            <br>
+
+            <div class="govuk-grid-column-one-third">
+            </div>
+        </div>
+    </div>
+
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+
+        @if (Model != null)
+        {
+            if (Model.SearchResults.Results.Any())
+            {
+                <p class="govuk-body">
+                    Your search returned <span class="govuk-!-font-weight-bold">@Model.SearchResults.Paging.ResultCount</span> records. These may include individuals with an alias or a previous name which matches your search criteria.
+                    If you expected to see a name in the register and it is not there, <a href="https://www.insolvencydirect.bis.gov.uk/ExternalOnlineForms/GeneralEnquiry.aspx">tell the Insolvency Service</a>.
+                </p>
+
+                <p class="govuk-body">Select a <span class="govuk-!-font-weight-bold">Name</span> link to view the relevant case details.</p>
+
+                <table class="govuk-table">
+                    <thead class="govuk-table__head">
+                        <tr class="govuk-table__row">
+                            <th scope="col" class="govuk-table__header">Name</th>
+                            <th scope="col" class="govuk-table__header">Company</th>
+                            <th scope="col" class="govuk-table__header">Town or city</th>
+                            <th scope="col" class="govuk-table__header">Postcode</th>
+                        </tr>
+                    </thead>
+                    <tbody class="govuk-table__body">
+
+                        @foreach (var individual in Model.SearchResults.Results)
+                        {
+                            var name = $"{individual.individualForenames} {individual.individualSurname}".ToTitleCase();
+                            var companyNameAddress = TradingHelpers.removeXMLFromCompanyName(individual.companyName);
+
+                            <tr class="govuk-table__row">
+                                <td class="govuk-table__cell">
+                                    <a class="govuk-link--no-visited-state"
+                           href="/case-details/@pageNo/false/@individual.caseNo/@individual.indivNo/@searchTerm">@name</a>
+                                </td>
+                                <td class="govuk-table__cell">@Html.Raw(@companyNameAddress)</td>
+                                <td class="govuk-table__cell">@individual.individualTown</td>
+                                <td class="govuk-table__cell">@individual.individualPostcode</td>
+                            </tr>
+                        }
+
+                    </tbody>
+                </table>
+
+                @if (Model.SearchResults.Paging.ResultCount > Model.SearchResults.Results.Count)
+                {
+                    <partial name="_Paging" model="@Model.SearchResults.Paging" />
+                }
+            }
+            else
+            {
+                <p class="govuk-body">
+                    We didn't find any results for '@Model.SearchResults.Paging.SearchTerm'. Try searching again.
+                </p>
+            }
+        }
+    </div>
+        
+    <partial name="_RelatedContent" />
+</div>

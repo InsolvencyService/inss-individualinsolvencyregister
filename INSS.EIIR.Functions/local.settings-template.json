@@ -1,0 +1,32 @@
+{
+  "IsEncrypted": false,
+  "Values": {
+    "AzureWebJobsStorage": "UseDevelopmentStorage=true",
+    "FUNCTIONS_WORKER_RUNTIME": "dotnet",
+
+    "EIIRIndexUrl": "__EIIRIndexUrl__",
+    "EIIRKey": "__EIIRKey__",
+
+    "OpenApi__Version": "v3",
+    "OpenApi__DocVersion": "1.0.0",
+    "OpenApi__DocTitle": "Swagger EIIR Services",
+    "servicebus__publisherconnectionstring": "__servicebus:publisherconnectionstring__",
+    "servicebus__notifyqueue": "__servicebus:notifyqueue__",
+    "database__connectionstring": "__database:connectionstring__",
+    "database__commandtimeout": 0,
+    "database__getxmldataprocedure": "__database:getxmldataprocedure__",
+    "database__getextractavailableprocedure": "__database:getextractavailableprocedure__",
+    "database__updateextractavailableprocedure": "__database:updateextractavailableprocedure__",
+    "database__databuffersize": 4194304,
+    "notify__subscriberEmailTemplateId": "__notify:subscriberEmailTemplateId__",
+    "notify__connectionstring": "__notify__connectionstring__",
+    "servicebussubscriberconnectionstring": "__servicebus:subscriberconnectionstring__",
+    "servicebusextractjobqueue": "__servicebus:extractjobqueue__",
+    "storageconnectionstring": "UseDevelopmentStorage=true",
+    "blobcontainername": "__containername__",
+    "extractjobserviceurl": "__extractjobserviceurl__",
+    "extractjobtimercron": "__extractjobtimercron__",
+    "functionapikey": "__functionapikey__",
+    "eiirFuncTaskHub": "__taskhubname__"
+  }
+}

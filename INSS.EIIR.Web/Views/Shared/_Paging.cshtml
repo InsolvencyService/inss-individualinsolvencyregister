@@ -1,0 +1,96 @@
+﻿@model INSS.EIIR.Models.PagingModel
+
+@{
+    var pageNumbersToShow = 5;
+
+    var total = Model.TotalPages;
+    var current = Model.Page;
+    var showEllipses = Model.TotalPages > pageNumbersToShow;
+    var itemStyle = "govuk-pagination__item";
+    var currentItemStyle = "govuk-pagination__item govuk-pagination__item--current";
+    var leftNumber = current < 4 ? 2 : current > total - 3 ? total - 3 : current - 1;
+    var middleNumber = current < 4 ? 3 : current > total - 3 ? total - 2 : current;
+    var rightNumber = current < 4 ? 4 : current > total - 3 ? total - 1 : current + 1;
+
+    var hrefRoot = !string.IsNullOrEmpty(Model.SearchTerm) ? $"/{Model.RootUrl}/{Model.SearchTerm}" : $"/{Model.RootUrl}";
+
+    var parameters = Model.Parameters ?? string.Empty;
+}
+
+<nav class="govuk-pagination" role="navigation" aria-label="results">
+
+    @if (current != 1)
+    {
+        <div class="govuk-pagination__prev">
+            <a class="govuk-link govuk-pagination__link" href="@(hrefRoot + $"/{current-1}/{parameters}")" rel="prev">
+                <svg class="govuk-pagination__icon govuk-pagination__icon--prev" xmlns="http://www.w3.org/2000/svg" height="13" width="15" aria-hidden="true" focusable="false" viewBox="0 0 15 13">
+                    <path d="m6.5938-0.0078125-6.7266 6.7266 6.7441 6.4062 1.377-1.449-4.1856-3.9768h12.896v-2h-12.984l4.2931-4.293-1.414-1.414z"></path>
+                </svg>
+                <span class="govuk-pagination__link-title">Previous</span>
+            </a>
+        </div>
+    }
+
+    <ul class="govuk-pagination__list">
+        <li class="@(current == 1 ? currentItemStyle : itemStyle)">
+            <a class="govuk-link govuk-pagination__link" href="@(hrefRoot + $"/1/{parameters}")" aria-label="Page 1" @(current == 1 ? "aria-current=\"page\"" : "")>
+                1
+            </a>
+        </li>
+
+        @if (showEllipses && current > 3)
+        {
+            <li class="govuk-pagination__item govuk-pagination__item--ellipses">⋯</li>
+        }
+        
+        @if (total > 2)
+        {
+            <li class="@(current == leftNumber ? currentItemStyle : itemStyle)">
+                <a class="govuk-link govuk-pagination__link" href="@(hrefRoot + $"/{leftNumber}/{parameters}")" aria-label="Page @leftNumber" @(current == leftNumber ? "aria-current=\"page\"" : "")>
+                    @leftNumber
+                </a>
+            </li>
+        }
+        
+        @if (total > 3)
+        {
+            <li class="@(current == middleNumber ? currentItemStyle : itemStyle)">
+                <a class="govuk-link govuk-pagination__link" href="@(hrefRoot + $"/{middleNumber}/{parameters}")" aria-label="Page @middleNumber" @(current == middleNumber ? "aria-current=\"page\"" : "")>
+                    @middleNumber
+                </a>
+            </li>
+        }
+        
+        @if(total > 4)
+        {
+            <li class="@(current == rightNumber ? currentItemStyle : itemStyle)">
+                <a class="govuk-link govuk-pagination__link" href="@(hrefRoot + $"/{rightNumber}/{parameters}")" aria-label="Page @rightNumber" @(current == rightNumber ? "aria-current=\"page\"" : "")>
+                    @rightNumber
+                </a>
+            </li>
+        }
+
+        @if (showEllipses && current < total - 2)
+        {
+            <li class="govuk-pagination__item govuk-pagination__item--ellipses">⋯</li>
+        }
+
+        <li class="@(current == total ? currentItemStyle : itemStyle)">
+            <a class="govuk-link govuk-pagination__link" href="@(hrefRoot + $"/{total}/{parameters}")" aria-label="Page @total" @(current == total ? "aria-current=\"page\"" : "")>
+                @total
+            </a>
+        </li>
+    </ul>
+
+    @if (current != total)
+    {
+        <div class="govuk-pagination__next">
+            <a class="govuk-link govuk-pagination__link" href="@(hrefRoot + $"/{current+1}/{parameters}")" rel="next">
+                <span class="govuk-pagination__link-title">Next</span>
+                <svg class="govuk-pagination__icon govuk-pagination__icon--next" xmlns="http://www.w3.org/2000/svg" height="13" width="15" aria-hidden="true" focusable="false" viewBox="0 0 15 13">
+                    <path d="m8.107-0.0078125-1.4136 1.414 4.2926 4.293h-12.986v2h12.896l-4.1855 3.9766 1.377 1.4492 6.7441-6.4062-6.7246-6.7266z"></path>
+                </svg>
+            </a>
+        </div>
+    }
+</nav>

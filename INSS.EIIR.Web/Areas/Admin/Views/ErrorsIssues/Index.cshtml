@@ -1,0 +1,207 @@
+﻿@using INSS.EIIR.Web.Constants
+@model INSS.EIIR.Web.ViewModels.FeedbackViewModel
+
+@{
+    var header = "Errors or issues";
+    ViewData["Header"] = header;
+    ViewData["Title"] = header;
+
+    var pageNo = Model.FeedbackWithPaging.Paging.Page;
+}
+
+@section AdminBreadcrumb
+    {
+    <partial name="~/Areas/Admin/Shared/_AdminBreadcrumb.cshtml" model="Model.Breadcrumbs" />
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+        <h1 class="govuk-heading-l">
+            @header
+        </h1>
+    </div>
+</div>
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-one-third">
+
+        <div class="govuk-form-group">
+            <label class="govuk-label" for="organisation">
+                Organisation
+            </label>
+            <select class="govuk-select" id="organisation" name="organisation">
+                @foreach (var filter in FeedbackFilters.OrganisationFilters)
+                {
+                    @if (filter.Key == Model.OrganisationFilter)
+                    {
+                        <option value="@filter.Key" selected="">@filter.Value</option>
+                    }
+                    else
+                    {
+                        <option value="@filter.Key">@filter.Value</option>
+                    }
+                }
+            </select>
+        </div>
+
+        <div class="govuk-form-group">
+            <label class="govuk-label" for="type">
+                Type
+            </label>
+            <select class="govuk-select" id="type" name="type">
+                @foreach (var filter in FeedbackFilters.InsolvencyTypeFilters)
+                {
+                    @if (filter.Key == Model.InsolvencyTypeFilter)
+                    {
+                        <option value="@filter.Key" selected="">@filter.Value</option>
+                    }
+                    else
+                    {
+                        <option value="@filter.Key">@filter.Value</option>
+                    }
+                }
+            </select>
+        </div>
+
+        <div class="govuk-form-group">
+            <label class="govuk-label" for="status">
+                Status
+            </label>
+            <select class="govuk-select" id="status" name="status">
+                @foreach (var filter in FeedbackFilters.StatusFilters)
+                {
+                    @if (filter.Key == Model.StatusFilter)
+                    {
+                        <option value="@filter.Key" selected="">@filter.Value</option>
+                    }
+                    else
+                    {
+                        <option value="@filter.Key">@filter.Value</option>
+                    }
+                }
+            </select>
+        </div>
+
+    </div>
+
+    @if (Model?.FeedbackWithPaging?.Feedback != null && Model.FeedbackWithPaging.Feedback.Any())
+    {
+        <div class="govuk-grid-column-two-thirds">
+            
+            @foreach (var feedback in Model.FeedbackWithPaging.Feedback)
+            {
+                var viewed = feedback.Viewed ? "viewed" : "not viewed";
+                var change = feedback.Viewed ? "not viewed" : "viewed";
+
+                var insolvencyType = feedback.InsolvencyType switch
+                {
+                    "I" => "IVA",
+                    "D" => "Debt relief order",
+                    "B" => "Bankruptcy",
+                    _ => string.Empty
+                };
+
+                <h2 class="govuk-heading-m govuk-!-margin-top-4 govuk-!-margin-bottom-2">
+                    @feedback.CaseId
+                </h2>
+
+                <dl class="govuk-summary-list govuk-summary-list--no-border">
+                    <div class="govuk-summary-list__row">
+                        <dt class="govuk-summary-list__key">
+                            Status
+                        </dt>
+                        <dd class="govuk-summary-list__value">
+                            <strong class="govuk-tag govuk-tag--grey" id="report-status">@viewed</strong>
+                        </dd>
+                        <dd class="govuk-summary-list__actions">
+                            <a href="/admin/errors-or-issues/update-status/@feedback.FeedbackId/@(!feedback.Viewed)/@Model.InsolvencyTypeFilter/@Model.OrganisationFilter/@Model.StatusFilter">
+                                Change to @change
+                            </a>
+                        </dd>
+                    </div>
+                    <div class="govuk-summary-list__row">
+                        <dt class="govuk-summary-list__key">
+                            Report date
+                        </dt>
+                        <dd class="govuk-summary-list__value">
+                            @feedback.FeedbackDate.ToString("dd MMMM yyyy")
+                        </dd>
+                    </div>
+                    <div class="govuk-summary-list__row">
+                        <dt class="govuk-summary-list__key">
+                            Case name
+                        </dt>
+                        <dd class="govuk-summary-list__value">
+                            <a href="/case-details/@pageNo/true/@feedback.CaseId/@feedback.IndivNo/a/@Model.InsolvencyTypeFilter/@Model.OrganisationFilter/@Model.StatusFilter">@feedback.CaseName</a>
+                        </dd>
+                    </div>
+                    <div class="govuk-summary-list__row">
+                        <dt class="govuk-summary-list__key">
+                            Type
+                        </dt>
+                        <dd class="govuk-summary-list__value">
+                            @insolvencyType
+                        </dd>
+                    </div>
+                    <div class="govuk-summary-list__row">
+                        <dt class="govuk-summary-list__key">
+                            Order or arrangement date
+                        </dt>
+                        <dd class="govuk-summary-list__value">
+                            @{
+                                var orderDate = feedback.OrderDate == null ? "" : feedback.OrderDate.Value.ToString("dd MMMM yyyy");
+                            }
+                            @orderDate
+                        </dd>
+                    </div>
+                    <div class="govuk-summary-list__row">
+                        <dt class="govuk-summary-list__key">
+                            Reporter name
+                        </dt>
+                        <dd class="govuk-summary-list__value">
+                            @feedback.ReporterFullname
+                        </dd>
+                    </div>
+                    <div class="govuk-summary-list__row">
+                        <dt class="govuk-summary-list__key">
+                            Email address
+                        </dt>
+                        <dd class="govuk-summary-list__value">
+                            @feedback.ReporterEmailAddress
+                        </dd>
+                    </div>
+                    <div class="govuk-summary-list__row">
+                        <dt class="govuk-summary-list__key">
+                            Organisation
+                        </dt>
+                        <dd class="govuk-summary-list__value">
+                            @feedback.ReporterOrganisation
+                        </dd>
+                    </div>
+                </dl>
+
+                <div class="govuk-form-group">
+                    <h3 class="govuk-label-wrapper">
+                        <label class="govuk-label govuk-label--s" for="more-detail">
+                            Report
+                        </label>
+                    </h3>
+                    <textarea disabled class="govuk-textarea" id="more-detail" name="more-detail" rows="5" aria-describedby="more-detail-hint">@feedback.Message.Trim()</textarea>
+                </div>
+
+                <hr class="govuk-section-break govuk-section-break--visible">
+            }
+
+            @if (Model.FeedbackWithPaging.Paging.ResultCount > Model.FeedbackWithPaging.Feedback.Count())
+            {
+                <partial name="_Paging" model="@Model.FeedbackWithPaging.Paging" />
+            }
+
+        </div>
+    }
+</div>
+
+@section PageScripts {
+    <script src="~/js/feedbackList.js" asp-append-version="true" type="module"></script>
+}
