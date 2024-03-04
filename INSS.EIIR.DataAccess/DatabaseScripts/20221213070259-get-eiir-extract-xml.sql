@@ -533,11 +533,12 @@ CREATE TABLE #Temp
 			THEN (select SelectionValue from #StatusCodes WHERE SelectionCode = 'A4') 
 	END AS annulReason,
 
-    CASE
+
+	CASE
 		WHEN address_withheld_flag = 'Y' THEN '(Case Description withheld as Individual Address has been withheld)'
         WHEN insolvency_type = 'I' THEN '(Case Description does not apply to IVA)'
         ELSE 
-		isnull((SELECT ci_case_desc.case_desc_line
+		ISNULL((SELECT CONCAT(ci_case_desc.case_desc_line, '')
 			FROM ci_case_desc
 			WHERE  ci_case_desc.case_no = snap.CaseNo
 			for XML path ('')),'No Case Description Found')
