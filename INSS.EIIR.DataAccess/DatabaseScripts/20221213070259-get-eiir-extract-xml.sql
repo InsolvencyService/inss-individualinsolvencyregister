@@ -22,7 +22,7 @@ CREATE TABLE #Cases
 )
 
 INSERT INTO #Cases 
-SELECT DISTINCT CaseNo, IndivNo, Type as InsolvencyType FROM eiirSnapshotTABLE
+SELECT DISTINCT CaseNo, IndivNo, Type as InsolvencyType FROM eiirSnapshotTABLE ORDER BY DateofOrder
 
 CREATE TABLE #broDetails(
 	case_id int, 
