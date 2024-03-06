@@ -16,14 +16,14 @@ SELECT selection_code, selection_value FROM ci_selection WHERE selection_type = 
 
 CREATE TABLE #Cases
 (
-	DateofOrder datetime,
+	DateOrder datetime,
 	CaseNo int,
 	IndivNo int,
 	InsolvencyType varchar(1)
 )
 
 INSERT INTO #Cases 
-SELECT DISTINCT DateofOrder, CaseNo, IndivNo, Type as InsolvencyType FROM eiirSnapshotTABLE ORDER BY DateofOrder
+SELECT DISTINCT DateofOrder as DateOrder, CaseNo, IndivNo, Type as InsolvencyType FROM eiirSnapshotTABLE ORDER BY DateofOrder
 
 CREATE TABLE #broDetails(
 	case_id int, 
