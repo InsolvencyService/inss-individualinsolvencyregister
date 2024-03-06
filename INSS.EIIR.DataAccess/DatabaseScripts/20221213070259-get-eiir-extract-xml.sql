@@ -16,6 +16,7 @@ SELECT selection_code, selection_value FROM ci_selection WHERE selection_type = 
 
 CREATE TABLE #Cases
 (
+	DateofOrder datetime,
 	CaseNo int,
 	IndivNo int,
 	InsolvencyType varchar(1)
