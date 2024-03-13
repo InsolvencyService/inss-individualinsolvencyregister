@@ -105,11 +105,11 @@
                                     }
                                 </dd>
                             </div>
+                        </dl>
 
                             @if (Model.CaseDetails.Trading != null && Model.CaseDetails.insolvencyType != "Debt Relief Order" && Model.CaseDetails.insolvencyType != "Individual Voluntary Arrangement")
                             {
-                                <div class="govuk-summary-list__row">
-                                    <table class="govuk-table" style="width:max-content!important;">
+                                    <table class="govuk-table" >
                                         <caption class="govuk-table__caption govuk-table__caption--m">Trading details</caption>
                                         <thead class="govuk-table__head">
                                             <tr class="govuk-table__row">
@@ -127,9 +127,7 @@
                                             }
 
                                     </table>
-                                </div>
                             }
-                        </dl>
                         <div class="govuk-warning-text">
                             <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
                             <strong class="govuk-warning-text__text">
