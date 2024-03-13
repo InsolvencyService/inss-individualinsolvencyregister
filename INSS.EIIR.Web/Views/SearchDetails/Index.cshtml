@@ -1,4 +1,5 @@
 ﻿@using INSS.EIIR.Web.Constants
+@using INSS.EIIR.Web.Helper
 @model INSS.EIIR.Web.ViewModels.CaseDetailsViewModel
 
 @{
@@ -90,8 +91,12 @@
                                 <dd class="govuk-summary-list__value"> @Html.DisplayFor(model => Model.CaseDetails.caseNo) </dd>
                             </div>
                             <div class="govuk-summary-list__row">
-                                <dt class="govuk-summary-list__key"> Arrangement date </dt>
-                                <dd class="govuk-summary-list__value"> @Html.DisplayFor(model => model.CaseDetails.insolvencyDate) </dd>
+                                <dt class="govuk-summary-list__key">
+                                    @((Model.CaseDetails.insolvencyType == INSOLVENCY_TYPE.DRO || Model.CaseDetails.insolvencyType == INSOLVENCY_TYPE.BANKRUPTCY) ? "Order" : "Arrangement") date
+                                </dt>
+                                <dd class="govuk-summary-list__value">
+                                    @((Model.CaseDetails.insolvencyDate.IsValidDate()) ? Html.DisplayFor(model => (model.CaseDetails.insolvencyDate)) : NO_DATA.INFORMATION_NOT_AVAIALBLE)
+                                </dd>
                             </div>
                             <div class="govuk-summary-list__row">
                                 <dt class="govuk-summary-list__key"> Status </dt>

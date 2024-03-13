@@ -6,4 +6,9 @@
         public const string IVA = "Individual Voluntary Arrangement";
         public const string DRO = "Debt Relief Order";
     }
+    public static class NO_DATA
+    { 
+        public const string INFORMATION_NOT_AVAIALBLE = "Information not available";
+    }
+    
 }
