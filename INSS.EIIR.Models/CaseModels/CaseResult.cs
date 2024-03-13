@@ -1,5 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics.CodeAnalysis;
+using System.Xml.Serialization;
 
 namespace INSS.EIIR.Models.CaseModels;
 
@@ -62,4 +64,21 @@ public class CaseResult
     public string? insolvencyServicePostcode { get; set; }
     public string? insolvencyServicePhone { get; set; }
 
+    [NotMapped]
+    public Trading? Trading { get; set; }
+}
+
+[XmlRoot("Trading")]
+public class Trading
+{
+    [XmlElement("TradingDetails")]
+    public List<TradingDetails> TradingDetails { get; set; }
+}
+
+public class TradingDetails
+{
+    [XmlElement("TradingName")]
+    public string TradingName { get; set; }
+    [XmlElement("TradingAddress")]
+    public string TradingAddress { get; set; }
 }
