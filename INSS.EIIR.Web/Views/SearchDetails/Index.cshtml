@@ -114,15 +114,18 @@
                                 <dt class="govuk-summary-list__key"> Status </dt>
                                 <dd class="govuk-summary-list__value"> @Html.DisplayFor(model => Model.CaseDetails.caseStatus) </dd>
                             </div>
-                            <div class="govuk-summary-list__row">
-                                <dt class="govuk-summary-list__key"> Notification date </dt>
-                                <dd class="govuk-summary-list__value">
-                                    @if (@Model.CaseDetails.notificationDate.HasValue)
-                                    {
-                                        @Model.CaseDetails.notificationDate.Value.ToString("dd MMMM yyyy")
-                                    }
-                                </dd>
-                            </div>
+                            @if (Model.CaseDetails.notificationDate.IsValidDate() && (Model.CaseDetails.insolvencyType != INSOLVENCY_TYPE.DRO || Model.CaseDetails.insolvencyType != INSOLVENCY_TYPE.BANKRUPTCY))
+                            {
+                                <div class="govuk-summary-list__row">
+                                    <dt class="govuk-summary-list__key"> Notification date </dt>
+                                    <dd class="govuk-summary-list__value">
+                                        @if (@Model.CaseDetails.notificationDate.HasValue)
+                                        {
+                                            @Model.CaseDetails.notificationDate.Value.ToString("dd MMMM yyyy")
+                                        }
+                                    </dd>
+                                </div>
+                            }
                             @if (Model.CaseDetails.insolvencyType == INSOLVENCY_TYPE.DRO || Model.CaseDetails.insolvencyType == INSOLVENCY_TYPE.BANKRUPTCY)
                             {
                                 <div class="govuk-summary-list__row">

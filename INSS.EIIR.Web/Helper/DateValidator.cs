@@ -9,5 +9,9 @@
 
             return DateTime.TryParseExact(dateString, "dd/MM/yyyy", null, System.Globalization.DateTimeStyles.None, out DateTime result);
         }
+        public static bool IsValidDate(this DateTime? dateString)
+        {
+            return (dateString != null && dateString != DateTime.MinValue);
+        }
     }
 }
