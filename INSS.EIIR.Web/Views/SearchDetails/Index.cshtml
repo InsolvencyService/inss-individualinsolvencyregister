@@ -104,10 +104,10 @@
 
                             <div class="govuk-summary-list__row">
                                 <dt class="govuk-summary-list__key">
-                                    @((Model.CaseDetails.insolvencyType == INSOLVENCY_TYPE.DRO || Model.CaseDetails.insolvencyType == INSOLVENCY_TYPE.BANKRUPTCY) ? "Order" : "Arrangement") date
+                                    @((Model.CaseDetails.insolvencyType == InsolvencyType.DRO || Model.CaseDetails.insolvencyType == InsolvencyType.BANKRUPTCY) ? "Order date" : "Arrangement date")
                                 </dt>
                                 <dd class="govuk-summary-list__value">
-                                    @((Model.CaseDetails.insolvencyDate.IsValidDate()) ? Html.DisplayFor(model => (model.CaseDetails.insolvencyDate)) : NO_DATA.INFORMATION_NOT_AVAIALBLE)
+                                    @((Model.CaseDetails.insolvencyDate.IsValidDate()) ? Html.DisplayFor(model => (model.CaseDetails.insolvencyDate)) : NoData.INFORMATION_NOT_AVAIALBLE)
                                 </dd>
                             </div>
                             <div class="govuk-summary-list__row">
@@ -126,7 +126,7 @@
                                     </dd>
                                 </div>
                             }
-                            @if (Model.CaseDetails.insolvencyType == INSOLVENCY_TYPE.DRO || Model.CaseDetails.insolvencyType == INSOLVENCY_TYPE.BANKRUPTCY)
+                            @if (Model.CaseDetails.insolvencyType == insolva.DRO || Model.CaseDetails.insolvencyType == INSOLVENCY_TYPE.BANKRUPTCY)
                             {
                                 <div class="govuk-summary-list__row">
                                     <dt class="govuk-summary-list__key"> Case description </dt>
@@ -135,7 +135,7 @@
                             }
                         </dl>
 
-                        @if (Model.CaseDetails.Trading != null && Model.CaseDetails.insolvencyType != INSOLVENCY_TYPE.DRO && Model.CaseDetails.insolvencyType != INSOLVENCY_TYPE.IVA)
+                        @if (Model.CaseDetails.Trading != null && Model.CaseDetails.insolvencyType != InsolvencyType.DRO && Model.CaseDetails.insolvencyType != InsolvencyType.IVA)
                         {
                             <table class="govuk-table">
                                 <caption class="govuk-table__caption govuk-table__caption--m">Trading details</caption>

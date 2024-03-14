@@ -662,7 +662,7 @@ SET @resultXML = (SELECT
 	(SELECT CONVERT(CHAR(10), GETDATE(), 103) AS ExtractDate,
         t.caseno AS CaseNoReportRequest,
         'Individual Details' AS IndividualDetailsText,
-        (select t.indivNo AS CaseNoIndividual,
+        (select t.caseno AS CaseNoIndividual,
         individualTitle AS Title,
         individualGender AS Gender,
         individualForenames AS FirstName,
