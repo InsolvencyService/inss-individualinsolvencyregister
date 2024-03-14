@@ -48,7 +48,10 @@ public class IndividualSearchMapper : Profile
             .ForMember(dest => dest.CaseNumber, opt => opt.MapFrom(src => src.caseNo))
             .ForMember(dest => dest.IndividualNumber, opt => opt.MapFrom(src => src.indivNo))
         .ReverseMap()
-        .ForPath(s => s.Trading, opt => opt.MapFrom(src => (!string.IsNullOrEmpty(src.InsolvencyTradeName) && src.InsolvencyTradeName != "<No Trading Names Found>") ? src.InsolvencyTradeName:null));
+        .ForPath(s => s.Trading,
+                opt => opt.MapFrom(
+                    src => (!string.IsNullOrEmpty(src.InsolvencyTradeName) && src.InsolvencyTradeName != "<No Trading Names Found>")
+                        ? src.InsolvencyTradeName : null));
 
         CreateMap<IndividualSearch, SearchResult>()
             .ForMember(m => m.individualForenames, opt => opt.MapFrom(s => s.FirstName))
