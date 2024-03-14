@@ -1,6 +1,6 @@
 ﻿namespace INSS.EIIR.Web.Constants
 {
-    public static class INSOLVENCY_TYPE
+    public static class InsolvencyType
     {
         public const string BANKRUPTCY = "Bankruptcy";
         public const string IVA = "Individual Voluntary Arrangement";

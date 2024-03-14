@@ -111,7 +111,7 @@
                                     }
                                 </dd>
                             </div>
-                            @if (Model.CaseDetails.insolvencyType == INSOLVENCY_TYPE.DRO || Model.CaseDetails.insolvencyType == INSOLVENCY_TYPE.BANKRUPTCY)
+                            @if (Model.CaseDetails.insolvencyType == InsolvencyType.DRO || Model.CaseDetails.insolvencyType == InsolvencyType.BANKRUPTCY)
                             {
                                 <div class="govuk-summary-list__row">
                                     <dt class="govuk-summary-list__key"> Case description </dt>
@@ -120,7 +120,7 @@
                             }
                         </dl>
 
-                        @if (Model.CaseDetails.Trading != null && Model.CaseDetails.insolvencyType != INSOLVENCY_TYPE.DRO && Model.CaseDetails.insolvencyType != INSOLVENCY_TYPE.IVA)
+                        @if (Model.CaseDetails.Trading != null && Model.CaseDetails.insolvencyType != InsolvencyType.DRO && Model.CaseDetails.insolvencyType != InsolvencyType.IVA)
                         {
                             <table class="govuk-table">
                                 <caption class="govuk-table__caption govuk-table__caption--m">Trading details</caption>
