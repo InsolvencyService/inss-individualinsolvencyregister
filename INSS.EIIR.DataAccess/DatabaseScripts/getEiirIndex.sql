@@ -389,36 +389,37 @@ FROM #Cases c
 			for XML path ('')),1,0,'')
     END AS caseDescription,
 
-    CASE WHEN (SELECT 
-		CASE WHEN 
-			ci_trade.trading_name IS NULL THEN 'No Trading Names Found'
-		ELSE ci_trade.trading_name
-		END AS TradingName,       
-        
-		CASE 
-			WHEN ci_trade.trading_name is NULL THEN NULL
-			ELSE REPLACE(TRIM(CONCAT(ci_trade.address_line_1,  ', ', ci_trade.address_line_2,  ', ', ci_trade.address_line_3,  ', ', ci_trade.address_line_4,  ', ', ci_trade.address_line_5, ', ', ci_trade.postcode)), ' ,', '') 
-			END AS TradingAddress
-
-		FROM ci_trade 
-		where ci_trade.case_no = snap.CaseNo
-		FOR XML PATH('')) IS NULL THEN 'No Trading Names Found'
-
-	ELSE (SELECT 
-		CASE WHEN 
-			ci_trade.trading_name IS NULL THEN 'No Trading Names Found'
-		ELSE ci_trade.trading_name
-		END AS TradingName,       
-        
-		CASE 
-			WHEN ci_trade.trading_name is NULL THEN NULL
-			ELSE REPLACE(TRIM(CONCAT(ci_trade.address_line_1,  ', ', ci_trade.address_line_2,  ', ', ci_trade.address_line_3,  ', ', ci_trade.address_line_4,  ', ', ci_trade.address_line_5, ', ', ci_trade.postcode)), ' ,', '')  
-			END AS TradingAddress
-
-		FROM ci_trade 
-		where ci_trade.case_no = snap.CaseNo
-		FOR XML PATH('')) 
-	END AS tradingNames,
+    CASE
+	    WHEN EXISTS (
+        SELECT 1 
+        FROM ci_trade 
+        WHERE ci_trade.case_no = snap.CaseNo 
+          AND trading_name IS NOT NULL
+    )
+    THEN (
+        SELECT (
+            SELECT 
+                trading_name AS TradingName,
+                ISNULL(
+                    REPLACE(
+                        TRIM(CONCAT(address_line_1, ', ', address_line_2, ', ', address_line_3, ', ', address_line_4, ', ', address_line_5, ', ', postcode)), 
+                        ' ,', 
+                        ''
+                    ), 
+                    ''
+                ) AS TradingAddress 
+            FROM (
+                SELECT cit1.* 
+                FROM ci_trade cit1  
+                INNER JOIN ci_trade cit2 ON cit1.trading_no = cit2.trading_no 
+                                        AND cit1.case_no = cit2.case_no 
+                WHERE cit1.case_no = snap.CaseNo
+            ) AS ci_trade_CTE
+            FOR XML PATH('TradingDetails'), ROOT('Trading')
+        )
+    )
+    ELSE '<No Trading Names Found>'
+END AS tradingNames,
 
     --  Insolvency practitioner contact details
     TRIM((SELECT STRING_AGG( ISNULL(ci_ip.forenames +' '+ ci_ip.surname, ' '), ', ' ) FROM ci_ip  WHERE ci_ip.ip_no = insolvencyAppointment.ip_no and insolvencyAppointment.ip_appt_type = 'M' and insolvencyAppointment.appt_end_date IS NULL and insolvencyAppointment.case_no = inscase.case_no)) AS insolvencyPractitionerName,
