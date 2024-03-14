@@ -210,7 +210,15 @@ FROM #Cases c
     END AS individualGender,
         
     ISNULL(NULLIF(CONVERT(CHAR(30), individual.date_of_birth, 103), ''), 'No Date of Birth Found') AS individualDOB, 
-    ISNULL(NULLIF(individual.job_title, ''), 'No Occupation Found') AS individualOccupation,
+	CASE 
+	  WHEN individual.job_title IS NULL OR individual.job_title = ''
+		  THEN 'No Occupation Found'
+	  WHEN CHARINDEX('-', individual.job_title, 1) > 1
+		  THEN (SELECT trim(value) FROM STRING_SPLIT(individual.job_title, '-')  ORDER BY (SELECT NULL) OFFSET 1 ROWS FETCH NEXT 1 ROWS ONLY )
+	  ELSE
+		  individual.job_title
+
+	END AS individualOccupation,
 
 	CASE WHEN wflag = 'Y' 
 		THEN '(Sorry - this Address has been withheld)'
