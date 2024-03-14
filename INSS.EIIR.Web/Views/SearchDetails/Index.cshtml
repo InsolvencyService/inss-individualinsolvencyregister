@@ -1,5 +1,5 @@
 ﻿@using INSS.EIIR.Web.Constants
-@using INSS.EIIR.Web.Helper
+@using INSS.EIIR.Web.Extensions
 @model INSS.EIIR.Web.ViewModels.CaseDetailsViewModel
 
 @{
@@ -83,9 +83,9 @@
                                 <dd class="govuk-summary-list__value"> @Html.DisplayFor(model => Model.CaseDetails.insolvencyType) </dd>
                             </div>
 
-                            @if (Model.CaseDetails.insolvencyType != INSOLVENCY_TYPE.IVA)
+                            @if (Model.CaseDetails.insolvencyType != InsolvencyType.IVA)
                             {
-                                if ((Model.CaseDetails.insolvencyType != INSOLVENCY_TYPE.DRO))
+                                if ((Model.CaseDetails.insolvencyType != InsolvencyType.DRO))
                                 {
                                     <div class="govuk-summary-list__row">
                                         <dt class="govuk-summary-list__key"> Court </dt>
@@ -114,15 +114,18 @@
                                 <dt class="govuk-summary-list__key"> Status </dt>
                                 <dd class="govuk-summary-list__value"> @Html.DisplayFor(model => Model.CaseDetails.caseStatus) </dd>
                             </div>
-                            <div class="govuk-summary-list__row">
-                                <dt class="govuk-summary-list__key"> Notification date </dt>
-                                <dd class="govuk-summary-list__value">
-                                    @if (@Model.CaseDetails.notificationDate.HasValue)
-                                    {
-                                        @Model.CaseDetails.notificationDate.Value.ToString("dd MMMM yyyy")
-                                    }
-                                </dd>
-                            </div>
+                            @if (Model.CaseDetails.notificationDate.IsValidDate() && Model.CaseDetails.insolvencyType == InsolvencyType.IVA)
+                            {
+                                <div class="govuk-summary-list__row">
+                                    <dt class="govuk-summary-list__key"> Notification date </dt>
+                                    <dd class="govuk-summary-list__value">
+                                        @if (@Model.CaseDetails.notificationDate.HasValue)
+                                        {
+                                            @Model.CaseDetails.notificationDate.Value.ToString("dd MMMM yyyy")
+                                        }
+                                    </dd>
+                                </div>
+                            }
                             @if (Model.CaseDetails.insolvencyType == InsolvencyType.DRO || Model.CaseDetails.insolvencyType == InsolvencyType.BANKRUPTCY)
                             {
                                 <div class="govuk-summary-list__row">
