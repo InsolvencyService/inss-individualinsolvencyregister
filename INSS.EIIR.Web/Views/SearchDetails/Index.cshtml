@@ -92,10 +92,10 @@
                             </div>
                             <div class="govuk-summary-list__row">
                                 <dt class="govuk-summary-list__key">
-                                    @((Model.CaseDetails.insolvencyType == INSOLVENCY_TYPE.DRO || Model.CaseDetails.insolvencyType == INSOLVENCY_TYPE.BANKRUPTCY) ? "Order" : "Arrangement") date
+                                    @((Model.CaseDetails.insolvencyType == InsolvencyType.DRO || Model.CaseDetails.insolvencyType == InsolvencyType.BANKRUPTCY) ? "Order" : "Arrangement") date
                                 </dt>
                                 <dd class="govuk-summary-list__value">
-                                    @((Model.CaseDetails.insolvencyDate.IsValidDate()) ? Html.DisplayFor(model => (model.CaseDetails.insolvencyDate)) : NO_DATA.INFORMATION_NOT_AVAIALBLE)
+                                    @((Model.CaseDetails.insolvencyDate.IsValidDate()) ? Html.DisplayFor(model => (model.CaseDetails.insolvencyDate)) : NoData.INFORMATION_NOT_AVAIALBLE)
                                 </dd>
                             </div>
                             <div class="govuk-summary-list__row">
