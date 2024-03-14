@@ -54,7 +54,7 @@
                                 <dt class="govuk-summary-list__key"> Date of birth </dt>
                                 <dd class="govuk-summary-list__value"> @Html.DisplayFor(model => model.CaseDetails.individualDOB) </dd>
                             </div>
-                            @if (Model.CaseDetails.deceasedDate != null && Model.CaseDetails.deceasedDate != "")
+                            @if (Model.CaseDetails.deceasedDate.IsValidDate())
                             {
                                 <div class="govuk-summary-list__row">
                                     <dt class="govuk-summary-list__key"> Deceased Date </dt>
