@@ -79,17 +79,29 @@
                                 <dd class="govuk-summary-list__value"> @Html.DisplayFor(model => Model.CaseDetails.caseName) </dd>
                             </div>
                             <div class="govuk-summary-list__row">
-                                <dt class="govuk-summary-list__key"> Court </dt>
-                                <dd class="govuk-summary-list__value"> @Html.DisplayFor(model => Model.CaseDetails.courtName) </dd>
-                            </div>
-                            <div class="govuk-summary-list__row">
                                 <dt class="govuk-summary-list__key"> Type </dt>
                                 <dd class="govuk-summary-list__value"> @Html.DisplayFor(model => Model.CaseDetails.insolvencyType) </dd>
                             </div>
-                            <div class="govuk-summary-list__row">
-                                <dt class="govuk-summary-list__key"> Number </dt>
-                                <dd class="govuk-summary-list__value"> @Html.DisplayFor(model => Model.CaseDetails.caseNo) </dd>
-                            </div>
+
+                            @if (Model.CaseDetails.insolvencyType != INSOLVENCY_TYPE.IVA)
+                            {
+                                if ((Model.CaseDetails.insolvencyType != INSOLVENCY_TYPE.DRO))
+                                {
+                                    <div class="govuk-summary-list__row">
+                                        <dt class="govuk-summary-list__key"> Court </dt>
+                                        <dd class="govuk-summary-list__value"> @Html.DisplayFor(model => Model.CaseDetails.courtName) </dd>
+                                    </div>
+                                }
+                                <div class="govuk-summary-list__row">
+                                    <dt class="govuk-summary-list__key"> Number </dt>
+                                    <dd class="govuk-summary-list__value"> @Html.DisplayFor(model => Model.CaseDetails.courtNumber) </dd>
+                                </div>
+                                <div class="govuk-summary-list__row">
+                                    <dt class="govuk-summary-list__key"> Year </dt>
+                                    <dd class="govuk-summary-list__value"> @Html.DisplayFor(model => Model.CaseDetails.caseYear) </dd>
+                                </div>
+                            }
+
                             <div class="govuk-summary-list__row">
                                 <dt class="govuk-summary-list__key">
                                     @((Model.CaseDetails.insolvencyType == InsolvencyType.DRO || Model.CaseDetails.insolvencyType == InsolvencyType.BANKRUPTCY) ? "Order date" : "Arrangement date")
