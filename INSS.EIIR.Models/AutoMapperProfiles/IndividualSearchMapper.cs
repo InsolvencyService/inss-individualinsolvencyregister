@@ -47,6 +47,7 @@ public class IndividualSearchMapper : Profile
             .ForMember(dest => dest.CaseDescription, opt => opt.MapFrom(src => src.caseDescription))
             .ForMember(dest => dest.CaseNumber, opt => opt.MapFrom(src => src.caseNo))
             .ForMember(dest => dest.IndividualNumber, opt => opt.MapFrom(src => src.indivNo))
+            .ForMember(dest => dest.DeceasedDate, opt => opt.MapFrom(src => src.deceasedDate))
         .ReverseMap()
         .ForPath(s => s.Trading,
                 opt => opt.MapFrom(

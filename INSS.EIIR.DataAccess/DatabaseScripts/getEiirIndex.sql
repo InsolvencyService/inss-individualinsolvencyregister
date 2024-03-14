@@ -244,7 +244,7 @@ FROM #Cases c
 		(SELECT STRING_AGG(UPPER(ci_other_name.surname) + ' ' + (UPPER(ci_other_name.forenames)), ', ') FROM ci_other_name  WHERE ci_other_name.case_no = snap.CaseNo AND ci_other_name.indiv_no = snap.IndivNo)
 	END) AS individualAlias,    
 	
-	ISNULL(CONVERT(CHAR(10), snap.Deceased, 103), '') AS deceasedDate,
+	ISNULL(CONVERT(VARCHAR(10), snap.Deceased, 103), '') AS deceasedDate,
 
     --  Insolvency case details
     inscase.case_name AS caseName, 
