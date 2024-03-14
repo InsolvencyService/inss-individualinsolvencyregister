@@ -114,7 +114,7 @@
                                 <dt class="govuk-summary-list__key"> Status </dt>
                                 <dd class="govuk-summary-list__value"> @Html.DisplayFor(model => Model.CaseDetails.caseStatus) </dd>
                             </div>
-                            @if (Model.CaseDetails.notificationDate.IsValidDate() && (Model.CaseDetails.insolvencyType != InsolvencyType.DRO || Model.CaseDetails.insolvencyType != InsolvencyType.BANKRUPTCY))
+                            @if (Model.CaseDetails.notificationDate.IsValidDate() && Model.CaseDetails.insolvencyType == InsolvencyType.IVA)
                             {
                                 <div class="govuk-summary-list__row">
                                     <dt class="govuk-summary-list__key"> Notification date </dt>
