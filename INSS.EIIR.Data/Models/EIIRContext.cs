@@ -72,6 +72,17 @@ public partial class EIIRContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+
+        modelBuilder.Entity<Trading>(
+          eb =>
+          {
+              eb.HasNoKey();
+          });
+        modelBuilder.Entity<TradingDetails>(
+         eb =>
+         {
+             eb.HasNoKey();
+         });
         modelBuilder.Entity<AnonCaseName>(entity =>
         {
             entity.HasNoKey();
