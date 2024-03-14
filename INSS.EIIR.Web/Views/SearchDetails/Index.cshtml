@@ -162,7 +162,7 @@
                         <div class="govuk-inset-text"> The insolvency case details are taken from the Court Order made on the order date, and include the address(es) from which debts were incurred. They cannot be changed without the consent of the Court. </div>
                     </div>
                 </div>
-                @if (!String.IsNullOrEmpty(@Model.CaseDetails.insolvencyPractitionerName))
+                @if (!String.IsNullOrEmpty(@Model.CaseDetails.insolvencyPractitionerName) && !String.IsNullOrEmpty(@Model.CaseDetails.insolvencyPractitionerFirmName))
                 {
                     <div class="govuk-accordion__section ">
                         <div class="govuk-accordion__section-header">
@@ -182,11 +182,9 @@
                                 </div>
                                 <div class="govuk-summary-list__row">
                                     <dt class="govuk-summary-list__key"> Address </dt>
-                                    <dd class="govuk-summary-list__value"> @Html.DisplayFor(model => Model.CaseDetails.insolvencyPractitionerAddress) </dd>
-                                </div>
-                                <div class="govuk-summary-list__row">
-                                    <dt class="govuk-summary-list__key"> Postcode </dt>
-                                    <dd class="govuk-summary-list__value"> @Html.DisplayFor(model => Model.CaseDetails.insolvencyPractitionerPostcode) </dd>
+                                    <dd class="govuk-summary-list__value">
+                                        @Html.DisplayFor(model => Model.CaseDetails.insolvencyPractitionerAddress) <br />
+                                        @Html.DisplayFor(model => Model.CaseDetails.insolvencyPractitionerPostcode) </dd>
                                 </div>
                                 <div class="govuk-summary-list__row">
                                     <dt class="govuk-summary-list__key"> Telephone </dt>
