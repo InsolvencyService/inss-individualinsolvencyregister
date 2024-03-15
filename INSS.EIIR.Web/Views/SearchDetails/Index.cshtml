@@ -58,6 +58,13 @@
                                 <dt class="govuk-summary-list__key"> Last known address </dt>
                                 <dd class="govuk-summary-list__value"> @Html.DisplayFor(model => Model.CaseDetails.individualAddress) <br /> @Html.DisplayFor(model => Model.CaseDetails.individualPostcode) </dd>
                             </div>
+                            @if (Model.CaseDetails.dateOfPreviousOrder.IsValidDate())
+                            {
+                                <div class="govuk-summary-list__row">
+                                    <dt class="govuk-summary-list__key"> Date of previous order </dt>
+                                    <dd class="govuk-summary-list__value"> @Html.DisplayFor(model => Model.CaseDetails.dateOfPreviousOrder)  </dd>
+                                </div>
+                            }
                             <div class="govuk-summary-list__row">
                                 <dt class="govuk-summary-list__key"> This person may also be known as </dt>
                                 <dd class="govuk-summary-list__value"> @Html.DisplayFor(model => Model.CaseDetails.individualAlias) </dd>
