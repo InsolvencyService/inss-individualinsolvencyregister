@@ -62,7 +62,12 @@
                             {
                                 <div class="govuk-summary-list__row">
                                     <dt class="govuk-summary-list__key"> Date of previous order </dt>
-                                    <dd class="govuk-summary-list__value"> @Html.DisplayFor(model => Model.CaseDetails.dateOfPreviousOrder)  </dd>
+                                    <dd class="govuk-summary-list__value"> 
+                                        @if (@Model.CaseDetails.dateOfPreviousOrder.HasValue)
+                                        {
+                                            @Model.CaseDetails.dateOfPreviousOrder.Value.ToString("dd MMMM yyyy")
+                                        }
+                                    </dd>
                                 </div>
                             }
                             <div class="govuk-summary-list__row">
