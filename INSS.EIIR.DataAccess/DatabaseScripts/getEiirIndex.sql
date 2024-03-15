@@ -478,7 +478,7 @@ END AS tradingNames,
 	CASE WHEN 
 		discharge.previous_order_status IN ('D', '', NULL) AND discharge.previous_order_date IS NOT NULL AND discharge.previous_order_date BETWEEN DATEADD(yy, -6, inscase.insolvency_date) AND inscase.insolvency_date 
 	then 
-		discharge.previous_order_status else null end as dateOfPreviousOrder
+		discharge.previous_order_date else null end as dateOfPreviousOrder
 
     FROM  #Cases cases
 	INNER JOIN eiirSnapshotTABLE snap on cases.CaseNo = snap.CaseNo
