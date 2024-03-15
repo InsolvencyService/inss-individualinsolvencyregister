@@ -63,7 +63,7 @@ public class CaseResult
 
     public string? insolvencyServicePostcode { get; set; }
     public string? insolvencyServicePhone { get; set; }
-    public DateTime? dateOfPreviousOrder { get; set; }
+
     [NotMapped]
     public Trading? Trading { get; set; }
 }
