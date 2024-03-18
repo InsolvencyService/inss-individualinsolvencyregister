@@ -54,6 +54,13 @@
                                 <dt class="govuk-summary-list__key"> Date of birth </dt>
                                 <dd class="govuk-summary-list__value"> @Html.DisplayFor(model => model.CaseDetails.individualDOB) </dd>
                             </div>
+                            @if (Model.CaseDetails.deceasedDate.IsValidDate())
+                            {
+                                <div class="govuk-summary-list__row">
+                                    <dt class="govuk-summary-list__key"> Deceased Date </dt>
+                                    <dd class="govuk-summary-list__value"> @Html.DisplayFor(model => model.CaseDetails.deceasedDate) </dd>
+                                </div>
+                            }
                             <div class="govuk-summary-list__row">
                                 <dt class="govuk-summary-list__key"> Last known address </dt>
                                 <dd class="govuk-summary-list__value"> @Html.DisplayFor(model => Model.CaseDetails.individualAddress) <br /> @Html.DisplayFor(model => Model.CaseDetails.individualPostcode) </dd>
