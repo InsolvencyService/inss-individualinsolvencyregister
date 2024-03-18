@@ -214,7 +214,7 @@ FROM #Cases c
 	  WHEN individual.job_title IS NULL OR individual.job_title = ''
 		  THEN 'No Occupation Found'
 	  WHEN CHARINDEX('-', individual.job_title, 1) > 1
-		  THEN (SELECT trim(value) FROM STRING_SPLIT(individual.job_title, '-')  ORDER BY (SELECT NULL) OFFSET 1 ROWS FETCH NEXT 1 ROWS ONLY )
+		  THEN (SELECT  STRING_AGG(job_title , ' ') job from (select trim(value) job_title FROM STRING_SPLIT(individual.job_title, '-')  ORDER BY (SELECT NULL) OFFSET 1 ROWS ) tbl)
 	  ELSE
 		  individual.job_title
 
