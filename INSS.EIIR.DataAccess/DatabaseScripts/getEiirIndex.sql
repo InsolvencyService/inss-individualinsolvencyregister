@@ -94,7 +94,7 @@ CREATE TABLE #discharge (
 	suspension_date datetime,
 	suspension_end_date datetime,
 	previous_order_date datetime,
-	previous_order_status char(1)
+	previous_order_status varchar(1)
 )
 
 INSERT INTO #discharge
@@ -469,8 +469,8 @@ END AS tradingNames,
 	END AS insolvencyServicePhone,
 	CASE WHEN 
 		discharge.previous_order_status IN ('D', '', NULL) AND discharge.previous_order_date IS NOT NULL AND discharge.previous_order_date BETWEEN DATEADD(yy, -6, inscase.insolvency_date) AND inscase.insolvency_date 
-	then 
-		discharge.previous_order_status else null end as dateOfPreviousOrder
+	THEN 
+		discharge.previous_order_status ELSE NULL END AS dateOfPreviousOrder
 
     FROM  #Cases cases
 	INNER JOIN eiirSnapshotTABLE snap on cases.CaseNo = snap.CaseNo
@@ -483,7 +483,7 @@ END AS tradingNames,
 	LEFT JOIN ci_ip cip ON insolvencyAppointment.ip_no = cip.ip_no
 	LEFT JOIN ci_ip_address cipa ON insolvencyAppointment.ip_no = cipa.ip_no
     LEFT JOIN ci_iva_case ivaCase ON ivaCase.case_no = inscase.case_no
-	LEFT JOIN #discharge discharge ON discharge.case_no = cases.CaseNo  and  discharge.indiv_no = cases.IndivNo  
+	LEFT JOIN #discharge discharge ON discharge.case_no = cases.CaseNo AND discharge.indiv_no = cases.IndivNo  
 
 If(OBJECT_ID('tempdb..#Temp') Is Not Null)
 Begin
