@@ -147,6 +147,8 @@ public class IndividualSearch
     [SimpleField]
     public string InsolvencyTradeNameAddress { get; set; }
     [SimpleField]
+    public DateTime? DateOfPreviousOrder { get; set; }
+    [SimpleField]
     public string? DeceasedDate { get; set; }
 
 }
