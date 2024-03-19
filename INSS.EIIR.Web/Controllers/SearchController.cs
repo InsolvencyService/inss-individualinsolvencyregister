@@ -29,6 +29,10 @@ namespace INSS.EIIR.Web.Controllers
             {
                 return RedirectToAction("Index", new { error = true });
             }
+            if (searchTerm.Contains('\t'))
+            {
+                searchTerm = searchTerm.Replace("\t", " ").Trim();
+            }
 
             return RedirectToAction("Index", "SearchResults", new { searchTerm });
         }
