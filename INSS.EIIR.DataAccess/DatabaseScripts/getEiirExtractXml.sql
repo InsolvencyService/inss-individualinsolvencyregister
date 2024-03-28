@@ -738,7 +738,11 @@ SET @resultXML = (SELECT
 					caseName AS CaseName,
 					courtName AS Court,
 					insolvencyType AS CaseType,
-					courtNumber AS CourtNumber,
+					CASE 
+						WHEN courtNumber IS NULL THEN '@@@@@@@@@@'
+						WHEN courtNumber = '' THEN '@@@@@@@@@@'
+						ELSE courtNumber
+					END As CourtNumber,
 					caseYear AS CaseYear,
 					insolvencyDate AS StartDate,
 					TRIM(caseStatus) AS Status,
@@ -776,7 +780,7 @@ SET @resultXML = (SELECT
 
 	SET @outputWrapper = (SELECT @resultExtractXML, @resultDisclaimerXML, @resultXML FOR XML PATH ('ReportDetails'), TYPE, ELEMENTS)
 
-	SELECT ((SELECT '<?xml version=''1.0'' encoding=''utf-8''?>') + CAST(@outputWrapper as varchar(MAX)))  AS 'Result'
+	SELECT REPLACE(((SELECT '<?xml version=''1.0'' encoding=''utf-8''?>') + CAST(@outputWrapper as varchar(MAX))), '@@@@@@@@@@','')  AS 'Result'
 
 If(OBJECT_ID('tempdb..#Temp') Is Not Null)
 Begin
