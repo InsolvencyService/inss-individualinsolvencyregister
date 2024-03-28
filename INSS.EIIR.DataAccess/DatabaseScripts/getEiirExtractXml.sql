@@ -248,7 +248,8 @@ CREATE TABLE #Temp
     insolvencyServiceContact varchar(255),
     insolvencyServiceAddress varchar(255),
     insolvencyServicePostcode varchar(255),
-    insolvencyServicePhone varchar(255)
+    insolvencyServicePhone varchar(255),
+	dateOrder datetime,
 )
 
 	INSERT INTO #Temp
@@ -627,7 +628,8 @@ CREATE TABLE #Temp
 		ISNULL((SELECT phone from ci_office where office_name LIKE 'DRO%'), '')
 		ELSE 
 		(insolvencyService.phone)
-	END AS insolvencyServicePhone
+	END AS insolvencyServicePhone,
+	cases.dateOrder
 
     FROM  #Cases cases
 	INNER JOIN eiirSnapshotTABLE snap on cases.CaseNo = snap.CaseNo
@@ -776,6 +778,7 @@ SET @resultXML = (SELECT
 			FOR XML PATH ('InsolvencyContact'), TYPE)
 		from #Temp t
 		inner join #caseParams cp on cp.caseNo = t.caseNo
+		order by t.dateOrder
         FOR XML PATH ('ReportRequest'), TYPE, ELEMENTS))
 
 	SET @outputWrapper = (SELECT @resultExtractXML, @resultDisclaimerXML, @resultXML FOR XML PATH ('ReportDetails'), TYPE, ELEMENTS)
