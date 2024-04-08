@@ -290,14 +290,7 @@ CREATE TABLE #Temp
     CASE WHEN wflag = 'Y' 
         THEN '(Sorry - this Address has been withheld)'
         ELSE  
-            (SELECT CASE 
-               WHEN CHARINDEX(',',REVERSE(REPLACE(TRIM(CONCAT(individual.address_line_1, ', ', individual.address_line_2, ', ', individual.address_line_3, ', ', individual.address_line_4, ' ', individual.address_line_5)), ' ,', '')))=1 
-			   THEN 
-					LEFT(REPLACE(TRIM(CONCAT(individual.address_line_1, ', ', individual.address_line_2, ', ', individual.address_line_3, ', ', individual.address_line_4, ', ', individual.address_line_5)), ' ,', ''),
-					LEN(REPLACE(TRIM(CONCAT(individual.address_line_1, ', ', individual.address_line_2, ', ', individual.address_line_3, ', ', individual.address_line_4, ', ', individual.address_line_5)), ' ,', ''))-1) 
-               ELSE 
-					REPLACE(TRIM(CONCAT(individual.address_line_1, ', ', individual.address_line_2, ', ', individual.address_line_3, ', ', individual.address_line_4, ', ', individual.address_line_5)), ' ,', '')
-           END)             
+            CONCAT_WS(', ',TRIM (NULLIF(individual.address_line_1, '')),TRIM (NULLIF(individual.address_line_2, '')),TRIM (NULLIF(individual.address_line_3, '')),TRIM (NULLIF(individual.address_line_4, '')),TRIM (NULLIF(individual.address_line_5, '')))             
     END AS individualAddress,
 
 	CASE WHEN wflag = 'Y' 
