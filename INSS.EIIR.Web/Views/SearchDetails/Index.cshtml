@@ -13,14 +13,14 @@
 
 <main class="govuk-main-wrapper govuk-main-wrapper--auto-spacing" id="main-content" role="main">
     <div class="govuk-grid-row">
-        <div class="govuk-grid-column-two-thirds">
+        <div class="govuk-grid-column-full">
             <h1 class="govuk-heading-l"> Case details: @Html.DisplayFor(model => Model.CaseDetails.individualForenames) @Html.DisplayFor(model => Model.CaseDetails.individualSurname) </h1>
             <br>
             <div class="govuk-grid-column-one-third"></div>
         </div>
     </div>
     <div class="govuk-grid-row">
-        <div class="govuk-grid-column-two-thirds">
+        <div class="govuk-grid-column-full">
             <div class="govuk-accordion" data-module="govuk-accordion" id="accordion-default" aria-expanded="true">
                 <div class="govuk-accordion__section govuk-accordion__section--expanded">
                     <div class="govuk-accordion__section-header">
@@ -249,30 +249,6 @@
                 </div>
             </div>
             <a asp-controller="Search" asp-action="Index" id="newSearch" class="govuk-button"> Start new search </a>
-        </div>
-        <div class="govuk-grid-column-one-third">
-            <aside class="app-related-items" role="complementary">
-                <h2 class="govuk-heading-m" id="subsection-title"> Report an error </h2>
-                <nav role="navigation" aria-labelledby="subsection-title">
-                    <ul class="govuk-list govuk-!-font-size-16">
-                        <li>
-                            @{
-                                var parameters = string.Empty;
-                                if (Model.ErrorListParameters != null)
-                                {
-                                    parameters = $"{Model.ErrorListParameters.Page}/true/{Model.CaseDetails.caseNo}/{Model.CaseDetails.indivNo}/a/{Model.ErrorListParameters.InsolvencyType}/{Model.ErrorListParameters.Organisation}/{Model.ErrorListParameters.Status}";
-                                }
-                                else
-                                {
-                                    parameters = $"{Model.SearchParameters.Page}/false/{Model.CaseDetails.caseNo}/{Model.CaseDetails.indivNo}/{Model.SearchParameters.SearchTerm}";
-                                }
-                            }
-                            <a class="govuk-link--no-visited-state"
-                               href="/report-an-error/@parameters"> Report an error or issue </a>
-                        </li>
-                    </ul>
-                </nav>
-            </aside>
         </div>
     </div>
 </main>
