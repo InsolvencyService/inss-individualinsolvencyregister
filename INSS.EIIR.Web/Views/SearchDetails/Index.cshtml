@@ -175,13 +175,28 @@
 
                             </table>
                         }
-                        <div class="govuk-warning-text">
-                            <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
-                            <strong class="govuk-warning-text__text">
-                                <span class="govuk-warning-text__assistive">Warning</span> Individual Voluntary Arrangements remain on the register for 3 months after the agreement is revoked, implemented or terminated.
-                            </strong>
+                       
+                        <div class="govuk-inset-text"> 
+                            Depending on the type of insolvency, information may remain active on the register for a period of up to 3 months following the discharge or notification of completion to the Insolvency Service. <br><br>
+                            If you believe that the details provided are inaccurate, please report this using
+
+                            @{
+                                var errorParameters = string.Empty;
+                                if (Model.ErrorListParameters != null)
+                                {
+                                    errorParameters = $"{Model.ErrorListParameters.Page}/true/{Model.CaseDetails.caseNo}/{Model.CaseDetails.indivNo}/a/{Model.ErrorListParameters.InsolvencyType}/{Model.ErrorListParameters.Organisation}/{Model.ErrorListParameters.Status}";
+                                }
+                                else
+                                {
+                                    errorParameters = $"{Model.SearchParameters.Page}/false/{Model.CaseDetails.caseNo}/{Model.CaseDetails.indivNo}/{Model.SearchParameters.SearchTerm}";
+                                }
+                            }
+                            <a class="govuk-link--no-visited-state"
+                               href="/report-an-error/@errorParameters ">
+                                report an error or issue
+                            </a>
+
                         </div>
-                        <div class="govuk-inset-text"> The insolvency case details are taken from the Court Order made on the order date, and include the address(es) from which debts were incurred. They cannot be changed without the consent of the Court. </div>
                     </div>
                 </div>
                 @if (!String.IsNullOrEmpty(@Model.CaseDetails.insolvencyPractitionerName) && !String.IsNullOrEmpty(@Model.CaseDetails.insolvencyPractitionerFirmName))
