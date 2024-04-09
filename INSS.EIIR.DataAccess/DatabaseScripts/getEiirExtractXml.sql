@@ -237,7 +237,7 @@ CREATE TABLE #Temp
     caseStatus varchar(255),
 	annulDate varchar(255),
 	annulReason varchar(255),
-    caseDescription varchar(max),
+    caseDescription nvarchar(max),
     tradingNames xml,
     insolvencyPractitionerName varchar(255),
     insolvencyPractitionerFirmName varchar(255),
@@ -541,10 +541,10 @@ CREATE TABLE #Temp
 		WHEN address_withheld_flag = 'Y' THEN '(Case Description withheld as Individual Address has been withheld)'
         WHEN insolvency_type = 'I' THEN '(Case Description does not apply to IVA)'
         ELSE 
-		ISNULL((SELECT CONCAT(ci_case_desc.case_desc_line, '')
+		ISNULL((SELECT STRING_AGG(ci_case_desc.case_desc_line, '')
 			FROM ci_case_desc
 			WHERE  ci_case_desc.case_no = snap.CaseNo
-			for XML path ('')),'No Case Description Found')
+			),'No Case Description Found')
     END AS caseDescription,
 
     CASE WHEN (SELECT 
@@ -771,12 +771,11 @@ SET @resultXML = (SELECT
 			FOR XML PATH ('InsolvencyContact'), TYPE)
 		from #Temp t
 		inner join #caseParams cp on cp.caseNo = t.caseNo
-		order by t.dateOrder
         FOR XML PATH ('ReportRequest'), TYPE, ELEMENTS))
 
 	SET @outputWrapper = (SELECT @resultExtractXML, @resultDisclaimerXML, @resultXML FOR XML PATH ('ReportDetails'), TYPE, ELEMENTS)
 
-	SELECT REPLACE(((SELECT '<?xml version=''1.0'' encoding=''utf-8''?>') + CAST(@outputWrapper as varchar(MAX))), '@@@@@@@@@@','')  AS 'Result'
+	SELECT REPLACE(REPLACE(((SELECT '<?xml version=''1.0'' encoding=''utf-8''?>') + CAST(@outputWrapper as varchar(MAX))), '@@@@@@@@@@',''),'"','&qout;')  AS 'Result'
 
 If(OBJECT_ID('tempdb..#Temp') Is Not Null)
 Begin
