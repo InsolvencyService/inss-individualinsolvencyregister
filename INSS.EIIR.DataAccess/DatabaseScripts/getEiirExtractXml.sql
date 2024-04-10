@@ -771,6 +771,7 @@ SET @resultXML = (SELECT
 			FOR XML PATH ('InsolvencyContact'), TYPE)
 		from #Temp t
 		inner join #caseParams cp on cp.caseNo = t.caseNo
+		order by t.dateOrder
         FOR XML PATH ('ReportRequest'), TYPE, ELEMENTS))
 
 	SET @outputWrapper = (SELECT @resultExtractXML, @resultDisclaimerXML, @resultXML FOR XML PATH ('ReportDetails'), TYPE, ELEMENTS)
