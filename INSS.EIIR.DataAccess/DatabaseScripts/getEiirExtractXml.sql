@@ -295,7 +295,7 @@ CREATE TABLE #Temp
 
 	CASE WHEN wflag = 'Y' 
 		THEN '(Sorry - this Address has been withheld)'
-		ELSE  ISNULL(individual.postcode, 'No Last Known PostCode Found')
+		ELSE  ISNULL(CAST(individual.postcode AS VARCHAR(30)), 'No Last Known PostCode Found')
 	END AS individualPostcode, 
     
 	individual.address_withheld_flag AS individualAddressWithheld, 
