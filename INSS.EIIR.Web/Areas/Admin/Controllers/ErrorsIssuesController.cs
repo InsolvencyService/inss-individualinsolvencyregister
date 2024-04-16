@@ -21,7 +21,7 @@ namespace INSS.EIIR.Web.Areas.Admin.Controllers
             _errorIssuesService = errorIssuesService;
         }
 
-        [HttpGet("/eiir/" + AreaNames.Admin + "/errors-or-issues/{page?}/{insolvencyType?}/{organisation?}/{status?}")]
+        [HttpGet(AreaNames.Admin + "/errors-or-issues/{page?}/{insolvencyType?}/{organisation?}/{status?}")]
         public async Task<IActionResult> Index(int page = 1, string insolvencyType = "A", int organisation = 0, int status = 0)
         {
             var feedback = new FeedbackViewModel
@@ -34,7 +34,7 @@ namespace INSS.EIIR.Web.Areas.Admin.Controllers
             var parameters = CreateParameters(page, insolvencyType, organisation, status);
 
             feedback.FeedbackWithPaging = await _errorIssuesService.GetFeedbackAsync(parameters);
-            feedback.FeedbackWithPaging.Paging.RootUrl = "eiir/admin/errors-or-issues";
+            feedback.FeedbackWithPaging.Paging.RootUrl = "admin/errors-or-issues";
             feedback.FeedbackWithPaging.Paging.Parameters = $"{insolvencyType}/{organisation}/{status}";
 
             feedback.Breadcrumbs = BreadcrumbBuilder.BuildBreadcrumbs(isAdmin: true).ToList();
@@ -42,7 +42,7 @@ namespace INSS.EIIR.Web.Areas.Admin.Controllers
             return View(feedback);
         }
 
-        [HttpGet("/eiir/" + AreaNames.Admin + "/errors-or-issues/update-status/{feedbackId}/{viewed}/{insolvencyType?}/{organisation?}/{status?}")]
+        [HttpGet(AreaNames.Admin + "/errors-or-issues/update-status/{feedbackId}/{viewed}/{insolvencyType?}/{organisation?}/{status?}")]
         public async Task<IActionResult> UpdateStatus(int feedbackId, bool viewed, string insolvencyType = "A", int organisation = 0, int status = 0)
         {
             await _errorIssuesService.UpdateStatusAsync(feedbackId, viewed);

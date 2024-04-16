@@ -32,7 +32,7 @@
     }
 
     callController(active) {
-        window.location.href = `/Admin/Subscribers/1/${active}`;
+        window.location.href = `/eiir/Admin/Subscribers/1/${active}`;
     }
 }
 
