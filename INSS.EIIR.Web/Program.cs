@@ -36,6 +36,9 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UsePathBase("/eiir");
+
 app.UseStaticFiles();
 
 app.UseRouting();
