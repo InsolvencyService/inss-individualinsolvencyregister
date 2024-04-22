@@ -673,7 +673,11 @@ SET @resultXML = (SELECT
 		individualOccupation AS Occupation,
         TRIM(individualDOB) AS DateofBirth,
         REPLACE(TRIM(individualAddress), ' ,', '') AS LastKnownAddress,
-        TRIM(individualPostcode) AS LastKnownPostCode,
+		CASE 
+			WHEN TRIM(individualPostcode) IS NULL THEN '@@@@@@@@@@'
+			WHEN TRIM(individualPostcode) = '' THEN '@@@@@@@@@@'
+			ELSE TRIM(individualPostcode)
+		END AS LastKnownPostCode,
         individualAlias AS OtherNames
 			FOR XML PATH ('IndividualDetails'), TYPE),
 
@@ -763,7 +767,11 @@ SET @resultXML = (SELECT
 				TRIM(insolvencyPractitionerFirmName) AS MainIPFirm,
 				REPLACE(TRIM(insolvencyPractitionerAddress), ' ,', '') AS MainIPFirmAddress,
 				TRIM(insolvencyPractitionerPostcode) AS MainIPFirmPostCode,
-				TRIM(insolvencyPractitionerTelephone) AS MainIPFirmTelephone
+				CASE 
+					WHEN TRIM(insolvencyPractitionerTelephone) IS NULL THEN '@@@@@@@@@@'
+					WHEN TRIM(insolvencyPractitionerTelephone) = '' THEN '@@@@@@@@@@'
+					ELSE TRIM(insolvencyPractitionerTelephone)
+				END As MainIPFirmTelephone
 				FOR XML PATH ('IP'), TYPE)
 			ELSE NULL
 		END),
