@@ -793,7 +793,7 @@ SET @resultXML = (SELECT
 
 	SET @outputWrapper = (SELECT @resultExtractXML, @resultDisclaimerXML, @resultXML FOR XML PATH ('ReportDetails'), TYPE, ELEMENTS)
 
-	SELECT REPLACE(REPLACE(((SELECT '<?xml version=''1.0'' encoding=''utf-8''?>') + CAST(@outputWrapper as varchar(MAX))), '@@@@@@@@@@',''),'"','&qout;')  AS 'Result'
+	SELECT REPLACE(REPLACE(((SELECT '<?xml version=''1.0'' encoding=''utf-8''?>') + CAST(@outputWrapper as varchar(MAX))), '@@@@@@@@@@',''),'"','&quot;')  AS 'Result'
 
 If(OBJECT_ID('tempdb..#Temp') Is Not Null)
 Begin
