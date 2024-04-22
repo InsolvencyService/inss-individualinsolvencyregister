@@ -407,10 +407,11 @@ CREATE TABLE #Temp
     inscase.case_name AS caseName, 
 
 	CASE
+		--APP-4951 following string aggregation on courtname appears unnecessary, DISTINCT required on court name as current duplicate records in ci_court where court='ADJ'
 		WHEN insolvency_type = 'I' OR insolvency_type = 'B'
-			THEN (SELECT STRING_AGG( ISNULL(court_name, ' '), ', ' )  FROM ci_court WHERE court = inscase.court)
+			THEN (SELECT STRING_AGG( ISNULL(tbl.court_name, ' '), ', ' )  FROM (SELECT DISTINCT court_name FROM ci_court WHERE court = inscase.court) tbl)
 		WHEN insolvency_type = 'D' AND cp.hasBro = 'Y'
-			THEN (SELECT STRING_AGG( ISNULL(court_name, ' '), ', ' )  FROM ci_court WHERE court = inscase.court)
+			THEN (SELECT STRING_AGG( ISNULL(tbl.court_name, ' '), ', ' )  FROM (SELECT DISTINCT court_name FROM ci_court WHERE court = inscase.court) tbl)
 		ELSE '(Court does not apply to DRO)'
 	END AS courtName,
 
