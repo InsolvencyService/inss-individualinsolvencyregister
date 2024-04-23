@@ -407,10 +407,11 @@ CREATE TABLE #Temp
     inscase.case_name AS caseName, 
 
 	CASE
+		--APP-4951 following string aggregation on courtname appears unnecessary, DISTINCT required on court name as current duplicate records in ci_court where court='ADJ'
 		WHEN insolvency_type = 'I' OR insolvency_type = 'B'
-			THEN (SELECT STRING_AGG( ISNULL(court_name, ' '), ', ' )  FROM ci_court WHERE court = inscase.court)
+			THEN (SELECT STRING_AGG( ISNULL(tbl.court_name, ' '), ', ' )  FROM (SELECT DISTINCT court_name FROM ci_court WHERE court = inscase.court) tbl)
 		WHEN insolvency_type = 'D' AND cp.hasBro = 'Y'
-			THEN (SELECT STRING_AGG( ISNULL(court_name, ' '), ', ' )  FROM ci_court WHERE court = inscase.court)
+			THEN (SELECT STRING_AGG( ISNULL(tbl.court_name, ' '), ', ' )  FROM (SELECT DISTINCT court_name FROM ci_court WHERE court = inscase.court) tbl)
 		ELSE '(Court does not apply to DRO)'
 	END AS courtName,
 
@@ -792,7 +793,7 @@ SET @resultXML = (SELECT
 
 	SET @outputWrapper = (SELECT @resultExtractXML, @resultDisclaimerXML, @resultXML FOR XML PATH ('ReportDetails'), TYPE, ELEMENTS)
 
-	SELECT REPLACE(REPLACE(((SELECT '<?xml version=''1.0'' encoding=''utf-8''?>') + CAST(@outputWrapper as varchar(MAX))), '@@@@@@@@@@',''),'"','&qout;')  AS 'Result'
+	SELECT REPLACE(REPLACE(((SELECT '<?xml version=''1.0'' encoding=''utf-8''?>') + CAST(@outputWrapper as varchar(MAX))), '@@@@@@@@@@',''),'"','&quot;')  AS 'Result'
 
 If(OBJECT_ID('tempdb..#Temp') Is Not Null)
 Begin
