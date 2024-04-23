@@ -542,7 +542,7 @@ CREATE TABLE #Temp
 		WHEN address_withheld_flag = 'Y' THEN '(Case Description withheld as Individual Address has been withheld)'
         WHEN insolvency_type = 'I' THEN '(Case Description does not apply to IVA)'
         ELSE 
-		ISNULL((SELECT STRING_AGG(ci_case_desc.case_desc_line, '')
+		ISNULL((SELECT TRIM(STRING_AGG(TRIM(REPLACE(REPLACE(REPLACE(ci_case_desc.case_desc_line,CHAR(10),' '),CHAR(13),' '),CHAR(9),' ')), ''))
 			FROM ci_case_desc
 			WHERE  ci_case_desc.case_no = snap.CaseNo
 			),'No Case Description Found')
