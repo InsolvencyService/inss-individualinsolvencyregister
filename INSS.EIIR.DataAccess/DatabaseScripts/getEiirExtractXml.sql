@@ -277,14 +277,14 @@ CREATE TABLE #Temp
     END AS individualGender,
         
     ISNULL(NULLIF(CONVERT(CHAR(30), individual.date_of_birth, 103), ''), 'No Date of Birth Found') AS individualDOB, 
+
 	CASE 
 	  WHEN individual.job_title IS NULL OR individual.job_title = ''
 		  THEN 'No Occupation Found'
 	  WHEN CHARINDEX('-', individual.job_title, 1) > 1
-		  THEN (SELECT  STRING_AGG(job_title , ' ') job from (select trim(value) job_title FROM STRING_SPLIT(individual.job_title, '-')  ORDER BY (SELECT NULL) OFFSET 1 ROWS ) tbl)
+		  THEN (SELECT  STRING_AGG(job_title , '-') job from (select trim(value) job_title FROM STRING_SPLIT(individual.job_title, '-')  ORDER BY (SELECT NULL) OFFSET 1 ROWS ) tbl)
 	  ELSE
 		  individual.job_title
-
 	END AS individualOccupation,
 
     CASE WHEN wflag = 'Y' 
@@ -407,10 +407,11 @@ CREATE TABLE #Temp
     inscase.case_name AS caseName, 
 
 	CASE
+		--APP-4951 following string aggregation on courtname appears unnecessary, DISTINCT required on court name as current duplicate records in ci_court where court='ADJ'
 		WHEN insolvency_type = 'I' OR insolvency_type = 'B'
-			THEN (SELECT STRING_AGG( ISNULL(court_name, ' '), ', ' )  FROM ci_court WHERE court = inscase.court)
+			THEN (SELECT STRING_AGG( ISNULL(tbl.court_name, ' '), ', ' )  FROM (SELECT DISTINCT court_name FROM ci_court WHERE court = inscase.court) tbl)
 		WHEN insolvency_type = 'D' AND cp.hasBro = 'Y'
-			THEN (SELECT STRING_AGG( ISNULL(court_name, ' '), ', ' )  FROM ci_court WHERE court = inscase.court)
+			THEN (SELECT STRING_AGG( ISNULL(tbl.court_name, ' '), ', ' )  FROM (SELECT DISTINCT court_name FROM ci_court WHERE court = inscase.court) tbl)
 		ELSE '(Court does not apply to DRO)'
 	END AS courtName,
 
