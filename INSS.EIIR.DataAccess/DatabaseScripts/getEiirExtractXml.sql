@@ -674,8 +674,8 @@ SET @resultXML = (SELECT
         TRIM(individualDOB) AS DateofBirth,
         REPLACE(TRIM(individualAddress), ' ,', '') AS LastKnownAddress,
 		CASE 
-			WHEN TRIM(individualPostcode) IS NULL THEN '@@@@@@@@@@'
-			WHEN TRIM(individualPostcode) = '' THEN '@@@@@@@@@@'
+			WHEN TRIM(individualPostcode) IS NULL THEN 'No Last Known PostCode Found'
+			WHEN TRIM(individualPostcode) = '' THEN 'No Last Known PostCode Found'
 			ELSE TRIM(individualPostcode)
 		END AS LastKnownPostCode,
         individualAlias AS OtherNames
@@ -792,7 +792,7 @@ SET @resultXML = (SELECT
 
 	SET @outputWrapper = (SELECT @resultExtractXML, @resultDisclaimerXML, @resultXML FOR XML PATH ('ReportDetails'), TYPE, ELEMENTS)
 
-	SELECT REPLACE(REPLACE(((SELECT '<?xml version=''1.0'' encoding=''utf-8''?>') + CAST(@outputWrapper as varchar(MAX))), '@@@@@@@@@@',''),'"','&qout;')  AS 'Result'
+	SELECT REPLACE(REPLACE(((SELECT '<?xml version=''1.0'' encoding=''utf-8''?>') + CAST(@outputWrapper as varchar(MAX))), '@@@@@@@@@@',''),'"','&quot;')  AS 'Result'
 
 If(OBJECT_ID('tempdb..#Temp') Is Not Null)
 Begin
