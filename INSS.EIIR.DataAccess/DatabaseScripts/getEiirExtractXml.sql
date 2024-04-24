@@ -675,8 +675,8 @@ SET @resultXML = (SELECT
         TRIM(individualDOB) AS DateofBirth,
         REPLACE(TRIM(individualAddress), ' ,', '') AS LastKnownAddress,
 		CASE 
-			WHEN TRIM(individualPostcode) IS NULL THEN '@@@@@@@@@@'
-			WHEN TRIM(individualPostcode) = '' THEN '@@@@@@@@@@'
+			WHEN TRIM(individualPostcode) IS NULL THEN 'No Last Known PostCode Found'
+			WHEN TRIM(individualPostcode) = '' THEN 'No Last Known PostCode Found'
 			ELSE TRIM(individualPostcode)
 		END AS LastKnownPostCode,
         individualAlias AS OtherNames
