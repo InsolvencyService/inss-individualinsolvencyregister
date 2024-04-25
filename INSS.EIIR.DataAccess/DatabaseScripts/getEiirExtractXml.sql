@@ -211,6 +211,98 @@ CONSTRAINT [PK_ci_case_desc] PRIMARY KEY CLUSTERED
 INSERT INTO #TempCaseDesc (case_no, case_desc_no, case_desc_line_no, case_desc_line) 
 SELECT c.case_no, c.case_desc_no, c.case_desc_line_no, CONVERT(varbinary(200),c.case_desc_line) as case_desc_line
 FROM ci_case_desc c
+WHERE c.case_no IN (SELECT DISTINCT CaseNo FROM eiirSnapshotTABLE)
+
+--Stores values for what unicode should be used
+CREATE TABLE #TempUniCodeLookUp
+(
+	chr CHAR(1) COLLATE Latin1_General_CS_AS NOT NULL PRIMARY KEY,
+	newChr NCHAR(1) COLLATE Latin1_General_100_CI_AI_SC_UTF8
+)
+
+--Unicode Lookup values for Windows-1252 between 0x80 (128) and 0x9F (159)
+INSERT INTO #TempUnicodeLookUp (chr, newChr) VALUES
+	(CHAR(128), NCHAR(8364)),
+	(CHAR(130), NCHAR(8218)),
+	(CHAR(131), NCHAR(402)),
+	(CHAR(132), NCHAR(8222)),
+	(CHAR(133), NCHAR(8230)),
+	(CHAR(134), NCHAR(8224)),
+	(CHAR(135), NCHAR(8225)),
+	(CHAR(136), NCHAR(710)),
+	(CHAR(137), NCHAR(8240)),
+	(CHAR(138), NCHAR(352)),
+	(CHAR(139), NCHAR(8249)),
+	(CHAR(140), NCHAR(338)),
+	(CHAR(142), NCHAR(381)),
+	(CHAR(145), NCHAR(8216)),
+	(CHAR(146), NCHAR(8217)),
+	(CHAR(147), NCHAR(8220)),
+	(CHAR(148), NCHAR(8221)),
+	(CHAR(149), NCHAR(8226)),
+	(CHAR(150), NCHAR(8211)),
+	(CHAR(151), NCHAR(8212)),
+	(CHAR(152), NCHAR(732)),
+	(CHAR(153), NCHAR(8482)),
+	(CHAR(154), NCHAR(353)),
+	(CHAR(155), NCHAR(8250)),
+	(CHAR(156), NCHAR(339)),
+	(CHAR(158), NCHAR(382)),
+	(CHAR(159), NCHAR(376));
+
+
+--Use cursor to go over differences and replace any ? characters 
+DECLARE @case_no INT,@case_desc_no INT, @case_desc_line_no INT,
+    @trg_case_desc_line VARCHAR(200), @src_case_desc_line VARCHAR(100);
+
+DECLARE diff_cursor CURSOR FOR
+SELECT t.case_no, t.case_desc_no, t.case_desc_line_no, CAST(t.case_desc_line as VARCHAR(200)) COLLATE Latin1_General_CI_AS, c.case_desc_line
+FROM ci_case_desc c 
+INNER JOIN #TempCaseDesc t ON c.case_no = t.case_no AND c.case_desc_no = t.case_desc_no AND c.case_desc_line_no = t.case_desc_line_no
+WHERE CAST(t.case_desc_line as VARCHAR(200)) COLLATE Latin1_General_CI_AS != c.case_desc_line
+
+OPEN diff_cursor
+
+FETCH NEXT FROM diff_cursor
+INTO @case_no, @case_desc_no, @case_desc_line_no, @trg_case_desc_line, @src_case_desc_line
+
+WHILE @@FETCH_STATUS = 0
+BEGIN
+	--Find any bad "?" characters in the converted text, working backwards from end of string, replace with corect unicode char
+	DECLARE @Idx INT = 0;
+	DECLARE @EndIdx INT = 0;
+	DECLARE @StrLen INT = LEN(@trg_case_desc_line);
+	DECLARE @ReverseStr VARCHAR(200) = REVERSE(@trg_case_desc_line);
+	DECLARE @SrcChr CHAR(1);
+	DECLARE @NewChr CHAR(1); 
+
+	SET @EndIdx = CHARINDEX(CHAR(63), @ReverseStr, @EndIdx)
+
+	WHILE @EndIdx != 0
+	BEGIN 
+		SET @Idx = @StrLen - @EndIdx + 1;
+
+		SELECT @SrcChr = SUBSTRING(@src_case_desc_line, @Idx, 1);
+
+		IF @SrcChr != CHAR(63) 
+		BEGIN
+			UPDATE #TempCaseDesc SET case_desc_line = STUFF(t.case_desc_line, @Idx, 1, c.newChr)
+				FROM #TempCaseDesc t
+				JOIN #TempUniCodeLookUp c ON c.chr = @SrcChr
+			WHERE t.case_no = @case_no AND t.case_desc_no = @case_desc_no AND t.case_desc_line_no = @case_desc_line_no;
+		END
+
+		SET @EndIdx = CHARINDEX(CHAR(63), @ReverseStr, @EndIdx + 1)
+	END 
+
+    FETCH NEXT FROM diff_cursor
+    INTO @case_no, @case_desc_no, @case_desc_line_no, @trg_case_desc_line, @src_case_desc_line
+END
+CLOSE diff_cursor;
+DEALLOCATE diff_cursor;
+
+
+
 
 CREATE TABLE #Temp
 (
@@ -562,7 +654,7 @@ CREATE TABLE #Temp
 		WHEN address_withheld_flag = 'Y' THEN '(Case Description withheld as Individual Address has been withheld)'
         WHEN insolvency_type = 'I' THEN '(Case Description does not apply to IVA)'
         ELSE 
-		ISNULL((SELECT (STRING_AGG(TRIM(REPLACE(REPLACE(REPLACE(REPLACE(#TempCaseDesc.case_desc_line,CHAR(10),' '),CHAR(13),' '),CHAR(9),' '),CHAR(92),'&apos;')), ''))			
+		ISNULL((SELECT (STRING_AGG(TRIM(REPLACE(REPLACE(REPLACE(#TempCaseDesc.case_desc_line,CHAR(10),' '),CHAR(13),' '),CHAR(9),' ')), ''))			
 			FROM #TempCaseDesc
 			WHERE #TempCaseDesc.case_no = snap.CaseNo
 			),'No Case Description Found')
@@ -862,5 +954,9 @@ End
 If(OBJECT_ID('tempdb..#TempCaseDesc') Is Not Null)
 Begin
 	DROP TABLE #TempCaseDesc
+End
+If(OBJECT_ID('tempdb..#TempUnicodeLookUp') Is Not Null)
+Begin
+	DROP TABLE #TempUnicodeLookUp
 End
 END
