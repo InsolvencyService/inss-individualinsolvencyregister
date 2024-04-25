@@ -190,7 +190,27 @@ SELECT c.CaseNo, c.IndivNo,
 	(ISNULL((SELECT MoratoriumPeriodEndingDate from #droDetails where CaseID = c.CaseNo and CIDebtorSubjectNo = c.IndivNo), NULL)) as MoratoriumPeriodEndingDate,
 	(ISNULL((SELECT RevokedDate from #droDetails where CaseID = c.CaseNo and CIDebtorSubjectNo = c.IndivNo), NULL)) as RevokedDate
 
-FROM #Cases c 
+FROM #Cases c
+
+--Table to take care of UTF8 codes in case description fields 
+CREATE TABLE #TempCaseDesc 
+(
+	[case_no] [int] NOT NULL,
+	[case_desc_no] [int] NOT NULL,
+	[case_desc_line_no] [int] NOT NULL,
+	[case_desc_line] [varchar](100) COLLATE Latin1_General_100_CI_AI_SC_UTF8 NOT NULL ,
+CONSTRAINT [PK_ci_case_desc] PRIMARY KEY CLUSTERED 
+(
+	[case_no] ASC,
+	[case_desc_no] ASC,
+	[case_desc_line_no] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+
+
+INSERT INTO #TempCaseDesc (case_no, case_desc_no, case_desc_line_no, case_desc_line) 
+SELECT c.case_no, c.case_desc_no, c.case_desc_line_no, CONVERT(varbinary(200),c.case_desc_line) as case_desc_line
+FROM ci_case_desc c
 
 CREATE TABLE #Temp
 (
@@ -237,7 +257,7 @@ CREATE TABLE #Temp
     caseStatus varchar(255),
 	annulDate varchar(255),
 	annulReason varchar(255),
-    caseDescription nvarchar(max),
+    caseDescription varchar(max) COLLATE Latin1_General_100_CI_AI_SC_UTF8,
     tradingNames xml,
     insolvencyPractitionerName varchar(255),
     insolvencyPractitionerFirmName varchar(255),
@@ -542,9 +562,9 @@ CREATE TABLE #Temp
 		WHEN address_withheld_flag = 'Y' THEN '(Case Description withheld as Individual Address has been withheld)'
         WHEN insolvency_type = 'I' THEN '(Case Description does not apply to IVA)'
         ELSE 
-		ISNULL((SELECT TRIM(STRING_AGG(TRIM(REPLACE(REPLACE(REPLACE(ci_case_desc.case_desc_line,CHAR(10),' '),CHAR(13),' '),CHAR(9),' ')), ''))
-			FROM ci_case_desc
-			WHERE  ci_case_desc.case_no = snap.CaseNo
+		ISNULL((SELECT (STRING_AGG(TRIM(REPLACE(REPLACE(REPLACE(REPLACE(#TempCaseDesc.case_desc_line,CHAR(10),' '),CHAR(13),' '),CHAR(9),' '),CHAR(92),'&apos;')), ''))			
+			FROM #TempCaseDesc
+			WHERE #TempCaseDesc.case_no = snap.CaseNo
 			),'No Case Description Found')
     END AS caseDescription,
 
@@ -793,7 +813,7 @@ SET @resultXML = (SELECT
 
 	SET @outputWrapper = (SELECT @resultExtractXML, @resultDisclaimerXML, @resultXML FOR XML PATH ('ReportDetails'), TYPE, ELEMENTS)
 
-	SELECT REPLACE(REPLACE(((SELECT '<?xml version=''1.0'' encoding=''utf-8''?>') + CAST(@outputWrapper as varchar(MAX))), '@@@@@@@@@@',''),'"','&quot;')  AS 'Result'
+	SELECT REPLACE(REPLACE(((SELECT '<?xml version=''1.0'' encoding=''utf-8''?>') + CAST(@outputWrapper as nvarchar(MAX))), '@@@@@@@@@@',''),'"','&quot;') AS 'Result'
 
 If(OBJECT_ID('tempdb..#Temp') Is Not Null)
 Begin
@@ -838,5 +858,9 @@ End
 If(OBJECT_ID('tempdb..#StatusCodes') Is Not Null)
 Begin
 	DROP TABLE #StatusCodes
+End
+If(OBJECT_ID('tempdb..#TempCaseDesc') Is Not Null)
+Begin
+	DROP TABLE #TempCaseDesc
 End
 END
