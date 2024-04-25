@@ -671,7 +671,12 @@ CREATE TABLE #Temp
 			ELSE 
 				CASE 
 					WHEN REPLACE(TRIM(CONCAT(ci_trade.address_line_1,  ', ', ci_trade.address_line_2,  ', ', ci_trade.address_line_3,  ', ', ci_trade.address_line_4,  ', ', ci_trade.address_line_5, ', ', ci_trade.postcode)), ' ,', '') = ',' THEN '@@@@@@@@@@'
-					ELSE REPLACE(TRIM(CONCAT(ci_trade.address_line_1,  ', ', ci_trade.address_line_2,  ', ', ci_trade.address_line_3,  ', ', ci_trade.address_line_4,  ', ', ci_trade.address_line_5, ', ', ci_trade.postcode)), ' ,', '')
+					ELSE 
+						CASE
+							WHEN REPLACE(TRIM(CONCAT(ci_trade.address_line_1,  ', ', ci_trade.address_line_2,  ', ', ci_trade.address_line_3,  ', ', ci_trade.address_line_4,  ', ', ci_trade.address_line_5, ', ', ci_trade.postcode)), ' ,', '') LIKE '%,'
+								THEN LEFT(REPLACE(TRIM(CONCAT(ci_trade.address_line_1,  ', ', ci_trade.address_line_2,  ', ', ci_trade.address_line_3,  ', ', ci_trade.address_line_4,  ', ', ci_trade.address_line_5, ', ', ci_trade.postcode)), ' ,', ''), LEN(REPLACE(TRIM(CONCAT(ci_trade.address_line_1,  ', ', ci_trade.address_line_2,  ', ', ci_trade.address_line_3,  ', ', ci_trade.address_line_4,  ', ', ci_trade.address_line_5, ', ', ci_trade.postcode)), ' ,', ''))-1)
+							ELSE REPLACE(TRIM(CONCAT(ci_trade.address_line_1,  ', ', ci_trade.address_line_2,  ', ', ci_trade.address_line_3,  ', ', ci_trade.address_line_4,  ', ', ci_trade.address_line_5, ', ', ci_trade.postcode)), ' ,', '')
+						END					
 				END
 			END AS TradingAddress
 
@@ -785,7 +790,7 @@ SET @resultXML = (SELECT
         individualSurname AS Surname,
 		individualOccupation AS Occupation,
         TRIM(individualDOB) AS DateofBirth,
-        REPLACE(TRIM(individualAddress), ' ,', '') AS LastKnownAddress,
+        TRIM(individualAddress) AS LastKnownAddress,
 		CASE 
 			WHEN TRIM(individualPostcode) IS NULL THEN 'No Last Known PostCode Found'
 			WHEN TRIM(individualPostcode) = '' THEN 'No Last Known PostCode Found'
