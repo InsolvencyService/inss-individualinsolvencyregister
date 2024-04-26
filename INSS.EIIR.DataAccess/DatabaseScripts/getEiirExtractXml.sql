@@ -207,9 +207,11 @@ CONSTRAINT [PK_ci_case_desc] PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 
-
+--This converts the case_desc_line into properly UTF8 encoded field from using binary from source
+--The magic CHAR(74) "J" - overcomes issue when last char in sourece is in unicode continutation code range of 0x80 -> 0x9F
+--See word document linked/attached to APP-4944, Reference 4944/6
 INSERT INTO #TempCaseDesc (case_no, case_desc_no, case_desc_line_no, case_desc_line) 
-SELECT c.case_no, c.case_desc_no, c.case_desc_line_no, CONVERT(varbinary(200),c.case_desc_line) as case_desc_line
+SELECT c.case_no, c.case_desc_no, c.case_desc_line_no, CONVERT(varbinary(200),c.case_desc_line + CHAR(74)) as case_desc_line
 FROM ci_case_desc c
 WHERE c.case_no IN (SELECT DISTINCT CaseNo FROM eiirSnapshotTABLE)
 
@@ -396,7 +398,8 @@ END
 CLOSE diff_cursor;
 DEALLOCATE diff_cursor;
 
-
+--Drop the magic "J" - needs to be left in until after the cursor as CAST to VARCHAR in cursor SELECT strips it out resulting in ? not being replaced
+UPDATE #TempCaseDesc SET case_desc_line = LEFT(case_desc_line, LEN(case_desc_line)-1)
 
 
 CREATE TABLE #Temp
