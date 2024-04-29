@@ -665,7 +665,7 @@ CREATE TABLE #Temp
 		
 		WHEN cp.BROPrintCaseDetails = 'Y' AND insolvency_type = 'D' AND DateofOrder IS NOT NULL AND cp.MoratoriumPeriodEndingDate IS NOT NULL
 			AND  DateDiff(day, DATEADD(month, 12, DateofOrder), cp.MoratoriumPeriodEndingDate) > 1 
-			THEN  TRIM(('Extended From ' + FORMAT((DATEADD(month, 12, DateofOrder))) + ' To ' + FORMAT(cp.MoratoriumPeriodEndingDate, 'dd MMMM yyyy')))		
+			THEN  TRIM(('Extended From ' + FORMAT(DATEADD(month, 12, DateofOrder), 'dd MMMM yyyy') + ' To ' + FORMAT(cp.MoratoriumPeriodEndingDate, 'dd MMMM yyyy')))		
 		
 		WHEN cp.BROPrintCaseDetails = 'Y' AND insolvency_type = 'I' AND ivaCase.date_of_failure IS NOT NULL 
 			THEN  TRIM((SELECT TRIM(SelectionValue) from #StatusCodes WHERE SelectionCode = 'F') + ' On ' + FORMAT(ivaCase.date_of_failure, 'dd MMMM yyyy'))
