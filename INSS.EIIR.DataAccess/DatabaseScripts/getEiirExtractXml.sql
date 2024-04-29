@@ -657,27 +657,27 @@ CREATE TABLE #Temp
     ISNULL(CONVERT(CHAR(10), inscase.insolvency_date, 103), '') AS insolvencyDate,
         	
 	CASE WHEN cp.BROPrintCaseDetails = 'Y' AND insolvency_type = 'D' AND cp.RevokedDate IS NULL AND cp.MoratoriumPeriodEndingDate > GETDATE()
-			THEN TRIM((select TRIM(SelectionValue) from #StatusCodes WHERE SelectionCode = 'DRO1') + ' will end on ' + CONVERT(CHAR(10), cp.MoratoriumPeriodEndingDate, 103))
+			THEN TRIM((select TRIM(SelectionValue) from #StatusCodes WHERE SelectionCode = 'DRO1') + ' will end on ' + FORMAT(cp.MoratoriumPeriodEndingDate, 'dd MMMM yyyy'))
 		WHEN cp.BROPrintCaseDetails = 'Y' AND insolvency_type = 'D' AND cp.RevokedDate IS NULL AND cp.MoratoriumPeriodEndingDate <= GETDATE()
-			THEN TRIM((select TRIM(SelectionValue) from #StatusCodes WHERE SelectionCode = 'DRO1') + ' ended on ' + CONVERT(CHAR(10), cp.MoratoriumPeriodEndingDate, 103))
+			THEN TRIM((select TRIM(SelectionValue) from #StatusCodes WHERE SelectionCode = 'DRO1') + ' ended on ' + FORMAT(cp.MoratoriumPeriodEndingDate, 'dd MMMM yyyy'))
 		WHEN cp.BROPrintCaseDetails = 'Y' AND insolvency_type = 'D' AND cp.RevokedDate IS NOT NULL 
-			THEN TRIM((select TRIM(SelectionValue) from #StatusCodes WHERE SelectionCode = 'DRO2') + ' on ' + CONVERT(CHAR(10), cp.MoratoriumPeriodEndingDate, 103))
+			THEN TRIM((select TRIM(SelectionValue) from #StatusCodes WHERE SelectionCode = 'DRO2') + ' on ' + FORMAT(cp.MoratoriumPeriodEndingDate, 'dd MMMM yyyy'))
 		
 		WHEN cp.BROPrintCaseDetails = 'Y' AND insolvency_type = 'D' AND DateofOrder IS NOT NULL AND cp.MoratoriumPeriodEndingDate IS NOT NULL
 			AND  DateDiff(day, DATEADD(month, 12, DateofOrder), cp.MoratoriumPeriodEndingDate) > 1 
-			THEN  TRIM(('Extended From ' + CONVERT(CHAR(10), (DATEADD(month, 12, DateofOrder))) + ' To ' + CONVERT(CHAR(10), cp.MoratoriumPeriodEndingDate, 103)))		
+			THEN  TRIM(('Extended From ' + FORMAT((DATEADD(month, 12, DateofOrder))) + ' To ' + FORMAT(cp.MoratoriumPeriodEndingDate, 'dd MMMM yyyy')))		
 		
 		WHEN cp.BROPrintCaseDetails = 'Y' AND insolvency_type = 'I' AND ivaCase.date_of_failure IS NOT NULL 
-			THEN  TRIM((SELECT TRIM(SelectionValue) from #StatusCodes WHERE SelectionCode = 'F') + ' On ' + CONVERT(CHAR(10), ivaCase.date_of_failure, 103))
+			THEN  TRIM((SELECT TRIM(SelectionValue) from #StatusCodes WHERE SelectionCode = 'F') + ' On ' + FORMAT(ivaCase.date_of_failure, 'dd MMMM yyyy'))
 		WHEN cp.BROPrintCaseDetails = 'Y' AND insolvency_type = 'I' AND ivaCase.date_of_completion IS NOT NULL 
-			THEN  TRIM((SELECT TRIM(SelectionValue) from #StatusCodes WHERE SelectionCode = 'C') + ' On ' + CONVERT(CHAR(10), ivaCase.date_of_completion, 103))
+			THEN  TRIM((SELECT TRIM(SelectionValue) from #StatusCodes WHERE SelectionCode = 'C') + ' On ' + FORMAT(ivaCase.date_of_completion, 'dd MMMM yyyy'))
 		WHEN cp.BROPrintCaseDetails = 'Y' AND insolvency_type = 'I' AND ivaCase. date_of_revocation IS NOT NULL 
-			THEN  TRIM((SELECT TRIM(SelectionValue) from #StatusCodes WHERE SelectionCode = 'R') + ' On ' + CONVERT(CHAR(10), ivaCase.date_of_revocation, 103))
+			THEN  TRIM((SELECT TRIM(SelectionValue) from #StatusCodes WHERE SelectionCode = 'R') + ' On ' + FORMAT(ivaCase.date_of_revocation, 'dd MMMM yyyy'))
 
 		WHEN cp.BROPrintCaseDetails = 'Y' AND insolvency_type = 'I' AND ivaCase.date_of_suspension IS NOT NULL AND ivaCase.date_suspension_lifted IS NULL
-			THEN  TRIM((SELECT TRIM(SelectionValue) from #StatusCodes WHERE SelectionCode = 'O5') + ' On ' + CONVERT(CHAR(10), ivaCase.date_of_suspension, 103))
+			THEN  TRIM((SELECT TRIM(SelectionValue) from #StatusCodes WHERE SelectionCode = 'O5') + ' On ' + FORMAT(ivaCase.date_of_suspension, 'dd MMMM yyyy'))
 		WHEN cp.BROPrintCaseDetails = 'Y' AND insolvency_type = 'I' AND ivaCase.date_of_suspension IS NOT NULL AND ivaCase.date_suspension_lifted IS NOT NULL
-			THEN  TRIM((SELECT TRIM(SelectionValue) from #StatusCodes WHERE SelectionCode = 'O6') + ' On ' + CONVERT(CHAR(10), ivaCase.date_suspension_lifted, 103))
+			THEN  TRIM((SELECT TRIM(SelectionValue) from #StatusCodes WHERE SelectionCode = 'O6') + ' On ' + FORMAT(ivaCase.date_suspension_lifted, 'dd MMMM yyyy'))
 		WHEN cp.BROPrintCaseDetails = 'Y' AND insolvency_type = 'I'
 			THEN TRIM((select TRIM(SelectionValue) from #StatusCodes WHERE SelectionCode = 'O1'))
 
@@ -695,30 +695,30 @@ CREATE TABLE #Temp
 			THEN TRIM('Discharge Fixed Length Suspension (from ' + CONVERT(CHAR(10), cp.suspensionDate, 103) + ' to ' +  CONVERT(CHAR(10), cp.suspensionEndDate, 103) + ')')
 
 		WHEN (cp.BROPrintCaseDetails = 'Y' AND insolvency_type = 'B' AND AnnulmentTypeCASE = '' AND cp.dischargeDate <= GETDATE())
-			THEN TRIM((select TRIM(SelectionValue) from #StatusCodes WHERE SelectionCode = 'D') + ' On ' + CONVERT(CHAR(10), cp.dischargeDate, 103))
+			THEN TRIM((select TRIM(SelectionValue) from #StatusCodes WHERE SelectionCode = 'D') + ' On ' + FORMAT(cp.dischargeDate, 'dd MMMM yyyy'))
 		WHEN (cp.BROPrintCaseDetails = 'Y' AND insolvency_type = 'B' AND AnnulmentTypeCASE = '' AND cp.dischargeDate > GETDATE())
-			THEN TRIM((select TRIM(SelectionValue) from #StatusCodes WHERE SelectionCode = 'O2') + ' will be ' + CONVERT(CHAR(10), cp.dischargeDate, 103))
+			THEN TRIM((select TRIM(SelectionValue) from #StatusCodes WHERE SelectionCode = 'O2') + ' will be ' + FORMAT(cp.dischargeDate, 'dd MMMM yyyy'))
 		WHEN (cp.BROPrintCaseDetails = 'Y' AND insolvency_type = 'B' AND cp.dischargeDate IS NULL AND cp.dischargeType = 'A')
 			THEN TRIM((select TRIM(SelectionValue) from #StatusCodes WHERE SelectionCode = 'O3')) 
 		WHEN (cp.BROPrintCaseDetails = 'Y' AND insolvency_type = 'B' AND cp.dischargeDate IS NULL AND cp.dischargeType = 'G')
 			THEN TRIM((select TRIM(SelectionValue) from #StatusCodes WHERE SelectionCode = 'O4')) 
 
 		WHEN (cp.BROPrintCaseDetails = 'Y' AND insolvency_type = 'B' AND AnnulmentTypeCASE = 'P')
-			THEN TRIM((select TRIM(SelectionValue) from #StatusCodes WHERE SelectionCode = 'A1') + ' On ' + CONVERT(CHAR(10), AnnulmentDateCASE, 103))
+			THEN TRIM((select TRIM(SelectionValue) from #StatusCodes WHERE SelectionCode = 'A1') + ' On ' + FORMAT(AnnulmentDateCASE, 'dd MMMM yyyy'))
 		WHEN (cp.BROPrintCaseDetails = 'Y' AND insolvency_type = 'B' AND AnnulmentTypeCASE = 'V')
-			THEN TRIM((select TRIM(SelectionValue) from #StatusCodes WHERE SelectionCode = 'A2') + ' On ' + CONVERT(CHAR(10), AnnulmentDateCASE, 103))
+			THEN TRIM((select TRIM(SelectionValue) from #StatusCodes WHERE SelectionCode = 'A2') + ' On ' + FORMAT(AnnulmentDateCASE, 'dd MMMM yyyy'))
 		WHEN (cp.BROPrintCaseDetails = 'Y' AND insolvency_type = 'B' AND AnnulmentTypeCASE = 'R')
-			THEN TRIM((select TRIM(SelectionValue) from #StatusCodes WHERE SelectionCode = 'A3') + ' On ' + CONVERT(CHAR(10), AnnulmentDateCASE, 103))
+			THEN TRIM((select TRIM(SelectionValue) from #StatusCodes WHERE SelectionCode = 'A3') + ' On ' + FORMAT(AnnulmentDateCASE, 'dd MMMM yyyy'))
 		WHEN (cp.BROPrintCaseDetails = 'Y' AND insolvency_type = 'B' AND AnnulmentTypeCASE = 'A')
-			THEN TRIM((select TRIM(SelectionValue) from #StatusCodes WHERE SelectionCode = 'A4') + ' On ' + + CONVERT(CHAR(10), AnnulmentDateCASE, 103))
+			THEN TRIM((select TRIM(SelectionValue) from #StatusCodes WHERE SelectionCode = 'A4') + ' On ' + + FORMAT(AnnulmentDateCASE, 'dd MMMM yyyy'))
 		WHEN (cp.BROPrintCaseDetails = 'Y' AND insolvency_type = 'B' AND AnnulmentTypePARTNER = 'P')
-			THEN TRIM((select TRIM(SelectionValue) from #StatusCodes WHERE SelectionCode = 'A1') + ' On ' + CONVERT(CHAR(10), AnnulmentDatePARTNER, 103))
+			THEN TRIM((select TRIM(SelectionValue) from #StatusCodes WHERE SelectionCode = 'A1') + ' On ' + FORMAT(AnnulmentDatePARTNER, 'dd MMMM yyyy'))
 		WHEN (cp.BROPrintCaseDetails = 'Y' AND insolvency_type = 'B' AND AnnulmentTypeCASE = 'V')
-			THEN TRIM((select TRIM(SelectionValue) from #StatusCodes WHERE SelectionCode = 'A2') + ' On ' + CONVERT(CHAR(10), AnnulmentDatePARTNER, 103))
+			THEN TRIM((select TRIM(SelectionValue) from #StatusCodes WHERE SelectionCode = 'A2') + ' On ' + FORMAT(AnnulmentDatePARTNER, 'dd MMMM yyyy'))
 		WHEN (cp.BROPrintCaseDetails = 'Y' AND insolvency_type = 'B' AND AnnulmentTypeCASE = 'R')
-			THEN TRIM((select TRIM(SelectionValue) from #StatusCodes WHERE SelectionCode = 'A3') + ' On ' + CONVERT(CHAR(10), AnnulmentDatePARTNER, 103))
+			THEN TRIM((select TRIM(SelectionValue) from #StatusCodes WHERE SelectionCode = 'A3') + ' On ' + FORMAT(AnnulmentDatePARTNER, 'dd MMMM yyyy'))
 		WHEN (cp.BROPrintCaseDetails = 'Y' AND insolvency_type = 'B' AND AnnulmentTypeCASE = 'A')
-			THEN TRIM((select TRIM(SelectionValue) from #StatusCodes WHERE SelectionCode = 'A4') + ' On ' + CONVERT(CHAR(10), AnnulmentDatePARTNER, 103))
+			THEN TRIM((select TRIM(SelectionValue) from #StatusCodes WHERE SelectionCode = 'A4') + ' On ' + FORMAT(AnnulmentDatePARTNER, 'dd MMMM yyyy'))
 	END AS caseStatus,
 
 	CASE WHEN (cp.BROPrintCaseDetails = 'Y' AND insolvency_type = 'B' AND AnnulmentTypeCASE <> '')
