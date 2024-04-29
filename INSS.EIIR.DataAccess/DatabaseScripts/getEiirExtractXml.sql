@@ -656,16 +656,14 @@ CREATE TABLE #Temp
     ivaCase.date_of_notification AS notificationDate,
     ISNULL(CONVERT(CHAR(10), inscase.insolvency_date, 103), '') AS insolvencyDate,
         	
-	CASE WHEN cp.BROPrintCaseDetails = 'Y' AND insolvency_type = 'D' AND cp.RevokedDate IS NULL AND cp.MoratoriumPeriodEndingDate > GETDATE()
-			THEN TRIM((select TRIM(SelectionValue) from #StatusCodes WHERE SelectionCode = 'DRO1') + ' will end on ' + FORMAT(cp.MoratoriumPeriodEndingDate, 'dd MMMM yyyy'))
+	CASE
+		--DroEF.[Text] => DRO ExtendedFrom is additional text affecting approx 10 out of 40000 records where the MoratoriumPeriodEndingDate has been extend out past DateOfOrder + 12 months
+		WHEN cp.BROPrintCaseDetails = 'Y' AND insolvency_type = 'D' AND cp.RevokedDate IS NULL AND cp.MoratoriumPeriodEndingDate > GETDATE()
+			THEN TRIM((select TRIM(SelectionValue) from #StatusCodes WHERE SelectionCode = 'DRO1') + ' will end on ' + FORMAT(cp.MoratoriumPeriodEndingDate, 'dd MMMM yyyy') + ' ' + ISNULL(DroEF.[Text], ''))
 		WHEN cp.BROPrintCaseDetails = 'Y' AND insolvency_type = 'D' AND cp.RevokedDate IS NULL AND cp.MoratoriumPeriodEndingDate <= GETDATE()
-			THEN TRIM((select TRIM(SelectionValue) from #StatusCodes WHERE SelectionCode = 'DRO1') + ' ended on ' + FORMAT(cp.MoratoriumPeriodEndingDate, 'dd MMMM yyyy'))
+			THEN TRIM((select TRIM(SelectionValue) from #StatusCodes WHERE SelectionCode = 'DRO1') + ' ended on ' + FORMAT(cp.MoratoriumPeriodEndingDate, 'dd MMMM yyyy') + ' ' + ISNULL(DroEF.[Text], ''))
 		WHEN cp.BROPrintCaseDetails = 'Y' AND insolvency_type = 'D' AND cp.RevokedDate IS NOT NULL 
-			THEN TRIM((select TRIM(SelectionValue) from #StatusCodes WHERE SelectionCode = 'DRO2') + ' on ' + FORMAT(cp.RevokedDate, 'dd MMMM yyyy'))
-		
-		WHEN cp.BROPrintCaseDetails = 'Y' AND insolvency_type = 'D' AND DateofOrder IS NOT NULL AND cp.MoratoriumPeriodEndingDate IS NOT NULL
-			AND  DateDiff(day, DATEADD(month, 12, DateofOrder), cp.MoratoriumPeriodEndingDate) > 1 
-			THEN  TRIM(('Extended From ' + FORMAT(DATEADD(month, 12, DateofOrder), 'dd MMMM yyyy') + ' To ' + FORMAT(cp.MoratoriumPeriodEndingDate, 'dd MMMM yyyy')))		
+			THEN TRIM((select TRIM(SelectionValue) from #StatusCodes WHERE SelectionCode = 'DRO2') + ' on ' + FORMAT(cp.RevokedDate, 'dd MMMM yyyy') + ' ' + ISNULL(DroEF.[Text], ''))
 		
 		WHEN cp.BROPrintCaseDetails = 'Y' AND insolvency_type = 'I' AND ivaCase.date_of_failure IS NOT NULL 
 			THEN  TRIM((SELECT TRIM(SelectionValue) from #StatusCodes WHERE SelectionCode = 'F') + ' On ' + FORMAT(ivaCase.date_of_failure, 'dd MMMM yyyy'))
@@ -859,6 +857,18 @@ CREATE TABLE #Temp
 	LEFT JOIN ci_ip cip ON insolvencyAppointment.ip_no = cip.ip_no
 	LEFT JOIN ci_ip_address cipa ON insolvencyAppointment.ip_no = cipa.ip_no
     LEFT JOIN ci_iva_case ivaCase ON ivaCase.case_no = inscase.case_no
+	--Extended From for DRO CaseStatus applied as OUT APPLY due to complexity CASE statement affects in order of 10 records out of 40000
+	OUTER APPLY (Select '(' + TRIM(('Extended From ' + CONVERT(CHAR(10), DATEADD(month, 12, s1.DateOrder)) + ' To ' + FORMAT(d1.MoratoriumPeriodEndingDate, 'dd MMMM yyyy'))) + ')' as [Text]
+						FROM
+							#Cases s1
+							LEFT JOIN #droDetails d1 ON s1.CaseNo = d1.CaseID AND s1.IndivNo = d1.CIDebtorSubjectNo
+						WHERE
+										s1.CaseNo = cases.CaseNo
+										AND s1.IndivNo = cases.IndivNo
+										AND s1.InsolvencyType = 'D'
+										AND s1.DateOrder IS NOT NULL 
+										AND d1.MoratoriumPeriodEndingDate IS NOT NULL
+										AND  DateDiff(day, DATEADD(month, 12, s1.DateOrder), d1.MoratoriumPeriodEndingDate) > 1) as DroEF
 
 DECLARE @resultExtractXML xml
 DECLARE @resultDisclaimerXML xml
