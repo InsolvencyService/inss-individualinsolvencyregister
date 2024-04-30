@@ -858,7 +858,7 @@ CREATE TABLE #Temp
 	LEFT JOIN ci_ip_address cipa ON insolvencyAppointment.ip_no = cipa.ip_no
     LEFT JOIN ci_iva_case ivaCase ON ivaCase.case_no = inscase.case_no
 	--Extended From for DRO CaseStatus applied as OUT APPLY due to complexity CASE statement affects in order of 10 records out of 40000
-	OUTER APPLY (Select '(' + TRIM(('Extended From ' + CONVERT(CHAR(10), DATEADD(month, 12, s1.DateOrder)) + ' To ' + FORMAT(d1.MoratoriumPeriodEndingDate, 'dd MMMM yyyy'))) + ')' as [Text]
+	OUTER APPLY (Select '(' + TRIM(('Extended From ' + FORMAT(DATEADD(month, 12, s1.DateOrder), 'dd/MM/yyyy HH:mm:ss') + ' To ' + CONVERT(CHAR(10),d1.MoratoriumPeriodEndingDate, 103))) + ')' as [Text]
 						FROM
 							#Cases s1
 							LEFT JOIN #droDetails d1 ON s1.CaseNo = d1.CaseID AND s1.IndivNo = d1.CIDebtorSubjectNo
