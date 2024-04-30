@@ -421,7 +421,7 @@ CREATE TABLE #Temp
     individualPostcode varchar(255),
     individualAddressWithheld varchar(255),
     individualAlias varchar(255),
-	deceasedDate varchar(255),
+	deceasedDate datetime,
 	restrictionsType varchar(255),
 	restrictionsStartDate varchar(255),
 	restrictionsEndDate varchar(255),
@@ -517,7 +517,7 @@ CREATE TABLE #Temp
 		(SELECT STRING_AGG(UPPER(ci_other_name.surname) + ' ' + (UPPER(ci_other_name.forenames)), ', ') FROM ci_other_name  WHERE ci_other_name.case_no = snap.CaseNo AND ci_other_name.indiv_no = snap.IndivNo)
 	END) AS individualAlias,    
 	
-	ISNULL(CONVERT(CHAR(10), snap.Deceased, 103), '') AS deceasedDate,
+	snap.Deceased AS deceasedDate,
 
 	-- Bankruptcy Details
 	CASE WHEN cp.hasBro = 'Y' AND insolvency_type = 'B' 
@@ -898,6 +898,7 @@ SET @resultXML = (SELECT
         individualSurname AS Surname,
 		individualOccupation AS Occupation,
         TRIM(individualDOB) AS DateofBirth,
+		CONVERT(VARCHAR(10), deceasedDate, 103) AS DeceasedDate,
         TRIM(individualAddress) AS LastKnownAddress,
 		CASE 
 			WHEN TRIM(individualPostcode) IS NULL THEN 'No Last Known PostCode Found'
