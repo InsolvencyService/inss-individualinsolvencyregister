@@ -979,7 +979,6 @@ SET @resultXML = (SELECT
 					END As CourtNumber,
 					caseYear AS CaseYear,
 					insolvencyDate AS StartDate,
-					'Please note that this person is deceased (Deceased Date ' + CONVERT(VARCHAR(10), deceasedDate, 103) + ')' AS SpecialNote,
 					TRIM(caseStatus) AS Status,
 					caseDescription AS CaseDescription, 
 					tradingNames AS TradingNames
