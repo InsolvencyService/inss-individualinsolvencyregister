@@ -500,7 +500,14 @@ CREATE TABLE #Temp
     CASE WHEN wflag = 'Y' 
         THEN '(Sorry - this Address has been withheld)'
         ELSE  
-            CONCAT_WS(', ',TRIM (NULLIF(individual.address_line_1, '')),TRIM (NULLIF(individual.address_line_2, '')),TRIM (NULLIF(individual.address_line_3, '')),TRIM (NULLIF(individual.address_line_4, '')),TRIM (NULLIF(individual.address_line_5, '')))             
+            (SELECT CASE 
+			   WHEN REPLACE(TRIM(CONCAT(individual.address_line_1,  ', ', individual.address_line_2,  ', ', individual.address_line_3,  ', ', individual.address_line_4,  ', ', individual.address_line_5)), ' ,', '') LIKE '%,'
+			   THEN 
+					LEFT(REPLACE(TRIM(CONCAT(individual.address_line_1, ', ', individual.address_line_2, ', ', individual.address_line_3, ', ', individual.address_line_4, ', ', individual.address_line_5)), ' ,', ''),
+					LEN(REPLACE(TRIM(CONCAT(individual.address_line_1, ', ', individual.address_line_2, ', ', individual.address_line_3, ', ', individual.address_line_4, ', ', individual.address_line_5)), ' ,', ''))-1) 
+               ELSE 
+					REPLACE(TRIM(CONCAT(individual.address_line_1, ', ', individual.address_line_2, ', ', individual.address_line_3, ', ', individual.address_line_4, ', ', individual.address_line_5)), ' ,', '')
+           END)             
     END AS individualAddress,
 
 	CASE WHEN wflag = 'Y' 
@@ -899,7 +906,12 @@ SET @resultXML = (SELECT
 		individualOccupation AS Occupation,
         TRIM(individualDOB) AS DateofBirth,
 		CONVERT(VARCHAR(10), deceasedDate, 103) AS DeceasedDate,
-        TRIM(individualAddress) AS LastKnownAddress,
+		CASE 
+			WHEN TRIM(individualAddress) IS NULL THEN '@@@@@@@@@@'
+			WHEN TRIM(individualAddress) = '' THEN '@@@@@@@@@@'
+			ELSE TRIM(individualAddress)
+		END AS LastKnownAddress,
+
 		CASE 
 			WHEN TRIM(individualPostcode) IS NULL THEN 'No Last Known PostCode Found'
 			WHEN TRIM(individualPostcode) = '' THEN 'No Last Known PostCode Found'
