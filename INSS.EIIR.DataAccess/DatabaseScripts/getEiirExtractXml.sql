@@ -734,7 +734,6 @@ CREATE TABLE #Temp
 			THEN (select SelectionValue from #StatusCodes WHERE SelectionCode = 'A3') 
 		WHEN (cp.BROPrintCaseDetails = 'Y' AND insolvency_type = 'B' AND AnnulmentTypeCASE = 'A')
 			THEN (select SelectionValue from #StatusCodes WHERE SelectionCode = 'A4') 
-
 		WHEN (cp.BROPrintCaseDetails = 'Y' AND insolvency_type = 'B' AND AnnulmentTypePARTNER = 'P')
 			THEN (select SelectionValue from #StatusCodes WHERE SelectionCode = 'A1') 
 		WHEN (cp.BROPrintCaseDetails = 'Y' AND insolvency_type = 'B' AND AnnulmentTypePARTNER = 'V')
@@ -742,9 +741,9 @@ CREATE TABLE #Temp
 		WHEN (cp.BROPrintCaseDetails = 'Y' AND insolvency_type = 'B' AND AnnulmentTypePARTNER = 'R')
 			THEN (select SelectionValue from #StatusCodes WHERE SelectionCode = 'A3') 
 		WHEN (cp.BROPrintCaseDetails = 'Y' AND insolvency_type = 'B' AND AnnulmentTypePARTNER = 'A')
-			THEN (select SelectionValue from #StatusCodes WHERE SelectionCode = 'A4') 
+			THEN (select SelectionValue from #StatusCodes WHERE SelectionCode = 'A4')
+		ELSE NULL
 	END AS annulReason,
-
 
 	CASE
 		WHEN address_withheld_flag = 'Y' THEN '(Case Description withheld as Individual Address has been withheld)'
@@ -980,6 +979,7 @@ SET @resultXML = (SELECT
 					caseYear AS CaseYear,
 					insolvencyDate AS StartDate,
 					FORMAT(annulDate, 'dd/MM/yyyy HH:mm:ss') AS AnnulDate,
+					annulReason AS AnnulReason,
 					'Please note that this person is deceased (Deceased Date ' + CONVERT(VARCHAR(10), deceasedDate, 103) + ')' AS SpecialNote,
 					TRIM(caseStatus) AS Status,
 					caseDescription AS CaseDescription, 
