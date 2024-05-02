@@ -445,7 +445,7 @@ CREATE TABLE #Temp
     notificationDate varchar(255),
     insolvencyDate varchar(255),
     caseStatus varchar(255),
-	annulDate varchar(255),
+	annulDate datetime,
 	annulReason varchar(255),
     caseDescription varchar(max) COLLATE Latin1_General_100_CI_AI_SC_UTF8,
     tradingNames xml,
@@ -727,9 +727,9 @@ CREATE TABLE #Temp
 	END AS caseStatus,
 
 	CASE WHEN (cp.BROPrintCaseDetails = 'Y' AND insolvency_type = 'B' AND AnnulmentTypeCASE <> '')
-			THEN ISNULL(CONVERT(CHAR(10), AnnulmentDateCASE, 103), '')
+			THEN AnnulmentDateCASE
 		WHEN (cp.BROPrintCaseDetails = 'Y' AND insolvency_type = 'B' AND AnnulmentTypePARTNER <> '')
-			THEN ISNULL(CONVERT(CHAR(10), AnnulmentDatePARTNER, 103), '') 
+			THEN AnnulmentDatePARTNER
 		ELSE NULL
 	END AS annulDate,
 
@@ -741,7 +741,6 @@ CREATE TABLE #Temp
 			THEN (select SelectionValue from #StatusCodes WHERE SelectionCode = 'A3') 
 		WHEN (cp.BROPrintCaseDetails = 'Y' AND insolvency_type = 'B' AND AnnulmentTypeCASE = 'A')
 			THEN (select SelectionValue from #StatusCodes WHERE SelectionCode = 'A4') 
-
 		WHEN (cp.BROPrintCaseDetails = 'Y' AND insolvency_type = 'B' AND AnnulmentTypePARTNER = 'P')
 			THEN (select SelectionValue from #StatusCodes WHERE SelectionCode = 'A1') 
 		WHEN (cp.BROPrintCaseDetails = 'Y' AND insolvency_type = 'B' AND AnnulmentTypePARTNER = 'V')
@@ -749,9 +748,9 @@ CREATE TABLE #Temp
 		WHEN (cp.BROPrintCaseDetails = 'Y' AND insolvency_type = 'B' AND AnnulmentTypePARTNER = 'R')
 			THEN (select SelectionValue from #StatusCodes WHERE SelectionCode = 'A3') 
 		WHEN (cp.BROPrintCaseDetails = 'Y' AND insolvency_type = 'B' AND AnnulmentTypePARTNER = 'A')
-			THEN (select SelectionValue from #StatusCodes WHERE SelectionCode = 'A4') 
+			THEN (select SelectionValue from #StatusCodes WHERE SelectionCode = 'A4')
+		ELSE NULL
 	END AS annulReason,
-
 
 	CASE
 		WHEN address_withheld_flag = 'Y' THEN '(Case Description withheld as Individual Address has been withheld)'
@@ -991,6 +990,8 @@ SET @resultXML = (SELECT
 					END As CourtNumber,
 					caseYear AS CaseYear,
 					insolvencyDate AS StartDate,
+					FORMAT(annulDate, 'dd/MM/yyyy HH:mm:ss') AS AnnulDate,
+					annulReason AS AnnulReason,
 					'Please note that this person is deceased (Deceased Date ' + CONVERT(VARCHAR(10), deceasedDate, 103) + ')' AS SpecialNote,
 					TRIM(caseStatus) AS Status,
 					caseDescription AS CaseDescription, 
