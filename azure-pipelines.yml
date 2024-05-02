@@ -1,5 +1,6 @@
 trigger:
 - develop
+- release/*
   
 pool:
   vmImage: windows-latest
@@ -91,11 +92,11 @@ stages:
         inputs:
           targetPath: '$(Build.ArtifactStagingDirectory)' 
           artifactName: 'INSS.EIIR'
-        condition: succeeded()
+        condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
 
 - stage: DeployDev
   displayName: 'Deploy to Dev'
-  condition: succeeded()
+  condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
   variables:
     - group: EIIR-Dev
   jobs:
