@@ -784,7 +784,11 @@ CREATE TABLE #Temp
 	ELSE (SELECT 
 		CASE WHEN 
 			ci_trade.trading_name IS NULL THEN 'No Trading Names Found'
-		ELSE ci_trade.trading_name
+		ELSE 
+			CASE 		
+			WHEN TRIM(ci_trade.trading_name) = '' THEN '@@@@@@@@@@'
+			ELSE UPPER(TRIM(ci_trade.trading_name))
+			END
 		END AS TradingName,       
         
 		CASE 
