@@ -762,25 +762,28 @@ CREATE TABLE #Temp
 			),'No Case Description Found')
     END AS caseDescription,
 
-    CASE COALESCE(cit.trading_name, 'No Trading Names Found')
+    CASE (SELECT COALESCE(STRING_AGG(ci_trade.trading_name,','), 'No Trading Names Found') FROM ci_trade WHERE ci_trade.case_no = snap.CaseNo)
 	WHEN 'No Trading Names Found'
 	THEN 'No Trading Names Found'
 	ELSE 
 		(SELECT 
-			CASE UPPER(TRIM(cit.trading_name))		
+			CASE UPPER(TRIM(ci_trade.trading_name))		
 			WHEN '' THEN '@@@@@@@@@@'
-			ELSE UPPER(TRIM(cit.trading_name))
+			ELSE UPPER(TRIM(ci_trade.trading_name))
 			END AS TradingName,       
 		
 			COALESCE(
-					STUFF ('' + CASE TRIM(COALESCE(cit.address_line_1, '')) WHEN '' THEN '' ELSE ', ' + TRIM(cit.address_line_1) END 
-								+ CASE TRIM(COALESCE(cit.address_line_2, '')) WHEN '' THEN '' ELSE ', ' + TRIM(cit.address_line_2) END
-								+ CASE TRIM(COALESCE(cit.address_line_3, '')) WHEN '' THEN '' ELSE ', ' + TRIM(cit.address_line_3) END
-								+ CASE TRIM(COALESCE(cit.address_line_4, '')) WHEN '' THEN '' ELSE ', ' + TRIM(cit.address_line_4) END
-								+ CASE TRIM(COALESCE(cit.address_line_5, '')) WHEN '' THEN '' ELSE ', ' + TRIM(cit.address_line_5) END
-								+ CASE TRIM(COALESCE(cit.postcode, '')) WHEN '' THEN '' ELSE ', ' + TRIM(cit.postcode) END
+					STUFF ('' + CASE TRIM(COALESCE(ci_trade.address_line_1, '')) WHEN '' THEN '' ELSE ', ' + TRIM(ci_trade.address_line_1) END 
+								+ CASE TRIM(COALESCE(ci_trade.address_line_2, '')) WHEN '' THEN '' ELSE ', ' + TRIM(ci_trade.address_line_2) END
+								+ CASE TRIM(COALESCE(ci_trade.address_line_3, '')) WHEN '' THEN '' ELSE ', ' + TRIM(ci_trade.address_line_3) END
+								+ CASE TRIM(COALESCE(ci_trade.address_line_4, '')) WHEN '' THEN '' ELSE ', ' + TRIM(ci_trade.address_line_4) END
+								+ CASE TRIM(COALESCE(ci_trade.address_line_5, '')) WHEN '' THEN '' ELSE ', ' + TRIM(ci_trade.address_line_5) END
+								+ CASE TRIM(COALESCE(ci_trade.postcode, '')) WHEN '' THEN '' ELSE ', ' + TRIM(ci_trade.postcode) END
 					,1,2, ''), 
 			'@@@@@@@@@@') AS TradingAddress
+
+		FROM ci_trade 
+		where ci_trade.case_no = snap.CaseNo
 		FOR XML PATH('')) 
 	END AS tradingNames,
 
@@ -841,7 +844,6 @@ CREATE TABLE #Temp
 	LEFT JOIN ci_ip cip ON insolvencyAppointment.ip_no = cip.ip_no
 	LEFT JOIN ci_ip_address cipa ON insolvencyAppointment.ip_no = cipa.ip_no
     LEFT JOIN ci_iva_case ivaCase ON ivaCase.case_no = inscase.case_no
-	LEFT JOIN ci_trade cit ON snap.CaseNo = cit.case_no
 	--Extended From for DRO CaseStatus applied as OUT APPLY due to complexity CASE statement affects in order of 10 records out of 40000
 	OUTER APPLY (Select '(' + TRIM(('Extended From ' + FORMAT(DATEADD(month, 12, s1.DateOrder), 'dd/MM/yyyy HH:mm:ss') + ' To ' + CONVERT(CHAR(10),d1.MoratoriumPeriodEndingDate, 103))) + ')' as [Text]
 						FROM
