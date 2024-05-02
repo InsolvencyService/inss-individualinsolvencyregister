@@ -926,7 +926,7 @@ SET @resultXML = (SELECT
 						restrictionsStartDate AS RestrictionsStartDate,
 						restrictionsEndDate AS RestrictionsEndDate,
 						courtName AS RestrictionsCourt,
-						courtNumber AS RestrictionsCourtNo,
+						LTRIM(courtNumber,'0') AS RestrictionsCourtNo,
 						caseYear AS RestrictionsCaseYear, 
 						(CASE WHEN (cp.PrevIBRONote = 'Y' AND cp.hasBro = 'Y') THEN
 							(SELECT previousIBRONote as PreviousIBRONote,
@@ -953,7 +953,7 @@ SET @resultXML = (SELECT
 						droRestrictionsStartDate AS DRORestrictionsStartDate,
 						droRestrictionsEndDate AS DRORestrictionsEndDate,
 					    courtName AS RestrictionsCourt,
-						courtNumber AS RestrictionsCourtNo,
+						LTRIM(courtNumber,'0') AS RestrictionsCourtNo,
 						caseYear AS RestrictionsCaseYear,
 						(CASE WHEN (cp.PrevIDRRONote = 'Y' AND cp.hasBro = 'Y') THEN
 							(SELECT previousIDRRONote as PreviousIDRRONote,
