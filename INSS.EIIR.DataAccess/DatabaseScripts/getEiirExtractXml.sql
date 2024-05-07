@@ -109,7 +109,7 @@ CREATE TABLE #prevIBRO (
 INSERT INTO #prevIBRO
 	SELECT case_id, subj_refno,	ibro_order_date, ibro_end_date
 	FROM	subject_ibro 
-	LEFT JOIN #Cases c on case_id = c.CaseNo AND subj_refno = c.IndivNo
+	INNER JOIN #Cases c on case_id = c.CaseNo AND subj_refno = c.IndivNo
 	AND	(ibro_order_date IS NOT NULL
 	AND      ibro_app_filed_date IS NOT NULL
 	AND      ibro_hearing_date IS NOT NULL
@@ -125,7 +125,7 @@ CREATE TABLE #prevIDRRO (
 INSERT INTO #prevIDRRO 
 SELECT case_id, subj_refno, ibro_order_date, ibro_end_date
 	FROM subject_ibro 
-	LEFT JOIN #Cases c on case_id = c.CaseNo AND subj_refno = c.IndivNo
+	INNER JOIN #Cases c on case_id = c.CaseNo AND subj_refno = c.IndivNo
 	AND	(ibro_order_date IS NOT NULL
 	AND      ibro_app_filed_date IS NOT NULL
 	AND      ibro_hearing_date IS NOT NULL
