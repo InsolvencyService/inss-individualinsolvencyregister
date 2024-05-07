@@ -1027,7 +1027,7 @@ SET @resultXML = (SELECT
             TRIM(insolvencyServicePhone) AS ContactTelephone 
 			FOR XML PATH ('InsolvencyContact'), TYPE)
 		from #Temp t
-		inner join #caseParams cp on cp.caseNo = t.caseNo
+		inner join #caseParams cp on cp.caseNo = t.caseNo AND cp.indivNo = t.indivNo
 		order by t.dateOrder
         FOR XML PATH ('ReportRequest'), TYPE, ELEMENTS))
 
