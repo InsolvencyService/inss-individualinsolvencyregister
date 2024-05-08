@@ -199,7 +199,7 @@ CREATE TABLE #TempCaseDesc
 	[case_desc_no] [int] NOT NULL,
 	[case_desc_line_no] [int] NOT NULL,
 	[case_desc_line] [varchar](100) COLLATE Latin1_General_100_CI_AI_SC_UTF8 NOT NULL ,
-CONSTRAINT [PK_ci_case_desc] PRIMARY KEY CLUSTERED 
+PRIMARY KEY NONCLUSTERED 
 (
 	[case_no] ASC,
 	[case_desc_no] ASC,
