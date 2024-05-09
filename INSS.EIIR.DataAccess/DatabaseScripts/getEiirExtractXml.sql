@@ -1262,7 +1262,7 @@ SET @resultXML = (SELECT
 			WHEN insolvencyType = 'Individual Voluntary Arrangement'
 				THEN (SELECT 'No OtherNames Found' FOR XML PATH ('OtherNames'), TYPE)
 			WHEN individualAlias = 'No OtherNames Found'
-				THEN (SELECT individualAlias FOR XML PATH ('OtherNames'), TYPE)
+				THEN (SELECT individualAlias as OtherNames FOR XML PATH(''), TYPE)
 			ELSE
 				(SELECT TRIM(Value) FROM STRING_SPLIT(individualAlias, ',')
 				FOR XML PATH ('OtherName'), root('OtherNames'), TYPE)
