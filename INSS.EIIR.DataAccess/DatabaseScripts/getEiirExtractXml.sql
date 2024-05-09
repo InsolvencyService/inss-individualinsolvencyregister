@@ -519,9 +519,9 @@ CREATE TABLE #Temp
 
 	(SELECT 
 		CASE WHEN 
-		(SELECT STRING_AGG(UPPER(ci_other_name.surname) + ' ' + (UPPER(ci_other_name.forenames)), ', ') FROM ci_other_name  WHERE ci_other_name.case_no = snap.CaseNo AND ci_other_name.indiv_no = snap.IndivNo) IS NULL THEN 'No OtherNames Found'
+		(SELECT STRING_AGG(UPPER(ci_other_name.forenames) + ' ' + (UPPER(ci_other_name.surname)), ', ') FROM ci_other_name  WHERE ci_other_name.case_no = snap.CaseNo AND ci_other_name.indiv_no = snap.IndivNo) IS NULL THEN 'No OtherNames Found'
 		ELSE
-		(SELECT STRING_AGG(UPPER(ci_other_name.surname) + ' ' + (UPPER(ci_other_name.forenames)), ', ') FROM ci_other_name  WHERE ci_other_name.case_no = snap.CaseNo AND ci_other_name.indiv_no = snap.IndivNo)
+		(SELECT STRING_AGG(UPPER(ci_other_name.forenames) + ' ' + (UPPER(ci_other_name.surname)), ', ') FROM ci_other_name  WHERE ci_other_name.case_no = snap.CaseNo AND ci_other_name.indiv_no = snap.IndivNo)
 	END) AS individualAlias,    
 	
 	snap.Deceased AS deceasedDate,
@@ -916,7 +916,16 @@ SET @resultXML = (SELECT
 			WHEN TRIM(individualPostcode) = '' THEN 'No Last Known PostCode Found'
 			ELSE TRIM(individualPostcode)
 		END AS LastKnownPostCode,
-        individualAlias AS OtherNames
+
+		CASE
+			WHEN insolvencyType = 'Individual Voluntary Arrangement'
+				THEN (SELECT 'No OtherNames Found' FOR XML PATH ('OtherNames'), TYPE)
+			WHEN individualAlias = 'No OtherNames Found'
+				THEN (SELECT individualAlias FOR XML PATH ('OtherNames'), TYPE)
+			ELSE
+				(SELECT TRIM(Value) FROM STRING_SPLIT(individualAlias, ',')
+				FOR XML PATH ('OtherName'), root('OtherNames'), TYPE)
+		END		
 			FOR XML PATH ('IndividualDetails'), TYPE),
 
 		(SELECT CASE 
