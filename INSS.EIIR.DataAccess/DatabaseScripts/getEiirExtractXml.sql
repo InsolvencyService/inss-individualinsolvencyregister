@@ -358,6 +358,12 @@ INSERT INTO #TempUnicodeLookUp (chr, newChr) VALUES
 	(CHAR(255), NCHAR(255));
 
 
+
+--*******************************************************************
+-- ./IndividualDetails/Firstname
+-- ./IndividualDetails/Surname
+--*******************************************************************
+
 --ci_individual affected columns
 CREATE TABLE #TempIndividual
 (
@@ -460,6 +466,119 @@ DEALLOCATE diff_cursor;
 --Drop the magic "J" - needs to be left in until after the cursor as CAST to VARCHAR in cursor SELECT strips it out resulting in ? not being replaced
 UPDATE #TempIndividual SET forenames = LEFT(forenames, LEN(forenames)-1), surname = LEFT(surname, LEN(surname)-1) 
 
+--*******************************************************************
+-- ./Othernames/Othername
+--*******************************************************************
+
+CREATE TABLE #TempOtherName
+(
+	[case_no] int NOT NULL,
+	[indiv_no] int NOT NULL,
+	[alias_no] int NOT NULL,
+	[forenames] [varchar](100) COLLATE Latin1_General_100_CI_AI_SC_UTF8,
+	[surname] [varchar](100) COLLATE Latin1_General_100_CI_AI_SC_UTF8
+
+PRIMARY KEY NONCLUSTERED 
+(
+	[case_no] ASC,
+	[indiv_no] ASC,
+	[alias_no] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+
+
+--This converts the case_desc_line into properly UTF8 encoded field from using binary from source
+--The magic CHAR(74) "J" - overcomes issue when last char in sourece is in unicode continutation code range of 0x80 -> 0x9F
+--See word document linked/attached to APP-4944, References 4944/20 & 4944/21
+INSERT INTO #TempOtherName (case_no, indiv_no, alias_no, forenames, surname) 
+SELECT DISTINCT i.case_no, i.indiv_no, i.alias_no, CONVERT(varbinary(200),i.forenames + CHAR(74)), CONVERT(varbinary(200),i.surname + CHAR(74))
+FROM ci_other_name i
+INNER JOIN eiirSnapshotTABLE s on i.case_no = s.CaseNo AND i.indiv_no = s.IndivNo
+WHERE COALESCE(s.Type, 'N') != 'I'
+ORDER BY i.case_no ASC, i.indiv_no ASC, i.alias_no ASC
+
+--Use cursor to go over differences and replace any ? characters 
+DECLARE @ocase_no INT,@oindiv_no INT, @oalias_no INT,
+    @trg_oforenames VARCHAR(100), @src_oforenames VARCHAR(100), @trg_osurname VARCHAR(100), @src_osurname VARCHAR(100);
+
+DECLARE diff_cursor CURSOR FOR
+SELECT t.case_no, t.indiv_no, t.alias_no, CAST(t.forenames as VARCHAR(100)) COLLATE Latin1_General_CI_AS, i.forenames, CAST(t.surname as VARCHAR(100)) COLLATE Latin1_General_CI_AS, i.surname
+FROM ci_other_name i 
+INNER JOIN #TempOtherName t ON i.case_no = t.case_no AND i.indiv_no = t.indiv_no AND i.alias_no = t.alias_no
+WHERE CAST(t.forenames as VARCHAR(200)) COLLATE Latin1_General_CI_AS != i.forenames OR CAST(t.surname as VARCHAR(200)) COLLATE Latin1_General_CI_AS != i.surname
+
+OPEN diff_cursor
+
+FETCH NEXT FROM diff_cursor
+INTO @ocase_no, @oindiv_no, @oalias_no, @trg_oforenames, @src_oforenames, @trg_osurname, @src_osurname 
+
+WHILE @@FETCH_STATUS = 0
+BEGIN
+	--Find any bad "?" characters in the converted text, working backwards from end of string, replace with corect unicode char
+	--ForeNames
+	SET @Idx = 0;
+	SET @EndIdx = 0;
+	SET @StrLen = LEN(@trg_oforenames);
+	SET @ReverseStr = REVERSE(@trg_oforenames);
+
+	SET @EndIdx = CHARINDEX(CHAR(63), @ReverseStr, @EndIdx)
+
+	WHILE @EndIdx != 0
+	BEGIN 
+		SET @Idx = @StrLen - @EndIdx + 1;
+
+		SELECT @SrcChr = SUBSTRING(@src_oforenames, @Idx, 1);
+
+		IF @SrcChr != CHAR(63) 
+		BEGIN
+			UPDATE #TempOtherName SET forenames = STUFF(t.forenames, @Idx, 1, c.newChr)
+				FROM #TempOtherName t
+				JOIN #TempUniCodeLookUp c ON c.chr = @SrcChr
+			WHERE t.case_no = @ocase_no AND t.indiv_no = @oindiv_no AND t.alias_no = @oalias_no;
+		END
+
+		SET @EndIdx = CHARINDEX(CHAR(63), @ReverseStr, @EndIdx + 1)
+	END 
+
+	--Surname
+	SET @Idx = 0;
+	SET @EndIdx = 0;
+	SET @StrLen = LEN(@trg_osurname);
+	SET @ReverseStr = REVERSE(@trg_osurname);
+
+	SET @EndIdx = CHARINDEX(CHAR(63), @ReverseStr, @EndIdx)
+
+	WHILE @EndIdx != 0
+	BEGIN 
+		SET @Idx = @StrLen - @EndIdx + 1;
+
+		SELECT @SrcChr = SUBSTRING(@src_osurname, @Idx, 1);
+
+		IF @SrcChr != CHAR(63) 
+		BEGIN
+			UPDATE #TempOtherName SET surname = STUFF(t.surname, @Idx, 1, c.newChr)
+				FROM #TempOtherName t
+				JOIN #TempUniCodeLookUp c ON c.chr = @SrcChr
+			WHERE t.case_no = @ocase_no AND t.indiv_no = @oindiv_no AND t.alias_no = @oalias_no;
+		END
+
+		SET @EndIdx = CHARINDEX(CHAR(63), @ReverseStr, @EndIdx + 1)
+	END
+
+
+    FETCH NEXT FROM diff_cursor
+    INTO @ocase_no, @oindiv_no, @oalias_no, @trg_oforenames, @src_oforenames, @trg_osurname, @src_osurname
+END
+CLOSE diff_cursor;
+DEALLOCATE diff_cursor;
+
+--Drop the magic "J" - needs to be left in until after the cursor as CAST to VARCHAR in cursor SELECT strips it out resulting in ? not being replaced
+UPDATE #TempOtherName SET forenames = LEFT(forenames, LEN(forenames)-1), surname = LEFT(surname, LEN(surname)-1)
+
+
+--*******************************************************************
+-- ./CaseDetails/CaseName
+--*******************************************************************
 
 CREATE TABLE #TempCase
 (
@@ -533,6 +652,10 @@ DEALLOCATE diff_cursor;
 UPDATE #TempCase SET case_name = LEFT(case_name, LEN(case_name)-1)
 
 
+
+--*******************************************************************
+-- ./CaseDetails/CaseDescription
+--*******************************************************************
 
 --Table to take care of UTF8 codes in case description fields 
 CREATE TABLE #TempCaseDesc 
@@ -611,7 +734,6 @@ DEALLOCATE diff_cursor;
 --Drop the magic "J" - needs to be left in until after the cursor as CAST to VARCHAR in cursor SELECT strips it out resulting in ? not being replaced
 UPDATE #TempCaseDesc SET case_desc_line = LEFT(case_desc_line, LEN(case_desc_line)-1)
 
-
 --End of Unicode Handling
 
 CREATE TABLE #Temp
@@ -632,7 +754,7 @@ CREATE TABLE #Temp
     individualAddress varchar(255), 
     individualPostcode varchar(255),
     individualAddressWithheld varchar(255),
-    individualAlias varchar(255),
+    individualAlias varchar(255) COLLATE Latin1_General_100_CI_AI_SC_UTF8,
 	deceasedDate datetime,
 	restrictionsType varchar(255),
 	restrictionsStartDate varchar(255),
@@ -736,9 +858,9 @@ PRIMARY KEY NONCLUSTERED
 
 	(SELECT 
 		CASE WHEN 
-		(SELECT STRING_AGG(UPPER(ci_other_name.forenames) + ' ' + (UPPER(ci_other_name.surname)), ', ') FROM ci_other_name  WHERE ci_other_name.case_no = snap.CaseNo AND ci_other_name.indiv_no = snap.IndivNo) IS NULL THEN 'No OtherNames Found'
+		(SELECT STRING_AGG(UPPER(t.forenames) + ' ' + (UPPER(t.surname)), ', ') FROM #TempOtherName t  WHERE t.case_no = snap.CaseNo AND t.indiv_no = snap.IndivNo) IS NULL THEN 'No OtherNames Found'
 		ELSE
-		(SELECT STRING_AGG(UPPER(ci_other_name.forenames) + ' ' + (UPPER(ci_other_name.surname)), ', ') FROM ci_other_name  WHERE ci_other_name.case_no = snap.CaseNo AND ci_other_name.indiv_no = snap.IndivNo)
+		(SELECT STRING_AGG(UPPER(t.forenames) + ' ' + (UPPER(t.surname)), ', ') FROM #TempOtherName t  WHERE t.case_no = snap.CaseNo AND t.indiv_no = snap.IndivNo)
 	END) AS individualAlias,    
 	
 	snap.Deceased AS deceasedDate,
@@ -1322,5 +1444,9 @@ End
 If(OBJECT_ID('tempdb..#TempCase') Is Not Null)
 Begin
 	DROP TABLE #TempCase
+End
+If(OBJECT_ID('tempdb..#TempOtherName') Is Not Null)
+Begin
+	DROP TABLE #TempOtherName
 End
 END
