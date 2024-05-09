@@ -461,6 +461,78 @@ DEALLOCATE diff_cursor;
 UPDATE #TempIndividual SET forenames = LEFT(forenames, LEN(forenames)-1), surname = LEFT(surname, LEN(surname)-1) 
 
 
+CREATE TABLE #TempCase
+(
+	[case_no] int NOT NULL,
+	[case_name] [varchar](200) COLLATE Latin1_General_100_CI_AI_SC_UTF8
+PRIMARY KEY NONCLUSTERED 
+(
+	[case_no] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+
+
+--This converts the case_desc_line into properly UTF8 encoded field from using binary from source
+--The magic CHAR(74) "J" - overcomes issue when last char in sourece is in unicode continutation code range of 0x80 -> 0x9F
+--See word document linked/attached to APP-4944, References 4944/20 & 4944/21
+INSERT INTO #TempCase (case_no, case_name) 
+SELECT DISTINCT c.case_no, CONVERT(varbinary(200),c.case_name + CHAR(74))
+FROM ci_case c
+INNER JOIN eiirSnapshotTABLE s on c.case_no = s.CaseNo 
+
+--Use cursor to go over differences and replace any ? characters 
+DECLARE @ccase_no INT,
+    @trg_casename VARCHAR(200), @src_casename VARCHAR(200);
+
+DECLARE diff_cursor CURSOR FOR
+SELECT t.case_no, CAST(t.case_name as VARCHAR(200)) COLLATE Latin1_General_CI_AS, c.case_name 
+FROM #TempCase t
+INNER JOIN  ci_case c ON t.case_no = c.case_no
+WHERE CAST(t.case_name as VARCHAR(200)) COLLATE Latin1_General_CI_AS != c.case_name 
+
+OPEN diff_cursor
+
+FETCH NEXT FROM diff_cursor
+INTO @ccase_no, @trg_casename, @src_casename
+
+WHILE @@FETCH_STATUS = 0
+BEGIN
+	--Find any bad "?" characters in the converted text, working backwards from end of string, replace with corect unicode char
+	--ForeNames
+	SET @Idx = 0;
+	SET @EndIdx = 0;
+	SET @StrLen = LEN(@trg_casename);
+	SET @ReverseStr = REVERSE(@trg_casename);
+
+	SET @EndIdx = CHARINDEX(CHAR(63), @ReverseStr, @EndIdx)
+
+	WHILE @EndIdx != 0
+	BEGIN 
+		SET @Idx = @StrLen - @EndIdx + 1;
+
+		SELECT @SrcChr = SUBSTRING(@src_casename, @Idx, 1);
+
+		IF @SrcChr != CHAR(63) 
+		BEGIN
+			UPDATE #TempCase SET case_name = STUFF(t.case_name, @Idx, 1, c.newChr)
+				FROM #TempCase t
+				JOIN #TempUniCodeLookUp c ON c.chr = @SrcChr
+			WHERE t.case_no = @ccase_no 
+		END
+
+		SET @EndIdx = CHARINDEX(CHAR(63), @ReverseStr, @EndIdx + 1)
+	END 
+
+    FETCH NEXT FROM diff_cursor
+    INTO @ccase_no, @trg_casename, @src_casename
+END
+CLOSE diff_cursor;
+DEALLOCATE diff_cursor;
+
+--Drop the magic "J" - needs to be left in until after the cursor as CAST to VARCHAR in cursor SELECT strips it out resulting in ? not being replaced
+UPDATE #TempCase SET case_name = LEFT(case_name, LEN(case_name)-1)
+
+
 
 --Table to take care of UTF8 codes in case description fields 
 CREATE TABLE #TempCaseDesc 
@@ -577,7 +649,7 @@ CREATE TABLE #Temp
 	previousIDRRONote varchar(255),
 	previousIDRROStartDate varchar(255),
 	previousIDRROEndDate varchar(255),
-    caseName varchar(255),
+    caseName varchar(255) COLLATE Latin1_General_100_CI_AI_SC_UTF8,
     courtName varchar(255),
 	courtNumber varchar(255),
     caseYear varchar(255),
@@ -766,7 +838,7 @@ PRIMARY KEY NONCLUSTERED
 	END AS previousIDRROEndDate,
 
     --  Insolvency case details
-    inscase.case_name AS caseName, 
+    #TempCase.case_name AS caseName, 
 
 	CASE
 		--APP-4951 following string aggregation on courtname appears unnecessary, DISTINCT required on court name as current duplicate records in ci_court where court='ADJ'
@@ -1004,6 +1076,7 @@ PRIMARY KEY NONCLUSTERED
 	INNER JOIN extract_availability ea on ea.extract_id = Convert(CHAR(8),GETDATE(),112)
 	LEFT JOIN #caseParams cp on cp.caseNo = snap.CaseNo AND cp.indivNo = snap.IndivNo
     LEFT JOIN ci_case inscase ON snap.CaseNo = inscase.case_no
+	LEFT JOIN #TempCase ON snap.CaseNo = #TempCase.case_no
     LEFT JOIN ci_office insolvencyService ON inscase.office_id = insolvencyService.office_id
     LEFT JOIN ci_ip_appt insolvencyAppointment ON insolvencyAppointment.case_no = inscase.case_no AND insolvencyAppointment.appt_end_date IS NULL and insolvencyAppointment.ip_appt_type = 'M'
 	LEFT JOIN ci_ip cip ON insolvencyAppointment.ip_no = cip.ip_no
@@ -1236,5 +1309,9 @@ End
 If(OBJECT_ID('tempdb..#TempIndividual') Is Not Null)
 Begin
 	DROP TABLE #TempIndividual
+End
+If(OBJECT_ID('tempdb..#TempCase') Is Not Null)
+Begin
+	DROP TABLE #TempCase
 End
 END
