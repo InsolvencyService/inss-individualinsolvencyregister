@@ -19,8 +19,13 @@ CREATE TABLE #Cases
 	DateOrder datetime,
 	CaseNo int,
 	IndivNo int,
-	InsolvencyType varchar(1)
-)
+	InsolvencyType varchar(1),
+PRIMARY KEY NONCLUSTERED 
+(
+	[CaseNo] ASC,
+	[IndivNo] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
 
 INSERT INTO #Cases 
 SELECT DISTINCT DateofOrder as DateOrder, CaseNo, IndivNo, Type as InsolvencyType FROM eiirSnapshotTABLE ORDER BY DateofOrder
@@ -154,8 +159,13 @@ CREATE TABLE #caseParams (
 	IDRROEndDate datetime,
 	BROPrintCaseDetails varchar(1),
 	MoratoriumPeriodEndingDate datetime, 
-	RevokedDate datetime
-) 
+	RevokedDate datetime,
+PRIMARY KEY NONCLUSTERED 
+(
+	[caseNo] ASC,
+	[indivNo] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
 
 INSERT INTO #caseParams
 SELECT c.CaseNo, c.IndivNo,
@@ -590,7 +600,12 @@ CREATE TABLE #Temp
     insolvencyServicePostcode varchar(255),
     insolvencyServicePhone varchar(255),
 	dateOrder datetime,
-)
+PRIMARY KEY NONCLUSTERED 
+(
+	[caseNo] ASC,
+	[indivNo] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
 
 	INSERT INTO #Temp
     SELECT DISTINCT  
