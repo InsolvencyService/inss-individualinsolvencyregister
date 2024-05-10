@@ -1092,7 +1092,7 @@ PRIMARY KEY NONCLUSTERED
 	END AS annulReason,
 
 	CASE
-		WHEN address_withheld_flag = 'Y' THEN '(Case Description withheld as Individual Address has been withheld)'
+		WHEN individual.address_withheld_flag = 'Y' THEN '(Case Description withheld as Individual Address has been withheld)'
         WHEN insolvency_type = 'I' THEN '(Case Description does not apply to IVA)'
         ELSE 
 		ISNULL((SELECT (STRING_AGG(TRIM(REPLACE(REPLACE(REPLACE(#TempCaseDesc.case_desc_line,CHAR(10),' '),CHAR(13),' '),CHAR(9),' ')), ''))			
@@ -1101,44 +1101,25 @@ PRIMARY KEY NONCLUSTERED
 			),'No Case Description Found')
     END AS caseDescription,
 
-    CASE WHEN (SELECT 
-		CASE WHEN 
-			ci_trade.trading_name IS NULL THEN 'No Trading Names Found'
-		ELSE ci_trade.trading_name
-		END AS TradingName,       
-        
-		CASE 
-			WHEN ci_trade.trading_name is NULL THEN NULL
-			ELSE 
-				CASE 
-					WHEN REPLACE(TRIM(CONCAT(ci_trade.address_line_1,  ', ', ci_trade.address_line_2,  ', ', ci_trade.address_line_3,  ', ', ci_trade.address_line_4,  ', ', ci_trade.address_line_5, ', ', ci_trade.postcode)), ' ,', '') = ',' THEN '@@@@@@@@@@'
-					ELSE REPLACE(TRIM(CONCAT(ci_trade.address_line_1,  ', ', ci_trade.address_line_2,  ', ', ci_trade.address_line_3,  ', ', ci_trade.address_line_4,  ', ', ci_trade.address_line_5, ', ', ci_trade.postcode)), ' ,', '')
-				END
-			END AS TradingAddress
-
-		FROM ci_trade 
-		where ci_trade.case_no = snap.CaseNo
-		FOR XML PATH('')) IS NULL THEN 'No Trading Names Found'
-
-	ELSE (SELECT 
-		CASE WHEN 
-			ci_trade.trading_name IS NULL THEN 'No Trading Names Found'
-		ELSE ci_trade.trading_name
-		END AS TradingName,       
-        
-		CASE 
-			WHEN ci_trade.trading_name is NULL THEN NULL
-			ELSE 
-				CASE 
-					WHEN REPLACE(TRIM(CONCAT(ci_trade.address_line_1,  ', ', ci_trade.address_line_2,  ', ', ci_trade.address_line_3,  ', ', ci_trade.address_line_4,  ', ', ci_trade.address_line_5, ', ', ci_trade.postcode)), ' ,', '') = ',' THEN '@@@@@@@@@@'
-					ELSE 
-						CASE
-							WHEN REPLACE(TRIM(CONCAT(ci_trade.address_line_1,  ', ', ci_trade.address_line_2,  ', ', ci_trade.address_line_3,  ', ', ci_trade.address_line_4,  ', ', ci_trade.address_line_5, ', ', ci_trade.postcode)), ' ,', '') LIKE '%,'
-								THEN LEFT(REPLACE(TRIM(CONCAT(ci_trade.address_line_1,  ', ', ci_trade.address_line_2,  ', ', ci_trade.address_line_3,  ', ', ci_trade.address_line_4,  ', ', ci_trade.address_line_5, ', ', ci_trade.postcode)), ' ,', ''), LEN(REPLACE(TRIM(CONCAT(ci_trade.address_line_1,  ', ', ci_trade.address_line_2,  ', ', ci_trade.address_line_3,  ', ', ci_trade.address_line_4,  ', ', ci_trade.address_line_5, ', ', ci_trade.postcode)), ' ,', ''))-1)
-							ELSE REPLACE(TRIM(CONCAT(ci_trade.address_line_1,  ', ', ci_trade.address_line_2,  ', ', ci_trade.address_line_3,  ', ', ci_trade.address_line_4,  ', ', ci_trade.address_line_5, ', ', ci_trade.postcode)), ' ,', '')
-						END					
-				END
-			END AS TradingAddress
+    CASE (SELECT COALESCE(STRING_AGG(ci_trade.trading_name,','), 'No Trading Names Found') FROM ci_trade WHERE ci_trade.case_no = snap.CaseNo)
+	WHEN 'No Trading Names Found'
+	THEN 'No Trading Names Found'
+	ELSE 
+		(SELECT 
+			CASE UPPER(TRIM(ci_trade.trading_name))		
+			WHEN '' THEN '@@@@@@@@@@'
+			ELSE UPPER(TRIM(ci_trade.trading_name))
+			END AS TradingName,       
+		
+			COALESCE(
+					STUFF ('' + CASE TRIM(COALESCE(ci_trade.address_line_1, '')) WHEN '' THEN '' ELSE ', ' + TRIM(ci_trade.address_line_1) END 
+								+ CASE TRIM(COALESCE(ci_trade.address_line_2, '')) WHEN '' THEN '' ELSE ', ' + TRIM(ci_trade.address_line_2) END
+								+ CASE TRIM(COALESCE(ci_trade.address_line_3, '')) WHEN '' THEN '' ELSE ', ' + TRIM(ci_trade.address_line_3) END
+								+ CASE TRIM(COALESCE(ci_trade.address_line_4, '')) WHEN '' THEN '' ELSE ', ' + TRIM(ci_trade.address_line_4) END
+								+ CASE TRIM(COALESCE(ci_trade.address_line_5, '')) WHEN '' THEN '' ELSE ', ' + TRIM(ci_trade.address_line_5) END
+								+ CASE TRIM(COALESCE(ci_trade.postcode, '')) WHEN '' THEN '' ELSE ', ' + TRIM(ci_trade.postcode) END
+					,1,2, ''), 
+			'@@@@@@@@@@') AS TradingAddress
 
 		FROM ci_trade 
 		where ci_trade.case_no = snap.CaseNo
