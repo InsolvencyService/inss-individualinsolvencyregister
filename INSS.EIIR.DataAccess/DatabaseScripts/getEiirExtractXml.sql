@@ -838,15 +838,15 @@ PRIMARY KEY NONCLUSTERED
 
     CASE WHEN wflag = 'Y' 
         THEN '(Sorry - this Address has been withheld)'
-        ELSE  
-            (SELECT CASE 
-			   WHEN REPLACE(TRIM(CONCAT(individual.address_line_1,  ', ', individual.address_line_2,  ', ', individual.address_line_3,  ', ', individual.address_line_4,  ', ', individual.address_line_5)), ' ,', '') LIKE '%,'
-			   THEN 
-					LEFT(REPLACE(TRIM(CONCAT(individual.address_line_1, ', ', individual.address_line_2, ', ', individual.address_line_3, ', ', individual.address_line_4, ', ', individual.address_line_5)), ' ,', ''),
-					LEN(REPLACE(TRIM(CONCAT(individual.address_line_1, ', ', individual.address_line_2, ', ', individual.address_line_3, ', ', individual.address_line_4, ', ', individual.address_line_5)), ' ,', ''))-1) 
-               ELSE 
-					REPLACE(TRIM(CONCAT(individual.address_line_1, ', ', individual.address_line_2, ', ', individual.address_line_3, ', ', individual.address_line_4, ', ', individual.address_line_5)), ' ,', '')
-           END)             
+        ELSE 
+			COALESCE(
+					STUFF ('' + CASE TRIM(COALESCE(individual.address_line_1, '')) WHEN '' THEN '' ELSE ', ' + individual.address_line_1 END 
+								+ CASE TRIM(COALESCE(individual.address_line_2, '')) WHEN '' THEN '' ELSE ', ' + individual.address_line_2 END
+								+ CASE TRIM(COALESCE(individual.address_line_3, '')) WHEN '' THEN '' ELSE ', ' + individual.address_line_3 END
+								+ CASE TRIM(COALESCE(individual.address_line_4, '')) WHEN '' THEN '' ELSE ', ' + individual.address_line_4 END
+								+ CASE TRIM(COALESCE(individual.address_line_5, '')) WHEN '' THEN '' ELSE ', ' + individual.address_line_5 END
+					,1,2, ''), 
+			'@@@@@@@@@@')            
     END AS individualAddress,
 
 	CASE WHEN wflag = 'Y' 
@@ -1227,11 +1227,8 @@ SET @resultXML = (SELECT
 		individualOccupation AS Occupation,
         TRIM(individualDOB) AS DateofBirth,
 		CONVERT(VARCHAR(10), deceasedDate, 103) AS DeceasedDate,
-		CASE 
-			WHEN TRIM(individualAddress) IS NULL THEN '@@@@@@@@@@'
-			WHEN TRIM(individualAddress) = '' THEN '@@@@@@@@@@'
-			ELSE TRIM(individualAddress)
-		END AS LastKnownAddress,
+
+		individualAddress AS LastKnownAddress,
 
 		CASE 
 			WHEN TRIM(individualPostcode) IS NULL THEN 'No Last Known PostCode Found'
