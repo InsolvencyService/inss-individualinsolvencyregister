@@ -838,15 +838,15 @@ PRIMARY KEY NONCLUSTERED
 
     CASE WHEN wflag = 'Y' 
         THEN '(Sorry - this Address has been withheld)'
-        ELSE  
-            (SELECT CASE 
-			   WHEN REPLACE(TRIM(CONCAT(individual.address_line_1,  ', ', individual.address_line_2,  ', ', individual.address_line_3,  ', ', individual.address_line_4,  ', ', individual.address_line_5)), ' ,', '') LIKE '%,'
-			   THEN 
-					LEFT(REPLACE(TRIM(CONCAT(individual.address_line_1, ', ', individual.address_line_2, ', ', individual.address_line_3, ', ', individual.address_line_4, ', ', individual.address_line_5)), ' ,', ''),
-					LEN(REPLACE(TRIM(CONCAT(individual.address_line_1, ', ', individual.address_line_2, ', ', individual.address_line_3, ', ', individual.address_line_4, ', ', individual.address_line_5)), ' ,', ''))-1) 
-               ELSE 
-					REPLACE(TRIM(CONCAT(individual.address_line_1, ', ', individual.address_line_2, ', ', individual.address_line_3, ', ', individual.address_line_4, ', ', individual.address_line_5)), ' ,', '')
-           END)             
+        ELSE 
+			COALESCE(
+					STUFF ('' + CASE TRIM(COALESCE(individual.address_line_1, '')) WHEN '' THEN '' ELSE ', ' + TRIM(individual.address_line_1) END 
+								+ CASE TRIM(COALESCE(individual.address_line_2, '')) WHEN '' THEN '' ELSE ', ' + TRIM(individual.address_line_2) END
+								+ CASE TRIM(COALESCE(individual.address_line_3, '')) WHEN '' THEN '' ELSE ', ' + TRIM(individual.address_line_3) END
+								+ CASE TRIM(COALESCE(individual.address_line_4, '')) WHEN '' THEN '' ELSE ', ' + TRIM(individual.address_line_4) END
+								+ CASE TRIM(COALESCE(individual.address_line_5, '')) WHEN '' THEN '' ELSE ', ' + TRIM(individual.address_line_5) END
+					,1,2, ''), 
+			'@@@@@@@@@@')            
     END AS individualAddress,
 
 	CASE WHEN wflag = 'Y' 
@@ -858,9 +858,9 @@ PRIMARY KEY NONCLUSTERED
 
 	(SELECT 
 		CASE WHEN 
-		(SELECT STRING_AGG(UPPER(t.forenames) + ' ' + (UPPER(t.surname)), ', ') FROM #TempOtherName t  WHERE t.case_no = snap.CaseNo AND t.indiv_no = snap.IndivNo) IS NULL THEN 'No OtherNames Found'
+		(SELECT STRING_AGG(UPPER(t.forenames) + ' ' + (UPPER(t.surname)), ',') FROM #TempOtherName t  WHERE t.case_no = snap.CaseNo AND t.indiv_no = snap.IndivNo) IS NULL THEN 'No OtherNames Found'
 		ELSE
-		(SELECT STRING_AGG(UPPER(t.forenames) + ' ' + (UPPER(t.surname)), ', ') FROM #TempOtherName t  WHERE t.case_no = snap.CaseNo AND t.indiv_no = snap.IndivNo)
+		(SELECT STRING_AGG(UPPER(t.forenames) + ' ' + (UPPER(t.surname)), ',') FROM #TempOtherName t  WHERE t.case_no = snap.CaseNo AND t.indiv_no = snap.IndivNo)
 	END) AS individualAlias,    
 	
 	snap.Deceased AS deceasedDate,
@@ -1227,11 +1227,8 @@ SET @resultXML = (SELECT
 		individualOccupation AS Occupation,
         TRIM(individualDOB) AS DateofBirth,
 		CONVERT(VARCHAR(10), deceasedDate, 103) AS DeceasedDate,
-		CASE 
-			WHEN TRIM(individualAddress) IS NULL THEN '@@@@@@@@@@'
-			WHEN TRIM(individualAddress) = '' THEN '@@@@@@@@@@'
-			ELSE TRIM(individualAddress)
-		END AS LastKnownAddress,
+
+		individualAddress AS LastKnownAddress,
 
 		CASE 
 			WHEN TRIM(individualPostcode) IS NULL THEN 'No Last Known PostCode Found'
@@ -1245,8 +1242,8 @@ SET @resultXML = (SELECT
 			WHEN individualAlias = 'No OtherNames Found'
 				THEN (SELECT individualAlias as OtherNames FOR XML PATH(''), TYPE)
 			ELSE
-				(SELECT TRIM(Value) FROM STRING_SPLIT(individualAlias, ',')
-				FOR XML PATH ('OtherName'), root('OtherNames'), TYPE)
+				(SELECT Value as OtherName FROM STRING_SPLIT(individualAlias, ',')
+				FOR XML PATH (''), root('OtherNames'), TYPE)
 		END		
 			FOR XML PATH ('IndividualDetails'), TYPE),
 
@@ -1323,9 +1320,9 @@ SET @resultXML = (SELECT
 					insolvencyDate AS StartDate,
 					FORMAT(annulDate, 'dd/MM/yyyy HH:mm:ss') AS AnnulDate,
 					annulReason AS AnnulReason,
-					'Please note that this person is deceased (Deceased Date ' + CONVERT(VARCHAR(10), deceasedDate, 103) + ')' AS SpecialNote,
 					TRIM(caseStatus) AS Status,
-					caseDescription AS CaseDescription, 
+					caseDescription AS CaseDescription,
+					'Please note that this person is deceased (Deceased Date ' + CONVERT(VARCHAR(10), deceasedDate, 103) + ')' AS SpecialNote,
 					tradingNames AS TradingNames
 					FOR XML PATH ('CaseDetails'), TYPE)
 			ELSE NULL END),
