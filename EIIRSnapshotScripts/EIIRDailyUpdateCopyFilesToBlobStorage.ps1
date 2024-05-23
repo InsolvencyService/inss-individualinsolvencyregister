@@ -57,7 +57,7 @@ try
     $storageAccount = Get-AzStorageAccount -ResourceGroupName $azureResouceGroupName -Name $azureStorageAccountName
     $storageContext = $storageAccount.Context
 
-    $files = Get-ChildItem $localFilePath 
+    $files = Get-ChildItem "$localFilePath\*.sql"  
 
     LogWrite("")    
     LogWrite("===========================Start processing files=======================")
@@ -115,4 +115,4 @@ catch
 #Write-Output ("--------------List of Blobs -----------------")
 # Get-AzStorageBlob -Container $azureContainerName  -Context $storageContext | Select-Object -Property Name,Length,AccessTier 
 
-#Usage:  .\EIIRDailyExtractCopyFilesToBlobStorage.ps1  'tenantid' 'mk-test-rg' 'mkteststacct' 'mkblobs1' "C:\Autojobs-v1\*.sql"
+#Usage:  .\EIIRDailyUpdateCopyFilesToBlobStorage.ps1  'tenantid' 'mk-test-rg' 'mkteststacct' 'mkblobs' "C:\Autojobs-v1"
