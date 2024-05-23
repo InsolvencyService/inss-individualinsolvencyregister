@@ -115,4 +115,4 @@ catch
 #Write-Output ("--------------List of Blobs -----------------")
 # Get-AzStorageBlob -Container $azureContainerName  -Context $storageContext | Select-Object -Property Name,Length,AccessTier 
 
-#Usage:  .\EIIRDailyExtractCopyFilesToBlobStorage.ps1  '8f9b88a7-3f3e-4be3-aae4-2006d4c42306' 'mk-test-rg' 'mkteststacct' 'mkblobs1' "C:\Autojobs-v1\*.sql"
+#Usage:  .\EIIRDailyExtractCopyFilesToBlobStorage.ps1  'tenantid' 'mk-test-rg' 'mkteststacct' 'mkblobs1' "C:\Autojobs-v1\*.sql"
