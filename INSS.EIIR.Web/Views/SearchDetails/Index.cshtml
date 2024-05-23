@@ -1,5 +1,6 @@
 ﻿@using INSS.EIIR.Web.Constants
 @using INSS.EIIR.Web.Extensions
+@using INSS.EIIR.Models.CaseModels
 @model INSS.EIIR.Web.ViewModels.CaseDetailsViewModel
 
 @{
@@ -91,88 +92,20 @@
                         </h2>
                     </div>
                     <div id="accordion-default-content-2" class="govuk-accordion__section-content" aria-labelledby="accordion-default-heading-2">
-                        <dl class="govuk-summary-list govuk-summary-list--no-border">
-                            <div class="govuk-summary-list__row">
-                                <dt class="govuk-summary-list__key"> Case name </dt>
-                                <dd class="govuk-summary-list__value"> @Html.DisplayFor(model => Model.CaseDetails.caseName) </dd>
-                            </div>
-                            <div class="govuk-summary-list__row">
-                                <dt class="govuk-summary-list__key"> Type </dt>
-                                <dd class="govuk-summary-list__value"> @Html.DisplayFor(model => Model.CaseDetails.insolvencyType) </dd>
-                            </div>
 
-                            @if (Model.CaseDetails.insolvencyType != InsolvencyType.IVA)
-                            {
-                                if ((Model.CaseDetails.insolvencyType != InsolvencyType.DRO))
-                                {
-                                    <div class="govuk-summary-list__row">
-                                        <dt class="govuk-summary-list__key"> Court </dt>
-                                        <dd class="govuk-summary-list__value"> @Html.DisplayFor(model => Model.CaseDetails.courtName) </dd>
-                                    </div>
-                                }
-                                <div class="govuk-summary-list__row">
-                                    <dt class="govuk-summary-list__key"> Number </dt>
-                                    <dd class="govuk-summary-list__value"> @Html.DisplayFor(model => Model.CaseDetails.courtNumber) </dd>
-                                </div>
-                                <div class="govuk-summary-list__row">
-                                    <dt class="govuk-summary-list__key"> Year </dt>
-                                    <dd class="govuk-summary-list__value"> @Html.DisplayFor(model => Model.CaseDetails.caseYear) </dd>
-                                </div>
-                            }
-
-                            <div class="govuk-summary-list__row">
-                                <dt class="govuk-summary-list__key">
-                                    @((Model.CaseDetails.insolvencyType == InsolvencyType.DRO || Model.CaseDetails.insolvencyType == InsolvencyType.BANKRUPTCY) ? "Order date" : "Arrangement date")
-                                </dt>
-                                <dd class="govuk-summary-list__value">
-                                    @((Model.CaseDetails.insolvencyDate.IsValidDate()) ? Html.DisplayFor(model => (model.CaseDetails.insolvencyDate)) : NoData.INFORMATION_NOT_AVAIALBLE)
-                                </dd>
-                            </div>
-                            <div class="govuk-summary-list__row">
-                                <dt class="govuk-summary-list__key"> Status </dt>
-                                <dd class="govuk-summary-list__value"> @Html.DisplayFor(model => Model.CaseDetails.caseStatus) </dd>
-                            </div>
-                            @if (Model.CaseDetails.notificationDate.IsValidDate() && Model.CaseDetails.insolvencyType == InsolvencyType.IVA)
-                            {
-                                <div class="govuk-summary-list__row">
-                                    <dt class="govuk-summary-list__key"> Notification date </dt>
-                                    <dd class="govuk-summary-list__value">
-                                        @if (@Model.CaseDetails.notificationDate.HasValue)
-                                        {
-                                            @Model.CaseDetails.notificationDate.Value.ToString("dd MMMM yyyy")
-                                        }
-                                    </dd>
-                                </div>
-                            }
-                            @if (Model.CaseDetails.insolvencyType == InsolvencyType.DRO || Model.CaseDetails.insolvencyType == InsolvencyType.BANKRUPTCY)
-                            {
-                                <div class="govuk-summary-list__row">
-                                    <dt class="govuk-summary-list__key"> Case description </dt>
-                                    <dd class="govuk-summary-list__value"> @Html.DisplayFor(model => Model.CaseDetails.caseDescription) </dd>
-                                </div>
-                            }
-                        </dl>
-
-                        @if (Model.CaseDetails.Trading != null && Model.CaseDetails.insolvencyType != InsolvencyType.DRO && Model.CaseDetails.insolvencyType != InsolvencyType.IVA)
+                        @switch (Model.CaseDetails.RecordType)
                         {
-                            <table class="govuk-table">
-                                <caption class="govuk-table__caption govuk-table__caption--m">Trading details</caption>
-                                <thead class="govuk-table__head">
-                                    <tr class="govuk-table__row">
-                                        <th scope="col" class="govuk-table__header">Trading name</th>
-                                        <th scope="col" class="govuk-table__header">Address</th>
-                                    </tr>
-                                </thead>
-                                <tbody class="govuk-table__body">
-                                    @foreach (var tradingDetail in Model.CaseDetails.Trading.TradingDetails)
-                                    {
-                                        <tr class="govuk-table__row">
-                                            <td scope="row" class="govuk-table__cell"> @tradingDetail.TradingName</td>
-                                            <td class="govuk-table__cell"> @tradingDetail.TradingAddress</td>
-                                        </tr>
-                                    }
-
-                            </table>
+                            case  IIRRecordType.BKT:
+                                @await Html.PartialAsync("_BKTDetail.cshtml", Model.CaseDetails);
+                                break;
+                            case IIRRecordType.IVA:
+                                @await Html.PartialAsync("_IVADetail.cshtml", Model.CaseDetails);
+                                break;
+                            case IIRRecordType.DRO:
+                                @await Html.PartialAsync("_DRODetail.cshtml", Model.CaseDetails);                              ;
+                                break;
+                            default:
+                                throw new Exception($"Unexpected Record Type: {Model.CaseDetails.RecordType.ToString()}");
                         }
                         <div class="govuk-inset-text"> 
                             Depending on the type of insolvency, information may remain active on the register for a period of up to 3 months following the discharge or notification of completion to the Insolvency Service. <br><br>

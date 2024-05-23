@@ -1,0 +1,40 @@
+﻿@using INSS.EIIR.Web.Constants
+@using INSS.EIIR.Web.Extensions
+@model INSS.EIIR.Models.CaseModels.CaseResult
+
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+
+    <dl class="govuk-summary-list govuk-summary-list--no-border">
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key"> Case name </dt>
+            <dd class="govuk-summary-list__value"> @Html.DisplayFor(model => Model.caseName) </dd>
+        </div>
+
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key"> Type </dt>
+            <dd class="govuk-summary-list__value"> @Html.DisplayFor(model => Model.insolvencyType) </dd>
+        </div>
+
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key"> Order date </dt>
+            <dd class="govuk-summary-list__value">
+                @((Model.insolvencyDate.IsValidDate()) ? Html.DisplayFor(model => (model.insolvencyDate)) : NoData.INFORMATION_NOT_AVAIALBLE)
+            </dd>
+        </div>
+
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key"> Status </dt>
+            <dd class="govuk-summary-list__value"> @Html.DisplayFor(model => Model.caseStatus) </dd>
+        </div>
+
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key"> Case description </dt>
+            <dd class="govuk-summary-list__value"> @Html.DisplayFor(model => Model.caseDescription) </dd>
+        </div>
+
+    </dl>
+
+}

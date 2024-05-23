@@ -68,6 +68,26 @@ public class CaseResult
     public DateTime? dateOfPreviousOrder { get; set; }
     [NotMapped]
     public Trading? Trading { get; set; }
+    [NotMapped]
+    public IIRRecordType RecordType {
+        get 
+        {
+            switch (insolvencyType) {
+
+                case "Bankruptcy":
+                    return IIRRecordType.BKT;
+                case "Individual Voluntary Arrangement":
+                    return IIRRecordType.IVA;
+                case "Debt Relief Order":
+                    return IIRRecordType.DRO;
+                default:
+                    throw new Exception ("Undefined Insolvency Type");
+            }       
+        
+        } 
+    
+    }
+
 }
 
 [XmlRoot("Trading")]
@@ -83,4 +103,17 @@ public class TradingDetails
     public string TradingName { get; set; }
     [XmlElement("TradingAddress")]
     public string TradingAddress { get; set; }
+}
+
+public enum IIRRecordType
+{
+    BKT,
+    BRU,
+    BRO,
+    IBRO,
+    DRO,
+    DRRO,
+    DRRU,
+    IDRRO,
+    IVA
 }
