@@ -39,7 +39,7 @@ namespace INSS.EIIR.Functions.Tests
             _adminApiKey = settings.GetValue<string>("EIIRApiKey");
         }
 
-        [Fact]
+        [Fact(Skip = "No asserts, no mocking of external dependencies, Expensive integration test, dependency on appsettings.json .. which perhaps not available in github")]
         public async Task Run_Builds_And_Populates_Index()
         {
             var timerInfo = new TimerInfo(new DailySchedule(), new ScheduleStatus(), false);
