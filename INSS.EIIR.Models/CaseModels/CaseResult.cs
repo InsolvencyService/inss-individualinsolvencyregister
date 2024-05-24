@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using INSS.EIIR.Models.Constants;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics.CodeAnalysis;
 using System.Xml.Serialization;
@@ -74,18 +75,16 @@ public class CaseResult
         {
             switch (insolvencyType) {
 
-                case "Bankruptcy":
+                case InsolvencyType.BANKRUPTCY:
                     return IIRRecordType.BKT;
-                case "Individual Voluntary Arrangement":
+                case InsolvencyType.IVA:
                     return IIRRecordType.IVA;
-                case "Debt Relief Order":
+                case InsolvencyType.DRO:
                     return IIRRecordType.DRO;
                 default:
                     throw new Exception ("Undefined Insolvency Type");
             }       
-        
-        } 
-    
+        }    
     }
 
 }
