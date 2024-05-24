@@ -19,10 +19,13 @@ param (
     [string] $archivefilePath,
     
     [Parameter(Mandatory=$false)]
+    [string]$logFilePath,
+
+    [Parameter(Mandatory=$false)]
     [string]$subscriptionId
 )
 
-$Logfile = $localFilePath+"\Logs\logs.log"
+$Logfile = $logFilePath+"\logs.log"
 
 # Function to write to log file
 Function WriteLogs
@@ -57,54 +60,52 @@ try
     $storageAccount = Get-AzStorageAccount -ResourceGroupName $azureResouceGroupName -Name $azureStorageAccountName
     $storageContext = $storageAccount.Context
 
-    $files = Get-ChildItem "$localFilePath\*.sql"  
+    #$files = Get-ChildItem "$localFilePath\*.sql"  
+     $files = Get-ChildItem -Path "$localFilePath\*.sql" | Where-Object {
+        ($_.CreationTime -ge $today) -or ($_.LastWriteTime -ge $today)
+    }
 
-    LogWrite("")    
-    LogWrite("===========================Start processing files=======================")
+   
+
+
+    WriteLogs("")    
+    WriteLogs("===========================Start processing files=======================")
+
+     
+    # check if any new files to be processed
+    if ($files -eq $null){
+        WriteLogs("No new files to process" )	
+
+    }
  
     foreach ($azureBlob in $files)
-    {        
-        Write-Output("File : $azureBlob was created/updated on : " + $azureBlob.LastWriteTime)		
+    {   
         WriteLogs("File : $azureBlob was created/updated on : " + $azureBlob.LastWriteTime)	
         
         $blob = Get-AzStorageBlob -Context $storageContext -Container $azureContainerName  -Blob $azureBlob.Name -ErrorAction Ignore 
 		
         # Check if the file already exists in the container
         if (-not $blob)        
-		{        
-            # Check if the files is not created before the current date
-            if ($azureBlob.CreationTime -ge $today -or $azureBlob.LastWriteTime -gt $today)
-            {
-                Write-Output ("Procssing file :  $azureBlob")        
-                WriteLogs ("Procssing file :  $azureBlob")   
+		{               
+            WriteLogs ("Procssing file :  $azureBlob")   
 
-                # Upload each file to the Azure Blob blob container
-                Set-AzStorageBlobContent -Container $azureContainerName -File $azureBlob.FullName   -Context $storageContext -StandardBlobTier 'Cold' -Force | Out-Null    
-
-                Write-Host "File : $azureBlob - successfully uploaded to blob container."
-                WriteLogs "File : $azureBlob - successfully uploaded to blob container."
-            
-            }
-            else
-		    {
-			    Write-Output ( "File : $azureBlob  created in the past ")		
-                LogWrite ( "File : $azureBlob  created in the past ")		
-		    }
+            # Upload each file to the Azure Blob blob container
+            Set-AzStorageBlobContent -Container $azureContainerName -File $azureBlob.FullName   -Context $storageContext -StandardBlobTier 'Cold' -Force | Out-Null    
+                     
+            WriteLogs "File : $azureBlob - successfully uploaded to blob container."
+                
+            Move-Item $azureBlob.FullName $archivefilePath -ErrorAction SilentlyContinue -Force
+            WriteLogs "File : $azureBlob - moved to archive."
         }
 		else
-		{
-			Write-Output ("File : $azureBlob  already exists ")		
-            LogWrite ("File : $azureBlob already exists ")		
+		{			
+            WriteLogs ("File : $azureBlob already exists ")		
 		}
     }
-    LogWrite("===========================Finished processing files=======================")
+    WriteLogs("===========================Finished processing files=======================")
 }
 catch
-{   
-    Write-Output "`r`n Error in uploading files `r`n "
-    Write-Output ("---------------------------------------------")
-    Write-Output $_
-    
+{       
     WriteLogs "`r`n Error in uploading files `r`n "
     WriteLogs ("---------------------------------------------")
     WriteLogs $_
@@ -115,4 +116,4 @@ catch
 #Write-Output ("--------------List of Blobs -----------------")
 # Get-AzStorageBlob -Container $azureContainerName  -Context $storageContext | Select-Object -Property Name,Length,AccessTier 
 
-#Usage:  .\EIIRDailyUpdateCopyFilesToBlobStorage.ps1  'tenantid' 'mk-test-rg' 'mkteststacct' 'mkblobs' "C:\Autojobs-v1"
+#Usage:  .\EIIRDailyUpdateCopyFilesToBlobStorage.ps1  'tenantid' 'mk-test-rg' 'mkteststacct' 'mkblobs1' "C:\Autojobs-v1\EIIR"  "C:\Autojobs-v1\EIIR\Archive" "C:\Autojobs-v1\Logs"
