@@ -32,7 +32,6 @@ namespace INSS.EIIR.Models.Tests
             cr.insolvencyType = "john was here";
 
             //Act
-            //var result = cr.RecordType;
             Action action = () => { var result =  cr.RecordType; }; 
 
             //Assert
