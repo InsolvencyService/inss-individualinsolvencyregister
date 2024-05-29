@@ -20,7 +20,7 @@ namespace INSS.EIIR.DataAccess.Tests
             _connectionString = config.GetConnectionString("iirwebdbContextConnectionString");
         }
 
-        [Fact]
+        [Fact (Skip = "Expensive Integration test ... no appsettings.json to be had")]
         public void SearchByName_Returns_Correct_Number_Of_Rows()
         {
             //Arrange

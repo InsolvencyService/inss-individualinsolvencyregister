@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using INSS.EIIR.Models.Constants;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics.CodeAnalysis;
 using System.Xml.Serialization;
@@ -68,6 +69,24 @@ public class CaseResult
     public DateTime? dateOfPreviousOrder { get; set; }
     [NotMapped]
     public Trading? Trading { get; set; }
+    [NotMapped]
+    public IIRRecordType RecordType {
+        get 
+        {
+            switch (insolvencyType) {
+
+                case InsolvencyType.BANKRUPTCY:
+                    return IIRRecordType.BKT;
+                case InsolvencyType.IVA:
+                    return IIRRecordType.IVA;
+                case InsolvencyType.DRO:
+                    return IIRRecordType.DRO;
+                default:
+                    throw new Exception ("Undefined Insolvency Type");
+            }       
+        }    
+    }
+
 }
 
 [XmlRoot("Trading")]
@@ -83,4 +102,17 @@ public class TradingDetails
     public string TradingName { get; set; }
     [XmlElement("TradingAddress")]
     public string TradingAddress { get; set; }
+}
+
+public enum IIRRecordType
+{
+    BKT,
+    BRU,
+    BRO,
+    IBRO,
+    DRO,
+    DRRO,
+    DRRU,
+    IDRRO,
+    IVA
 }

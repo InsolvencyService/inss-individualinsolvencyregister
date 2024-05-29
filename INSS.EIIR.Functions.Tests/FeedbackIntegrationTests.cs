@@ -57,7 +57,7 @@ namespace INSS.EIIR.Functions.Tests
             _feedbackDataProvider = new FeedbackDataProvider(_feedbackRepository);
         }
 
-        [Fact]
+        [Fact (Skip = "Expensive integration test, dependency on appsettings.json .. which perhaps not available in github")]
         public async Task Feedback_GetAllFeedback_Returns_OkResult()
         {
             //Arrange
