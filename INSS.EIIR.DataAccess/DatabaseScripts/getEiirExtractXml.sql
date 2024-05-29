@@ -1318,9 +1318,9 @@ SET @resultXML = (SELECT
 					END As CourtNumber,
 					caseYear AS CaseYear,
 					insolvencyDate AS StartDate,
+					TRIM(caseStatus) AS Status,
 					FORMAT(annulDate, 'dd/MM/yyyy HH:mm:ss') AS AnnulDate,
 					annulReason AS AnnulReason,
-					TRIM(caseStatus) AS Status,
 					caseDescription AS CaseDescription,
 					'Please note that this person is deceased (Deceased Date ' + CONVERT(VARCHAR(10), deceasedDate, 103) + ')' AS SpecialNote,
 					tradingNames AS TradingNames
