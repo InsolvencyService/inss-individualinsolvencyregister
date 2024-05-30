@@ -431,6 +431,14 @@ FROM #Cases c
     ELSE '<No Trading Names Found>'
 END AS tradingNames,
 
+	--BRO Details
+	CAST(CASE cp.hasBro WHEN 'Y' THEN 1 ELSE 0 END as bit) as broIsBRO,
+	cp.BROStartDate as broStartDate,
+	cp.BROEndDate as broEndDate,
+	CAST(CASE cp.PrevIBRONote WHEN 'Y'THEN 1 ELSE 0 END as bit) as broHasPrevIBRO,
+	cp.IBROStartDate as broPrevIBROStartDate, --should be populated if BROisBRO and BROhasPrevIBRO => PreviousIBROStartDate... as well as when IBROisIBRO
+	cp.IBROEndDate as broPrevIBROEndDate, --should be populated if BROisBRO and BROhasPrevIBRO => PreviousIBROEndDate
+
     --  Insolvency practitioner contact details
     TRIM((SELECT STRING_AGG( ISNULL(ci_ip.forenames +' '+ ci_ip.surname, ' '), ', ' ) FROM ci_ip  WHERE ci_ip.ip_no = insolvencyAppointment.ip_no and insolvencyAppointment.ip_appt_type = 'M' and insolvencyAppointment.appt_end_date IS NULL and insolvencyAppointment.case_no = inscase.case_no)) AS insolvencyPractitionerName,
     TRIM((SELECT TOP 1 ip_firm_name FROM ci_ip_address WHERE ci_ip_address.ip_no = insolvencyAppointment.ip_no and insolvencyAppointment.ip_appt_type = 'M' and insolvencyAppointment.appt_end_date IS NULL and insolvencyAppointment.ip_address_no = ci_ip_address.ip_address_no and insolvencyAppointment.case_no = inscase.case_no)) AS insolvencyPractitionerFirmName,

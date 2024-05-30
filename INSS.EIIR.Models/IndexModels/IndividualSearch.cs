@@ -112,6 +112,25 @@ public class IndividualSearch
     [SimpleField]
     public string TradingPostcode { get; set; }
 
+    //BRO related fields
+    [SimpleField]
+    public Boolean BROisBRO { get; set; }
+
+    [SimpleField]
+    public DateTime BROStartDate { get; set; }
+
+    [SimpleField]
+    public DateTime BROEndDate { get; set; }
+
+    [SimpleField]
+    public Boolean BROhasPrevIBRO { get; set; }
+
+    [SimpleField]
+    public DateTime BROPrevIBROStartDate { get; set; }
+
+    [SimpleField]
+    public DateTime BROPrevIBROEndDate { get; set; }
+
     [SimpleField]
     public string PractitionerName { get; set; }
 
