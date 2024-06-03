@@ -90,7 +90,10 @@ public class CaseResult
             switch (insolvencyType) {
 
                 case InsolvencyType.BANKRUPTCY:
-                    return IIRRecordType.BKT;
+                    if (broIsBro)
+                        return IIRRecordType.BRO;
+                    else
+                        return IIRRecordType.BKT;
                 case InsolvencyType.IVA:
                     return IIRRecordType.IVA;
                 case InsolvencyType.DRO:
