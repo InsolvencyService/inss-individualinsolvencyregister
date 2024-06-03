@@ -112,7 +112,7 @@ CREATE TABLE #prevIBRO (
 INSERT INTO #prevIBRO
 	SELECT case_id, subj_refno,	ibro_order_date, ibro_end_date
 	FROM	subject_ibro 
-	LEFT JOIN #Cases c on case_id = c.CaseNo AND subj_refno = c.IndivNo
+	INNER JOIN #Cases c on case_id = c.CaseNo AND subj_refno = c.IndivNo
 	AND	(ibro_order_date IS NOT NULL
 	AND      ibro_app_filed_date IS NOT NULL
 	AND      ibro_hearing_date IS NOT NULL
@@ -128,7 +128,7 @@ CREATE TABLE #prevIDRRO (
 INSERT INTO #prevIDRRO 
 SELECT case_id, subj_refno, ibro_order_date, ibro_end_date
 	FROM subject_ibro 
-	LEFT JOIN #Cases c on case_id = c.CaseNo AND subj_refno = c.IndivNo
+	INNER JOIN #Cases c on case_id = c.CaseNo AND subj_refno = c.IndivNo
 	AND	(ibro_order_date IS NOT NULL
 	AND      ibro_app_filed_date IS NOT NULL
 	AND      ibro_hearing_date IS NOT NULL
@@ -430,6 +430,14 @@ FROM #Cases c
     )
     ELSE '<No Trading Names Found>'
 END AS tradingNames,
+
+	--BRO Details
+	CAST(CASE cp.hasBro WHEN 'Y' THEN 1 ELSE 0 END as bit) as broIsBRO,
+	cp.BROStartDate as broStartDate,
+	cp.BROEndDate as broEndDate,
+	CAST(CASE cp.PrevIBRONote WHEN 'Y'THEN 1 ELSE 0 END as bit) as broHasPrevIBRO,
+	cp.IBROStartDate as broPrevIBROStartDate, --should be populated if BROisBRO and BROhasPrevIBRO => PreviousIBROStartDate... as well as when IBROisIBRO
+	cp.IBROEndDate as broPrevIBROEndDate, --should be populated if BROisBRO and BROhasPrevIBRO => PreviousIBROEndDate
 
     --  Insolvency practitioner contact details
     TRIM((SELECT STRING_AGG( ISNULL(ci_ip.forenames +' '+ ci_ip.surname, ' '), ', ' ) FROM ci_ip  WHERE ci_ip.ip_no = insolvencyAppointment.ip_no and insolvencyAppointment.ip_appt_type = 'M' and insolvencyAppointment.appt_end_date IS NULL and insolvencyAppointment.case_no = inscase.case_no)) AS insolvencyPractitionerName,

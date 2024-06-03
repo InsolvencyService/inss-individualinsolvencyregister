@@ -48,6 +48,20 @@ public class CaseResult
     public string? caseDescription { get; set; }
     public string? tradingNames { get; set; }
 
+    //Properties which support BRO (Bankruptcy Restriction Order) record types
+    public bool broIsBro { get; set; }
+
+    public DateTime? broStartDate { get; set; }
+
+    public DateTime? broEndDate { get; set; }
+
+    public bool broHasPrevIBRO { get; set; }
+
+    public DateTime? broPrevIBROStartDate { get; set; }  
+
+    public DateTime? broPrevIBROEndDate { get; set; }
+
+    //Properties which support Insolvency Practitioner details
     public string? insolvencyPractitionerName { get; set; }
 
     public string? insolvencyPractitionerFirmName { get; set; }
