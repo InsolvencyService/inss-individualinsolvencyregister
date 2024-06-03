@@ -51,8 +51,10 @@ public class CaseResult
     //Properties which support BRO (Bankruptcy Restriction Order) record types
     public bool broIsBro { get; set; }
 
+    [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}")]
     public DateTime? broStartDate { get; set; }
 
+    [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}")]
     public DateTime? broEndDate { get; set; }
 
     public bool broHasPrevIBRO { get; set; }

@@ -1,0 +1,74 @@
+﻿@using INSS.EIIR.Web.Constants
+@using INSS.EIIR.Web.Extensions
+@model INSS.EIIR.Models.CaseModels.CaseResult
+
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+
+    <dl class="govuk-summary-list govuk-summary-list--no-border">
+
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key"> Type </dt>
+            <dd class="govuk-summary-list__value"> Bankruptcy Restrictions Order </dd>
+        </div>
+
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key"> Start date </dt>
+            <dd class="govuk-summary-list__value"> @Html.DisplayFor(model => model.broStartDate) </dd>
+        </div>
+
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key"> End date </dt>
+            <dd class="govuk-summary-list__value"> @Html.DisplayFor(model => model.broEndDate) </dd>
+        </div>
+
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key"> Duration </dt>
+            <dd class="govuk-summary-list__value"> @(Model.broStartDate.Duration(Model.broEndDate)) </dd>
+        </div>
+
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key"> Court </dt>
+            <dd class="govuk-summary-list__value"> @Html.DisplayFor(model => Model.courtName) </dd>
+        </div>
+
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key"> Number </dt>
+            <dd class="govuk-summary-list__value"> @Html.DisplayFor(model => Model.courtNumber) </dd>
+        </div>
+
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key"> Year </dt>
+            <dd class="govuk-summary-list__value"> @Html.DisplayFor(model => Model.caseYear) </dd>
+        </div>
+
+
+
+
+    </dl>
+
+    @if (Model.Trading != null )
+    {
+        <table class="govuk-table">
+            <caption class="govuk-table__caption govuk-table__caption--m">Trading details</caption>
+            <thead class="govuk-table__head">
+                <tr class="govuk-table__row">
+                    <th scope="col" class="govuk-table__header">Trading name</th>
+                    <th scope="col" class="govuk-table__header">Address</th>
+                </tr>
+            </thead>
+            <tbody class="govuk-table__body">
+                @foreach (var tradingDetail in Model.Trading.TradingDetails)
+                {
+                    <tr class="govuk-table__row">
+                        <td scope="row" class="govuk-table__cell"> @tradingDetail.TradingName</td>
+                        <td class="govuk-table__cell"> @tradingDetail.TradingAddress</td>
+                    </tr>
+                }
+
+        </table>
+    }
+
+}
