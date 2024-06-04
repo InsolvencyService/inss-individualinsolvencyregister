@@ -7,14 +7,18 @@ namespace INSS.EIIR.Models.Tests
     public class CaseResultTests
     {
         [Theory]
-        [InlineData("Bankruptcy", IIRRecordType.BKT)]
-        [InlineData("Individual Voluntary Arrangement", IIRRecordType.IVA)]
-        [InlineData("Debt Relief Order", IIRRecordType.DRO)]
-        public void Ensure_Correct_RecordType_Determined(string insolvencytype, IIRRecordType expected)
+        [InlineData("Bankruptcy",false, IIRRecordType.BKT)]
+        [InlineData("Bankruptcy", true, IIRRecordType.BRO)]
+        [InlineData("Individual Voluntary Arrangement",false, IIRRecordType.IVA)]
+        [InlineData("Individual Voluntary Arrangement", true, IIRRecordType.IVA)]
+        [InlineData("Debt Relief Order",false, IIRRecordType.DRO)]
+        [InlineData("Debt Relief Order", true, IIRRecordType.DRO)]
+        public void Ensure_Correct_RecordType_Determined(string insolvencytype, bool isBro, IIRRecordType expected)
         {
             //Arrange
             var cr = new CaseModels.CaseResult();
             cr.insolvencyType = insolvencytype;
+            cr.broIsBro = isBro;
 
             //Act
             var result = cr.RecordType;

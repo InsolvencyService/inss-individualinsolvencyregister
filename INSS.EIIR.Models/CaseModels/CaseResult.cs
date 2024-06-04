@@ -51,14 +51,18 @@ public class CaseResult
     //Properties which support BRO (Bankruptcy Restriction Order) record types
     public bool broIsBro { get; set; }
 
+    [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}")]
     public DateTime? broStartDate { get; set; }
 
+    [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}")]
     public DateTime? broEndDate { get; set; }
 
     public bool broHasPrevIBRO { get; set; }
 
-    public DateTime? broPrevIBROStartDate { get; set; }  
+    [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}")]
+    public DateTime? broPrevIBROStartDate { get; set; }
 
+    [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}")]
     public DateTime? broPrevIBROEndDate { get; set; }
 
     //Properties which support Insolvency Practitioner details
@@ -90,7 +94,10 @@ public class CaseResult
             switch (insolvencyType) {
 
                 case InsolvencyType.BANKRUPTCY:
-                    return IIRRecordType.BKT;
+                    if (broIsBro)
+                        return IIRRecordType.BRO;
+                    else
+                        return IIRRecordType.BKT;
                 case InsolvencyType.IVA:
                     return IIRRecordType.IVA;
                 case InsolvencyType.DRO:
