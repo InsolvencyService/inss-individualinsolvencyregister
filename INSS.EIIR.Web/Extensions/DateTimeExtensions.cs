@@ -11,10 +11,11 @@ namespace INSS.EIIR.Web.Extensions
             return dateString != null && dateString != DateTime.MinValue;
         }
 
-        //Outputs the number of years and days between two dates
+        //Outputs the number of years and days between two dates for display purposes
         //More than 5 years - output only year portion rounded for the number of days
         //Less than 5 years - both years and days
         //Less than a years - only days
+        //Ignores leap years as hopefully good enough for display purposes
         public static string Duration(this DateTime? self, DateTime? to)
         {
 
@@ -23,8 +24,8 @@ namespace INSS.EIIR.Web.Extensions
 
             var ts = ((DateTime)to).Subtract((DateTime)self);
 
-            var yearstxt = "";
-            var daystxt = "";
+            var yearsTxt = "";
+            var daysTxt = "";
 
             var days = (int)ts.Days;
             var years = days / 365;
@@ -32,26 +33,26 @@ namespace INSS.EIIR.Web.Extensions
             if (years != 0)
                 days = days - (365 * years);
 
-            var daysfx = days == 1 ? "" : "s";
-            var yearsfx = years == 1 ? "" : "s";
+            var daySffx = days == 1 ? "" : "s";
+            var yearSffx = years == 1 ? "" : "s";
 
             if (years >= 5)
             {
                 if (((double)days / 365) > 0.5)
                     years += 1;
-                yearstxt = $"{years} years";
+                yearsTxt = $"{years} years";
             }
             else if (years >= 1)
             {
-                yearstxt = $"{years} year{yearsfx} ";
-                daystxt = $"{days} day{daysfx}";
+                yearsTxt = $"{years} year{yearSffx} ";
+                daysTxt = $"{days} day{daySffx}";
             }
             else
             { 
-                daystxt = $"{days} day{daysfx}";
+                daysTxt = $"{days} day{daySffx}";
             }
 
-            return $"{yearstxt}{daystxt}";
+            return $"{yearsTxt}{daysTxt}";
         }
 
     }
