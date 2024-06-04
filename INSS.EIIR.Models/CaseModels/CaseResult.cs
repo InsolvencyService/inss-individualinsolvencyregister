@@ -59,8 +59,10 @@ public class CaseResult
 
     public bool broHasPrevIBRO { get; set; }
 
-    public DateTime? broPrevIBROStartDate { get; set; }  
+    [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}")]
+    public DateTime? broPrevIBROStartDate { get; set; }
 
+    [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}")]
     public DateTime? broPrevIBROEndDate { get; set; }
 
     //Properties which support Insolvency Practitioner details

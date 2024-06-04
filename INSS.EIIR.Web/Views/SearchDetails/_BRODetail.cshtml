@@ -44,31 +44,31 @@
             <dd class="govuk-summary-list__value"> @Html.DisplayFor(model => Model.caseYear) </dd>
         </div>
 
+        @if (Model.broHasPrevIBRO)
+        {
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key"> NOTE </dt>
+                <dd class="govuk-summary-list__value"> This Bankruptcy Restrictions Order was preceded by an Interim Bankruptcy Restrictions Order, details shown below </dd>
+            </div>
 
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key"> Previous start date </dt>
+                <dd class="govuk-summary-list__value"> @Html.DisplayFor(model => model.broPrevIBROStartDate) </dd>
+            </div>
+
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key"> Previous end date </dt>
+                <dd class="govuk-summary-list__value"> @Html.DisplayFor(model => model.broPrevIBROEndDate) </dd>
+            </div>
+
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key"> Previous duration </dt>
+                <dd class="govuk-summary-list__value"> @(Model.broPrevIBROStartDate.Duration(Model.broPrevIBROEndDate)) </dd>
+            </div>
+
+        }
 
 
     </dl>
-
-    @if (Model.Trading != null )
-    {
-        <table class="govuk-table">
-            <caption class="govuk-table__caption govuk-table__caption--m">Trading details</caption>
-            <thead class="govuk-table__head">
-                <tr class="govuk-table__row">
-                    <th scope="col" class="govuk-table__header">Trading name</th>
-                    <th scope="col" class="govuk-table__header">Address</th>
-                </tr>
-            </thead>
-            <tbody class="govuk-table__body">
-                @foreach (var tradingDetail in Model.Trading.TradingDetails)
-                {
-                    <tr class="govuk-table__row">
-                        <td scope="row" class="govuk-table__cell"> @tradingDetail.TradingName</td>
-                        <td class="govuk-table__cell"> @tradingDetail.TradingAddress</td>
-                    </tr>
-                }
-
-        </table>
-    }
 
 }
