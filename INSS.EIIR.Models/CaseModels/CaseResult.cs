@@ -105,7 +105,10 @@ public class CaseResult
                 case InsolvencyType.IVA:
                     return IIRRecordType.IVA;
                 case InsolvencyType.DRO:
-                    return IIRRecordType.DRO;
+                    if (hasRestrictions && restrictionsType == RestrictionsType.ORDER)
+                        return IIRRecordType.DRRO;
+                    else
+                        return IIRRecordType.DRO;
                 default:
                     throw new Exception ("Undefined Insolvency Type");
             }       

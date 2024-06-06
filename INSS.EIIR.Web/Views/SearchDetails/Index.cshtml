@@ -107,6 +107,9 @@
                             case IIRRecordType.BRO:
                                 @await Html.PartialAsync("_BRODetail.cshtml", Model.CaseDetails);
                                 break;
+                            case IIRRecordType.DRRO:
+                                @await Html.PartialAsync("_DRRODetail.cshtml", Model.CaseDetails);
+                                break;
                             default:
                                 throw new Exception($"Unexpected Record Type: {Model.CaseDetails.RecordType.ToString()}");
                         }
