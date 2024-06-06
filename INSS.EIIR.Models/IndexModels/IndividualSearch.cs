@@ -112,24 +112,32 @@ public class IndividualSearch
     [SimpleField]
     public string TradingPostcode { get; set; }
 
-    //BRO related fields
+    //Restriction related fields
     [SimpleField]
-    public Boolean BROisBRO { get; set; }
+    public Boolean HasRestrictions { get; set; }
+
+    //Expected values null, Interim Order, Order, Undertaking 
+    [SimpleField]
+    public string RestrictionsType { get; set; }
 
     [SimpleField]
-    public DateTime? BROStartDate { get; set; }
+    public DateTime? RestrictionsStartDate { get; set; }
 
     [SimpleField]
-    public DateTime? BROEndDate { get; set; }
+    public DateTime? RestrictionsEndDate { get; set; }
 
+    //Whether the individual had a previous Interim Restrictions Order for their current Restrictions Order
+    //Practically only applies to BROs
     [SimpleField]
-    public Boolean BROhasPrevIBRO { get; set; }
+    public Boolean HasPrevInterimRestrictionsOrder { get; set; }
 
+    //The start date of their previous Interim Restrictions Order
     [SimpleField]
-    public DateTime? BROPrevIBROStartDate { get; set; }
+    public DateTime? PrevInterimRestrictionsOrderStartDate { get; set; }
 
+    //The end date of their previous Interim Restrictions Order
     [SimpleField]
-    public DateTime? BROPrevIBROEndDate { get; set; }
+    public DateTime? PrevInterimRestrictionsOrderEndDate { get; set; }
 
     [SimpleField]
     public string PractitionerName { get; set; }

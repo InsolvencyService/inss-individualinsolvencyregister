@@ -48,22 +48,26 @@ public class CaseResult
     public string? caseDescription { get; set; }
     public string? tradingNames { get; set; }
 
-    //Properties which support BRO (Bankruptcy Restriction Order) record types
-    public bool broIsBro { get; set; }
+    //Properties which supports Restrictions (IBRO,BRO,BRU for Bankruptcys) and (DRRO,DRRU for Debt Relief Orders)
+    public bool hasRestrictions { get; set; }
+
+    //Possile values null, Interim Order, Order, Undertaking
+    public string restrictionsType { get; set; }
 
     [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}")]
-    public DateTime? broStartDate { get; set; }
+    public DateTime? restrictionsStartDate { get; set; }
 
     [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}")]
-    public DateTime? broEndDate { get; set; }
+    public DateTime? restrictionsEndDate { get; set; }
 
-    public bool broHasPrevIBRO { get; set; }
-
-    [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}")]
-    public DateTime? broPrevIBROStartDate { get; set; }
+    //Applies in practice to BROs only an individual may be subject to an IBRO before a BRO
+    public bool hasaPrevInterimRestrictionsOrder { get; set; }
 
     [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}")]
-    public DateTime? broPrevIBROEndDate { get; set; }
+    public DateTime? prevInterimRestrictionsOrderStartDate { get; set; }
+
+    [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}")]
+    public DateTime? prevInterimRestrictionsOrderEndDate { get; set; }
 
     //Properties which support Insolvency Practitioner details
     public string? insolvencyPractitionerName { get; set; }
@@ -94,7 +98,7 @@ public class CaseResult
             switch (insolvencyType) {
 
                 case InsolvencyType.BANKRUPTCY:
-                    if (broIsBro)
+                    if (hasRestrictions && restrictionsType == RestrictionsType.ORDER)
                         return IIRRecordType.BRO;
                     else
                         return IIRRecordType.BKT;
@@ -127,13 +131,22 @@ public class TradingDetails
 
 public enum IIRRecordType
 {
-    BKT,
+    //Bankruptcy - lasts for 1 year
+    BKT, 
+    //Bankruptcy Restrictions Undertaking - MAY follow a BKT if indivdual voluntarily agrees
     BRU,
+    //Bankruptcy Restrictions Order - MAY follow BKT if enforced by court
     BRO,
+    //Interim Bankruptcy Restrictions Order - MAY follow BKT, before a BRO
     IBRO,
+    //Debt Relief Order
     DRO,
+    //Debt Relief Restrictions Order - MAY follow a DRO if indivdual voluntarily agrees
     DRRO,
+    //Debt Relief Restrictions Undertaking - MAY follow a DRO if enforced
     DRRU,
+    //Interim Debt Relief Restrictions Order - these practically do not exist
     IDRRO,
+    //Individual Volunarty Arrangement
     IVA
 }

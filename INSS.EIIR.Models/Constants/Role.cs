@@ -12,3 +12,10 @@ public static class InsolvencyType
     public const string IVA = "Individual Voluntary Arrangement";
     public const string DRO = "Debt Relief Order";
 }
+
+public static class RestrictionsType
+{
+    public const string ORDER = "Order";
+    public const string INTERIMORDER = "Interim Order";
+    public const string UNDERTAKING = "Undertaking";
+}
