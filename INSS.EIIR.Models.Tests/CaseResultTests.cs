@@ -6,9 +6,22 @@ namespace INSS.EIIR.Models.Tests
 {
     public class CaseResultTests
     {
+        /// <summary>
+        /// Test the determination of IIRRecordType
+        /// Property DOES NOT detect unhappy paths if supplied data is not compliant with what is expected
+        /// e.g. Restrictions are not relevant to IVA, if hasRestrictions or restrictionsType provided they are ignored rathe than exception thrown
+        /// e.g. hasRestrictions = false && restrictionsType = "Order"
+        /// e.g. restrictionsType = "john was here"
+        /// </summary>
+        /// <param name="insolvencytype"></param>
+        /// <param name="hasRestrictions"></param>
+        /// <param name="restrictionsType"></param>
+        /// <param name="expected"></param>
         [Theory]
         [InlineData("Bankruptcy",false, null, IIRRecordType.BKT)]
         [InlineData("Bankruptcy",true,"Order",  IIRRecordType.BRO)]
+        [InlineData("Bankruptcy", true, "Undertaking", IIRRecordType.BRU)]
+        [InlineData("Bankruptcy", false, "Undertaking", IIRRecordType.BKT)]
         [InlineData("Individual Voluntary Arrangement",false,null,IIRRecordType.IVA)]
         [InlineData("Individual Voluntary Arrangement",true,"Order",IIRRecordType.IVA)]
         [InlineData("Debt Relief Order",false,null, IIRRecordType.DRO)]

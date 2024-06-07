@@ -95,6 +95,9 @@
 
                         @switch (Model.CaseDetails.RecordType)
                         {
+                            case IIRRecordType.BRU:
+                                @await Html.PartialAsync("_BRUDetail.cshtml", Model.CaseDetails);
+                                break;
                             case  IIRRecordType.BKT:
                                 @await Html.PartialAsync("_BKTDetail.cshtml", Model.CaseDetails);
                                 break;
