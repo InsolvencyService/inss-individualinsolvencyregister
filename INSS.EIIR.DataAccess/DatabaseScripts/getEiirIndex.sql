@@ -102,14 +102,14 @@ INSERT INTO #discharge
 	FROM	ci_indiv_discharge 
 	LEFT JOIN #Cases c on case_no = c.CaseNo AND indiv_no = c.IndivNo
 
-CREATE TABLE #prevIBRO (
+CREATE TABLE #prevInterimRestrictionsOrder (
 	case_id int, 
 	subj_refno int,
 	ibro_order_date datetime,
 	ibro_end_date datetime
 ) 
 
-INSERT INTO #prevIBRO
+INSERT INTO #prevInterimRestrictionsOrder
 	SELECT case_id, subj_refno,	ibro_order_date, ibro_end_date
 	FROM	subject_ibro 
 	INNER JOIN #Cases c on case_id = c.CaseNo AND subj_refno = c.IndivNo
@@ -119,21 +119,6 @@ INSERT INTO #prevIBRO
 	AND      ibro_discharge_date IS NULL
 	AND      ibro_end_date IS NOT NULL)
 
-CREATE TABLE #prevIDRRO (
-	case_id int, 
-	subj_refno int,
-	ibro_order_date datetime,
-	ibro_end_date datetime
-)
-INSERT INTO #prevIDRRO 
-SELECT case_id, subj_refno, ibro_order_date, ibro_end_date
-	FROM subject_ibro 
-	INNER JOIN #Cases c on case_id = c.CaseNo AND subj_refno = c.IndivNo
-	AND	(ibro_order_date IS NOT NULL
-	AND      ibro_app_filed_date IS NOT NULL
-	AND      ibro_hearing_date IS NOT NULL
-	AND      ibro_discharge_date IS NULL
-	AND      ibro_end_date IS NOT NULL)
 
 CREATE TABLE #caseParams (
     caseNo int,
@@ -145,16 +130,15 @@ CREATE TABLE #caseParams (
 	hasBru varchar(1),
 	hasBro varchar(1),
 	hasiBro varchar(1),
-	PrevIBRONote varchar(1),
-	PrevIDRRONote varchar(1),
+	PrevIRONote varchar(1),
+	PrevIROStartDate datetime,
+	PrevIROEndDate datetime,
 	BROStartDate datetime,
 	BROEndDate datetime,
 	BRUStartDate datetime,
 	BRUEndDate datetime,
 	IBROStartDate datetime,
 	IBROEndDate datetime,
-	IDRROStartDate datetime,
-	IDRROEndDate datetime,
 	BROPrintCaseDetails varchar(1),
 	MoratoriumPeriodEndingDate datetime, 
 	RevokedDate datetime
@@ -170,16 +154,15 @@ SELECT c.CaseNo, c.IndivNo,
 	(ISNULL((SELECT 'Y' FROM #broDetails  WHERE case_id = c.CaseNo and subj_refno = c.IndivNo), 'N')) AS hasBro,
 	(ISNULL((SELECT 'Y' FROM #ibroDetails WHERE case_id = c.CaseNo and subj_refno = c.IndivNo), 'N')) AS hasiBro,
 	
-	(ISNULL((SELECT 'Y' FROM #prevIBRO where case_id = c.CaseNo and subj_refno = c.IndivNo), 'N')) as PrevIBRONote,
-	(ISNULL((SELECT 'Y' FROM #prevIDRRO where case_id = c.CaseNo and subj_refno = c.IndivNo), 'N')) as PrevIDRRONote,
+	(ISNULL((SELECT 'Y' FROM #prevInterimRestrictionsOrder where case_id = c.CaseNo and subj_refno = c.IndivNo), 'N')) as PrevIRONote,
+	(ISNULL((SELECT ibro_order_date from #prevInterimRestrictionsOrder where case_id = c.CaseNo and subj_refno = c.IndivNo), NULL)) as PrevIROStartDate,
+	(ISNULL((SELECT ibro_end_date from #prevInterimRestrictionsOrder where case_id = c.CaseNo and subj_refno = c.IndivNo), NULL)) as PrevIROEndDate,
 	(ISNULL((SELECT bro_order_date from #broDetails where case_id = c.CaseNo and subj_refno = c.IndivNo), NULL)) as BROStartDate,
 	(ISNULL((SELECT bro_end_date from #broDetails where case_id = c.CaseNo and subj_refno = c.IndivNo), NULL)) as BROEndDate,
 	(ISNULL((SELECT bru_accpt_date from #bruDetails where case_id = c.CaseNo and subj_refno = c.IndivNo), NULL)) as BRUStartDate,
 	(ISNULL((SELECT bro_end_date from #bruDetails where case_id = c.CaseNo and subj_refno = c.IndivNo), NULL)) as BRUEndDate,
-	(ISNULL((SELECT ibro_order_date from #prevIBRO where case_id = c.CaseNo and subj_refno = c.IndivNo), NULL)) as IBROStartDate,
-	(ISNULL((SELECT ibro_end_date from #prevIBRO where case_id = c.CaseNo and subj_refno = c.IndivNo), NULL)) as IBROEndDate,
-	(ISNULL((SELECT ibro_order_date from #prevIDRRO where case_id = c.CaseNo and subj_refno = c.IndivNo), NULL)) as IDRROStartDate,
-	(ISNULL((SELECT ibro_end_date from #prevIDRRO where case_id = c.CaseNo and subj_refno = c.IndivNo), NULL)) as IDRROEndDate,
+	(ISNULL((SELECT ibro_order_date from #ibroDetails where case_id = c.CaseNo and subj_refno = c.IndivNo), NULL)) as IBROStartDate,
+	(ISNULL((SELECT ibro_end_date from #ibroDetails where case_id = c.CaseNo and subj_refno = c.IndivNo), NULL)) as IBROEndDate,
 	
 	(SELECT (CASE 
 		WHEN ((c.InsolvencyType = 'B' AND (((ISNULL((SELECT 'Y' FROM #broDetails WHERE case_id = c.CaseNo and subj_refno = c.IndivNo), 'N')) = 'Y' OR
@@ -431,13 +414,26 @@ FROM #Cases c
     ELSE '<No Trading Names Found>'
 END AS tradingNames,
 
-	--BRO Details
-	CAST(CASE cp.hasBro WHEN 'Y' THEN 1 ELSE 0 END as bit) as broIsBRO,
-	cp.BROStartDate as broStartDate,
-	cp.BROEndDate as broEndDate,
-	CAST(CASE cp.PrevIBRONote WHEN 'Y'THEN 1 ELSE 0 END as bit) as broHasPrevIBRO,
-	cp.IBROStartDate as broPrevIBROStartDate, --should be populated if BROisBRO and BROhasPrevIBRO => PreviousIBROStartDate... as well as when IBROisIBRO
-	cp.IBROEndDate as broPrevIBROEndDate, --should be populated if BROisBRO and BROhasPrevIBRO => PreviousIBROEndDate
+	CAST(CASE WHEN cp.hasBro = 'Y' OR cp.hasBru = 'Y' OR cp.hasiBro = 'Y' THEN 1 ELSE 0 END as bit) as hasRestrictions,
+	CASE WHEN cp.hasBro = 'Y' THEN 'Order'
+			WHEN cp.hasBru = 'Y' THEN 'Interim Order'
+			WHEN cp.hasiBro = 'Y' THEN 'Undertaking'
+			ELSE null END as restrictionsType,
+	CAST(CASE 
+		WHEN cp.hasBro = 'Y' THEN cp.BROStartDate 
+		WHEN cp.hasBru = 'Y' THEN cp.BRUStartDate
+		WHEN cp.hasiBro = 'Y' THEN cp.IBROStartDate
+		ELSE null END as datetime) as restrictionsStartDate,
+	CAST(CASE  
+		WHEN cp.hasBro = 'Y' THEN cp.BROEndDate
+		WHEN cp.hasBru = 'Y' THEN cp.BRUEndDate
+		WHEN cp.hasiBro = 'Y' THEN cp.IBROEndDate
+		ELSE null END as datetime) as restrictionsEndDate,
+	--previous Interim Restriction Orders are not currently used for DRRO, though technically the schema could support it
+	--in practice you can have prevIBRO, but prevIDRRO do not occur
+	CAST(CASE WHEN cp.PrevIRONote = 'Y' AND cp.hasBro = 'Y' THEN 1 ELSE 0 END as bit) as hasaPrevInterimRestrictionsOrder,
+	CAST(CASE WHEN cp.PrevIRONote = 'Y' AND cp.hasBro = 'Y' THEN cp.PrevIROStartDate ELSE null END as datetime) as prevInterimRestrictionsOrderStartDate, 
+	CAST(CASE WHEN cp.PrevIRONote = 'Y' AND cp.hasBro = 'Y' THEN cp.PrevIROEndDate ELSE null END as datetime) as prevInterimRestrictionsOrderEndDate, 
 
     --  Insolvency practitioner contact details
     TRIM((SELECT STRING_AGG( ISNULL(ci_ip.forenames +' '+ ci_ip.surname, ' '), ', ' ) FROM ci_ip  WHERE ci_ip.ip_no = insolvencyAppointment.ip_no and insolvencyAppointment.ip_appt_type = 'M' and insolvencyAppointment.appt_end_date IS NULL and insolvencyAppointment.case_no = inscase.case_no)) AS insolvencyPractitionerName,
@@ -529,13 +525,9 @@ If(OBJECT_ID('tempdb..#discharge') Is Not Null)
 Begin
 	DROP TABLE #discharge
 End
-If(OBJECT_ID('tempdb..#prevIBRO') Is Not Null)
+If(OBJECT_ID('tempdb..#prevInterimRestrictionsOrder') Is Not Null)
 Begin
-	DROP TABLE #prevIBRO
-End
-If(OBJECT_ID('tempdb..#prevIDRRO') Is Not Null)
-Begin
-	DROP TABLE #prevIDRRO
+	DROP TABLE #prevInterimRestrictionsOrder
 End
 If(OBJECT_ID('tempdb..#caseParams') Is Not Null)
 Begin

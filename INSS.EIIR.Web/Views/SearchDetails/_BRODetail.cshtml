@@ -16,17 +16,17 @@
 
         <div class="govuk-summary-list__row">
             <dt class="govuk-summary-list__key"> Start date </dt>
-            <dd class="govuk-summary-list__value"> @Html.DisplayFor(model => model.broStartDate) </dd>
+            <dd class="govuk-summary-list__value"> @Html.DisplayFor(model => model.restrictionsStartDate) </dd>
         </div>
 
         <div class="govuk-summary-list__row">
             <dt class="govuk-summary-list__key"> End date </dt>
-            <dd class="govuk-summary-list__value"> @Html.DisplayFor(model => model.broEndDate) </dd>
+            <dd class="govuk-summary-list__value"> @Html.DisplayFor(model => model.restrictionsEndDate) </dd>
         </div>
 
         <div class="govuk-summary-list__row">
             <dt class="govuk-summary-list__key"> Duration </dt>
-            <dd class="govuk-summary-list__value"> @(Model.broStartDate.Duration(Model.broEndDate)) </dd>
+            <dd class="govuk-summary-list__value"> @(Model.restrictionsStartDate.Duration(Model.restrictionsEndDate)) </dd>
         </div>
 
         <div class="govuk-summary-list__row">
@@ -44,7 +44,7 @@
             <dd class="govuk-summary-list__value"> @Html.DisplayFor(model => Model.caseYear) </dd>
         </div>
 
-        @if (Model.broHasPrevIBRO)
+        @if (Model.hasaPrevInterimRestrictionsOrder)
         {
             <div class="govuk-summary-list__row">
                 <dt class="govuk-summary-list__key"> NOTE </dt>
@@ -53,17 +53,17 @@
 
             <div class="govuk-summary-list__row">
                 <dt class="govuk-summary-list__key"> Previous start date </dt>
-                <dd class="govuk-summary-list__value"> @Html.DisplayFor(model => model.broPrevIBROStartDate) </dd>
+                <dd class="govuk-summary-list__value"> @Html.DisplayFor(model => model.prevInterimRestrictionsOrderStartDate) </dd>
             </div>
 
             <div class="govuk-summary-list__row">
                 <dt class="govuk-summary-list__key"> Previous end date </dt>
-                <dd class="govuk-summary-list__value"> @Html.DisplayFor(model => model.broPrevIBROEndDate) </dd>
+                <dd class="govuk-summary-list__value"> @Html.DisplayFor(model => model.prevInterimRestrictionsOrderEndDate) </dd>
             </div>
 
             <div class="govuk-summary-list__row">
                 <dt class="govuk-summary-list__key"> Previous duration </dt>
-                <dd class="govuk-summary-list__value"> @(Model.broPrevIBROStartDate.Duration(Model.broPrevIBROEndDate)) </dd>
+                <dd class="govuk-summary-list__value"> @(Model.prevInterimRestrictionsOrderStartDate.Duration(Model.prevInterimRestrictionsOrderEndDate)) </dd>
             </div>
 
         }
