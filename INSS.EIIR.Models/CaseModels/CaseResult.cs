@@ -96,10 +96,11 @@ public class CaseResult
         get 
         {
             switch (insolvencyType) {
-
                 case InsolvencyType.BANKRUPTCY:
                     if (hasRestrictions && restrictionsType == RestrictionsType.ORDER)
                         return IIRRecordType.BRO;
+                    else if (hasRestrictions && restrictionsType == RestrictionsType.UNDERTAKING)
+                        return IIRRecordType.BRU;
                     else
                         return IIRRecordType.BKT;
                 case InsolvencyType.IVA:
