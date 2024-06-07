@@ -416,8 +416,8 @@ END AS tradingNames,
 
 	CAST(CASE WHEN cp.hasBro = 'Y' OR cp.hasBru = 'Y' OR cp.hasiBro = 'Y' THEN 1 ELSE 0 END as bit) as hasRestrictions,
 	CASE WHEN cp.hasBro = 'Y' THEN 'Order'
-			WHEN cp.hasBru = 'Y' THEN 'Interim Order'
-			WHEN cp.hasiBro = 'Y' THEN 'Undertaking'
+			WHEN cp.hasBru = 'Y' THEN 'Undertaking'
+			WHEN cp.hasiBro = 'Y' THEN 'Interim Order'
 			ELSE null END as restrictionsType,
 	CAST(CASE 
 		WHEN cp.hasBro = 'Y' THEN cp.BROStartDate 
