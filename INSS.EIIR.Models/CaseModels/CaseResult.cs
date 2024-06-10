@@ -110,6 +110,8 @@ public class CaseResult
                 case InsolvencyType.DRO:
                     if (hasRestrictions && restrictionsType == RestrictionsType.ORDER)
                         return IIRRecordType.DRRO;
+                    else if (hasRestrictions && restrictionsType == RestrictionsType.UNDERTAKING)
+                        return IIRRecordType.DRRU;
                     else
                         return IIRRecordType.DRO;
                 default:
