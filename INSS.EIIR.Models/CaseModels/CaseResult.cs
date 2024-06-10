@@ -101,6 +101,8 @@ public class CaseResult
                         return IIRRecordType.BRO;
                     else if (hasRestrictions && restrictionsType == RestrictionsType.UNDERTAKING)
                         return IIRRecordType.BRU;
+                    else if (hasRestrictions && restrictionsType == RestrictionsType.INTERIMORDER)
+                        return IIRRecordType.IBRO;
                     else
                         return IIRRecordType.BKT;
                 case InsolvencyType.IVA:
