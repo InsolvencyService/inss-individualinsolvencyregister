@@ -25,7 +25,7 @@ namespace INSS.EIIR.Models.Tests
         [InlineData("Individual Voluntary Arrangement",false,null,IIRRecordType.IVA)]
         [InlineData("Individual Voluntary Arrangement",true,"Order",IIRRecordType.IVA)]
         [InlineData("Debt Relief Order",false,null, IIRRecordType.DRO)]
-        [InlineData("Debt Relief Order", true,"Order", IIRRecordType.DRO)]
+        [InlineData("Debt Relief Order", true,"Order", IIRRecordType.DRRO)]
         public void Ensure_Correct_RecordType_Determined(string insolvencytype, bool hasRestrictions, string restrictionsType, IIRRecordType expected)
         {
             //Arrange
