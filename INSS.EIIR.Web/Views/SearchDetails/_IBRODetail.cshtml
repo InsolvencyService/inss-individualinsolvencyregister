@@ -1,0 +1,50 @@
+﻿@using INSS.EIIR.Web.Constants
+@using INSS.EIIR.Web.Extensions
+@model INSS.EIIR.Models.CaseModels.CaseResult
+
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+
+    <dl class="govuk-summary-list govuk-summary-list--no-border">
+
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key"> Type </dt>
+            <dd class="govuk-summary-list__value"> Interim Bankruptcy Restrictions Order </dd>
+        </div>
+
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key"> Start date </dt>
+            <dd class="govuk-summary-list__value"> @Html.DisplayFor(model => model.restrictionsStartDate) </dd>
+        </div>
+
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key"> End date </dt>
+            <dd class="govuk-summary-list__value"> @Html.DisplayFor(model => model.restrictionsEndDate) </dd>
+        </div>
+
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key"> Duration </dt>
+            <dd class="govuk-summary-list__value"> @(Model.restrictionsStartDate.Duration(Model.restrictionsEndDate)) </dd>
+        </div>
+
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key"> Court </dt>
+            <dd class="govuk-summary-list__value"> @Html.DisplayFor(model => Model.courtName) </dd>
+        </div>
+
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key"> Number </dt>
+            <dd class="govuk-summary-list__value"> @Html.DisplayFor(model => Model.courtNumber) </dd>
+        </div>
+
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key"> Year </dt>
+            <dd class="govuk-summary-list__value"> @Html.DisplayFor(model => Model.caseYear) </dd>
+        </div>
+
+
+    </dl>
+
+}

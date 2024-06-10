@@ -22,6 +22,8 @@ namespace INSS.EIIR.Models.Tests
         [InlineData("Bankruptcy",true,"Order",  IIRRecordType.BRO)]
         [InlineData("Bankruptcy", true, "Undertaking", IIRRecordType.BRU)]
         [InlineData("Bankruptcy", false, "Undertaking", IIRRecordType.BKT)]
+        [InlineData("Bankruptcy", true, "Interim Order", IIRRecordType.IBRO)]
+        [InlineData("Bankruptcy", false, "Interim Order", IIRRecordType.BKT)]
         [InlineData("Individual Voluntary Arrangement",false,null,IIRRecordType.IVA)]
         [InlineData("Individual Voluntary Arrangement",true,"Order",IIRRecordType.IVA)]
         [InlineData("Debt Relief Order",false,null, IIRRecordType.DRO)]

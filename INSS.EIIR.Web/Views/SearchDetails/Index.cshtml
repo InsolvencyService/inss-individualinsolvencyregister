@@ -113,6 +113,9 @@
                             case IIRRecordType.DRRO:
                                 @await Html.PartialAsync("_DRRODetail.cshtml", Model.CaseDetails);
                                 break;
+                            case IIRRecordType.IBRO:
+                                @await Html.PartialAsync("_IBRODetail.cshtml", Model.CaseDetails);
+                                break;
                             case IIRRecordType.DRRU:
                                 @await Html.PartialAsync("_DRRUDetail.cshtml", Model.CaseDetails);
                                 break;
