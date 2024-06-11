@@ -286,7 +286,7 @@ FROM #Cases c
 		WHEN cp.BROPrintCaseDetails = 'Y' AND insolvency_type = 'D' AND cp.RevokedDate IS NULL AND cp.MoratoriumPeriodEndingDate <= GETDATE()
 			THEN TRIM((select TRIM(SelectionValue) from #StatusCodes WHERE SelectionCode = 'DRO1') + ' ended on ' + CONVERT(CHAR(10), cp.MoratoriumPeriodEndingDate, 103))
 		WHEN cp.BROPrintCaseDetails = 'Y' AND insolvency_type = 'D' AND cp.RevokedDate IS NOT NULL 
-			THEN TRIM((select TRIM(SelectionValue) from #StatusCodes WHERE SelectionCode = 'DRO2') + ' on ' + CONVERT(CHAR(10), cp.MoratoriumPeriodEndingDate, 103))
+			THEN TRIM((select TRIM(SelectionValue) from #StatusCodes WHERE SelectionCode = 'DRO2') + ' on ' + CONVERT(CHAR(10), cp.RevokedDate, 103))
 		
 		WHEN cp.BROPrintCaseDetails = 'Y' AND insolvency_type = 'D' AND DateofOrder IS NOT NULL AND cp.MoratoriumPeriodEndingDate IS NOT NULL
 			AND  DateDiff(day, DATEADD(month, 12, DateofOrder), cp.MoratoriumPeriodEndingDate) > 1 
