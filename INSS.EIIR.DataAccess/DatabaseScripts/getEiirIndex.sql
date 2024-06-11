@@ -393,11 +393,13 @@ FROM #Cases c
             SELECT 
                 trading_name AS TradingName,
                 ISNULL(
-                    REPLACE(
-                        TRIM(CONCAT(address_line_1, ', ', address_line_2, ', ', address_line_3, ', ', address_line_4, ', ', address_line_5, ', ', postcode)), 
-                        ' ,', 
-                        ''
-                    ), 
+					STUFF ('' + CASE TRIM(COALESCE(ci_trade_CTE.address_line_1, '')) WHEN '' THEN '' ELSE ', ' + TRIM(ci_trade_CTE.address_line_1) END 
+								+ CASE TRIM(COALESCE(ci_trade_CTE.address_line_2, '')) WHEN '' THEN '' ELSE ', ' + TRIM(ci_trade_CTE.address_line_2) END
+								+ CASE TRIM(COALESCE(ci_trade_CTE.address_line_3, '')) WHEN '' THEN '' ELSE ', ' + TRIM(ci_trade_CTE.address_line_3) END
+								+ CASE TRIM(COALESCE(ci_trade_CTE.address_line_4, '')) WHEN '' THEN '' ELSE ', ' + TRIM(ci_trade_CTE.address_line_4) END
+								+ CASE TRIM(COALESCE(ci_trade_CTE.address_line_5, '')) WHEN '' THEN '' ELSE ', ' + TRIM(ci_trade_CTE.address_line_5) END
+								+ CASE TRIM(COALESCE(ci_trade_CTE.postcode, '')) WHEN '' THEN '' ELSE ', ' + TRIM(ci_trade_CTE.postcode) END
+					,1,2, ''), 
                     ''
                 ) AS TradingAddress 
             FROM (
