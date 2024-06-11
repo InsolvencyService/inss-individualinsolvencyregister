@@ -155,8 +155,10 @@ CREATE TABLE #caseParams (
 	BRUEndDate datetime,
 	IBROStartDate datetime,
 	IBROEndDate datetime,
-	IDRROStartDate datetime,
-	IDRROEndDate datetime,
+	PrevIBROStartDate datetime,
+	PrevIBROEndDate datetime,
+	PrevIDRROStartDate datetime,
+	PrevIDRROEndDate datetime,
 	BROPrintCaseDetails varchar(1),
 	MoratoriumPeriodEndingDate datetime, 
 	RevokedDate datetime,
@@ -183,10 +185,12 @@ SELECT c.CaseNo, c.IndivNo,
 	(ISNULL((SELECT bro_end_date from #broDetails where case_id = c.CaseNo and subj_refno = c.IndivNo), NULL)) as BROEndDate,
 	(ISNULL((SELECT bru_accpt_date from #bruDetails where case_id = c.CaseNo and subj_refno = c.IndivNo), NULL)) as BRUStartDate,
 	(ISNULL((SELECT bro_end_date from #bruDetails where case_id = c.CaseNo and subj_refno = c.IndivNo), NULL)) as BRUEndDate,
-	(ISNULL((SELECT ibro_order_date from #prevIBRO where case_id = c.CaseNo and subj_refno = c.IndivNo), NULL)) as IBROStartDate,
-	(ISNULL((SELECT ibro_end_date from #prevIBRO where case_id = c.CaseNo and subj_refno = c.IndivNo), NULL)) as IBROEndDate,
-	(ISNULL((SELECT ibro_order_date from #prevIDRRO where case_id = c.CaseNo and subj_refno = c.IndivNo), NULL)) as IDRROStartDate,
-	(ISNULL((SELECT ibro_end_date from #prevIDRRO where case_id = c.CaseNo and subj_refno = c.IndivNo), NULL)) as IDRROEndDate,
+	(ISNULL((SELECT ibro_order_date from #ibroDetails where case_id = c.CaseNo and subj_refno = c.IndivNo), NULL)) as IBROStartDate,
+	(ISNULL((SELECT ibro_end_date from #ibroDetails where case_id = c.CaseNo and subj_refno = c.IndivNo), NULL)) as IBROEndDate,
+	(ISNULL((SELECT ibro_order_date from #prevIBRO where case_id = c.CaseNo and subj_refno = c.IndivNo), NULL)) as PrevIBROStartDate,
+	(ISNULL((SELECT ibro_end_date from #prevIBRO where case_id = c.CaseNo and subj_refno = c.IndivNo), NULL)) as PrevIBROEndDate,
+	(ISNULL((SELECT ibro_order_date from #prevIDRRO where case_id = c.CaseNo and subj_refno = c.IndivNo), NULL)) as PrevIDRROStartDate,
+	(ISNULL((SELECT ibro_end_date from #prevIDRRO where case_id = c.CaseNo and subj_refno = c.IndivNo), NULL)) as PrevIDRROEndDate,
 	
 	(SELECT (CASE 
 		WHEN ((c.InsolvencyType = 'B' AND (((ISNULL((SELECT 'Y' FROM #broDetails WHERE case_id = c.CaseNo and subj_refno = c.IndivNo), 'N')) = 'Y' OR
@@ -888,8 +892,10 @@ PRIMARY KEY NONCLUSTERED
 			THEN ISNULL(CONVERT(CHAR(10), cp.BROEndDate, 103), '') 
 		WHEN cp.hasBru = 'Y' AND insolvency_type = 'B' 
 			THEN ISNULL(CONVERT(CHAR(10), cp.BRUEndDate, 103), '')
-		WHEN cp.hasiBro = 'Y' AND insolvency_type = 'B' 
-			THEN ISNULL(CONVERT(CHAR(10), cp.IBROEndDate, 103), '')
+		WHEN cp.hasiBro = 'Y' AND insolvency_type = 'B'
+			--FOR XML null value in follow will produce  &#x20;
+			--THEN ISNULL(CONVERT(CHAR(10), cp.IBROEndDate, 103), '')
+			THEN ISNULL(CONVERT(CHAR(10), cp.IBROEndDate, 103), '@@@@@@@@@@')
 		ELSE NULL
 	END AS restrictionsEndDate,
 
@@ -935,12 +941,12 @@ PRIMARY KEY NONCLUSTERED
 	END AS previousIBRONote,
 
 	CASE WHEN cp.hasBro = 'Y' AND cp.PrevIBRONote = 'Y' AND insolvency_type = 'B'
-		THEN ISNULL(CONVERT(CHAR(10), cp.IBROStartDate, 103), '')
+		THEN ISNULL(CONVERT(CHAR(10), cp.PrevIBROStartDate, 103), '')
 		ELSE ''
 	END AS previousIBROStartDate,
 
 	CASE WHEN cp.hasBro = 'Y' AND cp.PrevIBRONote = 'Y' AND insolvency_type = 'B'
-		THEN ISNULL(CONVERT(CHAR(10), cp.IBROEndDate, 103), '')
+		THEN ISNULL(CONVERT(CHAR(10), cp.PrevIBROEndDate, 103), '')
 		ELSE NULL
 	END AS previousIBROEndDate,
 
@@ -950,12 +956,12 @@ PRIMARY KEY NONCLUSTERED
 	END AS previousIDRRONote,
 
 	CASE WHEN cp.hasBro = 'Y' AND cp.PrevIDRRONote = 'Y' AND insolvency_type = 'D'
-		THEN ISNULL(CONVERT(CHAR(10), cp.IDRROStartDate, 103), '')
+		THEN ISNULL(CONVERT(CHAR(10), cp.PrevIDRROStartDate, 103), '')
 		ELSE NULL
 	END AS previousIDRROStartDate,
 
 	CASE WHEN cp.hasBro = 'Y' AND cp.PrevIDRRONote = 'Y' AND insolvency_type = 'D'
-		THEN ISNULL(CONVERT(CHAR(10), cp.IDRROEndDate, 103), '')
+		THEN ISNULL(CONVERT(CHAR(10), cp.PrevIDRROEndDate, 103), '')
 		ELSE NULL
 	END AS previousIDRROEndDate,
 
