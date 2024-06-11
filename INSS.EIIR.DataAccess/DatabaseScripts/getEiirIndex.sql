@@ -375,10 +375,10 @@ FROM #Cases c
 		WHEN address_withheld_flag = 'Y' THEN '(Case Description withheld as Individual Address has been withheld)'
         WHEN insolvency_type = 'I' THEN '(Case Description does not apply to IVA)'
         ELSE 
-		STUFF((SELECT CONCAT(ci_case_desc.case_desc_line, '')
-			FROM ci_case_desc
-			WHERE  ci_case_desc.case_no = snap.CaseNo
-			for XML path ('')),1,0,'')
+			(SELECT (STRING_AGG(TRIM(REPLACE(REPLACE(REPLACE(d.case_desc_line,CHAR(10),' '),CHAR(13),' '),CHAR(9),' ')), ''))			
+			FROM ci_case_desc d
+			WHERE d.case_no = snap.CaseNo
+			)
     END AS caseDescription,
 
     CASE
