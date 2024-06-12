@@ -213,19 +213,17 @@ FROM #Cases c
     CASE WHEN wflag = 'Y' 
         THEN '(Sorry - this Address has been withheld)'
         ELSE  
-            (SELECT CASE 
-               WHEN CHARINDEX(',',REVERSE(REPLACE(TRIM(CONCAT(individual.address_line_1, ', ', individual.address_line_2, ', ', individual.address_line_3, ', ', individual.address_line_4, ' ', individual.address_line_5)), ' ,', '')))=1 
-			   THEN 
-					LEFT(REPLACE(TRIM(CONCAT(individual.address_line_1, ', ', individual.address_line_2, ', ', individual.address_line_3, ', ', individual.address_line_4, ', ', individual.address_line_5)), ' ,', ''),
-					LEN(REPLACE(TRIM(CONCAT(individual.address_line_1, ', ', individual.address_line_2, ', ', individual.address_line_3, ', ', individual.address_line_4, ', ', individual.address_line_5)), ' ,', ''))-1) 
-               ELSE 
-					REPLACE(TRIM(CONCAT(individual.address_line_1, ', ', individual.address_line_2, ', ', individual.address_line_3, ', ', individual.address_line_4, ', ', individual.address_line_5)), ' ,', '')
-           END)             
+            STUFF ('' + CASE TRIM(COALESCE(individual.address_line_1, '')) WHEN '' THEN '' ELSE ', ' + TRIM(individual.address_line_1) END 
+				+ CASE TRIM(COALESCE(individual.address_line_2, '')) WHEN '' THEN '' ELSE ', ' + TRIM(individual.address_line_2) END
+				+ CASE TRIM(COALESCE(individual.address_line_3, '')) WHEN '' THEN '' ELSE ', ' + TRIM(individual.address_line_3) END
+				+ CASE TRIM(COALESCE(individual.address_line_4, '')) WHEN '' THEN '' ELSE ', ' + TRIM(individual.address_line_4) END
+				+ CASE TRIM(COALESCE(individual.address_line_5, '')) WHEN '' THEN '' ELSE ', ' + TRIM(individual.address_line_5) END
+			,1,2, '')             
     END AS individualAddress,
 
 	CASE WHEN wflag = 'Y' 
 		THEN '(Sorry - this Address has been withheld)'
-		ELSE  ISNULL(individual.postcode, 'No Last Known PostCode Found')
+		ELSE  ISNULL(CAST(individual.postcode as VARCHAR(30)), 'No Last Known PostCode Found')
 	END AS individualPostcode, 
     
 	individual.address_withheld_flag AS individualAddressWithheld, 
@@ -242,11 +240,12 @@ FROM #Cases c
     --  Insolvency case details
     inscase.case_name AS caseName, 
 
+	--APP-5018 following string aggregation on courtname appears unnecessary, DISTINCT required on court name as current duplicate records in ci_court where court='ADJ'
 	CASE
 		WHEN insolvency_type = 'I' OR insolvency_type = 'B'
-			THEN (SELECT STRING_AGG( ISNULL(court_name, ' '), ', ' )  FROM ci_court WHERE court = inscase.court)
+			THEN (SELECT STRING_AGG( ISNULL(tbl.court_name, ' '), ', ' )  FROM (SELECT DISTINCT court_name FROM ci_court WHERE court = inscase.court) tbl)
 		WHEN insolvency_type = 'D' AND cp.hasBro = 'Y'
-			THEN (SELECT STRING_AGG( ISNULL(court_name, ' '), ', ' )  FROM ci_court WHERE court = inscase.court)
+			THEN (SELECT STRING_AGG( ISNULL(tbl.court_name, ' '), ', ' )  FROM (SELECT DISTINCT court_name FROM ci_court WHERE court = inscase.court) tbl)
 		ELSE '(Court does not apply to DRO)'
 	END AS courtName,
 
@@ -286,7 +285,7 @@ FROM #Cases c
 		WHEN cp.BROPrintCaseDetails = 'Y' AND insolvency_type = 'D' AND cp.RevokedDate IS NULL AND cp.MoratoriumPeriodEndingDate <= GETDATE()
 			THEN TRIM((select TRIM(SelectionValue) from #StatusCodes WHERE SelectionCode = 'DRO1') + ' ended on ' + CONVERT(CHAR(10), cp.MoratoriumPeriodEndingDate, 103))
 		WHEN cp.BROPrintCaseDetails = 'Y' AND insolvency_type = 'D' AND cp.RevokedDate IS NOT NULL 
-			THEN TRIM((select TRIM(SelectionValue) from #StatusCodes WHERE SelectionCode = 'DRO2') + ' on ' + CONVERT(CHAR(10), cp.MoratoriumPeriodEndingDate, 103))
+			THEN TRIM((select TRIM(SelectionValue) from #StatusCodes WHERE SelectionCode = 'DRO2') + ' on ' + CONVERT(CHAR(10), cp.RevokedDate, 103))
 		
 		WHEN cp.BROPrintCaseDetails = 'Y' AND insolvency_type = 'D' AND DateofOrder IS NOT NULL AND cp.MoratoriumPeriodEndingDate IS NOT NULL
 			AND  DateDiff(day, DATEADD(month, 12, DateofOrder), cp.MoratoriumPeriodEndingDate) > 1 
@@ -394,11 +393,13 @@ FROM #Cases c
             SELECT 
                 trading_name AS TradingName,
                 ISNULL(
-                    REPLACE(
-                        TRIM(CONCAT(address_line_1, ', ', address_line_2, ', ', address_line_3, ', ', address_line_4, ', ', address_line_5, ', ', postcode)), 
-                        ' ,', 
-                        ''
-                    ), 
+					STUFF ('' + CASE TRIM(COALESCE(ci_trade_CTE.address_line_1, '')) WHEN '' THEN '' ELSE ', ' + TRIM(ci_trade_CTE.address_line_1) END 
+								+ CASE TRIM(COALESCE(ci_trade_CTE.address_line_2, '')) WHEN '' THEN '' ELSE ', ' + TRIM(ci_trade_CTE.address_line_2) END
+								+ CASE TRIM(COALESCE(ci_trade_CTE.address_line_3, '')) WHEN '' THEN '' ELSE ', ' + TRIM(ci_trade_CTE.address_line_3) END
+								+ CASE TRIM(COALESCE(ci_trade_CTE.address_line_4, '')) WHEN '' THEN '' ELSE ', ' + TRIM(ci_trade_CTE.address_line_4) END
+								+ CASE TRIM(COALESCE(ci_trade_CTE.address_line_5, '')) WHEN '' THEN '' ELSE ', ' + TRIM(ci_trade_CTE.address_line_5) END
+								+ CASE TRIM(COALESCE(ci_trade_CTE.postcode, '')) WHEN '' THEN '' ELSE ', ' + TRIM(ci_trade_CTE.postcode) END
+					,1,2, ''), 
                     ''
                 ) AS TradingAddress 
             FROM (
