@@ -32,6 +32,8 @@ public class IndividualSearchMapper : Profile
             .ForMember(dest => dest.InsolvencyType, opt => opt.MapFrom(src => src.insolvencyType))
             .ForMember(dest => dest.NotificationDate, opt => opt.MapFrom(src => src.notificationDate))
             .ForMember(dest => dest.CaseStatus, opt => opt.MapFrom(src => src.caseStatus))
+            .ForMember(dest => dest.CaseDescription, opt => opt.MapFrom(src => src.caseDescription))
+            .ForMember(dest => dest.TradingData, opt => opt.MapFrom(src => src.tradingNames))
             .ForMember(dest => dest.InsolvencyDate, opt => opt.MapFrom(src => src.insolvencyDate))
             .ForMember(dest => dest.HasRestrictions, opt => opt.MapFrom(src => src.hasRestrictions))
             .ForMember(dest => dest.RestrictionsType, opt => opt.MapFrom(src => src.restrictionsType))
@@ -50,8 +52,6 @@ public class IndividualSearchMapper : Profile
             .ForMember(dest => dest.InsolvencyServiceAddress, opt => opt.MapFrom(src => src.insolvencyServiceAddress))
             .ForMember(dest => dest.InsolvencyServicePostcode, opt => opt.MapFrom(src => src.insolvencyServicePostcode))
             .ForMember(dest => dest.InsolvencyServiceTelephone, opt => opt.MapFrom(src => src.insolvencyServicePhone))
-            .ForMember(dest => dest.InsolvencyTradeName, opt => opt.MapFrom(src => src.tradingNames))
-            .ForMember(dest => dest.CaseDescription, opt => opt.MapFrom(src => src.caseDescription))
             .ForMember(dest => dest.CaseNumber, opt => opt.MapFrom(src => src.caseNo))
             .ForMember(dest => dest.IndividualNumber, opt => opt.MapFrom(src => src.indivNo))
             .ForMember(dest => dest.DateOfPreviousOrder, opt => opt.MapFrom(src => src.dateOfPreviousOrder))
@@ -59,14 +59,14 @@ public class IndividualSearchMapper : Profile
         .ReverseMap()
         .ForPath(s => s.Trading,
                 opt => opt.MapFrom(
-                    src => (!string.IsNullOrEmpty(src.InsolvencyTradeName) && src.InsolvencyTradeName != "<No Trading Names Found>")
-                        ? src.InsolvencyTradeName : null));
+                    src => (!string.IsNullOrEmpty(src.TradingData) && src.TradingData != "<No Trading Names Found>")
+                        ? src.TradingData : null));
 
         CreateMap<IndividualSearch, SearchResult>()
             .ForMember(m => m.individualForenames, opt => opt.MapFrom(s => s.FirstName))
             .ForMember(m => m.individualSurname, opt => opt.MapFrom(s => s.FamilyName))
             .ForMember(m => m.individualAlias, opt => opt.MapFrom(s => s.AlternativeNames))
-            .ForMember(m => m.companyName, opt => opt.MapFrom(s => s.InsolvencyTradeName))
+            .ForMember(m => m.companyName, opt => opt.MapFrom(s => s.TradingData))
             .ForMember(m => m.individualTown, opt => opt.MapFrom(s => s.LastKnownTown))
             .ForMember(m => m.individualPostcode, opt => opt.MapFrom(s => s.LastKnownPostcode))
             .ForMember(m => m.caseNo, opt => opt.MapFrom(s => s.CaseNumber))
