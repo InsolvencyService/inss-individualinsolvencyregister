@@ -108,8 +108,7 @@ public class IndividualSearchIndexService : BaseIndexService<IndividualSearch>
                     {  "IndividualNumber", 5 },
                     {  "FirstName", 5 },
                     {  "LastKnownTown", 5 },
-                    {  "TradingName", 5 },
-                    {  "InsolvencyTradeName", 5 },
+                    {  "TradingData", 5 },
                     {  "AlternativeNames", 4 },
                 })
             });
