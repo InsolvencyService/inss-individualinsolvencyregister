@@ -83,19 +83,18 @@ public class IndividualSearch
     [SimpleField(IsFilterable = true)]
     public string InsolvencyType { get; set; }
 
+    /// <summary>
+    /// InsolvencyDate contains the date in text form dd/MM/yyyy
+    /// At time of writing June 2024 there were no records on the register without an insolvency_date
+    /// </summary>
     [SimpleField(IsSortable = true)]
-    public DateTime StartDate { get; set; }
-
-    [SimpleField]
-    public DateTime EndDate { get; set; }
-
-    [SimpleField]
     public String InsolvencyDate { get; set; }
 
-
+    /// <summary>
+    /// Applies to IVAs
+    /// </summary>
     [SimpleField]
     public DateTime NotificationDate { get; set; }
-
 
     [SimpleField(IsFilterable = true)]
     public string CaseStatus { get; set; }
@@ -103,20 +102,27 @@ public class IndividualSearch
     [SimpleField]
     public string CaseDescription { get; set; }
 
+    /// <summary>
+    /// Contains an XML fragment with following structure
+    /// <Trading><TradingDetails><TradingName></TradingName><TradingAddress></TradingAddress></TradingDetails></Trading>
+    /// Where
+    ///     TradingName contains a value
+    ///     TradingAddress contains as value
+    ///     There can be mulitple <TradingDetails> elements - i.e muliptle names and addresses
+    /// OR
+    /// <No //Trading Names Found> //Don't know why but need to include "//" before Trading earlier in this comment line
+    /// </summary>
     [SearchableField(IsSortable = true)]
-    public string TradingName { get; set; }
+    public string TradingData { get; set; }
 
-    [SimpleField]
-    public string TradingAddress { get; set; }
+    /*          Restriction related fields - Start            */
 
-    [SimpleField]
-    public string TradingPostcode { get; set; }
-
-    //Restriction related fields
     [SimpleField]
     public Boolean HasRestrictions { get; set; }
 
-    //Expected values null, Interim Order, Order, Undertaking 
+    /// <summary>
+    /// Expected values null, Interim Order, Order, Undertaking 
+    /// </summary>
     [SimpleField]
     public string RestrictionsType { get; set; }
 
@@ -138,6 +144,8 @@ public class IndividualSearch
     //The end date of their previous Interim Restrictions Order
     [SimpleField]
     public DateTime? PrevInterimRestrictionsOrderEndDate { get; set; }
+
+    /*          Restriction related fields - End            */
 
     [SimpleField]
     public string PractitionerName { get; set; }
@@ -167,12 +175,7 @@ public class IndividualSearch
 
     [SimpleField]
     public string InsolvencyServiceTelephone { get; set; }
-
-    [SearchableField(IsSortable = true)]
-    public string InsolvencyTradeName { get; set; }
-
-    [SimpleField]
-    public string InsolvencyTradeNameAddress { get; set; }
+ 
     [SimpleField]
     public DateTime? DateOfPreviousOrder { get; set; }
     [SimpleField]
