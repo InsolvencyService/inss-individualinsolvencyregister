@@ -44,7 +44,7 @@ namespace INSS.EIIR.DailyExtract
                 {
                     _log.LogInformation("Executing script");
 
-                    server.ConnectionContext.ExecuteNonQuery(script);
+                    server.ConnectionContext.ExecuteNonQuery(script, ExecutionTypes.ContinueOnError);
                     _log.LogInformation("Executed Script");
 
                 }
