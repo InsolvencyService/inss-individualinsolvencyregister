@@ -32,7 +32,7 @@ public class ExtractJobServiceTrigger
 
         _logger.LogInformation($"ExtractJobServiceTrigger received message: {message} on {now}");
 
-        //APP-4990 Remove message from queue otherwise it processes n time consuming mega resource due to time it takes to process
+        //APP-4990 Remove message from queue otherwise it processes n times, due to time it takes to run, consuming mega SQL resource 
         await messageReceiver.CompleteAsync(lockToken);
 
         try
