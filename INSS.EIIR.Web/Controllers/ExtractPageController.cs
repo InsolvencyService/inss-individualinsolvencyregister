@@ -12,7 +12,7 @@ namespace INSS.EIIR.Web.Controllers
             _extractService = extractService;
         }
 
-        [HttpGet("/eiir/{subscriberId}/downloads/latest")]
+        [HttpGet("/{subscriberId}/downloads/latest")]
         public async Task<IActionResult> Index(string subscriberId)
         {
             var result = await _extractService.GetLatestExtractAsync(subscriberId);
