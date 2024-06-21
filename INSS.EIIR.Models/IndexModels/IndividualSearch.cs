@@ -21,16 +21,13 @@ public class IndividualSearch
         _mapper = mapper;    
     }
 
-
-    //[SearchableField(IsSortable = true, IsKey = true)]
     [SimpleField]
     public string CaseNumber { get; set; }
 
-    //[SearchableField(IsSortable = true)]
     [SimpleField]
     public string IndividualNumber { get; set; }
 
-    [SearchableField(IsSortable = true)]
+    [SearchableField]
     public string GlobalSearchField {
         get 
         {
@@ -47,20 +44,15 @@ public class IndividualSearch
     
     }
 
-
-    //[SearchableField(IsSortable = true)]
     [SimpleField]
     public string FirstName { get; set; }
 
-
-    //[SearchableField(IsSortable = true)]
     [SimpleField]
     public string FamilyName { get; set; }
 
     [SimpleField]
     public string Title { get; set; }
 
-    //[SearchableField(IsSortable = true)]
     [SimpleField]
     public string AlternativeNames { get; set; }
 
@@ -70,14 +62,12 @@ public class IndividualSearch
     [SimpleField]
     public string Occupation { get; set; }
 
-    //[SearchableField(IsSortable = true)]
     [SimpleField]
     public string LastKnownTown { get; set; }
 
     [SimpleField]
     public string LastKnownAddress { get; set; }
 
-    //[SearchableField(IsSortable = true)]
     [SimpleField]
     public string LastKnownPostcode { get; set; }
 
@@ -93,7 +83,7 @@ public class IndividualSearch
     [SimpleField(IsFilterable = true)]
     public string Court { get; set; }
 
-    [SimpleField(IsFilterable = true, IsSortable = true)]
+    [SimpleField(IsFilterable = true)]
     public string CourtNumber { get; set; }
 
     [SimpleField]
@@ -132,7 +122,6 @@ public class IndividualSearch
     /// <No //Trading Names Found> //Don't know why but need to include "//" before Trading earlier in this comment line
     /// </summary>
 
-    //[SearchableField(IsSortable = true)]
     [SimpleField]
     public string TradingData { get; set; }
 
@@ -182,16 +171,22 @@ public class IndividualSearch
     [SimpleField]
     public DateTime? RestrictionsEndDate { get; set; }
 
-    //Whether the individual had a previous Interim Restrictions Order for their current Restrictions Order
-    //Practically only applies to BROs
+    /// <summary>
+    /// Whether the individual had a previous Interim Restrictions Order for their current Restrictions Order
+    /// Practically only applies to BROs
+    /// </summary>
     [SimpleField]
     public Boolean HasPrevInterimRestrictionsOrder { get; set; }
 
-    //The start date of their previous Interim Restrictions Order
+    /// <summary>
+    /// The start date of their previous Interim Restrictions Order
+    /// </summary>
     [SimpleField]
     public DateTime? PrevInterimRestrictionsOrderStartDate { get; set; }
 
-    //The end date of their previous Interim Restrictions Order
+    /// <summary>
+    /// The end date of their previous Interim Restrictions Order
+    /// </summary>
     [SimpleField]
     public DateTime? PrevInterimRestrictionsOrderEndDate { get; set; }
 
