@@ -1,50 +1,67 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using System.Security.AccessControl;
 using Azure.Search.Documents.Indexes;
+using INSS.EIIR.Models.Constants;
+using INSS.EIIR.Models.AutoMapperProfiles;
+using INSS.EIIR.Models.CaseModels;
+using AutoMapper;
+using System.Collections.Generic;
+using System.Xml;
 
 namespace INSS.EIIR.Models.IndexModels;
 
 [ExcludeFromCodeCoverage]
 public class IndividualSearch
 {
-    [SearchableField(IsSortable = true, IsKey = true)]
+
+    private readonly IMapper _mapper;
+
+    public IndividualSearch(IMapper mapper) 
+    {
+        _mapper = mapper;    
+    }
+
+
+    //[SearchableField(IsSortable = true, IsKey = true)]
+    [SimpleField]
     public string CaseNumber { get; set; }
 
-    [SearchableField(IsSortable = true)]
+    //[SearchableField(IsSortable = true)]
+    [SimpleField]
     public string IndividualNumber { get; set; }
 
     [SearchableField(IsSortable = true)]
-    public string FullName
-    {
-        get
+    public string GlobalSearchField {
+        get 
         {
-            string fullName = $"{FirstName?.Trim()} {MiddleName?.Trim()} {FamilyName?.Trim()}";
-            return string.Join(" ", fullName.Split(default(string[]), StringSplitOptions.RemoveEmptyEntries));
-        }
+            string globalSearchField = $"{CaseNumber} {IndividualNumber} {FirstName?.Trim()} {FamilyName?.Trim()}" +
+                                        $" {(AlternativeNames == Common.NoOtherNames ? "" : string.Join(" ",AlternativeNames.Split(",",StringSplitOptions.RemoveEmptyEntries)))}" +
+                                        $" {(LastKnownTown == Common.NoLastKnownTown ? "" : LastKnownTown)}" +
+                                        $" {(LastKnownPostcode == Common.NoLastKnownPostCode ? "" : LastKnownPostcode)}" +
+                                        $" {(LastKnownPostcode == Common.NoLastKnownPostCode ? "" : LastKnownPostcode)}" +
+                                        $" {string.Join(" ", TradingNames.Split(",", StringSplitOptions.RemoveEmptyEntries))}";
+
+            return string.Join(" ", globalSearchField.Split(default(string[]), StringSplitOptions.RemoveEmptyEntries));
+        } 
+    
+    
     }
 
-    [SearchableField(IsSortable = true)]
-    public string CombinedName
-    {
-        get
-        {
-            string combinedName = $"{FirstName?.Trim()} {FamilyName?.Trim()}";
-            return string.Join(" ", combinedName.Split(default(string[]), StringSplitOptions.RemoveEmptyEntries));
-        }
-    }
 
-    [SearchableField(IsSortable = true)]
+    //[SearchableField(IsSortable = true)]
+    [SimpleField]
     public string FirstName { get; set; }
 
-    [SimpleField]
-    public string MiddleName { get; set; }
 
-    [SearchableField(IsSortable = true)]
+    //[SearchableField(IsSortable = true)]
+    [SimpleField]
     public string FamilyName { get; set; }
 
     [SimpleField]
     public string Title { get; set; }
 
-    [SearchableField(IsSortable = true)]
+    //[SearchableField(IsSortable = true)]
+    [SimpleField]
     public string AlternativeNames { get; set; }
 
     [SimpleField]
@@ -53,13 +70,15 @@ public class IndividualSearch
     [SimpleField]
     public string Occupation { get; set; }
 
-    [SearchableField(IsSortable = true)]
+    //[SearchableField(IsSortable = true)]
+    [SimpleField]
     public string LastKnownTown { get; set; }
 
     [SimpleField]
     public string LastKnownAddress { get; set; }
 
-    [SearchableField(IsSortable = true)]
+    //[SearchableField(IsSortable = true)]
+    [SimpleField]
     public string LastKnownPostcode { get; set; }
 
     [SimpleField]
@@ -112,8 +131,39 @@ public class IndividualSearch
     /// OR
     /// <No //Trading Names Found> //Don't know why but need to include "//" before Trading earlier in this comment line
     /// </summary>
-    [SearchableField(IsSortable = true)]
+
+    //[SearchableField(IsSortable = true)]
+    [SimpleField]
     public string TradingData { get; set; }
+
+
+    /// <summary>
+    /// Returns any TradingNames in TradingData XML or and empty string
+    /// </summary>
+    public string TradingNames {
+
+        get 
+        {
+            if (TradingData == Common.NoTradingNames || string.IsNullOrEmpty(TradingData)) return "";
+
+            Trading trading; 
+
+            try
+            {
+                trading = _mapper.Map<string, Trading>(TradingData);
+            }
+            catch (InvalidOperationException ex) 
+            {
+                if (ex.InnerException is XmlException)
+                    return "";
+
+                throw;           
+            }
+            
+            return string.Join(",",  trading.TradingDetails.Select(td => td.TradingName).ToArray());
+        }
+
+    }
 
     /*          Restriction related fields - Start            */
 

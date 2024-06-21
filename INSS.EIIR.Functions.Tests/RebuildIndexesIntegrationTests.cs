@@ -6,6 +6,7 @@ using INSS.EIIR.Data.Models;
 using INSS.EIIR.DataAccess;
 using INSS.EIIR.Functions.Functions;
 using INSS.EIIR.Interfaces.AzureSearch;
+using INSS.EIIR.Models.AutoMapperProfiles;
 using INSS.EIIR.Models.SearchModels;
 using INSS.EIIR.Services;
 using Microsoft.Azure.WebJobs;
@@ -23,6 +24,8 @@ namespace INSS.EIIR.Functions.Tests
         private readonly string _connectionString;
         private readonly string _searchServiceUrl;
         private readonly string _adminApiKey;
+        private readonly IMapper _mapper;
+
 
         public RebuildIndexesIntegrationTests()
         {
@@ -37,6 +40,14 @@ namespace INSS.EIIR.Functions.Tests
             var settings = config.GetSection("Settings");
             _searchServiceUrl = settings.GetValue<string>("EIIRIndexUrl");
             _adminApiKey = settings.GetValue<string>("EIIRApiKey");
+
+
+            var mapperConfig = new MapperConfiguration(mc =>
+            {
+                mc.AddProfile(new IndividualSearchMapper());
+            });
+
+            _mapper = mapperConfig.CreateMapper();
         }
 
         [Fact(Skip = "No asserts, no mocking of external dependencies, Expensive integration test, dependency on appsettings.json .. which perhaps not available in github")]
@@ -79,7 +90,7 @@ namespace INSS.EIIR.Functions.Tests
         {
             return new List<IndividualSearch>
             {
-                new()
+                new(_mapper)
                 {
                     CaseNumber = "1",
                     FirstName = "Bill",

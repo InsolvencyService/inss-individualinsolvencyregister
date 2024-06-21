@@ -1,4 +1,6 @@
-﻿namespace INSS.EIIR.Models.Constants;
+﻿using static Azure.Core.HttpHeader;
+
+namespace INSS.EIIR.Models.Constants;
 
 public class Role
 {
@@ -18,4 +20,13 @@ public static class RestrictionsType
     public const string ORDER = "Order";
     public const string INTERIMORDER = "Interim Order";
     public const string UNDERTAKING = "Undertaking";
+}
+
+public static class Common
+{
+    public const string NoOtherNames = "No OtherNames Found";
+    public const string NoLastKnownTown = "No Last Known Town Found";
+    public const string NoLastKnownPostCode = "No Last Known PostCode Found";
+    public const string NoTradingNames = "<No Trading Names Found>";
+
 }

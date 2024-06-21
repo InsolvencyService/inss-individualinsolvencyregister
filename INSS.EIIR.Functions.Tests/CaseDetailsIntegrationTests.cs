@@ -10,6 +10,7 @@ using INSS.EIIR.Interfaces.AzureSearch;
 using INSS.EIIR.Interfaces.DataAccess;
 using INSS.EIIR.Interfaces.Services;
 using INSS.EIIR.Models.CaseModels;
+using INSS.EIIR.Models.AutoMapperProfiles;
 using INSS.EIIR.Models.FeedbackModels;
 using INSS.EIIR.Services;
 using Microsoft.AspNetCore.Http;
@@ -25,14 +26,19 @@ namespace INSS.EIIR.Functions.Tests
 {
     public class CaseDetailsIntegrationTests
     {
+
+        private readonly IMapper _mapper;
+
         public CaseDetailsIntegrationTests()
         {
             MapperConfiguration mapperConfig = new(
              cfg =>
              {
                  cfg.AddProfile(new FeedbackMapper());
+                 cfg.AddProfile(new IndividualSearchMapper());
              });
 
+            _mapper = mapperConfig.CreateMapper();
 
             var configuration = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
@@ -56,7 +62,7 @@ namespace INSS.EIIR.Functions.Tests
             individualQueryServiceMock
                 .Setup(m => m.SearchDetailIndexAsync(new CaseRequest()))
                 .ReturnsAsync(caseResult);
-            var caseDetailsFunc = new CaseDetails(logger, individualQueryServiceMock.Object);
+            var caseDetailsFunc = new CaseDetails(logger, individualQueryServiceMock.Object, _mapper);
 
             Mock<HttpRequest> mockRequest = CreateMockRequest(caseResult);
 
