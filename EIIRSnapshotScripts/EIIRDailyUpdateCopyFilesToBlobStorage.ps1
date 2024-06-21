@@ -22,7 +22,7 @@ param (
     [string]$logFilePath,
 
     [Parameter(Mandatory=$false)]
-    [string]$subscriptionId
+    [string]$subscriptionId,
 
     [Parameter(Mandatory=$false)]
     [boolean]$archiveFiles
