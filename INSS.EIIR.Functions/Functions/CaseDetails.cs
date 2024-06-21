@@ -20,15 +20,13 @@ namespace INSS.EIIR.Functions.Functions
     {
         private readonly ILogger<CaseDetails> _logger;
         private readonly IIndividualQueryService _queryService;
-        private readonly IMapper _mapper;
+
 
         public CaseDetails(ILogger<CaseDetails> log,
-           IIndividualQueryService queryService,
-           IMapper mapper)
+           IIndividualQueryService queryService)
         {
             _logger = log;
             _queryService = queryService;
-            _mapper = mapper;
         }
 
         [FunctionName("CaseDetails")]
@@ -49,7 +47,7 @@ namespace INSS.EIIR.Functions.Functions
 
             var caseRequest = JsonConvert.DeserializeObject<CaseRequest>(requestBody);
 
-            var result = await _queryService.GetAsync(new Models.IndexModels.IndividualSearch(_mapper) { CaseNumber = caseRequest.CaseNo.ToString() });
+            var result = await _queryService.GetAsync(new Models.IndexModels.IndividualSearch() { CaseNumber = caseRequest.CaseNo.ToString() });
 
             return new OkObjectResult(result);
 

@@ -27,7 +27,6 @@ namespace INSS.EIIR.Functions.Tests
     public class CaseDetailsIntegrationTests
     {
 
-        private readonly IMapper _mapper;
 
         public CaseDetailsIntegrationTests()
         {
@@ -35,10 +34,8 @@ namespace INSS.EIIR.Functions.Tests
              cfg =>
              {
                  cfg.AddProfile(new FeedbackMapper());
-                 cfg.AddProfile(new IndividualSearchMapper());
-             });
 
-            _mapper = mapperConfig.CreateMapper();
+             });
 
             var configuration = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
@@ -62,7 +59,7 @@ namespace INSS.EIIR.Functions.Tests
             individualQueryServiceMock
                 .Setup(m => m.SearchDetailIndexAsync(new CaseRequest()))
                 .ReturnsAsync(caseResult);
-            var caseDetailsFunc = new CaseDetails(logger, individualQueryServiceMock.Object, _mapper);
+            var caseDetailsFunc = new CaseDetails(logger, individualQueryServiceMock.Object);
 
             Mock<HttpRequest> mockRequest = CreateMockRequest(caseResult);
 

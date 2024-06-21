@@ -30,14 +30,8 @@ public class IndividualQueryServiceIntegrationTests
             caseNo = "12345"
         };
 
-        var mapperConfig = new MapperConfiguration(mc =>
-        {
-            mc.AddProfile(new IndividualSearchMapper());
-        });
 
-        var mapper = mapperConfig.CreateMapper();
-
-        var indexModel = new IndividualSearch(mapper) { CaseNumber = "12345" };
+        var indexModel = new IndividualSearch() { CaseNumber = "12345" };
 
         var searchModel = new IndividualSearchModel
         {

@@ -16,8 +16,15 @@ public class IndividualSearch
 
     private readonly IMapper _mapper;
 
-    public IndividualSearch(IMapper mapper) 
+    public IndividualSearch() 
     {
+        var mapperConfig = new MapperConfiguration(mc =>
+        {
+            mc.AddProfile(new IndividualSearchMapper());
+        });
+
+        var mapper = mapperConfig.CreateMapper();
+
         _mapper = mapper;    
     }
 

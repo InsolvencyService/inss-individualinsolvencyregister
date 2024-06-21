@@ -16,17 +16,6 @@ namespace INSS.EIIR.AzureSearch.Tests
     public class SearchIndexServiceTests
     {
 
-        private readonly IMapper _mapper;
-
-        public SearchIndexServiceTests()
-        {
-            var mapperConfig = new MapperConfiguration(mc =>
-            {
-                mc.AddProfile(new IndividualSearchMapper());
-            });
-
-            _mapper = mapperConfig.CreateMapper();
-        }
 
         [Fact]
         public async Task PopulateIndex_Calls_Correct_Services()
@@ -63,10 +52,6 @@ namespace INSS.EIIR.AzureSearch.Tests
             await service.PopulateIndexAsync(Mock.Of<ILogger>());
 
             //Assert
-
-            //Assert.Equal(caseData.FullName, string.Join(" ", caseData.FirstName, caseData.MiddleName, caseData.FamilyName));
-            //Assert.Equal(caseData.CombinedName, string.Join(" ", caseData.FirstName, caseData.FamilyName));
-
             dataProviderMock.Verify(m => m.GetIndividualSearchData(), Times.Once);
             mapperMock.Verify(m => m.Map<IEnumerable<CaseResult>, IEnumerable<IndividualSearch>>(rawData), Times.Once);
             indexClientMock.Verify(m => m.GetSearchClient("eiir_individuals"), Times.Once);
@@ -98,7 +83,7 @@ namespace INSS.EIIR.AzureSearch.Tests
         {
             return new List<IndividualSearch>
             {
-                new(_mapper)
+                new()
                 {
                     CaseNumber = "1",
                     FirstName = "Bill",

@@ -23,14 +23,7 @@ namespace INSS.EIIR.Models.Tests
         {
 
             //Arrange
-            var mapperConfig = new MapperConfiguration(mc =>
-            {
-                mc.AddProfile(new IndividualSearchMapper());
-            });
-
-            var mapper = mapperConfig.CreateMapper();
-
-            var model = new IndividualSearch(mapper);
+            var model = new IndividualSearch();
             model.TradingData = tradingData;
 
             //Act
