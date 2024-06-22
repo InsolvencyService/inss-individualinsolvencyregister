@@ -28,6 +28,16 @@ public class IndividualSearch
         _mapper = mapper;    
     }
 
+    [SimpleField(IsKey = true)]
+    public string Case_Indiv_No
+    {
+        get 
+        {
+            return $"{CaseNumber}_{IndividualNumber}";
+
+        }    
+    }
+
     [SimpleField]
     public string CaseNumber { get; set; }
 
