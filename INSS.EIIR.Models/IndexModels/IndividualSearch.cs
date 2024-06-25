@@ -1,12 +1,9 @@
 ﻿using System.Diagnostics.CodeAnalysis;
-using System.Security.AccessControl;
 using Azure.Search.Documents.Indexes;
 using INSS.EIIR.Models.Constants;
-using INSS.EIIR.Models.AutoMapperProfiles;
 using INSS.EIIR.Models.CaseModels;
-using AutoMapper;
-using System.Collections.Generic;
 using System.Xml;
+using System.Xml.Serialization;
 
 namespace INSS.EIIR.Models.IndexModels;
 
@@ -14,27 +11,12 @@ namespace INSS.EIIR.Models.IndexModels;
 public class IndividualSearch
 {
 
-    private readonly IMapper _mapper;
-
-    public IndividualSearch() 
-    {
-        var mapperConfig = new MapperConfiguration(mc =>
-        {
-            mc.AddProfile(new IndividualSearchMapper());
-        });
-
-        var mapper = mapperConfig.CreateMapper();
-
-        _mapper = mapper;    
-    }
-
     [SimpleField(IsKey = true)]
     public string Case_Indiv_No
     {
         get 
         {
             return $"{CaseNumber}_{IndividualNumber}";
-
         }    
     }
 
@@ -156,7 +138,13 @@ public class IndividualSearch
 
             try
             {
-                trading = _mapper.Map<string, Trading>(TradingData);
+                var serializer = new XmlSerializer(typeof(Trading));
+
+                using (TextReader reader = new StringReader(TradingData))
+                {
+                    trading = (Trading)serializer.Deserialize(reader);
+                }
+
             }
             catch (InvalidOperationException ex) 
             {
