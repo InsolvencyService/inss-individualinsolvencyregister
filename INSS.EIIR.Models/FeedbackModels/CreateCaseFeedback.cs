@@ -9,6 +9,7 @@ namespace INSS.EIIR.Models.FeedbackModels
         public DateTime FeedbackDate { get; set; }
 
         [Required(ErrorMessage = "Enter an error or issue")]
+        [MaxLength(200, ErrorMessage = "Enter a maximum of 200 characters for error or issue")]
         [RegularExpression("^[a-zA-Z0-9 ]+(([',.\\-][a-zA-Z0-9 ])?[a-zA-Z0-9 ]*)*$", ErrorMessage = "Enter only letters, numbers, - , or '")]
         public string Message { get; set; } = null!;
 
