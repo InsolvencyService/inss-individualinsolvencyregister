@@ -98,7 +98,7 @@
                             What is the error or issue?
                         </label>
                     </h2>
-                    <div id="with-hint-hint" class="govuk-hint">
+                    <div id="CaseFeedback.Message-hint" class="govuk-hint">
                         Do not include personal or financial information, such as your National Insurance number or credit card details.
                     </div>
                     @if (messageError)
@@ -106,12 +106,9 @@
                         @await Html.PartialAsync("~/Areas/Admin/Shared/_ValidationError.cshtml", ViewContext.ModelState["CaseFeedback.Message"].Errors)
                     }
                     <textarea class="govuk-textarea govuk-js-character-count" id="CaseFeedback.Message" asp-for="CaseFeedback.Message"
-                              rows="5" aria-describedby="with-hint-info with-hint-hint"></textarea>
-                    <div id="with-hint-info" class="govuk-hint govuk-character-count__message govuk-visually-hidden">
+                              rows="5" aria-describedby="CaseFeedback.Message-info CaseFeedback.Message-hint"></textarea>
+                    <div id="CaseFeedback.Message-info" class="govuk-hint govuk-character-count__message">
                         You can enter up to 200 characters
-                    </div>
-                    <div class="govuk-hint govuk-character-count__message govuk-character-count__status" aria-hidden="true">
-                        You have 200 characters remaining
                     </div>
                     <div class="govuk-character-count__sr-status govuk-visually-hidden" aria-live="polite">
                         You have 200 characters remaining
@@ -178,7 +175,7 @@
                 </fieldset>
             </div>
 
-            <button type="submit" class="govuk-button" style="text-decoration: none;">
+            <button type="submit" class="govuk-button">
                 Confirm and send
             </button>
 
