@@ -34,7 +34,6 @@ public class IndividualSearch
                                         $" {(AlternativeNames == Common.NoOtherNames ? "" : string.Join(" ",AlternativeNames.Split(",",StringSplitOptions.RemoveEmptyEntries)))}" +
                                         $" {(LastKnownTown == Common.NoLastKnownTown ? "" : LastKnownTown)}" +
                                         $" {(LastKnownPostcode == Common.NoLastKnownPostCode ? "" : LastKnownPostcode)}" +
-                                        $" {(LastKnownPostcode == Common.NoLastKnownPostCode ? "" : LastKnownPostcode)}" +
                                         $" {string.Join(" ", TradingNames.Split(",", StringSplitOptions.RemoveEmptyEntries))}";
 
             return string.Join(" ", globalSearchField.Split(default(string[]), StringSplitOptions.RemoveEmptyEntries));
