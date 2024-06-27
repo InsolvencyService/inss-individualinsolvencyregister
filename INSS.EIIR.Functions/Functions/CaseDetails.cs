@@ -1,3 +1,4 @@
+using AutoMapper;
 using INSS.EIIR.Interfaces.AzureSearch;
 using INSS.EIIR.Models.CaseModels;
 using Microsoft.AspNetCore.Http;
@@ -19,6 +20,7 @@ namespace INSS.EIIR.Functions.Functions
     {
         private readonly ILogger<CaseDetails> _logger;
         private readonly IIndividualQueryService _queryService;
+
 
         public CaseDetails(ILogger<CaseDetails> log,
            IIndividualQueryService queryService)
@@ -45,7 +47,9 @@ namespace INSS.EIIR.Functions.Functions
 
             var caseRequest = JsonConvert.DeserializeObject<CaseRequest>(requestBody);
 
-            var result = await _queryService.GetAsync(new Models.IndexModels.IndividualSearch { CaseNumber = caseRequest.CaseNo.ToString() });
+            var result = await _queryService.GetAsync(new Models.IndexModels.IndividualSearch() 
+                                                            { CaseNumber = caseRequest.CaseNo.ToString(), 
+                                                                IndividualNumber = caseRequest.IndivNo.ToString()});
 
             return new OkObjectResult(result);
 

@@ -61,7 +61,7 @@ public class IndividualQueryService : BaseQueryService, IIndividualQueryService
 
     public async Task<CaseResult> GetAsync(IndividualSearch individualSearch)
     {
-        var result = await GetAsync<IndividualSearch, CaseResult>(individualSearch.CaseNumber);
+        var result = await GetAsync<IndividualSearch, CaseResult>($"{individualSearch.CaseNumber}_{individualSearch.IndividualNumber}");
 
         return result;
     }

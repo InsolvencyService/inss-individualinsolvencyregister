@@ -6,6 +6,7 @@ using INSS.EIIR.Data.Models;
 using INSS.EIIR.DataAccess;
 using INSS.EIIR.Functions.Functions;
 using INSS.EIIR.Interfaces.AzureSearch;
+using INSS.EIIR.Models.AutoMapperProfiles;
 using INSS.EIIR.Models.SearchModels;
 using INSS.EIIR.Services;
 using Microsoft.Azure.WebJobs;
@@ -24,6 +25,8 @@ namespace INSS.EIIR.Functions.Tests
         private readonly string _searchServiceUrl;
         private readonly string _adminApiKey;
 
+
+
         public RebuildIndexesIntegrationTests()
         {
             var configuration = new ConfigurationBuilder()
@@ -37,6 +40,7 @@ namespace INSS.EIIR.Functions.Tests
             var settings = config.GetSection("Settings");
             _searchServiceUrl = settings.GetValue<string>("EIIRIndexUrl");
             _adminApiKey = settings.GetValue<string>("EIIRApiKey");
+
         }
 
         [Fact(Skip = "No asserts, no mocking of external dependencies, Expensive integration test, dependency on appsettings.json .. which perhaps not available in github")]
