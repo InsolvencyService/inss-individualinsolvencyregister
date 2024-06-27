@@ -87,34 +87,8 @@ public class IndividualSearchIndexService : BaseIndexService<IndividualSearch>
 
         await _searchClient.CreateOrUpdateSynonymMapAsync(synonymMap);
         var index = await AddSynonymMapsToFieldsAsync();
-        AddScoringProfile(index);
 
         await _searchClient.CreateOrUpdateIndexAsync(index);
-    }
-
-    private static void AddScoringProfile(SearchIndex? index)
-    {
-        if (index != null)
-        {
-            index.ScoringProfiles.Add(new ScoringProfile(FamilyNameScoringProfileName)
-            {
-                TextWeights = new TextWeights(new Dictionary<string, double>()
-                {
-                    {  "CombinedName",50 },
-                    {  "FullName", 30 },
-                    {  "LastKnownPostcode", 20 },
-                    {  "FamilyName", 6 },
-                    {  "CaseNumber", 5 },
-                    {  "IndividualNumber", 5 },
-                    {  "FirstName", 5 },
-                    {  "LastKnownTown", 5 },
-                    {  "TradingData", 5 },
-                    {  "AlternativeNames", 4 },
-                })
-            });
-
-            index.DefaultScoringProfile = FamilyNameScoringProfileName;           
-        }
     }
 
     private async Task<SearchIndex?> AddSynonymMapsToFieldsAsync()
@@ -122,7 +96,7 @@ public class IndividualSearchIndexService : BaseIndexService<IndividualSearch>
         var response = await _searchClient.GetIndexAsync(IndexName);
         if (response?.Value != null)
         {
-            response.Value.Fields.First(f => f.Name == "FirstName").SynonymMapNames.Add(FirstNameSynonymMapName);
+            response.Value.Fields.First(f => f.Name == "GlobalSearchField").SynonymMapNames.Add(FirstNameSynonymMapName);
             return response.Value;
         }
         return null;

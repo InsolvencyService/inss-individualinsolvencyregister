@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using INSS.EIIR.Models.IndexModels;
+using INSS.EIIR.Models.AutoMapperProfiles;
 using Azure;
 using Azure.Search.Documents;
 using Azure.Search.Documents.Indexes;
@@ -8,7 +10,6 @@ using INSS.EIIR.AzureSearch.Services.Constants;
 using INSS.EIIR.AzureSearch.Services.ODataFilters;
 using INSS.EIIR.AzureSearch.Services.QueryServices;
 using INSS.EIIR.Interfaces.AzureSearch;
-using INSS.EIIR.Models.IndexModels;
 using INSS.EIIR.Models.SearchModels;
 using Moq;
 using Xunit;
@@ -29,7 +30,8 @@ public class IndividualQueryServiceIntegrationTests
             caseNo = "12345"
         };
 
-        var indexModel = new IndividualSearch { CaseNumber = "12345" };
+
+        var indexModel = new IndividualSearch() { CaseNumber = "12345" };
 
         var searchModel = new IndividualSearchModel
         {

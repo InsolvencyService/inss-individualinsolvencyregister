@@ -4,6 +4,7 @@ using Azure.Search.Documents.Indexes;
 using Azure.Search.Documents.Models;
 using INSS.EIIR.AzureSearch.Services;
 using INSS.EIIR.Interfaces.Services;
+using INSS.EIIR.Models.AutoMapperProfiles;
 using INSS.EIIR.Models.CaseModels;
 using INSS.EIIR.Models.IndexModels;
 using Microsoft.Extensions.Logging;
@@ -14,6 +15,8 @@ namespace INSS.EIIR.AzureSearch.Tests
 {
     public class SearchIndexServiceTests
     {
+
+
         [Fact]
         public async Task PopulateIndex_Calls_Correct_Services()
         {
@@ -49,10 +52,6 @@ namespace INSS.EIIR.AzureSearch.Tests
             await service.PopulateIndexAsync(Mock.Of<ILogger>());
 
             //Assert
-
-            Assert.Equal(caseData.FullName, string.Join(" ", caseData.FirstName, caseData.MiddleName, caseData.FamilyName));
-            Assert.Equal(caseData.CombinedName, string.Join(" ", caseData.FirstName, caseData.FamilyName));
-
             dataProviderMock.Verify(m => m.GetIndividualSearchData(), Times.Once);
             mapperMock.Verify(m => m.Map<IEnumerable<CaseResult>, IEnumerable<IndividualSearch>>(rawData), Times.Once);
             indexClientMock.Verify(m => m.GetSearchClient("eiir_individuals"), Times.Once);
@@ -88,8 +87,7 @@ namespace INSS.EIIR.AzureSearch.Tests
                 {
                     CaseNumber = "1",
                     FirstName = "Bill",
-                    FamilyName = "Smith",
-                    MiddleName = "david"
+                    FamilyName = "Smith"
                 }
             };
         }

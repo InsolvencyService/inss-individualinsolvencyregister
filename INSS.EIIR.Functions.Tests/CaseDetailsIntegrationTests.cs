@@ -10,6 +10,7 @@ using INSS.EIIR.Interfaces.AzureSearch;
 using INSS.EIIR.Interfaces.DataAccess;
 using INSS.EIIR.Interfaces.Services;
 using INSS.EIIR.Models.CaseModels;
+using INSS.EIIR.Models.AutoMapperProfiles;
 using INSS.EIIR.Models.FeedbackModels;
 using INSS.EIIR.Services;
 using Microsoft.AspNetCore.Http;
@@ -25,14 +26,16 @@ namespace INSS.EIIR.Functions.Tests
 {
     public class CaseDetailsIntegrationTests
     {
+
+
         public CaseDetailsIntegrationTests()
         {
             MapperConfiguration mapperConfig = new(
              cfg =>
              {
                  cfg.AddProfile(new FeedbackMapper());
-             });
 
+             });
 
             var configuration = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
