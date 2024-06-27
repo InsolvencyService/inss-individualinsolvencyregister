@@ -47,7 +47,9 @@ namespace INSS.EIIR.Functions.Functions
 
             var caseRequest = JsonConvert.DeserializeObject<CaseRequest>(requestBody);
 
-            var result = await _queryService.GetAsync(new Models.IndexModels.IndividualSearch() { CaseNumber = caseRequest.CaseNo.ToString() });
+            var result = await _queryService.GetAsync(new Models.IndexModels.IndividualSearch() 
+                                                            { CaseNumber = caseRequest.CaseNo.ToString(), 
+                                                                IndividualNumber = caseRequest.IndivNo.ToString()});
 
             return new OkObjectResult(result);
 
