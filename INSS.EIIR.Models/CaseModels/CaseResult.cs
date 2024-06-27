@@ -11,8 +11,11 @@ public class CaseResult
 {
 
     [Key]
+    [Column(Order = 0)]
     public int caseNo { get; set; }
 
+    [Key]
+    [Column(Order = 1)]
     public int indivNo { get; set; }
 
     public string? individualForenames { get; set; }
