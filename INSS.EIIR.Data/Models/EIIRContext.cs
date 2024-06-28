@@ -73,6 +73,12 @@ public partial class EIIRContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
 
+        modelBuilder.Entity<CaseResult>(
+                    eb =>
+                    {
+                        eb.HasKey(m => new {m.caseNo, m.indivNo});
+                    });
+
         modelBuilder.Entity<Trading>(
           eb =>
           {

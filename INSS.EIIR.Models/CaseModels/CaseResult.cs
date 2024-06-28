@@ -9,8 +9,6 @@ namespace INSS.EIIR.Models.CaseModels;
 [ExcludeFromCodeCoverage]
 public class CaseResult
 {
-
-    [Key]
     public int caseNo { get; set; }
 
     public int indivNo { get; set; }
