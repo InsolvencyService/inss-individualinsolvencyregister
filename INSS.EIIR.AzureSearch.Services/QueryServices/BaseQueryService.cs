@@ -35,7 +35,7 @@ public abstract class BaseQueryService
         return new SearchOptions
         {
             QueryType = SearchQueryType.Full,
-            SearchMode = SearchMode.Any,
+            SearchMode = SearchMode.All,
             IncludeTotalCount = true,
             Size = 10000
         };

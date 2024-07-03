@@ -13,9 +13,6 @@ namespace INSS.EIIR.AzureSearch.Services;
 public class IndividualSearchIndexService : BaseIndexService<IndividualSearch>
 {
     protected override string IndexName => SearchIndexes.EiirIndividuals;
-    private const string FirstNameSynonymMapName = "firstname-synonym-map";
-    private const string FirstNameSynonymsFilename = @"SynonymMaps\FirstName-Synonyms.txt";
-    private const string FamilyNameScoringProfileName = "familynameprofile";
  
     private const int PageSize = 2000;
 
@@ -40,7 +37,6 @@ public class IndividualSearchIndexService : BaseIndexService<IndividualSearch>
 
             if (index != null)
             {
-                await _searchClient.DeleteSynonymMapAsync(FirstNameSynonymMapName);
                 index.Value.ScoringProfiles.Clear();
                 await _searchClient.DeleteIndexAsync(index);
             }
@@ -77,28 +73,4 @@ public class IndividualSearchIndexService : BaseIndexService<IndividualSearch>
         }
     }
 
-    public override async Task UploadSynonymMapAsync(ILogger logger)
-    {
-        var assemblyInfo = new FileInfo(Assembly.GetExecutingAssembly().Location);
-        string path = assemblyInfo.Directory.Parent.FullName;
-        var synonymMapContent = File.ReadAllText(Path.Combine(path, FirstNameSynonymsFilename));
-
-        var synonymMap = new SynonymMap(FirstNameSynonymMapName, synonymMapContent);
-
-        await _searchClient.CreateOrUpdateSynonymMapAsync(synonymMap);
-        var index = await AddSynonymMapsToFieldsAsync();
-
-        await _searchClient.CreateOrUpdateIndexAsync(index);
-    }
-
-    private async Task<SearchIndex?> AddSynonymMapsToFieldsAsync()
-    {
-        var response = await _searchClient.GetIndexAsync(IndexName);
-        if (response?.Value != null)
-        {
-            response.Value.Fields.First(f => f.Name == "GlobalSearchField").SynonymMapNames.Add(FirstNameSynonymMapName);
-            return response.Value;
-        }
-        return null;
-    }
 }

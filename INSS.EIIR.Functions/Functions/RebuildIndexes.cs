@@ -32,7 +32,6 @@ public class RebuildIndexes
             await indexService.DeleteIndexAsync(_logger);
             await indexService.CreateIndexAsync(_logger);
             await indexService.PopulateIndexAsync(_logger);
-            await indexService.UploadSynonymMapAsync(_logger);
         }
 
         return $"Eiir RebuildIndexes completed successfully at: {DateTime.Now}";
