@@ -10,11 +10,11 @@ namespace INSS.EIIR.Models.FeedbackModels
 
         [Required(ErrorMessage = "Enter an error or issue")]
         [MaxLength(200, ErrorMessage = "Enter a maximum of 200 characters for error or issue")]
-        [RegularExpression("^[a-zA-Z0-9 ]+(([',.\\-][a-zA-Z0-9 ])?[a-zA-Z0-9 ]*)*$", ErrorMessage = "Enter only letters, numbers, - , or '")]
+        [RegularExpression(@"(^[\s'-.a-zA-Z0-9]*$)", ErrorMessage = "Enter only letters, numbers, - , or '")]
         public string Message { get; set; } = null!;
 
         [Required(ErrorMessage = "Enter full name")]
-        [RegularExpression("^[a-zA-Z0-9 ]+(([',.\\-][a-zA-Z0-9 ])?[a-zA-Z0-9 ]*)*$", ErrorMessage = "Enter only letters, numbers, - , or '")]
+        [RegularExpression(@"(^[\s'-.a-zA-Z0-9]*$)", ErrorMessage = "Enter only letters, numbers, - , or '")]
         public string ReporterFullname { get; set; } = null!;
 
         [Required(ErrorMessage = "Enter an email address")]
