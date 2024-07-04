@@ -58,9 +58,7 @@ public abstract class BaseIndexService<T> : IIndexService
     }
 
     public abstract Task PopulateIndexAsync(ILogger logger);
-
-    public abstract Task UploadSynonymMapAsync(ILogger logger);
-    
+     
     [ExcludeFromCodeCoverage]
     protected async Task IndexBatchAsync(int page, IEnumerable<IndividualSearch> data, ILogger logger)
     {
