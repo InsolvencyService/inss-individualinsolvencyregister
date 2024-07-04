@@ -22,22 +22,26 @@ param (
     [string]$logFilePath,
 
     [Parameter(Mandatory=$false)]
-    [string]$subscriptionId
+    [string]$subscriptionId,
+
+    [Parameter(Mandatory=$false)]
+    [boolean]$archiveFiles
 )
 
-$Logfile = $logFilePath+"\logs.log"
+$Logfile = $logFilePath+"\DailyExtractLog.log"
 
 # Function to write to log file
-Function WriteLogs
+Function Log-Message
 {
-   Param ([string]$logstring)
-   $Stamp = (Get-Date).toString("yyyy/MM/dd HH:mm:ss")
-   $Line = "$Stamp $Level $logstring"
+   Param ([string]$message)
+   $timestamp = (Get-Date).toString("dd/MM/yyyy HH:mm:ss")
+   
+   $logmessage = "$timestamp $Level $message"
    If($Logfile) {
-        Add-Content $logfile -Value $Line
+        Add-Content $logfile -Value $logmessage
     }
    Else {
-        Write-Output $Line
+        Write-Output $logmessage
    }   
 }
 
@@ -45,75 +49,82 @@ Function WriteLogs
 try
 {
     # Login to Azure using Managed Identity
+    Log-Message("")
+    Log-Message("Connecting to Azure with Managed Identity...")  
     Connect-AzAccount -Identity
     
-    #Sets the tenant
+    #Sets the tenant context
+    Log-Message("Setting tenant context...")  
     Set-AzContext -Tenant $TenantId
     
-    #Sets the tenant and subscription
+    #Sets the tenant and subscription context
     #Set-AzContext -Tenant $TenantId -SubscriptionId $subscriptionId
   
     # Get the current date 
     $today = Get-Date -Hour 0 -minute 0
+       
 
-    # Get the storage account context
-    $storageAccount = Get-AzStorageAccount -ResourceGroupName $azureResouceGroupName -Name $azureStorageAccountName
+    # Get the storage account context    
+    Log-Message("Getting storage account context...")  
+    #$storageAccount = Get-AzStorageAccount -ResourceGroupName $azureResouceGroupName -Name $azureStorageAccountName
+    $storageAccount = New-AzStorageContext -StorageAccountName $azureStorageAccountName -UseConnectedAccount #Get-AzStorageAccount -ResourceGroupName $azureResouceGroupName -Name $azureStorageAccountName
     $storageContext = $storageAccount.Context
 
-    #$files = Get-ChildItem "$localFilePath\*.sql"  
-     $files = Get-ChildItem -Path "$localFilePath\*.sql" | Where-Object {
-        ($_.CreationTime -ge $today) -or ($_.LastWriteTime -ge $today)
-    }
+    # List files in the local folder modifed today
+    Log-Message("Listing and sorting the files in local folder...")  
+     $files = Get-ChildItem -Path "$localFilePath\*.sql" | Where-Object {($_.LastWriteTime -ge $today) } | Sort-Object LastWriteTime
 
-   
-
-
-    WriteLogs("")    
-    WriteLogs("===========================Start processing files=======================")
+       
+    Log-Message("===========================Start uploading files=======================")
 
      
     # check if any new files to be processed
     if ($files -eq $null){
-        WriteLogs("No new files to process" )	
+        Log-Message("No files to upload" )	
 
     }
  
-    foreach ($azureBlob in $files)
+    foreach ($file in $files)
     {   
-        WriteLogs("File : $azureBlob was created/updated on : " + $azureBlob.LastWriteTime)	
+        Log-Message("File : $file was created/updated on : " + $file.LastWriteTime)	
         
-        $blob = Get-AzStorageBlob -Context $storageContext -Container $azureContainerName  -Blob $azureBlob.Name -ErrorAction Ignore 
+        $blobName = $file.Name
+        
+        # Check if the blob already exists
+        $blob = Get-AzStorageBlob -Context $storageContext -Container $azureContainerName  -Blob $blobName -ErrorAction Ignore 
 		
-        # Check if the file already exists in the container
+        
         if (-not $blob)        
 		{               
-            WriteLogs ("Procssing file :  $azureBlob")   
+            # Upload the file to the blob storage if it does not exist
+            Log-Message ("Uploading the file ($blobName) to the blob storage") 
+            $filePath = $file.FullName  
 
             # Upload each file to the Azure Blob blob container
-            Set-AzStorageBlobContent -Container $azureContainerName -File $azureBlob.FullName   -Context $storageContext -StandardBlobTier 'Cold' -Force | Out-Null    
+            Set-AzStorageBlobContent -Container $azureContainerName -File $filePath -Context $storageContext -StandardBlobTier 'Cool' -Force | Out-Null    
                      
-            WriteLogs "File : $azureBlob - successfully uploaded to blob container."
+            Log-Message ("File : $blobName successfully uploaded to blob storage.")
                 
-            Move-Item $azureBlob.FullName $archivefilePath -ErrorAction SilentlyContinue -Force
-            WriteLogs "File : $azureBlob - moved to archive."
+            if($archiveFiles)
+            {
+                # Move the uploaded file to the Archive folder
+                Move-Item $blobName $archivefilePath -ErrorAction SilentlyContinue -Force
+                Log-Message ("File : $blobName - moved to archive folder.")
+            }
         }
 		else
 		{			
-            WriteLogs ("File : $azureBlob already exists ")		
+            Log-Message ("File : $blobName already exists in the blob storage")		
 		}
     }
-    WriteLogs("===========================Finished processing files=======================")
+    Log-Message("===========================Finished uploading files=======================")
 }
 catch
 {       
-    WriteLogs "`r`n Error in uploading files `r`n "
-    WriteLogs ("---------------------------------------------")
-    WriteLogs $_
+    Log-Message "`r`n Error in uploading files `r"
+    Log-Message ("---------------------------------------------")
+    Log-Message "Error : $_"
+    Log-Message ("---------------------------------------------") 
+    
 }
 
-#Write-Output "`r`n"
-#Write-Output ("---------------------------------------------")
-#Write-Output ("--------------List of Blobs -----------------")
-# Get-AzStorageBlob -Container $azureContainerName  -Context $storageContext | Select-Object -Property Name,Length,AccessTier 
-
-#Usage:  .\EIIRDailyUpdateCopyFilesToBlobStorage.ps1  'tenantid' 'mk-test-rg' 'mkteststacct' 'mkblobs1' "C:\Autojobs-v1\EIIR"  "C:\Autojobs-v1\EIIR\Archive" "C:\Autojobs-v1\Logs"
