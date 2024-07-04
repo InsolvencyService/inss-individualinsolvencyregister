@@ -4,6 +4,7 @@ using INSS.EIIR.Models.Constants;
 using INSS.EIIR.Models.CaseModels;
 using System.Xml;
 using System.Xml.Serialization;
+using System.Linq;
 
 namespace INSS.EIIR.Models.IndexModels;
 
@@ -26,21 +27,77 @@ public class IndividualSearch
     [SimpleField]
     public string IndividualNumber { get; set; }
 
+    /// <summary>
+    /// Contains searchablefields which are not part of Forenames, Surnames or Tradenames
+    /// </summary>
     [SearchableField]
-    public string GlobalSearchField {
-        get 
+    public string GlobalSearchField
+    {
+        get
         {
-            string globalSearchField = $"{CaseNumber} {IndividualNumber} {FirstName?.Trim()} {FamilyName?.Trim()}" +
-                                        $" {(AlternativeNames == Common.NoOtherNames ? "" : string.Join(" ",AlternativeNames.Split(",",StringSplitOptions.RemoveEmptyEntries)))}" +
+            string globalSearchField = $"{CaseNumber} {IndividualNumber}" +
                                         $" {(LastKnownTown == Common.NoLastKnownTown ? "" : LastKnownTown)}" +
-                                        $" {(LastKnownPostcode == Common.NoLastKnownPostCode ? "" : LastKnownPostcode)}" +
-                                        $" {string.Join(" ", TradingNames.Split(",", StringSplitOptions.RemoveEmptyEntries))}";
+                                        $" {(LastKnownPostcode == Common.NoLastKnownPostCode ? "" : LastKnownPostcode)}";
 
             return string.Join(" ", globalSearchField.Split(default(string[]), StringSplitOptions.RemoveEmptyEntries));
-        } 
-    
-    
+        }
     }
+
+    [SearchableField]
+    public string TradeNamesSearchField
+    {
+        get
+        {
+            return $"{string.Join(" ", TradingNames.Split(",", StringSplitOptions.RemoveEmptyEntries))}";
+        }
+    }
+
+    /// <summary>
+    /// Contains lastnames from Family name and any surname from alternative names with no duplicates which would biase results
+    /// </summary>
+    [SearchableField]
+    public string LastNamesSearchField
+    {
+        get
+        {
+            //Combine surname with alternatnames (which is comma seperated list of "lastname firstname"
+            var lastnameFirstnamesString = $"{FamilyName?.Trim()},{(AlternativeNames == Common.NoOtherNames ? "" : AlternativeNames)}";
+
+            var lastnameFirstnames = lastnameFirstnamesString.Split(",", StringSplitOptions.RemoveEmptyEntries);
+
+            //Get the first non empty element from each lastnamefirstname => lastname
+            var lastnames = lastnameFirstnames.Select(s => s.Split(" ", StringSplitOptions.RemoveEmptyEntries)).Select(n => n.Count() != 0 ? n.First(f => !string.IsNullOrEmpty(f)) : null);
+
+            //Select distinct values which are not null/empty
+            return lastnames.Where(s => !string.IsNullOrEmpty(s)).Count() == 0 ? null : string.Join(" ", lastnames.Where(s => !string.IsNullOrEmpty(s)).Distinct(StringComparer.CurrentCultureIgnoreCase));
+        }
+    }
+
+    /// <summary>
+    /// Contains names from Firstname and any firstnames from alternative names with no duplicates which would biase results
+    /// </summary>
+    [SearchableField]
+    public string ForeNamesSearchField
+    {
+        get
+        {
+            //Get alternatnames (which is comma seperated list of "lastname firstname"
+            var altLastnameFirstnamesString = $"{(AlternativeNames == Common.NoOtherNames ? "" : AlternativeNames)}";
+
+            var altLastnameFirstnamesArray = altLastnameFirstnamesString.Split(",", StringSplitOptions.RemoveEmptyEntries);
+
+            //Get the 2+ non empty element from each lastnamefirstname => forenames
+            var altFirstnames = altLastnameFirstnamesArray.Select(s => s.Split(" ", StringSplitOptions.RemoveEmptyEntries)).Select(n => n.Count() > 1 ? string.Join(" ", n.Skip(1)) : "");
+
+            //Combine Firstnames with alternative first names
+            var combinedFirstnames = string.IsNullOrWhiteSpace(FirstName) ? new string[] { } : FirstName.Trim().Split(" ").Select(s=>s);
+            combinedFirstnames = combinedFirstnames.Concat(altFirstnames.Where(x => !string.IsNullOrWhiteSpace(x)).Select(a => a.Split(" ")).SelectMany(x => x));
+
+            //Select distinct values which are not null/empty
+            return combinedFirstnames?.Any() != true ? null : string.Join(" ", combinedFirstnames.Distinct(StringComparer.CurrentCultureIgnoreCase).Where(s => !string.IsNullOrEmpty(s)));
+        }
+    }
+
 
     [SimpleField]
     public string FirstName { get; set; }
