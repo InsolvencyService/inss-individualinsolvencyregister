@@ -24,7 +24,6 @@
     <Folder Include="Properties\" />
     <Folder Include="Views\SearchResults\" />
     <Folder Include="wwwroot\assets\" />
-    <Folder Include="Views\Subscriber\" />
     <Folder Include="Areas\Admin\Views\Subscriber\" />
     <Folder Include="ViewModels\" />
   </ItemGroup>
