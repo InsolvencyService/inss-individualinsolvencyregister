@@ -110,7 +110,7 @@ stages:
 
 - stage: DeploySit
   displayName: 'Deploy to Sit'
-  condition: and(succeeded(), eq(variables['Build.SourceBranchName'], 'develop'))
+  condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
   variables:
     - group: EIIR-Sit
   jobs:
