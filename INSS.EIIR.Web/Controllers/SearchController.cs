@@ -1,4 +1,5 @@
-﻿using INSS.EIIR.Models.Home;
+﻿using INSS.EIIR.Models.Helpers;
+using INSS.EIIR.Models.Home;
 using INSS.EIIR.Web.Helper;
 using Microsoft.AspNetCore.Mvc;
 
@@ -30,7 +31,7 @@ namespace INSS.EIIR.Web.Controllers
                 return RedirectToAction("Index", new { error = true });
             }
 
-            return RedirectToAction("Index", "SearchResults", new { searchTerm });
+            return RedirectToAction("Index", "SearchResults", new { searchTerm = searchTerm.Base64Encode() });
         }
     }
 }
