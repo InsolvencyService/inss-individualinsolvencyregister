@@ -31,6 +31,7 @@ namespace INSS.EIIR.Web.Controllers
                 return RedirectToAction("Index", new { error = true });
             }
 
+            //APP-5144 Base64 encode searchterm as certain character cause Barracuda WAF issues
             return RedirectToAction("Index", "SearchResults", new { searchTerm = searchTerm.Base64Encode() });
         }
     }

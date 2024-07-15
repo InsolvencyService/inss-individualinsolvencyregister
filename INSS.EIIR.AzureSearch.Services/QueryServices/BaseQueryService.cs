@@ -55,6 +55,7 @@ public abstract class BaseQueryService
     public async Task<IEnumerable<TR>> SearchIndexAsync<T, TR>(string searchTerm, SearchOptions options)
     {
 
+        //APP-5144 Base64 decode searchterm as certain characters were causing Barracuda WAF issues
         searchTerm = FormatSearchTerm(CleanSearchString(searchTerm.Base64Decode()));
 
         var searchClient = _indexClient.GetSearchClient(IndexName);
