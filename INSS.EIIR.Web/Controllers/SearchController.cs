@@ -1,4 +1,5 @@
-﻿using INSS.EIIR.Models.Home;
+﻿using INSS.EIIR.Models.Helpers;
+using INSS.EIIR.Models.Home;
 using INSS.EIIR.Web.Helper;
 using Microsoft.AspNetCore.Mvc;
 
@@ -30,7 +31,8 @@ namespace INSS.EIIR.Web.Controllers
                 return RedirectToAction("Index", new { error = true });
             }
 
-            return RedirectToAction("Index", "SearchResults", new { searchTerm });
+            //APP-5144 Base64 encode searchterm as certain character cause Barracuda WAF issues
+            return RedirectToAction("Index", "SearchResults", new { searchTerm = searchTerm.Base64Encode() });
         }
     }
 }
