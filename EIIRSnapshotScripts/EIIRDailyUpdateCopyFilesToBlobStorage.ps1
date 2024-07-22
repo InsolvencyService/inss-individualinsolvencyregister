@@ -25,7 +25,10 @@ param (
     [boolean]$archiveFiles,
 
     [Parameter(Mandatory=$false)]
-    [int]$waitTime = 30
+    [int]$retryInterval = 60,
+
+    [Parameter(Mandatory=$false)]
+    [int]$maxRetries = 5
 )
 
 $Logfile = $logFilePath+"\DailyExtractLog.log"
@@ -47,6 +50,7 @@ Function Log-Message
 
 Log-Message("")
 Log-Message ("Script started.")
+Log-Message ("retryInterval : $retryInterval - maxRetries : $maxRetries ")
 
 try {
     # Connect to Azure with Managed Identity    
@@ -67,6 +71,7 @@ try {
     # List files in the local folder modifed today
     Log-Message("Listing and sorting the files in local folder...") 
     #$files = Get-ChildItem -Path "$localFilePath\*.sql"  ## Uncomment for prod
+    #$archiveFiles = $True  ## Uncomment for prod    
     $files = Get-ChildItem -Path "$localFilePath\*.sql" | Where-Object {($_.LastWriteTime -ge $today) } | Sort-Object LastWriteTime ## Remove for prod
     #$fileCount = (Get-ChildItem -Path "$localFilePath\*.sql"## Uncomment for prod
     $fileCount = (Get-ChildItem -Path "$localFilePath\*.sql" | Where-Object {($_.LastWriteTime -ge $today) } | Measure-Object).Count ## Remvoe for prod
@@ -88,8 +93,7 @@ try {
         $filePath = $file.FullName
 
         # Retry mechanism for checking the previous file existence
-        $retryCount = 1
-        $maxRetries = 5
+        $retryCount = 1        
         $fileUploaded = $false
         
         $blob = Get-AzStorageBlob -Context $storageContext -Container $azureContainerName  -ErrorAction Ignore  
@@ -121,7 +125,7 @@ try {
         if ($uploadedFilepCount -lt $fileCount)
         {          
         
-            Start-Sleep -Seconds $waitTime
+            Start-Sleep -Seconds $retryInterval
             
             while ($retryCount -le $maxRetries -and -not $fileUploaded) 
             {                  
@@ -144,7 +148,7 @@ try {
                 else
                 {                      
                     Log-Message("File(s) already exists in blob storage. Waiting for removal... Retry # : $count ")
-                    Start-Sleep -Seconds $waitTime
+                    Start-Sleep -Seconds $retryInterval
                 }                        
                     
                 
