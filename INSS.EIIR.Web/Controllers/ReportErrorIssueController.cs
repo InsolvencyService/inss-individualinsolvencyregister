@@ -45,6 +45,11 @@ namespace INSS.EIIR.Web.Controllers
                 CaseFeedback = new CreateCaseFeedback
                 {
                     CaseId = caseDetails.caseNo
+                },
+                SearchParameters = new SearchParameters
+                {
+                    Page = page,
+                    SearchTerm = searchTerm
                 }
             };
 

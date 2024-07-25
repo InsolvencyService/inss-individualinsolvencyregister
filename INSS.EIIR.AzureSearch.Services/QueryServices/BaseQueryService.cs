@@ -4,6 +4,7 @@ using Azure.Search.Documents.Indexes;
 using Azure.Search.Documents.Models;
 using INSS.EIIR.Interfaces.AzureSearch;
 using INSS.EIIR.Models.CaseModels;
+using INSS.EIIR.Models.Helpers;
 
 namespace INSS.EIIR.AzureSearch.Services.QueryServices;
 
@@ -53,7 +54,9 @@ public abstract class BaseQueryService
 
     public async Task<IEnumerable<TR>> SearchIndexAsync<T, TR>(string searchTerm, SearchOptions options)
     {
-        searchTerm = FormatSearchTerm(CleanSearchString(searchTerm));
+
+        //APP-5144 Base64 decode searchterm as certain characters were causing Barracuda WAF issues
+        searchTerm = FormatSearchTerm(CleanSearchString(searchTerm.Base64Decode()));
 
         var searchClient = _indexClient.GetSearchClient(IndexName);
         var result = await searchClient.SearchAsync<T>(searchTerm, options);

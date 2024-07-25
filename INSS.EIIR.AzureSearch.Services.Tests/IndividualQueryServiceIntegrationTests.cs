@@ -13,6 +13,7 @@ using INSS.EIIR.Interfaces.AzureSearch;
 using INSS.EIIR.Models.SearchModels;
 using Moq;
 using Xunit;
+using INSS.EIIR.Models.Helpers;
 
 namespace INSS.EIIR.AzureSearch.Services.Tests;
 
@@ -23,7 +24,10 @@ public class IndividualQueryServiceIntegrationTests
     {
         var courtFilter = "(Court eq '1' or Court eq '2')";
         var courtNameFilter = "(CourtName eq 'foo' or CourtName eq 'foo2')";
-        var searchTerm = "Bob";
+
+        //APP-5144 Search Term is now base64 encoded in front end
+        //It is decoded within the BaseQueryService and passed to formatting and cleaning services unencoded
+        var searchTerm = ("Bob").Base64Encode();
 
         var expected = new SearchResult
         {
@@ -49,7 +53,7 @@ public class IndividualQueryServiceIntegrationTests
 
         var searchClientMock = new Mock<SearchClient>();
         searchClientMock
-            .Setup(m => m.SearchAsync<IndividualSearch>(searchTerm, It.IsAny<SearchOptions>(), It.IsAny<CancellationToken>()))
+            .Setup(m => m.SearchAsync<IndividualSearch>(searchTerm.Base64Decode(), It.IsAny<SearchOptions>(), It.IsAny<CancellationToken>()))
             .Returns(
                 Task.FromResult(
                     Response.FromValue(
@@ -68,12 +72,12 @@ public class IndividualQueryServiceIntegrationTests
 
         
         var formattingServiceMock = new Mock<ISearchTermFormattingService>();
-        formattingServiceMock.Setup(m => m.FormatSearchTerm(searchTerm)).Returns(searchTerm);
+        formattingServiceMock.Setup(m => m.FormatSearchTerm(searchTerm.Base64Decode())).Returns(searchTerm.Base64Decode());
 
         var cleaningServiceMock = new Mock<ISearchCleaningService>();
         cleaningServiceMock.Setup(m => m.EscapeFilterSpecialCharacters(courtFilter)).Returns(courtFilter);
         cleaningServiceMock.Setup(m => m.EscapeFilterSpecialCharacters(courtNameFilter)).Returns(courtNameFilter);
-        cleaningServiceMock.Setup(m => m.EscapeSearchSpecialCharacters(searchTerm)).Returns(searchTerm);
+        cleaningServiceMock.Setup(m => m.EscapeSearchSpecialCharacters(searchTerm.Base64Decode())).Returns(searchTerm.Base64Decode());
 
         var service = new IndividualQueryService(mapperMock.Object, indexClientMock.Object, formattingServiceMock.Object, cleaningServiceMock.Object, GetFilters(cleaningServiceMock.Object));
 
