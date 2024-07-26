@@ -1102,7 +1102,7 @@ PRIMARY KEY NONCLUSTERED
 		WHEN individual.address_withheld_flag = 'Y' THEN '(Case Description withheld as Individual Address has been withheld)'
         WHEN insolvency_type = 'I' THEN '(Case Description does not apply to IVA)'
         ELSE 
-		ISNULL((SELECT (STRING_AGG(TRIM(REPLACE(REPLACE(REPLACE(#TempCaseDesc.case_desc_line,CHAR(10),' '),CHAR(13),' '),CHAR(9),' ')), ''))			
+		ISNULL((SELECT (STRING_AGG(TRIM(REPLACE(REPLACE(REPLACE(#TempCaseDesc.case_desc_line,CHAR(10),' '),CHAR(13),' '),CHAR(9),' ')), '') WITHIN GROUP ( ORDER BY #TempCaseDesc.case_desc_line_no ASC ))			
 			FROM #TempCaseDesc
 			WHERE #TempCaseDesc.case_no = snap.CaseNo
 			),'No Case Description Found')
