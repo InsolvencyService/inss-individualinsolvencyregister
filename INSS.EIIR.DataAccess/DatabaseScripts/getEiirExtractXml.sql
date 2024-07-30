@@ -1347,7 +1347,7 @@ SET @resultXML = (SELECT
 			THEN (SELECT t.caseNo AS CaseNoIP,
 				TRIM(insolvencyPractitionerName) AS MainIP,
 				TRIM(insolvencyPractitionerFirmName) AS MainIPFirm,
-				REPLACE(TRIM(insolvencyPractitionerAddress), ' ,', '') AS MainIPFirmAddress,
+				TRIM(insolvencyPractitionerAddress) AS MainIPFirmAddress,
 				TRIM(insolvencyPractitionerPostcode) AS MainIPFirmPostCode,
 				CASE 
 					WHEN TRIM(insolvencyPractitionerTelephone) IS NULL THEN '@@@@@@@@@@'
