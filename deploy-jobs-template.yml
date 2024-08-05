@@ -158,6 +158,11 @@ jobs:
                         "name": "extractjobtimercron",
                         "value": "$(extractjobtimercron)",
                         "slotSetting": false
+                      },
+                      {
+                        "name": "WEBSITE_TIME_ZONE",
+                        "value": "GMT Standard Time",
+                        "slotSetting": false
                       }
                     ]
 
@@ -299,6 +304,11 @@ jobs:
                       {
                         "name": "FUNCTIONS_WORKER_RUNTIME",
                         "value": "dotnet",
+                        "slotSetting": false
+                      },
+                      {
+                        "name": "WEBSITE_TIME_ZONE",
+                        "value": "GMT Standard Time",
                         "slotSetting": false
                       }
                     ]
