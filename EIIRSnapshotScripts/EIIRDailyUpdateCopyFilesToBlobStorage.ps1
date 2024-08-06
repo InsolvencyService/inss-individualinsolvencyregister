@@ -11,6 +11,9 @@ param (
     
     [Parameter(Mandatory=$true)]
     [string] $azureContainerName,
+	
+	[Parameter(Mandatory=$true)]
+	[string] $azureArchiveContainerName,
     
     [Parameter(Mandatory=$true)]
     [string]$localFilePath,
@@ -22,7 +25,7 @@ param (
     [string]$logFilePath,
 
     [Parameter(Mandatory=$false)]
-    [boolean]$archiveFiles,
+    [boolean]$archiveFiles = $False,
 
     [Parameter(Mandatory=$false)]
     [int]$retryInterval = 60,
@@ -59,29 +62,32 @@ try {
     #Sets the tenant context
     Log-Message("Setting tenant context...")
     Set-AzContext -Tenant $TenantId
-    # Get the current date 
-    $today = Get-Date -Hour 0 -minute 0
-
+ 
     # Get the storage account context
-    Log-Message("Getting storage account context...")
-    #$storageAccount = Get-AzStorageAccount -ResourceGroupName $azureResouceGroupName -Name $azureStorageAccountName
-    $storageAccount = New-AzStorageContext -StorageAccountName $azureStorageAccountName -UseConnectedAccount #Get-AzStorageAccount -ResourceGroupName $azureResouceGroupName -Name $azureStorageAccountName
+    Log-Message("Getting storage account context...")    
+    $storageAccount = New-AzStorageContext -StorageAccountName $azureStorageAccountName -UseConnectedAccount
     $storageContext = $storageAccount.Context
+
+	# Get the last file to be processed
+	$latestProcessedFileName = ""
+	$archiveblobs = Get-AzStorageBlob -Context $storageContext -Container $azureArchiveContainerName -Prefix iif  | sort @{expression="Name";Descending=$true}
+	if ($archiveblobs.Count -gt 0) {
+		$latestProcessedFileName = $archiveblobs[0].Name
+		Log-Message("Last file processed: $latestProcessedFileName")
+	}
 
     # List files in the local folder modifed today
     Log-Message("Listing and sorting the files in local folder...") 
-    #$files = Get-ChildItem -Path "$localFilePath\*.sql"  ## Uncomment for prod
-    #$archiveFiles = $True  ## Uncomment for prod    
-    $files = Get-ChildItem -Path "$localFilePath\*.sql" | Where-Object {($_.LastWriteTime -ge $today) } | Sort-Object LastWriteTime ## Remove for prod
-    #$fileCount = (Get-ChildItem -Path "$localFilePath\*.sql"## Uncomment for prod
-    $fileCount = (Get-ChildItem -Path "$localFilePath\*.sql" | Where-Object {($_.LastWriteTime -ge $today) } | Measure-Object).Count ## Remvoe for prod
-    Log-Message("===========================Start uploading files=======================")
+   
+    $files = Get-ChildItem -Path "$localFilePath\iif*.sql" | Where-Object {($_.Name -gt $latestProcessedFileName) } | Sort-Object -Property Name 
+    $fileCount = (Get-ChildItem -Path "$localFilePath\iif*.sql" | Where-Object {($_.Name -gt $latestProcessedFileName) } | Measure-Object).Count
 
-     
+ 
+    Log-Message("===========================Start uploading files=======================")
+    
     # check if any new files to be processed
     if ($files -eq $null){
         Log-Message("No files to upload" )	
-
     }
 
     Log-Message("Uploading to Storage account: $azureStorageAccountName - Container: $azureContainerName ...") 
