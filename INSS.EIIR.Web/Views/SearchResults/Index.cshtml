@@ -1,4 +1,5 @@
 ﻿@using INSS.EIIR.Web.Extensions
+@using INSS.EIIR.Models.Helpers
 @using Microsoft.AspNetCore.Mvc.TagHelpers
 @model INSS.EIIR.Web.ViewModels.IndividualListViewModel
 
@@ -80,7 +81,7 @@
             else
             {
                 <p class="govuk-body">
-                    We didn't find any results for '@Model.SearchResults.Paging.SearchTerm'. Try searching again.
+                    We didn't find any results for '@Model.SearchResults.Paging.SearchTerm.Base64Decode()'. Try searching again.
                 </p>
             }
         }
