@@ -1,0 +1,33 @@
+sequenceDiagram
+    participant IC as ICSIS
+    participant PS as PowerShell
+    participant BD as Delta (blob)
+    participant ED as EiirDailyExtract
+    participant S as Snapshot
+    participant EO as EiirOrchestrator
+    participant RI as RebuildIndexes
+    participant EJS as ExtractJobScheduler
+    participant EJT as ExtractJobTrigger
+    participant EJST as ExtractJobServiceTrigger
+    participant BE as Extract File (blob)
+    participant N as NotificationTrigger
+    
+
+    IC->>IC: Produce Delta
+    loop Update DB
+      PS->>IC: Get delta
+      PS->>BD: Copy delta
+      BD->>ED: Run Delta into DB
+    end
+
+    S->>S: Trigger (8:15)
+    S->>S: Generate snapshot table
+    S->>S: Snapshot available
+    S->>EO: HTTP Call
+    EO->>RI: Runs
+
+    EJS->>EJT: Trigger (8:45)
+    EJT->>EJT: Check if already run
+    EJT->>EJST: Not run yet, SB message
+    EJST->>BE: Create file
+    BE->>N: Trigger
