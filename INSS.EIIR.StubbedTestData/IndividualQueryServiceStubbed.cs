@@ -9,6 +9,7 @@ using System.Text.Json;
 using AutoMapper;
 using INSS.EIIR.Models.Helpers;
 using System.ComponentModel.Design;
+using System.Linq;
 
 namespace INSS.EIIR.StubbedTestData
 {
@@ -59,14 +60,20 @@ namespace INSS.EIIR.StubbedTestData
                 source = JsonSerializer.Deserialize<List<IndividualSearch>>(json);
             }
 
-            List<SearchResult>? result = new List<SearchResult> {};
+            List<SearchResult> result = new List<SearchResult> { };
 
             var searchTerms = searchModel.SearchTerm.Base64Decode().ToLower().Split(' ');
+
+            int numberOfRecs = 0;
 
             if (searchTerms[0] == "*")
                 result = source.Select(d => _mapper.Map<IndividualSearch, SearchResult>(d)).ToList();
             else if (searchTerms.Contains("error"))
                 throw new Exception("Here you go Rob");
+            else if (int.TryParse(searchTerms[0], out numberOfRecs))
+                while (result.Count() < numberOfRecs) {
+                    result.AddRange(source.Take(numberOfRecs - result.Count()).Select(d => _mapper.Map<IndividualSearch, SearchResult>(d)).ToList());
+                }
             else if (searchTerms.Count() == 1)
                 result = source.Where(r => r.FirstName.ToLower().StartsWith(searchTerms[0])).Select(d => _mapper.Map<IndividualSearch, SearchResult>(d)).ToList();
             else if (searchTerms.Count() > 1)
