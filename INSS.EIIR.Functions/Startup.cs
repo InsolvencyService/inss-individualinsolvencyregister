@@ -17,6 +17,7 @@ using INSS.EIIR.Interfaces.Storage;
 using INSS.EIIR.Models.AutoMapperProfiles;
 using INSS.EIIR.Models.Configuration;
 using INSS.EIIR.Services;
+using INSS.EIIR.StubbedTestData;
 using Microsoft.Azure.Functions.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Azure;
@@ -137,7 +138,7 @@ namespace INSS.EIIR.Functions
 
             builder.Services.AddTransient<IIndexService, IndividualSearchIndexService>();
             builder.Services.AddTransient<IIndividualRepository, IndividualRepository>();
-            builder.Services.AddTransient<IIndividualQueryService, IndividualQueryService>();
+            builder.Services.AddTransient<IIndividualQueryService, IndividualQueryServiceStubbed>();
             builder.Services.AddTransient<ISearchDataProvider, SearchDataProvider>();
 
             builder.Services.AddTransient<IIndiviualSearchFilter, IndividualSearchCourtFilter>();

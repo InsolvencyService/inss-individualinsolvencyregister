@@ -65,6 +65,8 @@ namespace INSS.EIIR.StubbedTestData
 
             if (searchTerms[0] == "*")
                 result = source.Select(d => _mapper.Map<IndividualSearch, SearchResult>(d)).ToList();
+            else if (searchTerms.Contains("error"))
+                throw new Exception("Here you go Rob");
             else if (searchTerms.Count() == 1)
                 result = source.Where(r => r.FirstName.ToLower().StartsWith(searchTerms[0])).Select(d => _mapper.Map<IndividualSearch, SearchResult>(d)).ToList();
             else if (searchTerms.Count() > 1)
