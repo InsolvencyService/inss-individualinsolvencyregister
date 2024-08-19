@@ -493,7 +493,7 @@ END AS tradingNames,
 		discharge.previous_order_date ELSE NULL END AS dateOfPreviousOrder
 
     FROM  #Cases cases
-	INNER JOIN eiirSnapshotTABLE snap on cases.CaseNo = snap.CaseNo
+	INNER JOIN eiirSnapshotTABLE snap on cases.CaseNo = snap.CaseNo AND cases.IndivNo = snap.IndivNo
     INNER JOIN ci_individual individual on individual.indiv_no = snap.IndivNo and individual.case_no = snap.CaseNo 
 	INNER JOIN extract_availability ea on ea.extract_id = Convert(CHAR(8),GETDATE(),112)
 	LEFT JOIN #caseParams cp on cp.caseNo = snap.CaseNo AND cp.indivNo = snap.IndivNo
