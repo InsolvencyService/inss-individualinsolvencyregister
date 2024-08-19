@@ -488,7 +488,7 @@ END AS tradingNames,
 		(insolvencyService.phone)
 	END AS insolvencyServicePhone,
 	CASE WHEN 
-		discharge.previous_order_status IN ('D', '', NULL) AND  discharge.previous_order_date NOT  IN ('', NULL) AND discharge.previous_order_date BETWEEN DATEADD(yy, -6, inscase.insolvency_date) AND inscase.insolvency_date 
+		discharge.previous_order_status IN ('D', '', NULL) AND discharge.previous_order_date BETWEEN DATEADD(YEAR, -6, inscase.insolvency_date) AND inscase.insolvency_date 
 	THEN 
 		discharge.previous_order_date ELSE NULL END AS dateOfPreviousOrder
 
