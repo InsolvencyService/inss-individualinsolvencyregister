@@ -1,11 +1,15 @@
 using INSS.EIIR.Interfaces.DataAccess;
 using INSS.EIIR.Interfaces.Services;
 using INSS.EIIR.Models.ExtractModels;
-using Microsoft.Azure.WebJobs;
+
 using Microsoft.Extensions.Logging;
 using System;
 using System.Threading.Tasks;
-using Microsoft.Azure.ServiceBus.Core;
+using Microsoft.Azure.Functions.Worker;
+using System.Threading;
+using Azure.Messaging.ServiceBus;
+using Newtonsoft.Json;
+using System.Text;
 
 namespace INSS.EIIR.Functions.Functions;
 
@@ -25,15 +29,17 @@ public class ExtractJobServiceTrigger
         _extractService = extractService;
     }
 
-    [FunctionName("ExtractJobServiceTrigger")]
-    public async Task Run([ServiceBusTrigger("%servicebusextractjobqueue%", Connection = "servicebussubscriberconnectionstring", AutoComplete = false)]  ExtractJobMessage message, MessageReceiver messageReceiver, string lockToken)
+    [Function("ExtractJobServiceTrigger")]
+    public async Task Run([ServiceBusTrigger("%servicebusextractjobqueue%", Connection = "servicebussubscriberconnectionstring", AutoCompleteMessages = false)]  ServiceBusReceivedMessage messageReceived,  ServiceBusMessageActions messageActions)
     {
+
+        var message = JsonConvert.DeserializeObject<ExtractJobMessage>(Encoding.UTF8.GetString(messageReceived.Body));
         var now = DateTime.Now;
 
         _logger.LogInformation($"ExtractJobServiceTrigger received message: {message} on {now}");
 
         //APP-4990 Remove message from queue otherwise it processes n times, due to time it takes to run, consuming mega SQL resource 
-        await messageReceiver.CompleteAsync(lockToken);
+        await messageActions.CompleteMessageAsync(messageReceived);
 
         try
         {

@@ -9,8 +9,7 @@ using INSS.EIIR.Interfaces.AzureSearch;
 using INSS.EIIR.Models.AutoMapperProfiles;
 using INSS.EIIR.Models.SearchModels;
 using INSS.EIIR.Services;
-using Microsoft.Azure.WebJobs;
-using Microsoft.Azure.WebJobs.Extensions.Timers;
+using Microsoft.Azure.Functions.Worker;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Moq;
@@ -46,7 +45,8 @@ namespace INSS.EIIR.Functions.Tests
         [Fact(Skip = "No asserts, no mocking of external dependencies, Expensive integration test, dependency on appsettings.json .. which perhaps not available in github")]
         public async Task Run_Builds_And_Populates_Index()
         {
-            var timerInfo = new TimerInfo(new DailySchedule(), new ScheduleStatus(), false);
+            var timerInfo = new TimerInfo();
+
             var loggerMock = new Mock<ILogger<RebuildIndexes>>();
 
             var mappedData = GetMappedData();

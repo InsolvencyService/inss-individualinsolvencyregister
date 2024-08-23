@@ -10,7 +10,6 @@ using INSS.EIIR.Models.AutoMapperProfiles;
 using INSS.EIIR.Models.Configuration;
 using INSS.EIIR.Services;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.Internal;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
