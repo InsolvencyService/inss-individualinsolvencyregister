@@ -102,9 +102,11 @@ namespace INSS.EIIR.Functions.Functions
         private async Task<FeedbackBody> GetBodyParameters(HttpRequestData request)
         {
             FeedbackBody feedbackBody = new();
-            if (request?.Body.Length > 0)
+
+            var content = await request.ReadAsStringAsync();
+
+            if (content.Length > 0)
             {
-                var content = await new StreamReader(request.Body).ReadToEndAsync();
                 feedbackBody = JsonConvert.DeserializeObject<FeedbackBody>(content);
                 var info = $"Feedback function: Body parameters {feedbackBody}.";
                 _logger.LogInformation(info);
