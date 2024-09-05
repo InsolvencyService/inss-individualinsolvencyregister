@@ -2,6 +2,14 @@
   "IsEncrypted": false,
   "Values": {
     "AzureWebJobsStorage": "UseDevelopmentStorage=true",
-    "FUNCTIONS_WORKER_RUNTIME": "dotnet-isolated"
+    "FUNCTIONS_WORKER_RUNTIME": "dotnet-isolated",
+
+    "SQLConnectionString": "Server=yourmachine\\yourinstance;database=yourdatabase;Integrated Security=true;TrustServerCertificate=True;",
+    "snapshotTimercron": "15 7 * * *",
+    "BlobContainer": "eiir/{name}",
+    "SourceBlobConnectionString": "UseDevelopmentStorage=true",
+    "functionURL": "http://localhost:7071/api/",
+    "functionAPIKey": "you do not need to set this when running locally"
+
   }
 }
