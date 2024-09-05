@@ -21,9 +21,9 @@ namespace INSS.EIIR.Functions.Functions
 {
     public class EiirOrchestrator
     {
-        private readonly ILogger _logger;
+        private readonly ILogger<EiirOrchestrator> _logger;
 
-        public EiirOrchestrator(ILogger logger) 
+        public EiirOrchestrator(ILogger<EiirOrchestrator> logger) 
         { 
             _logger = logger;
         }
@@ -42,7 +42,7 @@ namespace INSS.EIIR.Functions.Functions
 
             _logger.LogInformation($"Started orchestration with ID = '{instanceId}'.");
 
-            return starter.CreateCheckStatusResponse(req, instanceId);
+            return await starter.CreateCheckStatusResponseAsync(req, instanceId);
         }
 
         [Function("EiirOrchestrator")]
