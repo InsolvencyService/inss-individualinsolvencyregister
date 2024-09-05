@@ -6,8 +6,18 @@
 
     "SQLConnectionString": "Server=yourmachine\\yourinstance;database=yourdatabase;Integrated Security=true;TrustServerCertificate=True;",
     "snapshotTimercron": "15 7 * * *",
+
+    //template to for.sql file
     "BlobContainer": "eiir/{name}",
+
+    //settings to copy .sql from drop folder to archive folder
     "SourceBlobConnectionString": "UseDevelopmentStorage=true",
+    "TargetBlobConnectionString": "UseDevelopmentStorage=true",
+    "SourceContainer": "eiir",
+    "TargetContainer": "eiir-archive",
+    "DeleteSourceAfterCopy": "1",
+
+    //settings to call orchestrator
     "functionURL": "http://localhost:7071/api/",
     "functionAPIKey": "you do not need to set this when running locally"
 
