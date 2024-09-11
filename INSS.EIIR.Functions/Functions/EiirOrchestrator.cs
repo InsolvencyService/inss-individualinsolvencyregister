@@ -1,8 +1,15 @@
-using Microsoft.Azure.WebJobs;
-using Microsoft.Azure.WebJobs.Extensions.DurableTask;
-using Microsoft.Azure.WebJobs.Extensions.Http;
+
+using Microsoft.Azure.Functions.Worker;
+using Microsoft.Azure.Functions.Worker.Http;
+using Microsoft.DurableTask;
+using Microsoft.DurableTask.Client;
+
+
+//These don't make sense as other .WebJobs stuff removed moving from 
+// in-process -> isolated worker but all examples online point in this direction
 using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Attributes;
 using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Enums;
+
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using System.Collections.Generic;
@@ -12,28 +19,35 @@ using System.Threading.Tasks;
 
 namespace INSS.EIIR.Functions.Functions
 {
-    public static class EiirOrchestrator
+    public class EiirOrchestrator
     {
-        [FunctionName("EiirOrchestrator_Start")]
+        private readonly ILogger<EiirOrchestrator> _logger;
+
+        public EiirOrchestrator(ILogger<EiirOrchestrator> logger) 
+        { 
+            _logger = logger;
+        }
+
+        [Function("EiirOrchestrator_Start")]
         [OpenApiOperation(operationId: "Run", tags: new[] { "EIIR" })]
         [OpenApiSecurity("apikeyheader_auth", SecuritySchemeType.ApiKey, In = OpenApiSecurityLocationType.Header, Name = "x-functions-key")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "text/plain", bodyType: typeof(string), Description = "The OK response")]
 
-        public static async Task<HttpResponseMessage> HttpStart(
-            [HttpTrigger(AuthorizationLevel.Function, "post")] HttpRequestMessage req,
-            [DurableClient] IDurableOrchestrationClient starter,
-            ILogger log)
-        {
-            string instanceId = await starter.StartNewAsync("EiirOrchestrator", null);
+        public async Task<HttpResponseData> HttpStart(
+            [HttpTrigger(AuthorizationLevel.Function, "post")] HttpRequestData req,
+            [DurableClient] DurableTaskClient starter
+            )
+        {     
+            string instanceId = await starter.ScheduleNewOrchestrationInstanceAsync("EiirOrchestrator", null);
 
-            log.LogInformation($"Started orchestration with ID = '{instanceId}'.");
+            _logger.LogInformation($"Started orchestration with ID = '{instanceId}'.");
 
-            return starter.CreateCheckStatusResponse(req, instanceId);
+            return await starter.CreateCheckStatusResponseAsync(req, instanceId);
         }
 
-        [FunctionName("EiirOrchestrator")]
-        public static async Task<List<string>> RunOrchestrator(
-            [OrchestrationTrigger] IDurableOrchestrationContext context)
+        [Function("EiirOrchestrator")]
+        public async Task<List<string>> RunOrchestrator(
+            [OrchestrationTrigger] TaskOrchestrationContext context)
         {
             var outputs = new List<string>
             {

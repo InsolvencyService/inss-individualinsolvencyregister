@@ -5,8 +5,12 @@ using INSS.EIIR.Interfaces.AzureSearch;
 using INSS.EIIR.Models.SearchModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Azure.WebJobs;
-using Microsoft.Azure.WebJobs.Extensions.Http;
+
+using Microsoft.Azure.Functions.Worker;
+using Microsoft.Azure.Functions.Worker.Http;
+
+
+
 using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Attributes;
 using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Enums;
 using Microsoft.Extensions.Logging;
@@ -28,7 +32,7 @@ namespace INSS.EIIR.Functions.Functions
             _queryService = queryService;
         }
 
-        [FunctionName("IndividualSearch")]
+        [Function("IndividualSearch")]
         [OpenApiOperation(operationId: "Run", tags: new[] { "Search" })]
         [OpenApiSecurity("apikeyheader_auth", SecuritySchemeType.ApiKey, In = OpenApiSecurityLocationType.Header, Name = "x-functions-key")]
         [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(IndividualSearchModel), Description = "The search model", Required = true)]
