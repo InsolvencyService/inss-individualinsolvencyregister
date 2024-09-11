@@ -52,11 +52,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "INSS.EIIR.Models.Tests", ".
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "INSS.EIIR.Web.Extensions.Tests", "..\INSS.EIIR.Web.Extensions.Tests\INSS.EIIR.Web.Extensions.Tests.csproj", "{C7F398D0-583A-4276-B722-2D02AB53E2A8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "INSS.EIIR.Validation.Tests", "..\INSS.EIIR.Validation.Tests\INSS.EIIR.Validation.Tests.csproj", "{99C38E91-8E6A-4794-997F-EABB3158717D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "INSS.EIIR.Validation.Tests", "..\INSS.EIIR.Validation.Tests\INSS.EIIR.Validation.Tests.csproj", "{99C38E91-8E6A-4794-997F-EABB3158717D}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TestStubbedData", "TestStubbedData", "{6C947E7A-A2EC-462D-AB5D-B8DAF7444FE1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "INSS.EIIR.DataSync.Application", "..\INSS.EIIR.DataSync.Application\INSS.EIIR.DataSync.Application.csproj", "{D47A8E05-A05B-4AD1-8F6A-A54D1E75C925}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "INSS.EIIR.StubbedTestData", "..\INSS.EIIR.StubbedTestData\INSS.EIIR.StubbedTestData.csproj", "{968F865A-897C-40EA-8392-0482BA6F09D3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "INSS.EIIR.DataSync.Infrastructure", "..\INSS.EIIR.DataSync.Infrastructure\INSS.EIIR.DataSync.Infrastructure.csproj", "{31DB5DA5-2F76-435E-B0E9-BDE5E7BDAEC0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -140,10 +140,14 @@ Global
 		{99C38E91-8E6A-4794-997F-EABB3158717D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{99C38E91-8E6A-4794-997F-EABB3158717D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{99C38E91-8E6A-4794-997F-EABB3158717D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{968F865A-897C-40EA-8392-0482BA6F09D3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{968F865A-897C-40EA-8392-0482BA6F09D3}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{968F865A-897C-40EA-8392-0482BA6F09D3}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{968F865A-897C-40EA-8392-0482BA6F09D3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D47A8E05-A05B-4AD1-8F6A-A54D1E75C925}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D47A8E05-A05B-4AD1-8F6A-A54D1E75C925}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D47A8E05-A05B-4AD1-8F6A-A54D1E75C925}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D47A8E05-A05B-4AD1-8F6A-A54D1E75C925}.Release|Any CPU.Build.0 = Release|Any CPU
+		{31DB5DA5-2F76-435E-B0E9-BDE5E7BDAEC0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{31DB5DA5-2F76-435E-B0E9-BDE5E7BDAEC0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{31DB5DA5-2F76-435E-B0E9-BDE5E7BDAEC0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{31DB5DA5-2F76-435E-B0E9-BDE5E7BDAEC0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,36 +1,44 @@
 using System;
 using System.IO;
-using Microsoft.Azure.WebJobs;
-using Microsoft.Azure.WebJobs.Host;
+using Microsoft.Azure.Functions.Worker;
 using Microsoft.Extensions.Logging;
 
 namespace INSS.EIIR.DailyExtract
 {
     public class EiiRDailyExtract
     {
-        [FunctionName("EiiRDailyExtract")]
-        public void Run([BlobTrigger("%BlobContainer%", Connection = "SourceBlobConnectionString")] Stream myBlob, string name, ILogger log)
+
+        private readonly ILogger<EiiRDailyExtract> _logger;
+
+        public EiiRDailyExtract(ILogger<EiiRDailyExtract> logger)
+        {
+            _logger = logger;
+        }
+
+
+        [Function("EiiRDailyExtract")]
+        public void Run([BlobTrigger("%BlobContainer%", Connection = "SourceBlobConnectionString")] Stream myBlob, string name)
         {
 
-            log.LogInformation($"EiirDailyExtract - Received Blob Notification");
+            _logger.LogInformation($"EiirDailyExtract - Received Blob Notification");
 
             /*
                 Create snapshot object
             */
-            ExtractSnapshot snapshot = new ExtractSnapshot(name, myBlob, log);
+            ExtractSnapshot snapshot = new ExtractSnapshot(name, myBlob, _logger);
 
             /*
                 Process the received snapshot file
                 */
             snapshot.Process();
-            log.LogInformation($"    - Snapshot processed succesfully");
+            _logger.LogInformation($"    - Snapshot processed succesfully");
 
             /*
                 Archive the received snapshot file
                 */
             snapshot.Archive();
-            log.LogInformation($"    - Snapshot archived.");
-            log.LogInformation($"Update of Snapshot {name} successfull");
+            _logger.LogInformation($"    - Snapshot archived.");
+            _logger.LogInformation($"Update of Snapshot {name} successfull");
 
         }
     }
