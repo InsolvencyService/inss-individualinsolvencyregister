@@ -2,6 +2,7 @@
 using INSS.EIIR.DataSync.Application.UseCase.SyncData.Model;
 using INSS.EIIR.DataSync.Application.UseCase.SyncData.Service;
 using Microsoft.Extensions.Logging;
+using INSS.EIIR.Models.CaseModels;
 using System.Reflection;
 
 namespace INSS.EIIR.DataSync.Application.UseCase.SyncData
@@ -32,18 +33,18 @@ namespace INSS.EIIR.DataSync.Application.UseCase.SyncData
                     await sink.Start();
                 }
 
-                await _options.FailureSink.Start();
+                //await _options.FailureSink.Start();
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, $"Unhandled error starting sinks");
             }
 
-            foreach (IDataSource source in  _options.DataSources) 
+            foreach (IDataSourceAsync<InsolventIndividualRegisterModel> source in  _options.DataSources) 
             {
                 try
                 {
-                    foreach (var model in await source.GetInsolventIndividualRegistrationsAsync())
+                    await foreach (var model in source.GetInsolventIndividualRegistrationsAsync())
                     {
                         // validate
                         var validationResponse = await _validation.Validate(model);
@@ -90,7 +91,7 @@ namespace INSS.EIIR.DataSync.Application.UseCase.SyncData
                     await sink.Complete();
                 }
 
-                await _options.FailureSink.Complete();
+                //await _options.FailureSink.Complete();
             }
             catch (Exception ex)
             {
