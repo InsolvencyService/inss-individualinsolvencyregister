@@ -7,6 +7,7 @@ using INSS.EIIR.Models.SubscriberModels;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moq;
+using System.Text;
 using Xunit;
 
 namespace INSS.EIIR.Services.Tests
@@ -177,5 +178,78 @@ namespace INSS.EIIR.Services.Tests
                 },
             };
         }
+
+        public static IEnumerable<object[]> ByteReplacementTestData()
+        {
+            //No Match
+            yield return new object[] { "<ReportRequest>", 0, $"This is a first test", $"This is a first test", 0, 20, 20 };
+
+            //Start Offset
+            yield return new object[] { "<ReportRequest>", 7, $"Request>This is a first test", $"Request>\r\nThis is a first test", 0, 28, 30 };
+
+            //Start Offset - illigeitimate - which doesn't correspond
+            yield return new object[] { "<ReportRequest>", 7, $"equest>This is a first test", $"equest>This is a first test", 0, 27, 27 };
+
+            //Null array - preserve offset in event empty array is encountered
+            yield return new object[] { "<ReportRequest>", 7, $"", $"", 7, 0, 0 };
+
+            //End offset 
+            yield return new object[] { "<ReportRequest>", 0, $"This is a first test<Repo", $"This is a first test<Repo", 5, 25, 25 };
+
+            //Start and end offset 
+            yield return new object[] { "<ReportRequest>", 7, $"Request>This is a first test<Repo", $"Request>\r\nThis is a first test<Repo", 5, 33, 35 };
+
+            //Start, middle and end offset 
+            yield return new object[] { "<ReportRequest>", 7, $"Request>This is a <ReportRequest> first test<Repo", $"Request>\r\nThis is a <ReportRequest>\r\n first test<Repo", 5, 49, 53 };
+
+            //Continuous 
+            yield return new object[] { "<ReportRequest>", 7, $"Request><ReportRequest><ReportRequest><Repo", $"Request>\r\n<ReportRequest>\r\n<ReportRequest>\r\n<Repo", 5, 43, 49 };
+
+            //Middle 
+            yield return new object[] { "<ReportRequest>", 0, $"This is a <ReportRequest> first test", $"This is a <ReportRequest>\r\n first test", 0, 36, 38 };
+
+            //Shorties 
+            yield return new object[] { "<ReportRequest>", 0, $"a", $"a", 0, 1, 1 };
+
+            yield return new object[] { "<ReportRequest>", 0, $"<", $"<", 1, 1, 1 };
+
+            yield return new object[] { "<ReportRequest>", 0, $"<R", $"<R", 2, 2, 2 };
+
+            //Exact start 
+            yield return new object[] { "<ReportRequest>", 0, $"<ReportRequest>This is a first test", $"<ReportRequest>\r\nThis is a first test", 0, 35, 37 };
+
+            //Exact end
+            yield return new object[] { "<ReportRequest>", 0, $"This is a first test<ReportRequest>", $"This is a first test<ReportRequest>\r\n", 0, 35, 37 };
+
+        }
+
+        /// <summary>
+        /// Tests the insertion of CrLf characters after specified tag in XML
+        /// </summary>
+        /// <param name="targetText">The XML Element Tag to target</param>
+        /// <param name="offset">Then amount of bytes/characters truncated from the target tag at beginning of srcTxt</param>
+        /// <param name="srcText">Input string to be modified</param>
+        /// <param name="expectedTxt">Expect result after modification</param>
+        /// <param name="expectedOffset">The offset to feed into next buffer</param>
+        /// <param name="inputByteCount">The number of bytes/characters in srctxt</param>
+        /// <param name="expectedByteCount">The number of bytes/characters in output, to be fed in to chained call</param>
+        [Theory]
+        [MemberData(nameof(ByteReplacementTestData))]
+        public void ByteReplacementTest(string targetText, int offset, string srcText, string expectedTxt, int expectedOffset, int inputByteCount, int expectedByteCount)
+        {
+
+            //Arrange
+            byte[] bytes = Encoding.UTF8.GetBytes(srcText);
+
+            //Act
+            var value = bytes.InsertCrLfAfter(Encoding.UTF8.GetBytes(targetText), ref offset, ref inputByteCount);
+
+            //Assert 
+            Assert.Equal(expectedByteCount, inputByteCount);
+            Assert.Equal(expectedOffset, offset);
+            Assert.Equal(Encoding.UTF8.GetBytes(expectedTxt), value);
+
+        }
+
     }
 }

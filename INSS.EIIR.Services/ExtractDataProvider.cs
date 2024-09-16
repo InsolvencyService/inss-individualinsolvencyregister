@@ -67,12 +67,22 @@ public class ExtractDataProvider : IExtractDataProvider
                 char[] buffer = new char[_dbConfig.DataBufferSize];
                 int charsRead = 0;
                 using TextReader data = reader.GetTextReader(0);
+
+                int ReportRequestOS, EndIndividualDetailsOS, EndReportRequestOS, EndReportDetailsOS;
+                ReportRequestOS = EndIndividualDetailsOS = EndReportRequestOS = EndReportDetailsOS = 0;
+
                 do
                 {
                     charsRead = await data.ReadAsync(buffer, 0, buffer.Length);
                     if (charsRead > 0) { 
                         byte[] byteArray = Encoding.UTF8.GetBytes(buffer, 0, charsRead);
-                        await UploadToBlobInBlocks(filename, byteArray, false);
+
+                        var transposed = byteArray.InsertCrLfAfter(Encoding.UTF8.GetBytes("<ReportRequest>"), ref ReportRequestOS, ref charsRead)
+                                                .InsertCrLfAfter(Encoding.UTF8.GetBytes("</IndividualDetails>"), ref EndIndividualDetailsOS, ref charsRead)
+                                                .InsertCrLfAfter(Encoding.UTF8.GetBytes("</ReportRequest>"), ref EndReportRequestOS, ref charsRead)
+                                                .InsertCrLfAfter(Encoding.UTF8.GetBytes("</ReportDetails>"), ref EndReportDetailsOS, ref charsRead);
+
+                        await UploadToBlobInBlocks(filename, transposed, false);
                     }
                 } while (charsRead > 0);
                 await UploadToBlobInBlocks(filename, null, true);
@@ -162,5 +172,120 @@ public class ExtractDataProvider : IExtractDataProvider
     public async Task<Extract> GetLatestExtractForDownload()
     {
         return await _extractRepository.GetLatestExtractForDownload();
+    }
+
+
+
+
+}
+
+public static class ByteArrayExtension
+{
+    /// <summary>
+    /// Extension method to insert CfLf after specified elements in XML Stream
+    /// </summary>
+    /// <param name="self">A byte array as part of larger XML document</param>
+    /// <param name="target">A UTF8 byte encoded string of XMLtag to target</param>
+    /// <param name="offset">When tag is split between two sets of buffered data the offset is number of bytes truncated from the beginning of the seconf file</param>
+    /// <param name="byteCount">The total number of bytes read in, this changes as new bytes are added</param>
+    /// <returns></returns>
+    public static byte[] InsertCrLfAfter(this byte[] self, byte[] target, ref int offset, ref int byteCount)
+    {
+        //for calculation of truncated target
+        var originalLength = byteCount;
+
+        //new length once additional characters added
+        var newLength = originalLength;
+
+        //A new array to be used an source of output with larger size to account for additional bytes
+        var outputArray = new byte[((int)(newLength * 2))];
+
+        //start position in self from where current comparison starts
+        var startIndex = 0;
+
+        //position in self where next comparison against target will commence
+        var currentIndex = 0;
+
+        //length of target to be copied down
+        var targetLength = target.Length;
+
+        //where new values will copied to
+        var targetIndex = 0;
+
+        while (currentIndex < originalLength)
+        {
+            //Adjust target for offset at beginning and end
+            var tempTarget = target;
+
+            //Adjust target for offset at beginning
+            if (currentIndex - offset < 0)
+            {
+                tempTarget = tempTarget[^(targetLength + (currentIndex - offset))..^0];
+            }
+
+            //Adjust target at end of byte array
+            if (currentIndex + tempTarget.Length > originalLength)
+            {
+                tempTarget = tempTarget[0..(originalLength - currentIndex)];
+            }
+
+            //Speed improvement - scan for first character in target
+            if (tempTarget.Length % targetLength == 0)
+                while (self[currentIndex] != tempTarget[0] && currentIndex < originalLength - targetLength)
+                    currentIndex++;
+
+            if (tempTarget.SequenceEqual(self[currentIndex..(currentIndex + tempTarget.Length)]))
+            {
+                //Copy down matching characters from start index
+                for (int i = startIndex; i < currentIndex + tempTarget.Length; i++)
+                {
+                    outputArray[targetIndex] = self[i];
+                    targetIndex++;
+                }
+
+                //increment start index for new characters
+                startIndex = currentIndex + tempTarget.Length;
+
+                //Add CR LF if
+                //tempTarget = the end of target
+                //and tempTarget.Length  > 0 (this indicates we've reach end of byte array)
+                if (tempTarget.SequenceEqual(target[^(tempTarget.Length)..^0]) && tempTarget.Length > 0)
+                {
+                    outputArray[targetIndex] = 0x0D;
+                    targetIndex++;
+                    outputArray[targetIndex] = 0x0A;
+                    targetIndex++;
+
+                    //adjusts newLength for additional bytes
+                    newLength = newLength + 2;
+                }
+
+                //We have copied down because we have matched => set new offset
+                offset = tempTarget.Length % targetLength;
+
+                //set new currentIndex bearing in mind it is incremented at end of loop
+                currentIndex = currentIndex + tempTarget.Length - 1;
+
+            }
+
+            currentIndex++;
+
+        }
+
+        //Copy balance at end
+        for (int i = startIndex; i < originalLength; i++)
+        {
+            outputArray[targetIndex] = self[i];
+            targetIndex++;
+
+            //Reset offset here because copying balance at end mean it hasn't been done in while block
+            offset = 0;
+        }
+
+        //Update byteCount which is passed back such that it can be chained to next InsertCrLfAfter call
+        //Important when selecting the last output for last buffer
+        byteCount = newLength;
+
+        return outputArray[0..newLength];
     }
 }
