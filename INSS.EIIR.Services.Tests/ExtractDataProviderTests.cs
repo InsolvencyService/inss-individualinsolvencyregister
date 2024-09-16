@@ -242,12 +242,12 @@ namespace INSS.EIIR.Services.Tests
             byte[] bytes = Encoding.UTF8.GetBytes(srcText);
 
             //Act
-            var value = bytes.InsertCrLfAfter(Encoding.UTF8.GetBytes(targetText), ref offset, ref inputByteCount);
+            var value = bytes.InsertCrLfAfter(Encoding.UTF8.GetBytes(targetText), offset, inputByteCount);
 
             //Assert 
-            Assert.Equal(expectedByteCount, inputByteCount);
-            Assert.Equal(expectedOffset, offset);
-            Assert.Equal(Encoding.UTF8.GetBytes(expectedTxt), value);
+            Assert.Equal(expectedByteCount, value.Item3);
+            Assert.Equal(expectedOffset, value.Item2);
+            Assert.Equal(Encoding.UTF8.GetBytes(expectedTxt), value.Item1);
 
         }
 

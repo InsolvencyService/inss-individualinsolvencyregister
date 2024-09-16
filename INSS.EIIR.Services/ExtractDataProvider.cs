@@ -68,8 +68,7 @@ public class ExtractDataProvider : IExtractDataProvider
                 int charsRead = 0;
                 using TextReader data = reader.GetTextReader(0);
 
-                int ReportRequestOS, EndIndividualDetailsOS, EndReportRequestOS, EndReportDetailsOS;
-                ReportRequestOS = EndIndividualDetailsOS = EndReportRequestOS = EndReportDetailsOS = 0;
+                int ReportRequestOS = 0;
 
                 do
                 {
@@ -77,12 +76,19 @@ public class ExtractDataProvider : IExtractDataProvider
                     if (charsRead > 0) { 
                         byte[] byteArray = Encoding.UTF8.GetBytes(buffer, 0, charsRead);
 
-                        var transposed = byteArray.InsertCrLfAfter(Encoding.UTF8.GetBytes("<ReportRequest>"), ref ReportRequestOS, ref charsRead)
-                                                .InsertCrLfAfter(Encoding.UTF8.GetBytes("</IndividualDetails>"), ref EndIndividualDetailsOS, ref charsRead)
-                                                .InsertCrLfAfter(Encoding.UTF8.GetBytes("</ReportRequest>"), ref EndReportRequestOS, ref charsRead)
-                                                .InsertCrLfAfter(Encoding.UTF8.GetBytes("</ReportDetails>"), ref EndReportDetailsOS, ref charsRead);
+                        //APP-5297 Some Suscribers XML file line by line, helps to have soe lines then ;)
+                        //This section inserts CrLf into stream where they needs to be
+                        
+                        int byteCount = byteArray.Length; // charsRead != byte[].Length... when talking UTF8/Unicode
+                        
+                        //Repetitive calls to InsertCrLfAfter targeting specific XML Elememt Tags... originally used ref on last 2 parameters though they do not
+                        //play nicely with async nature of surrounding method
+                        var resultTuple = byteArray.InsertCrLfAfter(Encoding.UTF8.GetBytes("<ReportRequest>"), ReportRequestOS, byteCount);
+                        resultTuple = resultTuple.Item1.InsertCrLfAfter(Encoding.UTF8.GetBytes("</IndividualDetails>"), resultTuple.Item2, resultTuple.Item3);
+                        resultTuple = resultTuple.Item1.InsertCrLfAfter(Encoding.UTF8.GetBytes("</ReportRequest>"), resultTuple.Item2, resultTuple.Item3);
+                        resultTuple = resultTuple.Item1.InsertCrLfAfter(Encoding.UTF8.GetBytes("</ReportDetails>"), resultTuple.Item2, resultTuple.Item3);
 
-                        await UploadToBlobInBlocks(filename, transposed, false);
+                        await UploadToBlobInBlocks(filename, resultTuple.Item1[0..resultTuple.Item3], false);
                     }
                 } while (charsRead > 0);
                 await UploadToBlobInBlocks(filename, null, true);
@@ -182,14 +188,16 @@ public class ExtractDataProvider : IExtractDataProvider
 public static class ByteArrayExtension
 {
     /// <summary>
-    /// Extension method to insert CfLf after specified elements in XML Stream
+    /// Extension method to insert CfLf after specified elements in XML stream
     /// </summary>
     /// <param name="self">A byte array as part of larger XML document</param>
     /// <param name="target">A UTF8 byte encoded string of XMLtag to target</param>
-    /// <param name="offset">When tag is split between two sets of buffered data the offset is number of bytes truncated from the beginning of the seconf file</param>
-    /// <param name="byteCount">The total number of bytes read in, this changes as new bytes are added</param>
+    /// <param name="offset">When tag is split between two buffered data the offset is number of bytes truncated from the beginning of the second buffer
+    /// should be passed to next call of InsertCrLfAfter on output array</param>
+    /// <param name="byteCount">The total number of bytes read in, this changes as new bytes are added and returned, so can be added to next call to
+    /// InsertCrLfAfte on output bytes array</param>
     /// <returns></returns>
-    public static byte[] InsertCrLfAfter(this byte[] self, byte[] target, ref int offset, ref int byteCount)
+    public static (byte[], int, int) InsertCrLfAfter(this byte[] self, byte[] target, int offset, int byteCount)
     {
         //for calculation of truncated target
         var originalLength = byteCount;
@@ -198,7 +206,9 @@ public static class ByteArrayExtension
         var newLength = originalLength;
 
         //A new array to be used an source of output with larger size to account for additional bytes
-        var outputArray = new byte[((int)(newLength * 2))];
+        //We can't known how many insertions there will be, made large enough so we don't have to re-initise.
+        //This is why byteCount exists so we can accurately account for the array size...at the end of the method
+        var outputArray = new byte[((int)(newLength * 1.2))];
 
         //start position in self from where current comparison starts
         var startIndex = 0;
@@ -286,6 +296,6 @@ public static class ByteArrayExtension
         //Important when selecting the last output for last buffer
         byteCount = newLength;
 
-        return outputArray[0..newLength];
+        return (outputArray[0..newLength], offset, byteCount);
     }
 }
