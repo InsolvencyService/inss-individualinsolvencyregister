@@ -235,7 +235,7 @@ namespace INSS.EIIR.Services.Tests
         /// <param name="expectedByteCount">The number of bytes/characters in output, to be fed in to chained call</param>
         [Theory]
         [MemberData(nameof(ByteReplacementTestData))]
-        public void ByteReplacementTest(string targetText, int offset, string srcText, string expectedTxt, int expectedOffset, int inputByteCount, int expectedByteCount)
+        public void ByteReplacement(string targetText, int offset, string srcText, string expectedTxt, int expectedOffset, int inputByteCount, int expectedByteCount)
         {
 
             //Arrange
@@ -248,6 +248,62 @@ namespace INSS.EIIR.Services.Tests
             Assert.Equal(expectedByteCount, value.Item3);
             Assert.Equal(expectedOffset, value.Item2);
             Assert.Equal(Encoding.UTF8.GetBytes(expectedTxt), value.Item1);
+
+        }
+
+
+        public static IEnumerable<object[]> MultiArrayByteReplacementData()
+        {
+            //No midway
+            yield return new object[] { "<ReportRequest>","</ReportRequest>", 0, $"This is a firs<Report", "Request>a little test", $"This is a firs<ReportRequest>\r\na little test", 0, 0};
+            yield return new object[] { "<ReportRequest>","</ReportRequest>", 0, $"This is a firs<ReportRequest", ">a little test", $"This is a firs<ReportRequest>\r\na little test", 0, 0};
+            yield return new object[] { "<ReportRequest>","</ReportRequest>", 0, $"This is a firs<ReportRequest>", "a little test", $"This is a firs<ReportRequest>\r\na little test", 0, 0};
+            yield return new object[] { "<ReportRequest>","</ReportRequest>", 0, $"This is a firs<", "ReportRequest>a little test", $"This is a firs<ReportRequest>\r\na little test", 0, 0};
+            yield return new object[] { "<ReportRequest>","</ReportRequest>", 0, $"This is a firs", "<ReportRequest>a little test", $"This is a firs<ReportRequest>\r\na little test", 0, 0};
+            yield return new object[] { "<ReportRequest>","</ReportRequest>", 0, $"This is</ReportRequest><R", "eportRequest>a little test", $"This is</ReportRequest>\r\n<ReportRequest>\r\na little test", 0, 0};
+            yield return new object[] { "<ReportRequest>","</ReportRequest>", 0, $"This is</ReportRequest><Re", "portRequest>a little test", $"This is</ReportRequest>\r\n<ReportRequest>\r\na little test", 0, 0};
+            yield return new object[] { "<ReportRequest>","</ReportRequest>", 0, $"This is</ReportRequest><Rep", "ortRequest>a little test", $"This is</ReportRequest>\r\n<ReportRequest>\r\na little test", 0, 0};
+            yield return new object[] { "<ReportRequest>","</ReportRequest>", 0, $"This is</ReportRequest><Repo", "rtRequest>a little test", $"This is</ReportRequest>\r\n<ReportRequest>\r\na little test", 0, 0};
+            yield return new object[] { "<ReportRequest>","</ReportRequest>", 0, $"This is</ReportRequest><Repor", "tRequest>a little test", $"This is</ReportRequest>\r\n<ReportRequest>\r\na little test", 0, 0};
+            yield return new object[] { "<ReportRequest>","</ReportRequest>", 0, $"This is</ReportRequest><Report", "Request>a little test", $"This is</ReportRequest>\r\n<ReportRequest>\r\na little test", 0, 0};
+            yield return new object[] { "<ReportRequest>","</ReportRequest>", 0, $"This is</ReportRequest><ReportR", "equest>a little test", $"This is</ReportRequest>\r\n<ReportRequest>\r\na little test", 0, 0};
+            yield return new object[] { "<ReportRequest>","</ReportRequest>", 0, $"This is</ReportRequest><ReportRe", "quest>a little test", $"This is</ReportRequest>\r\n<ReportRequest>\r\na little test", 0, 0};
+            yield return new object[] { "<ReportRequest>","</ReportRequest>", 0, $"This is</ReportRequest><ReportReq", "uest>a little test", $"This is</ReportRequest>\r\n<ReportRequest>\r\na little test", 0, 0};
+            yield return new object[] { "<ReportRequest>","</ReportRequest>", 0, $"This is</ReportRequest><ReportRequ", "est>a little test", $"This is</ReportRequest>\r\n<ReportRequest>\r\na little test", 0, 0};
+            yield return new object[] { "<ReportRequest>", "</ReportRequest>", 0, $"This is</ReportRequest><ReportReq", "uest>a little test<Rep", $"This is</ReportRequest>\r\n<ReportRequest>\r\na little test<Rep", 4, 0};
+            yield return new object[] { "<ReportRequest>", "</ReportRequest>", 0, $"This is</ReportRequest><ReportRequ", "est>a little test</Re", $"This is</ReportRequest>\r\n<ReportRequest>\r\na little test</Re", 0, 4};
+            yield return new object[] { "<ReportRequest>", "</ReportRequest>", 0, $"This is</ReportRequest><ReportRequ", "est>a little test</Re", $"This is</ReportRequest>\r\n<ReportRequest>\r\na little test</Re", 0, 4 };
+        }
+
+        [Theory]
+        [MemberData(nameof(MultiArrayByteReplacementData))]
+        public void MultiArrayByteReplacement(string targetText, string targetText2, int offset, string srcText1, string srcText2, string expectedTxt, int exptOffset1, int exptOffset2)
+        {
+
+            //Arrange
+            IEnumerable <Byte[]> inputArrays = new List<Byte[]>() { Encoding.UTF8.GetBytes(srcText1), Encoding.UTF8.GetBytes(srcText2) };
+
+            int reportResultOffset, endReportResultOffset;
+            reportResultOffset = endReportResultOffset = 0;
+
+            byte[] outputArr = new byte[0];
+
+
+            //Act
+            foreach (var inputArray in inputArrays) {
+                var tupleResult = inputArray.InsertCrLfAfter(Encoding.UTF8.GetBytes(targetText), reportResultOffset, inputArray.Length);
+                reportResultOffset = tupleResult.Item2;
+
+                tupleResult = tupleResult.Item1.InsertCrLfAfter(Encoding.UTF8.GetBytes(targetText2), endReportResultOffset, tupleResult.Item3);
+                endReportResultOffset = tupleResult.Item2;
+
+                outputArr = outputArr.Concat(tupleResult.Item1).ToArray();
+            }
+
+            //Assert
+            Assert.Equal(Encoding.UTF8.GetBytes(expectedTxt), outputArr);
+            Assert.Equal(exptOffset1, reportResultOffset);
+            Assert.Equal(exptOffset2, endReportResultOffset);
 
         }
 

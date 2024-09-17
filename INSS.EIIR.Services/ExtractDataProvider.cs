@@ -55,6 +55,15 @@ public class ExtractDataProvider : IExtractDataProvider
         await connection.OpenAsync();
         using SqlCommand command = new($"EXEC {_dbConfig.GetXmlDataProcedure}", connection) { CommandTimeout = _dbConfig.CommandTimeout };
 
+        //APP-5297 Some Suscribers XML file line by line, helps to have some CrLf then ;)
+        //There are specific XML Element Tags after which CrLf are inserted
+        //Each tag to be targeted requires an offset, which is the number of character which match the tag when it is poentially truncated at end of byte array
+        //e.g. for <ReportRequest>  for a string "this is a test <Rep"  the result offset is 4
+        int osReportRequest = 0;
+        int osIndividualDetails = 0;
+        int osEndReportRequest = 0;
+        int osReportDetails = 0;
+
         // await _containerClient.CreateIfNotExistsAsync();
 
         // The reader needs to be executed with the SequentialAccess behavior to enable network streaming
@@ -68,25 +77,29 @@ public class ExtractDataProvider : IExtractDataProvider
                 int charsRead = 0;
                 using TextReader data = reader.GetTextReader(0);
 
-                int ReportRequestOS = 0;
-
                 do
                 {
                     charsRead = await data.ReadAsync(buffer, 0, buffer.Length);
                     if (charsRead > 0) { 
                         byte[] byteArray = Encoding.UTF8.GetBytes(buffer, 0, charsRead);
 
-                        //APP-5297 Some Suscribers XML file line by line, helps to have soe lines then ;)
-                        //This section inserts CrLf into stream where they needs to be
-                        
+                        #region APP-5297 Insert CrLf After specific tags to assist subscriber parsing files
                         int byteCount = byteArray.Length; // charsRead != byte[].Length... when talking UTF8/Unicode
-                        
+
                         //Repetitive calls to InsertCrLfAfter targeting specific XML Elememt Tags... originally used ref on last 2 parameters though they do not
                         //play nicely with async nature of surrounding method
-                        var resultTuple = byteArray.InsertCrLfAfter(Encoding.UTF8.GetBytes("<ReportRequest>"), ReportRequestOS, byteCount);
-                        resultTuple = resultTuple.Item1.InsertCrLfAfter(Encoding.UTF8.GetBytes("</IndividualDetails>"), resultTuple.Item2, resultTuple.Item3);
-                        resultTuple = resultTuple.Item1.InsertCrLfAfter(Encoding.UTF8.GetBytes("</ReportRequest>"), resultTuple.Item2, resultTuple.Item3);
-                        resultTuple = resultTuple.Item1.InsertCrLfAfter(Encoding.UTF8.GetBytes("</ReportDetails>"), resultTuple.Item2, resultTuple.Item3);
+                        var resultTuple = byteArray.InsertCrLfAfter(Encoding.UTF8.GetBytes("<ReportRequest>"), osReportRequest, byteCount);
+                        osReportRequest = resultTuple.Item2;
+
+                        resultTuple = resultTuple.Item1.InsertCrLfAfter(Encoding.UTF8.GetBytes("</IndividualDetails>"), osIndividualDetails, resultTuple.Item3);
+                        osIndividualDetails = resultTuple.Item2;
+
+                        resultTuple = resultTuple.Item1.InsertCrLfAfter(Encoding.UTF8.GetBytes("</ReportRequest>"), osEndReportRequest, resultTuple.Item3);
+                        osEndReportRequest = resultTuple.Item2;
+
+                        resultTuple = resultTuple.Item1.InsertCrLfAfter(Encoding.UTF8.GetBytes("</ReportDetails>"), osReportDetails, resultTuple.Item3);
+                        osReportDetails = resultTuple.Item2;
+                        #endregion APP-5297
 
                         await UploadToBlobInBlocks(filename, resultTuple.Item1[0..resultTuple.Item3], false);
                     }
@@ -195,7 +208,7 @@ public static class ByteArrayExtension
     /// <param name="offset">When tag is split between two buffered data the offset is number of bytes truncated from the beginning of the second buffer
     /// should be passed to next call of InsertCrLfAfter on output array</param>
     /// <param name="byteCount">The total number of bytes read in, this changes as new bytes are added and returned, so can be added to next call to
-    /// InsertCrLfAfte on output bytes array</param>
+    /// InsertCrLfAfter on output bytes array, MAY ACTUALLY NOT BE REQUIRED - though leaving in for now</param>
     /// <returns></returns>
     public static (byte[], int, int) InsertCrLfAfter(this byte[] self, byte[] target, int offset, int byteCount)
     {
@@ -205,10 +218,11 @@ public static class ByteArrayExtension
         //new length once additional characters added
         var newLength = originalLength;
 
-        //A new array to be used an source of output with larger size to account for additional bytes
+        //A new array (with minimum length of 20 bytes greater than input for small datasets)
+        //To be used as output location with larger size to account for additional bytes
         //We can't known how many insertions there will be, made large enough so we don't have to re-initise.
         //This is why byteCount exists so we can accurately account for the array size...at the end of the method
-        var outputArray = new byte[((int)(newLength * 1.2))];
+        var outputArray = new byte[((int)Math.Max(newLength * 1.1,newLength + 20))];
 
         //start position in self from where current comparison starts
         var startIndex = 0;
@@ -222,10 +236,13 @@ public static class ByteArrayExtension
         //where new values will copied to
         var targetIndex = 0;
 
+        //TempTarget allows us to adjust what we are scanning for at teh beginning and end of byte[] 
+        byte[] tempTarget = target;
+
         while (currentIndex < originalLength)
         {
             //Adjust target for offset at beginning and end
-            var tempTarget = target;
+            tempTarget = target;
 
             //Adjust target for offset at beginning
             if (currentIndex - offset < 0)
@@ -293,7 +310,7 @@ public static class ByteArrayExtension
         }
 
         //Update byteCount which is passed back such that it can be chained to next InsertCrLfAfter call
-        //Important when selecting the last output for last buffer
+        //Important when selecting the last output for last buffer.
         byteCount = newLength;
 
         return (outputArray[0..newLength], offset, byteCount);
