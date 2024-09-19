@@ -1,6 +1,5 @@
 using System;
-using Microsoft.Azure.WebJobs;
-using Microsoft.Azure.WebJobs.Host;
+
 using Microsoft.Extensions.Logging;
 using Microsoft.Data.SqlClient;
 using Microsoft.SqlServer.Management.Smo;
@@ -8,31 +7,36 @@ using Microsoft.SqlServer.Management.Common;
 using System.Net.Http;
 using System.IO;
 using System.Net;
+using Microsoft.Azure.Functions.Worker;
 
 namespace INSS.EIIR.DailyExtract
 {
     public class Snapshot
     {
 
-        private ILogger _log;
+        private readonly ILogger<Snapshot> _logger;
 
-        [FunctionName("Snapshot")]
-        public void Run([TimerTrigger("%snapshotTimercron%")] TimerInfo myTimer, ILogger log)
+        public Snapshot(ILogger<Snapshot> logger)
+        {
+            _logger = logger;
+        }
+
+        [Function("Snapshot")]
+        public void Run([TimerTrigger("%snapshotTimercron%")] TimerInfo myTimer)
         {
             try
             {
-                _log = log;
-                _log.LogInformation($"EIIR Daily Extract Snapshot function executed at: {DateTime.Now}");
-                _log.LogInformation($"Next EIIR Daily Extract Snapshot scheduled for: {myTimer.ScheduleStatus.Next}");
+                _logger.LogInformation($"EIIR Daily Extract Snapshot function executed at: {DateTime.Now}");
+                _logger.LogInformation($"Next EIIR Daily Extract Snapshot scheduled for: {myTimer.ScheduleStatus.Next}");
 
                 runProceedure("createeiirSnapshotTABLE");
-                _log.LogInformation("createeiirSnapshotTABLE execution successfull");
+                _logger.LogInformation("createeiirSnapshotTABLE execution successfull");
                 
                 runProceedure("extr_avail_INS");
-                _log.LogInformation("extr_avail_INS execution sucessfull");
+                _logger.LogInformation("extr_avail_INS execution sucessfull");
 
                 //start orchestration
-                _log.LogInformation("Calling Start Orchestration");
+                _logger.LogInformation("Calling Start Orchestration");
                 callPostHttpFunction("EiirOrchestrator_Start");
 
                 //rebuild Indexes
@@ -42,7 +46,7 @@ namespace INSS.EIIR.DailyExtract
             }
             catch (Exception ex)
             {
-                _log.LogError(ex.Message);
+                _logger.LogError(ex.Message);
                 throw(new Exception(ex.Message));
             }
         }
@@ -65,7 +69,7 @@ namespace INSS.EIIR.DailyExtract
             server.ConnectionContext.SqlConnectionObject.Close();
         }
 
-        private async void callGetHttpFunction(string function)
+        private async System.Threading.Tasks.Task callGetHttpFunction(string function)
         {
             string functionURL = Environment.GetEnvironmentVariable("functionURL");
             string apiKey = Environment.GetEnvironmentVariable("functionAPIKey");
@@ -78,16 +82,16 @@ namespace INSS.EIIR.DailyExtract
 
             if (response.IsSuccessStatusCode)
             {
-                _log.LogInformation($"{functionEndpoint} called.");
+                _logger.LogInformation($"{functionEndpoint} called.");
             }
             else
             {
-                _log.LogInformation($"{functionEndpoint} failed with. {response.StatusCode}");
+                _logger.LogInformation($"{functionEndpoint} failed with. {response.StatusCode}");
 
             }
         }
 
-        private async void callPostHttpFunction(string function)
+        private async System.Threading.Tasks.Task callPostHttpFunction(string function)
         {
             string functionURL = Environment.GetEnvironmentVariable("functionURL");
             string apiKey = Environment.GetEnvironmentVariable("functionAPIKey");
@@ -104,11 +108,11 @@ namespace INSS.EIIR.DailyExtract
                 // Writing the responsefunctionEndpoint
                 if (response.IsSuccessStatusCode)
                 {
-                    _log.LogInformation($"{functionEndpoint} called.");
+                    _logger.LogInformation($"{functionEndpoint} called.");
                 }
                 else
                 {
-                    _log.LogInformation($"{functionEndpoint} failed with. {response.StatusCode}");
+                    _logger.LogInformation($"{functionEndpoint} failed with. {response.StatusCode}");
                 }
             }
 
