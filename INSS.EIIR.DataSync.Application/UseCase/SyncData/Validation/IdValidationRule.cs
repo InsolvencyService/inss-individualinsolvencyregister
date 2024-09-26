@@ -11,12 +11,12 @@ namespace INSS.EIIR.DataSync.Application.UseCase.SyncData.Validation
     {
         public async Task<ValidationRuleResponse> Validate(InsolventIndividualRegisterModel model)
         {
-            bool isValid = !String.IsNullOrEmpty(model.Id);
+            bool isValid = model.caseNo > -1 ;
             var errorMessage = "";
 
             if (!isValid) 
             {
-                errorMessage = "model does not have an ID";
+                errorMessage = "model identifier is negative";
             }
 
             return new ValidationRuleResponse()

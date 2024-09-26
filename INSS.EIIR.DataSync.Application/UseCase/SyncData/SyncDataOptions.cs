@@ -10,7 +10,7 @@ namespace INSS.EIIR.DataSync.Application.UseCase.SyncData
 {
     public class SyncDataOptions
     {
-        public IEnumerable<IDataSource> DataSources { get; set; }
+        public IEnumerable<IDataSourceAsync<InsolventIndividualRegisterModel>> DataSources { get; set; }
         public IEnumerable<IDataSink<InsolventIndividualRegisterModel>> DataSinks { get; set; }
         public IEnumerable<ITransformRule> TransformRules { get; set; }
         public IDataSink<SyncFailure> FailureSink { get; set; }
