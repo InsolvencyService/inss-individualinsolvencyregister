@@ -22,5 +22,10 @@ namespace INSS.EIIR.DataSync.Application.UseCase.SyncData.Model
             }
             else return false;
         }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(this.caseNo, this.individualForenames, this.individualSurname);
+        }
     }
 }

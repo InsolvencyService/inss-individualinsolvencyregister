@@ -32,6 +32,7 @@
   <ItemGroup>
     <ProjectReference Include="..\INSS.EIIR.DataSync.Application\INSS.EIIR.DataSync.Application.csproj" />
     <ProjectReference Include="..\INSS.EIIR.DataSync.Infrastructure\INSS.EIIR.DataSync.Infrastructure.csproj" />
+    <ProjectReference Include="..\INSS.EIIR.StubbedTestData\INSS.EIIR.StubbedTestData.csproj" />
   </ItemGroup>
   <ItemGroup>
     <None Update="host.json">
