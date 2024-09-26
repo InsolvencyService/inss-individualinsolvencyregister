@@ -15,7 +15,7 @@ using Microsoft.Extensions.Logging;
 
 namespace INSS.EIIR.DataSync.Functions.DI
 {
-    public class SyncDataFactory
+    public static class SyncDataFactory
     {
         public static SyncData Get(IServiceProvider sp)
         {
@@ -26,11 +26,16 @@ namespace INSS.EIIR.DataSync.Functions.DI
             IEnumerable<IDataSourceAsync<InsolventIndividualRegisterModel>> sources = new List<IDataSourceAsync<InsolventIndividualRegisterModel>>()
             {
                 GetINSSightSQLSource(config, mapper),
+
+                //Following lines are required.. eventually, they are commented as XMLSink and AISearchSink are yet to be implemented
+                //and will crash calling function if deployed myself and Carl are actively working on this code in coming days
                 //GetEIIRSQLSource(config, mapper)
             };
 
             IEnumerable<IDataSink<InsolventIndividualRegisterModel>> sinks = new List<IDataSink<InsolventIndividualRegisterModel>>()
             {
+                //Following lines are required.. eventually, they are commented as XMLSink and AISearchSink are yet to be implemented
+                //and will crash calling function if deployed myself and Carl are actively working on this code in coming days
                 //GetXMLSink(config),
                 //GetAISearchSink(config)
             };
