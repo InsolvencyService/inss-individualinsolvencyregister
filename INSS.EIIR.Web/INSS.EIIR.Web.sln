@@ -58,6 +58,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "INSS.EIIR.DataSync.Applicat
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "INSS.EIIR.DataSync.Infrastructure", "..\INSS.EIIR.DataSync.Infrastructure\INSS.EIIR.DataSync.Infrastructure.csproj", "{31DB5DA5-2F76-435E-B0E9-BDE5E7BDAEC0}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "INSS.EIIR.StubbedTestData", "..\INSS.EIIR.StubbedTestData\INSS.EIIR.StubbedTestData.csproj", "{B95608DF-F80A-4C67-974A-3E9E73BCD333}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -148,6 +150,10 @@ Global
 		{31DB5DA5-2F76-435E-B0E9-BDE5E7BDAEC0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{31DB5DA5-2F76-435E-B0E9-BDE5E7BDAEC0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{31DB5DA5-2F76-435E-B0E9-BDE5E7BDAEC0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B95608DF-F80A-4C67-974A-3E9E73BCD333}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B95608DF-F80A-4C67-974A-3E9E73BCD333}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B95608DF-F80A-4C67-974A-3E9E73BCD333}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B95608DF-F80A-4C67-974A-3E9E73BCD333}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -161,7 +167,6 @@ Global
 		{1962A6C5-8F1C-4594-85CB-DD7EFEBAF94B} = {DAB23EC1-D19D-41BB-A148-20BA1913508B}
 		{C7F398D0-583A-4276-B722-2D02AB53E2A8} = {DAB23EC1-D19D-41BB-A148-20BA1913508B}
 		{99C38E91-8E6A-4794-997F-EABB3158717D} = {DAB23EC1-D19D-41BB-A148-20BA1913508B}
-		{968F865A-897C-40EA-8392-0482BA6F09D3} = {6C947E7A-A2EC-462D-AB5D-B8DAF7444FE1}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {6BA0DD0F-AA99-4A09-AB01-971BA60E5FE4}
