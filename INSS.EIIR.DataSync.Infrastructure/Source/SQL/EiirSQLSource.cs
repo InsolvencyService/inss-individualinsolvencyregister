@@ -1,4 +1,5 @@
 ﻿using INSS.EIIR.DataSync.Application.UseCase.SyncData.Infrastructure;
+using INSS.EIIR.Models.CaseModels;
 using INSS.EIIR.DataSync.Application.UseCase.SyncData.Model;
 using System;
 using System.Collections.Generic;
@@ -8,13 +9,14 @@ using System.Threading.Tasks;
 
 namespace INSS.EIIR.DataSync.Infrastructure.Source.SQL
 {
-    public class SQLSource : IDataSource
+    public  class EiirSQLSource : IDataSourceAsync<InsolventIndividualRegisterModel>
     {
-        public SQLSource(SQLSourceOptions options) { }
+        public EiirSQLSource(SQLSourceOptions options) { }
 
-        public async Task<IEnumerable<InsolventIndividualRegisterModel>> GetInsolventIndividualRegistrationsAsync()
+        public async IAsyncEnumerable<InsolventIndividualRegisterModel> GetInsolventIndividualRegistrationsAsync()
         {
-            throw new NotImplementedException();
+            yield break;
+
         }
     }
 }

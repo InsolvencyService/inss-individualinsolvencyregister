@@ -19,12 +19,12 @@ namespace INSS.EIIR.DataSync.Infrastructure.Sink.Failure
 
         public async Task<SinkCompleteResponse> Complete()
         {
-            throw new NotImplementedException();
+            return new SinkCompleteResponse() { IsError = false };
         }
 
         public async Task<DataSinkResponse> Sink(SyncFailure model)
         {
-            throw new NotImplementedException();
+            return new DataSinkResponse() { IsError = false };
         }
     }
 }
