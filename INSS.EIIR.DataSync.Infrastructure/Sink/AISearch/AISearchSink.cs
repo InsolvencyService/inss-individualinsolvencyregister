@@ -2,6 +2,7 @@
 using Azure.Search.Documents;
 using Azure.Search.Documents.Indexes;
 using Azure.Search.Documents.Indexes.Models;
+using INSS.EIIR.AzureSearch.IndexMapper;
 using INSS.EIIR.DataSync.Application.UseCase.SyncData.Infrastructure;
 using INSS.EIIR.DataSync.Application.UseCase.SyncData.Model;
 using INSS.EIIR.Models.IndexModels;
@@ -26,11 +27,14 @@ namespace INSS.EIIR.DataSync.Infrastructure.Sink.AISearch
         private AISearchSinkOptions _options;
         private int _batchLimit;
 
+        private ISetIndexMapService _indexMapSetter;
+
         private string _newSearchIndex;
 
-        public AISearchSink(AISearchSinkOptions options, ILogger<AISearchSink> logger) 
+        public AISearchSink(AISearchSinkOptions options, ISetIndexMapService indexMapSetter, ILogger<AISearchSink> logger) 
         {
             _options = options;
+            _indexMapSetter = indexMapSetter;
             _indexClient = new SearchIndexClient(new Uri(options.AISearchEndpoint), new Azure.AzureKeyCredential(options.AISearchKey));
             _logger = logger;
         }
@@ -69,7 +73,7 @@ namespace INSS.EIIR.DataSync.Infrastructure.Sink.AISearch
 
         public async Task<SinkCompleteResponse> Complete()
         {
-            await SwapAliasToNewIndex(_newSearchIndex);
+            await _indexMapSetter.SetIndexName(_newSearchIndex);
 
             _logger.LogInformation($"Swapped alias to {_newSearchIndex}");
 
@@ -107,22 +111,6 @@ namespace INSS.EIIR.DataSync.Infrastructure.Sink.AISearch
             catch (Exception ex)
             {
                 throw new FailedToCreateIndexException($"Failed to create index {_newSearchIndex}", ex);
-            }
-        }
-
-        private async Task SwapAliasToNewIndex(string indexName)
-        {
-            var httpClient = HttpClientFactory.Create();
-            httpClient.DefaultRequestHeaders.Add("api-key", _options.AISearchKey);
-            var response = await httpClient.PutAsJsonAsync($"{_options.AISearchEndpoint}/aliases('{SEARCH_INDEX_BASE_NAME}')?api-version=2024-05-01-preview", new
-            {
-                name = SEARCH_INDEX_BASE_NAME,
-                indexes = new[] { _newSearchIndex }
-            });
-            
-            if (!response.IsSuccessStatusCode)
-            {
-                throw new FailedToSwapIndexException(await response.Content.ReadAsStringAsync());
             }
         }
 

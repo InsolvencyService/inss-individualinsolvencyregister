@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using AutoMapper;
+using INSS.EIIR.AzureSearch.IndexMapper;
 using INSS.EIIR.DataSync.Application.UseCase.SyncData;
 using INSS.EIIR.DataSync.Application.UseCase.SyncData.Infrastructure;
 using INSS.EIIR.DataSync.Application.UseCase.SyncData.Model;
@@ -29,6 +30,7 @@ namespace INSS.EIIR.DataSync.Functions.DI
             var factory = sp.GetRequiredService<ILoggerFactory>();
             var config = sp.GetRequiredService<IConfiguration>();
             var mapper = sp.GetRequiredService<IMapper>();
+            var indexMapper = sp.GetRequiredService<ISetIndexMapService>();
 
             IEnumerable<IDataSourceAsync<InsolventIndividualRegisterModel>> sources;
 
@@ -56,7 +58,7 @@ namespace INSS.EIIR.DataSync.Functions.DI
                 //Following lines are required.. eventually, they are commented as XMLSink and AISearchSink are yet to be implemented
                 //and will crash calling function if deployed myself and Carl are actively working on this code in coming days
                 //GetXMLSink(config),
-                GetAISearchSink(config, mapper, factory.CreateLogger<AISearchSink>())
+                GetAISearchSink(config, mapper, indexMapper, factory.CreateLogger<AISearchSink>())
             };
 
             IEnumerable<ITransformRule> transformRules = new List<ITransformRule>();           
@@ -82,7 +84,7 @@ namespace INSS.EIIR.DataSync.Functions.DI
             return new XMLSink(options);
         }
 
-        private static IDataSink<InsolventIndividualRegisterModel> GetAISearchSink(IConfiguration config, IMapper mapper, ILogger<AISearchSink> logger)
+        private static IDataSink<InsolventIndividualRegisterModel> GetAISearchSink(IConfiguration config, IMapper mapper, ISetIndexMapService indexMapper, ILogger<AISearchSink> logger)
         {
             var options = new AISearchSinkOptions();
             options.AISearchEndpoint = config.GetValue<string>(AI_SEARCH_ENDPOINT_SETTING);
@@ -90,7 +92,7 @@ namespace INSS.EIIR.DataSync.Functions.DI
             options.BatchLimit = config.GetValue<int>(AI_SEARCH_BATCH_LIMIT_SETTING);
             options.Mapper = mapper;
 
-            return new AISearchSink(options, logger);
+            return new AISearchSink(options, indexMapper, logger);
         }
 
         private static IDataSource GetAzureTableSource(IConfiguration config)

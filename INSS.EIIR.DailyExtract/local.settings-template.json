@@ -23,7 +23,14 @@
 
     //settings to call orchestrator
     "functionURL": "http://localhost:7071/api/",
-    "functionAPIKey": "you do not need to set this when running locally"
+    "functionAPIKey": "you do not need to set this when running locally",
 
+    "AISearchEndpoint": "__AISearchEndpoint__",
+    "AISearchKey": "__AISearchKey__",
+    "AISearchBatchLimit": "__AISearchBatchLimit__",
+
+    "TableStorageUri": "__TableStorageUri__",
+    "TableStorageAccountName": "__TableStorageAccountName__",
+    "TableStorageKey": "__TableStorageKey__"
   }
 }
