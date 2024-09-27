@@ -27,6 +27,7 @@ using System;
 using Microsoft.Azure.Functions.Worker;
 
 using Microsoft.Extensions.Hosting;
+using INSS.EIIR.AzureSearch.IndexMapper;
 
 
 var host = new HostBuilder()
@@ -38,6 +39,13 @@ var host = new HostBuilder()
 
         services.AddHttpClient();
         services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
+        services.AddGetIndexMapper(new IndexMapperOptions()
+        {
+            TableStorageAccountName = Environment.GetEnvironmentVariable("TableStorageAccountName"),
+            TableStorageUri = Environment.GetEnvironmentVariable("TableStorageUri"),
+            TableStorageKey = Environment.GetEnvironmentVariable("TableStorageKey")
+        });
 
         services.AddHealthChecks();
 
@@ -53,26 +61,26 @@ var host = new HostBuilder()
         var mapper = mapperConfig.CreateMapper();
         services.AddSingleton(mapper);
 
-        var connectionString = Environment.GetEnvironmentVariable("database__connectionstring");
-        if (string.IsNullOrEmpty(connectionString))
-            throw new ArgumentNullException("database__connectionstring missing");
+        //var connectionString = Environment.GetEnvironmentVariable("database__connectionstring");
+        //if (string.IsNullOrEmpty(connectionString))
+        //    throw new ArgumentNullException("database__connectionstring missing");
 
-        var serviceBusPubConnectionString = Environment.GetEnvironmentVariable("servicebus__publisherconnectionstring");
-        if (string.IsNullOrEmpty(serviceBusPubConnectionString))
-            throw new ArgumentNullException("servicebus__publisherconnectionstring is missing");
+        //var serviceBusPubConnectionString = Environment.GetEnvironmentVariable("servicebus__publisherconnectionstring");
+        //if (string.IsNullOrEmpty(serviceBusPubConnectionString))
+        //    throw new ArgumentNullException("servicebus__publisherconnectionstring is missing");
 
-        var notifyConnectionString = Environment.GetEnvironmentVariable("notify__connectionstring");
-        if (string.IsNullOrEmpty(notifyConnectionString))
-            throw new ArgumentNullException("notify__connectionstring is missing");
+        //var notifyConnectionString = Environment.GetEnvironmentVariable("notify__connectionstring");
+        //if (string.IsNullOrEmpty(notifyConnectionString))
+        //    throw new ArgumentNullException("notify__connectionstring is missing");
 
-        var storageConnectionString = Environment.GetEnvironmentVariable("storageconnectionstring");
-        if (string.IsNullOrEmpty(storageConnectionString))
-            throw new ArgumentNullException("storageconnectionstring is missing");
+        //var storageConnectionString = Environment.GetEnvironmentVariable("storageconnectionstring");
+        //if (string.IsNullOrEmpty(storageConnectionString))
+        //    throw new ArgumentNullException("storageconnectionstring is missing");
 
-        services.AddTransient(_ =>
-        {
-            return new EIIRContext(connectionString);
-        });
+        //services.AddTransient(_ =>
+        //{
+        //    return new EIIRContext(connectionString);
+        //});
 
         services.AddTransient(_ =>
         {
@@ -82,46 +90,46 @@ var host = new HostBuilder()
             return new SearchIndexClient(new Uri(searchServiceUrl), new AzureKeyCredential(adminApiKey));
         });
 
-        services.AddDbContext<EIIRExtractContext>(options => options.UseSqlServer(connectionString));
+        //services.AddDbContext<EIIRExtractContext>(options => options.UseSqlServer(connectionString));
 
-        services.AddOptions<DatabaseConfig>()
-           .Configure<IConfiguration>((settings, configuration) =>
-           {
-               configuration.GetSection("database").Bind(settings);
-           });
+        //services.AddOptions<DatabaseConfig>()
+        //   .Configure<IConfiguration>((settings, configuration) =>
+        //   {
+        //       configuration.GetSection("database").Bind(settings);
+        //   });
 
-        services.AddOptions<ServiceBusConfig>()
-           .Configure<IConfiguration>((settings, configuration) =>
-           {
-               configuration.GetSection("servicebus").Bind(settings);
-           });
+        //services.AddOptions<ServiceBusConfig>()
+        //   .Configure<IConfiguration>((settings, configuration) =>
+        //   {
+        //       configuration.GetSection("servicebus").Bind(settings);
+        //   });
 
-        services.AddOptions<NotifyConfig>()
-            .Configure<IConfiguration>((settings, configuration) =>
-            {
-                configuration.GetSection("notify").Bind(settings);
-            });
+        //services.AddOptions<NotifyConfig>()
+        //    .Configure<IConfiguration>((settings, configuration) =>
+        //    {
+        //        configuration.GetSection("notify").Bind(settings);
+        //    });
 
-        services.AddAzureClients(clientsBuilder =>
-        {
-            clientsBuilder.AddTableServiceClient(storageConnectionString);
+        //services.AddAzureClients(clientsBuilder =>
+        //{
+        //    clientsBuilder.AddTableServiceClient(storageConnectionString);
 
-            clientsBuilder.AddServiceBusClient(serviceBusPubConnectionString)
-              .WithName("ServiceBusPublisher_ExtractJob")
-              .ConfigureOptions(options =>
-              {
-                  options.TransportType = ServiceBusTransportType.AmqpWebSockets;
-              });
+        //    clientsBuilder.AddServiceBusClient(serviceBusPubConnectionString)
+        //      .WithName("ServiceBusPublisher_ExtractJob")
+        //      .ConfigureOptions(options =>
+        //      {
+        //          options.TransportType = ServiceBusTransportType.AmqpWebSockets;
+        //      });
 
-            clientsBuilder.AddServiceBusClient(notifyConnectionString)
-              .WithName("ServiceBusPublisher_Notify")
-              .ConfigureOptions(options =>
-              {
-                  options.TransportType = ServiceBusTransportType.AmqpWebSockets;
-              });
+        //    clientsBuilder.AddServiceBusClient(notifyConnectionString)
+        //      .WithName("ServiceBusPublisher_Notify")
+        //      .ConfigureOptions(options =>
+        //      {
+        //          options.TransportType = ServiceBusTransportType.AmqpWebSockets;
+        //      });
 
-            clientsBuilder.AddBlobServiceClient(storageConnectionString);
-        });
+        //    clientsBuilder.AddBlobServiceClient(storageConnectionString);
+        //});
 
         services.AddScoped<IServiceBusMessageSender, ServiceBusMessageSender>();
         services.AddScoped<IExtractRepository, ExtractRepository>();

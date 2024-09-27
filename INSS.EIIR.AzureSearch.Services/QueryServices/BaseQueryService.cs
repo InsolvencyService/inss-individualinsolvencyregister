@@ -17,8 +17,6 @@ public abstract class BaseQueryService
 
     protected const string Concatenation = " and ";
 
-    protected abstract string IndexName { get; }
-
     protected BaseQueryService(
         IMapper mapper,
         SearchIndexClient indexClient,
@@ -42,6 +40,11 @@ public abstract class BaseQueryService
         };
     }
 
+    protected virtual async Task<string> GetIndexName()
+    {
+        return "";
+    }
+
     protected string FormatSearchTerm(string searchTerm)
     {
         return _searchTermFormattingService.FormatSearchTerm(searchTerm);
@@ -58,7 +61,7 @@ public abstract class BaseQueryService
         //APP-5144 Base64 decode searchterm as certain characters were causing Barracuda WAF issues
         searchTerm = FormatSearchTerm(CleanSearchString(searchTerm.Base64Decode()));
 
-        var searchClient = _indexClient.GetSearchClient(IndexName);
+        var searchClient = _indexClient.GetSearchClient(await GetIndexName());
         var result = await searchClient.SearchAsync<T>(searchTerm, options);
 
         var mappedResults = result.Value.GetResults().Select(r => r.Document)
@@ -70,7 +73,7 @@ public abstract class BaseQueryService
     public async Task<TR> SearchIndexDetailAsync<T, TR>(CaseRequest caseModel, SearchOptions options)
     {
         var searchTerm = String.Format("(CaseNumber eq {0}) + (IndividualNumber eq {1})", caseModel.CaseNo, caseModel.IndivNo);
-        var searchClient = _indexClient.GetSearchClient(IndexName);
+        var searchClient = _indexClient.GetSearchClient(await GetIndexName());
         var result = await searchClient.SearchAsync<T>(searchTerm, options);
 
         var mappedResults = result.Value.GetResults().Select(r => r.Document)
@@ -81,7 +84,7 @@ public abstract class BaseQueryService
 
     public async Task<TR> GetAsync<T, TR>(string key)
     {
-        var searchClient = _indexClient.GetSearchClient(IndexName);
+        var searchClient = _indexClient.GetSearchClient(await GetIndexName());
         var result = await searchClient.GetDocumentAsync<T>(key);
 
         var mappedResults = _mapper.Map<T, TR>(result);
