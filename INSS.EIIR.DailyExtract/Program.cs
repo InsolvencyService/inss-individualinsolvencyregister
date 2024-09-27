@@ -11,6 +11,7 @@ using INSS.EIIR.DataSync.Application;
 using INSS.EIIR.DataSync.Functions.DI;
 using INSS.EIIR.DataSync.Application.UseCase.SyncData;
 using INSS.EIIR.Models.AutoMapperProfiles;
+using INSS.EIIR.DataSync.Application.UseCase.SyncData.AutoMapperProfiles;
 using INSS.EIIR.DataSync.Infrastructure.Source.SQL.Models.AutoMapperProfiles;
 
 var host = new HostBuilder()
@@ -25,7 +26,8 @@ var host = new HostBuilder()
         var mapperConfig = new MapperConfiguration(mc =>
         {
             mc.AddProfile(new IndividualSearchMapper());
-            mc.AddProfile(new InsolventIndividualRegisterModelMapper());
+            mc.AddProfile(new INSS.EIIR.DataSync.Infrastructure.Source.SQL.Models.AutoMapperProfiles.InsolventIndividualRegisterModelMapper());
+            mc.AddProfile(new INSS.EIIR.DataSync.Application.UseCase.SyncData.AutoMapperProfiles.InsolventIndividualRegisterModelMapper());
         });
 
         var mapper = mapperConfig.CreateMapper();

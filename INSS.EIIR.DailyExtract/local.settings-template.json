@@ -4,6 +4,9 @@
     "AzureWebJobsStorage": "UseDevelopmentStorage=true",
     "FUNCTIONS_WORKER_RUNTIME": "dotnet-isolated",
 
+    //Controls whether faked datasources are used, defaults to false if not specified
+    "UseFakedDataSources": true,
+
     "SQLConnectionString": "Server=yourmachine\\yourinstance;database=yourdatabase;Integrated Security=true;TrustServerCertificate=True;",
     "InsSightSQLConnectionString": "__InsSightSQLConnectionString__",
     "snapshotTimercron": "15 7 * * *",
