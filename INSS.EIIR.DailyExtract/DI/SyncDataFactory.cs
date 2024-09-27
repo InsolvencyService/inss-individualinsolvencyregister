@@ -10,9 +10,11 @@ using INSS.EIIR.DataSync.Infrastructure.Sink.Failure;
 using INSS.EIIR.DataSync.Infrastructure.Sink.XML;
 using INSS.EIIR.DataSync.Infrastructure.Source.AzureTable;
 using INSS.EIIR.DataSync.Infrastructure.Source.SQL;
+using INSS.EIIR.StubbedTestData;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 
 namespace INSS.EIIR.DataSync.Functions.DI
 {
@@ -28,22 +30,33 @@ namespace INSS.EIIR.DataSync.Functions.DI
             var config = sp.GetRequiredService<IConfiguration>();
             var mapper = sp.GetRequiredService<IMapper>();
 
-            IEnumerable<IDataSourceAsync<InsolventIndividualRegisterModel>> sources = new List<IDataSourceAsync<InsolventIndividualRegisterModel>>()
-            {
-                //GetINSSightSQLSource(config, mapper),
+            IEnumerable<IDataSourceAsync<InsolventIndividualRegisterModel>> sources;
 
-                //Following lines are required.. eventually, they are commented as XMLSink and AISearchSink are yet to be implemented
-                //and will crash calling function if deployed myself and Carl are actively working on this code in coming days
-                //GetEIIRSQLSource(config, mapper)
-                GetFakeDataSource(config, mapper)
-            };
+            var useFakeData = config.GetValue<Boolean>("UseFakedDataSources", false);
+
+            if (useFakeData)
+            {
+                sources = new List<IDataSourceAsync<InsolventIndividualRegisterModel>>()
+                {
+                    //Carl M to plug this gap for INSSightFake
+                    GetEIIRSQLSourceFake(config, mapper)
+                };
+            }
+            else
+            {
+                sources = new List<IDataSourceAsync<InsolventIndividualRegisterModel>>()
+                {
+                    GetINSSightSQLSource(config, mapper),
+                    GetEIIRSQLSource(config, mapper)
+                };
+            }
 
             IEnumerable<IDataSink<InsolventIndividualRegisterModel>> sinks = new List<IDataSink<InsolventIndividualRegisterModel>>()
             {
                 //Following lines are required.. eventually, they are commented as XMLSink and AISearchSink are yet to be implemented
                 //and will crash calling function if deployed myself and Carl are actively working on this code in coming days
                 //GetXMLSink(config),
-                GetAISearchSink(config, mapper, factory.CreateLogger<AISearchSink>())
+                //GetAISearchSink(config)
             };
 
             IEnumerable<ITransformRule> transformRules = new List<ITransformRule>();           
@@ -98,6 +111,11 @@ namespace INSS.EIIR.DataSync.Functions.DI
             var options = new SQLSourceOptions(mapper, config.GetConnectionString("InsSightSQLConnectionString"));
 
             return new EiirSQLSource(options);
+        }
+
+        private static IDataSourceAsync<InsolventIndividualRegisterModel> GetEIIRSQLSourceFake(IConfiguration config, IMapper mapper)
+        {
+            return new EIIRSQLSourceFake(mapper);
         }
 
         private static IDataSourceAsync<InsolventIndividualRegisterModel> GetFakeDataSource(IConfiguration config, IMapper mapper)
