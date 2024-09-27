@@ -1,4 +1,5 @@
-﻿using Azure.Data.Tables;
+﻿using Azure;
+using Azure.Data.Tables;
 using System.Collections.Frozen;
 
 namespace INSS.EIIR.AzureSearch.IndexMapper
@@ -36,15 +37,29 @@ namespace INSS.EIIR.AzureSearch.IndexMapper
             {
                 { INDEX_PROPERTY_NAME, name }
             };
-            
-            var response = await _tableClient.UpsertEntityAsync(indexMapEntity);
+
+            try
+            {
+                await _tableClient.UpsertEntityAsync(indexMapEntity);
+            }
+            catch (RequestFailedException e)
+            {
+                throw new FailedToSetIndexException($"Failed to set {name} as the new index", e);
+            }
         }
 
         public async Task<string> GetIndexName()
         {
-            var entityResponse = await _tableClient.GetEntityAsync<TableEntity>(INDEX_MAP_PARTITION_KEY, INDEX_MAP_ROW_KEY);
-            var entity = entityResponse.Value;
-            return entity[INDEX_PROPERTY_NAME].ToString();
+            try
+            {
+                var entityResponse = await _tableClient.GetEntityAsync<TableEntity>(INDEX_MAP_PARTITION_KEY, INDEX_MAP_ROW_KEY);
+                var entity = entityResponse.Value;
+                return entity[INDEX_PROPERTY_NAME].ToString();
+            }
+            catch (RequestFailedException e)
+            {
+                throw new FailedToGetIndexException($"Failed to get index name", e);
+            }
         }
     }
 }

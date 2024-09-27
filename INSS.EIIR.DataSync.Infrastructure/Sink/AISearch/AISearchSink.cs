@@ -1,4 +1,5 @@
-﻿using Azure.Core;
+﻿using Azure;
+using Azure.Core;
 using Azure.Search.Documents;
 using Azure.Search.Documents.Indexes;
 using Azure.Search.Documents.Indexes.Models;
@@ -43,6 +44,8 @@ namespace INSS.EIIR.DataSync.Infrastructure.Sink.AISearch
 
         public async Task Start() 
         {
+            _logger.LogInformation("Starting AI Search sink");
+
             _newSearchIndex = await IndexNameHelper.GetNewIndexName(_indexClient.GetIndexNamesAsync());
             await CreateNewIndex(_newSearchIndex);
 
@@ -75,6 +78,8 @@ namespace INSS.EIIR.DataSync.Infrastructure.Sink.AISearch
 
         public async Task<SinkCompleteResponse> Complete()
         {
+            _logger.LogInformation("Completing AI Search sink");
+
             if (_newSearchIndex != null)
             {
                 await _indexMapSetter.SetIndexName(_newSearchIndex);
@@ -86,6 +91,8 @@ namespace INSS.EIIR.DataSync.Infrastructure.Sink.AISearch
             await DeleteIndexes();
 
             _logger.LogInformation("Deleted old indexes");
+
+            _logger.LogInformation("Completed AI Search sink");
 
             return new SinkCompleteResponse() { IsError = false };
         }
@@ -116,7 +123,14 @@ namespace INSS.EIIR.DataSync.Infrastructure.Sink.AISearch
 
             foreach (var name in deleteList)
             {
-                await _indexClient.DeleteIndexAsync(name);
+                try
+                {
+                    await _indexClient.DeleteIndexAsync(name);
+                }
+                catch (RequestFailedException e)
+                {
+                    _logger.LogError(e, $"Failed to delete index {name}");
+                }
             }
         }
     }
