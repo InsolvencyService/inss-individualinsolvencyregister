@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
@@ -20,6 +20,10 @@
     <ProjectReference Include="..\INSS.EIIR.DataSync.Application\INSS.EIIR.DataSync.Application.csproj" />
     <ProjectReference Include="..\INSS.EIIR.DataSync.Infrastructure\INSS.EIIR.DataSync.Infrastructure.csproj" />
     <ProjectReference Include="..\INSS.EIIR.Interfaces\INSS.EIIR.Interfaces.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Source\" />
   </ItemGroup>
 
 </Project>

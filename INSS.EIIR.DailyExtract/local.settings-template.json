@@ -7,6 +7,9 @@
     //Controls whether faked datasources are used, defaults to false if not specified
     "UseFakedDataSources": true,
 
+    //Controls whether INSSight data feed is used to BKTs and IVAs, defaults to false if not specified
+    "INSSightDataFeedEnabled": true,
+
     "SQLConnectionString": "Server=yourmachine\\yourinstance;database=yourdatabase;Integrated Security=true;TrustServerCertificate=True;",
     "InsSightSQLConnectionString": "__InsSightSQLConnectionString__",
     "snapshotTimercron": "15 7 * * *",
@@ -21,7 +24,9 @@
     "TargetContainer": "eiir-archive",
     "DeleteSourceAfterCopy": "1",
 
-    //settings to call orchestrator
+    //settings to call either orchestrator (ISCIS all record types) or SyncData (INSSight for BKTs and IVAs)
+    //If INSSightDataFeedEnabled = true then settings need to point to func-eiir-daily-extract
+    //anything else nothing, false then setting neeed to point to func-eiir
     "functionURL": "http://localhost:7071/api/",
     "functionAPIKey": "you do not need to set this when running locally",
 

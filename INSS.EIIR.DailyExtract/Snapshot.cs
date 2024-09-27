@@ -35,14 +35,21 @@ namespace INSS.EIIR.DailyExtract
                 runProceedure("extr_avail_INS");
                 _logger.LogInformation("extr_avail_INS execution sucessfull");
 
-                //start orchestration
-                _logger.LogInformation("Calling Start Orchestration");
-                callPostHttpFunction("EiirOrchestrator_Start");
+                Boolean useINSSightData = false;
+                Boolean.TryParse(Environment.GetEnvironmentVariable("INSSightDataFeedEnabled"), out useINSSightData);
 
-                //rebuild Indexes
-               // _log.LogInformation("Calling Extract Job Trigger");
-               // callGetHttpFunction("ExtractJobTrigger");
-
+                if (useINSSightData)
+                {
+                    //start orchestration
+                    _logger.LogInformation("Calling SyncData - Using INSSight data feeds for BKTs & IVAs, ISCIS for DROs");
+                    callPostHttpFunction("SyncData");
+                }
+                else 
+                {
+                    //start orchestration
+                    _logger.LogInformation("Calling Start Orchestration - Using ISCIS data feeds for BKTs, IVAs & DROs");
+                    callPostHttpFunction("EiirOrchestrator_Start");
+                }
             }
             catch (Exception ex)
             {
