@@ -125,5 +125,11 @@ namespace INSS.EIIR.DataSync.Infrastructure.Sink.AISearch
                 throw new FailedToSwapIndexException(await response.Content.ReadAsStringAsync());
             }
         }
+
+        private async Task DeleteIndexes()
+        {
+            // delete all todays indexes bar the one we just made.
+            // get all indexes, order them, remove the one we just made, delete everything past index 5
+        }
     }
 }
