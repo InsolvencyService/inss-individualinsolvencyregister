@@ -7,12 +7,6 @@ using INSS.EIIR.DataSync.Application.UseCase.SyncData.Infrastructure;
 using INSS.EIIR.DataSync.Application.UseCase.SyncData.Model;
 using INSS.EIIR.Models.IndexModels;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-using System;
-using System.Collections.Generic;
-using System.Net.Http;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace INSS.EIIR.DataSync.Infrastructure.Sink.AISearch
 {
@@ -20,28 +14,36 @@ namespace INSS.EIIR.DataSync.Infrastructure.Sink.AISearch
     {
         public const string SEARCH_INDEX_BASE_NAME = "eiir-individuals";
 
-        private ILogger<AISearchSink> _logger;
+        private readonly ILogger<AISearchSink> _logger;
+        private readonly SearchIndexClient _indexClient;
+        private readonly AISearchSinkOptions _options;
+        private readonly int _batchLimit;
+        private readonly ISetIndexMapService _indexMapSetter;
+
+        private SearchClient? _searchClient;
+        private string? _newSearchIndex;
         private List<InsolventIndividualRegisterModel> _batch = new List<InsolventIndividualRegisterModel>();
-        private SearchIndexClient _indexClient;
-        private SearchClient _searchClient;
-        private AISearchSinkOptions _options;
-        private int _batchLimit;
-
-        private ISetIndexMapService _indexMapSetter;
-
-        private string _newSearchIndex;
 
         public AISearchSink(AISearchSinkOptions options, ISetIndexMapService indexMapSetter, ILogger<AISearchSink> logger) 
         {
             _options = options;
             _indexMapSetter = indexMapSetter;
-            _indexClient = new SearchIndexClient(new Uri(options.AISearchEndpoint), new Azure.AzureKeyCredential(options.AISearchKey));
+            _indexClient = new SearchIndexClient(new Uri(options.AISearchEndpoint), new Azure.AzureKeyCredential(options.AISearchKey), new SearchClientOptions()
+            {
+                Retry =
+    {
+                    Delay = TimeSpan.FromSeconds(2),
+                    MaxRetries = 5,
+                    Mode = RetryMode.Exponential
+                }
+            });
+
             _logger = logger;
         }
 
         public async Task Start() 
         {
-            _newSearchIndex = await GetNewIndexName();           
+            _newSearchIndex = await IndexNameHelper.GetNewIndexName(_indexClient.GetIndexNamesAsync());
             await CreateNewIndex(_newSearchIndex);
 
             _searchClient = new SearchClient(new Uri(_options.AISearchEndpoint), _newSearchIndex, new Azure.AzureKeyCredential(_options.AISearchKey), new SearchClientOptions()
@@ -73,28 +75,19 @@ namespace INSS.EIIR.DataSync.Infrastructure.Sink.AISearch
 
         public async Task<SinkCompleteResponse> Complete()
         {
-            await _indexMapSetter.SetIndexName(_newSearchIndex);
+            if (_newSearchIndex != null)
+            {
+                await _indexMapSetter.SetIndexName(_newSearchIndex);
+            }
+            else throw new ArgumentNullException("newSearchIndex cannot be null.");
 
             _logger.LogInformation($"Swapped alias to {_newSearchIndex}");
 
+            await DeleteIndexes();
+
+            _logger.LogInformation("Deleted old indexes");
+
             return new SinkCompleteResponse() { IsError = false };
-        }
-
-        private async Task<string> GetNewIndexName()
-        {            
-            var todaysIndexName = $"{SEARCH_INDEX_BASE_NAME}-{DateTime.Today.ToString("dd-MM-yyyy")}";
-            var todaysIndexAttempt = $"{todaysIndexName}-1"; 
-
-            var indexNames = _indexClient.GetIndexNamesAsync();
-
-            if (await indexNames.AnyAsync(n => n.StartsWith(todaysIndexName)))
-            {
-                var todaysLastIndex = await indexNames.Where(i => i.StartsWith(todaysIndexName)).OrderBy(x => x).LastAsync();
-                int attemptNumber = Convert.ToInt32(todaysLastIndex.Substring(todaysLastIndex.LastIndexOf('-') + 1));
-                todaysIndexAttempt = $"{todaysIndexName}-{attemptNumber + 1}";
-            }
-
-            return todaysIndexAttempt;
         }
 
         private async Task CreateNewIndex(string indexName)
@@ -116,8 +109,15 @@ namespace INSS.EIIR.DataSync.Infrastructure.Sink.AISearch
 
         private async Task DeleteIndexes()
         {
-            // delete all todays indexes bar the one we just made.
-            // get all indexes, order them, remove the one we just made, delete everything past index 5
+            var indexNames = _indexClient.GetIndexNamesAsync();
+            var nameList = await indexNames.ToListAsync();
+                        
+            var deleteList = IndexNameHelper.GetIndexNamesToDelete(nameList, _newSearchIndex);
+
+            foreach (var name in deleteList)
+            {
+                await _indexClient.DeleteIndexAsync(name);
+            }
         }
     }
 }
