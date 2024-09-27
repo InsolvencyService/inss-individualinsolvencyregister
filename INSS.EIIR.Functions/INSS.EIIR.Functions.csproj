@@ -42,6 +42,7 @@
 		<ProjectReference Include="..\INSS.EIIR.Interfaces\INSS.EIIR.Interfaces.csproj" />
 		<ProjectReference Include="..\INSS.EIIR.Models\INSS.EIIR.Models.csproj" />
 		<ProjectReference Include="..\INSS.EIIR.Services\INSS.EIIR.Services.csproj" />
+		<ProjectReference Include="..\INSS.EIIR.StubbedTestData\INSS.EIIR.StubbedTestData.csproj" />
 	</ItemGroup>
 	<ItemGroup>
 		<None Update="host.json">

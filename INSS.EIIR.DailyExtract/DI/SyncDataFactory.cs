@@ -4,6 +4,7 @@ using AutoMapper;
 using INSS.EIIR.DataSync.Application.UseCase.SyncData;
 using INSS.EIIR.DataSync.Application.UseCase.SyncData.Infrastructure;
 using INSS.EIIR.DataSync.Application.UseCase.SyncData.Model;
+using INSS.EIIR.DataSync.Infrastructure.Fake.Source;
 using INSS.EIIR.DataSync.Infrastructure.Sink.AISearch;
 using INSS.EIIR.DataSync.Infrastructure.Sink.Failure;
 using INSS.EIIR.DataSync.Infrastructure.Sink.XML;
@@ -33,7 +34,7 @@ namespace INSS.EIIR.DataSync.Functions.DI
             {
                 sources = new List<IDataSourceAsync<InsolventIndividualRegisterModel>>()
                 {
-                    //Carl M to plug this gap for INSSightFake
+                    GetInsSightFakeDataSource(config, mapper),
                     GetEIIRSQLSourceFake(config, mapper)
                 };
             }
@@ -107,6 +108,11 @@ namespace INSS.EIIR.DataSync.Functions.DI
         private static IDataSourceAsync<InsolventIndividualRegisterModel> GetEIIRSQLSourceFake(IConfiguration config, IMapper mapper)
         {
             return new EIIRSQLSourceFake(mapper);
+        }
+
+        private static IDataSourceAsync<InsolventIndividualRegisterModel> GetInsSightFakeDataSource(IConfiguration config, IMapper mapper)
+        {
+            return new InsSightSQLSourceFake(mapper);
         }
     }
 }

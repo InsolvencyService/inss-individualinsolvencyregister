@@ -27,6 +27,7 @@ using System;
 using Microsoft.Azure.Functions.Worker;
 
 using Microsoft.Extensions.Hosting;
+using INSS.EIIR.StubbedTestData;
 
 
 var host = new HostBuilder()
@@ -135,8 +136,18 @@ var host = new HostBuilder()
 
         services.AddTransient<IIndexService, IndividualSearchIndexService>();
         services.AddTransient<IIndividualRepository, IndividualRepository>();
-        services.AddTransient<IIndividualQueryService, IndividualQueryService>();
+
+        Boolean useFakeData = false;
+        Boolean.TryParse(Environment.GetEnvironmentVariable("UseFakedDataSources"), out useFakeData);
+        if (useFakeData)
+            services.AddTransient<IIndividualQueryService, IndividualQueryServiceStubbed>();
+        else
+            services.AddTransient<IIndividualQueryService, IndividualQueryService>();
+
+
         services.AddTransient<ISearchDataProvider, SearchDataProvider>();
+
+
 
         services.AddTransient<IIndiviualSearchFilter, IndividualSearchCourtFilter>();
         services.AddTransient<IIndiviualSearchFilter, IndividualSearchCourtNameFilter>();
