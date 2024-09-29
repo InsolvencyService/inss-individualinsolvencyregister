@@ -43,7 +43,7 @@ var host = new HostBuilder()
 
         services.AddGetIndexMapper(new IndexMapperOptions()
         {
-            TableStorageConnectionString = Environment.GetEnvironmentVariable("TableStorageConnectionString")
+            TableStorageConnectionString = Environment.GetEnvironmentVariable("storageconnectionstring")
         });
 
         services.AddHealthChecks();
