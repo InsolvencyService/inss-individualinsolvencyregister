@@ -34,8 +34,6 @@
     "AISearchKey": "__AISearchKey__",
     "AISearchBatchLimit": "__AISearchBatchLimit__",
 
-    "TableStorageUri": "__TableStorageUri__",
-    "TableStorageAccountName": "__TableStorageAccountName__",
-    "TableStorageKey": "__TableStorageKey__"
+    "TableStorageConnectionString": "__TableStorageConnectionString__"
   }
 }

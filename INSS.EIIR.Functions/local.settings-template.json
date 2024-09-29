@@ -13,9 +13,7 @@
     "EIIRIndexUrl": "__EIIRIndexUrl__",
     "EIIRApiKey": "__EIIRKey__",
 
-    "TableStorageUri": "__TableStorageUri__",
-    "TableStorageAccountName": "__TableStorageAccountName__",
-    "TableStorageKey": "__TableStorageKey__",
+    "TableStorageConnectionString": "__TableStorageConnectionString__",
 
     "OpenApi__Version": "v3",
     "OpenApi__DocVersion": "1.0.0",

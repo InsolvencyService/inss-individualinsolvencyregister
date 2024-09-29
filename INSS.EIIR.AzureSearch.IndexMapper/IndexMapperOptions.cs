@@ -8,8 +8,6 @@ namespace INSS.EIIR.AzureSearch.IndexMapper
 {
     public class IndexMapperOptions
     {
-        public string TableStorageUri { get; set; }
-        public string TableStorageAccountName { get; set; }
-        public string TableStorageKey { get; set; }
+        public string TableStorageConnectionString { get; set; }
     }
 }

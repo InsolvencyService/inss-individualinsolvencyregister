@@ -25,9 +25,7 @@ var host = new HostBuilder()
 
         services.AddSetIndexMapper(new IndexMapperOptions()
         {
-            TableStorageAccountName = Environment.GetEnvironmentVariable("TableStorageAccountName"),
-            TableStorageUri = Environment.GetEnvironmentVariable("TableStorageUri"),
-            TableStorageKey = Environment.GetEnvironmentVariable("TableStorageKey")
+            TableStorageConnectionString = Environment.GetEnvironmentVariable("TableStorageConnectionString")
         });
 
         // Auto Mapper Configurations

@@ -16,9 +16,8 @@ namespace INSS.EIIR.AzureSearch.IndexMapper
         public IndexMapperService(IndexMapperOptions options) 
         {
             _tableClient = new TableClient(
-                new Uri(options.TableStorageUri),
+                options.TableStorageConnectionString,
                 INDEX_MAP_TABLE_NAME,
-                new TableSharedKeyCredential(options.TableStorageAccountName, options.TableStorageKey),
                 new TableClientOptions()
                 {
                     Retry =

@@ -43,9 +43,7 @@ var host = new HostBuilder()
 
         services.AddGetIndexMapper(new IndexMapperOptions()
         {
-            TableStorageAccountName = Environment.GetEnvironmentVariable("TableStorageAccountName"),
-            TableStorageUri = Environment.GetEnvironmentVariable("TableStorageUri"),
-            TableStorageKey = Environment.GetEnvironmentVariable("TableStorageKey")
+            TableStorageConnectionString = Environment.GetEnvironmentVariable("TableStorageConnectionString")
         });
 
         services.AddHealthChecks();
