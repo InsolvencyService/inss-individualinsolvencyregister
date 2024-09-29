@@ -68,8 +68,7 @@ namespace INSS.EIIR.DataSync.Infrastructure.Sink.AISearch
 
             if (_batch.Count >= _batchLimit) 
             {
-                var mapped = _options.Mapper.Map<List<InsolventIndividualRegisterModel>, List<IndividualSearch>>(_batch);
-                var response = await _searchClient.MergeOrUploadDocumentsAsync(mapped);
+                await PostBatch();
                 _batch = new List<InsolventIndividualRegisterModel>();
             }
 
@@ -78,6 +77,11 @@ namespace INSS.EIIR.DataSync.Infrastructure.Sink.AISearch
 
         public async Task<SinkCompleteResponse> Complete()
         {
+            if (_batch.Count > 0)
+            {
+                await PostBatch();
+            }
+
             _logger.LogInformation("Completing AI Search sink");
 
             if (_newSearchIndex != null)
@@ -132,6 +136,12 @@ namespace INSS.EIIR.DataSync.Infrastructure.Sink.AISearch
                     _logger.LogError(e, $"Failed to delete index {name}");
                 }
             }
+        }
+
+        private async Task PostBatch()
+        {
+            var mapped = _options.Mapper.Map<List<InsolventIndividualRegisterModel>, List<IndividualSearch>>(_batch);
+            var response = await _searchClient.MergeOrUploadDocumentsAsync(mapped);
         }
     }
 }

@@ -13,8 +13,6 @@
     "EIIRIndexUrl": "__EIIRIndexUrl__",
     "EIIRApiKey": "__EIIRKey__",
 
-    "TableStorageConnectionString": "__TableStorageConnectionString__",
-
     "OpenApi__Version": "v3",
     "OpenApi__DocVersion": "1.0.0",
     "OpenApi__DocTitle": "Swagger EIIR Services",
