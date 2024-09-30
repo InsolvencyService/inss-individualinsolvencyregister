@@ -8,5 +8,9 @@ namespace INSS.EIIR.DataSync.Infrastructure.Sink.XML
 {
     public class XMLSinkOptions
     {
+        public string StorageName { get; set; } 
+
+        public string StoragePath { get; set; }
+
     }
 }
