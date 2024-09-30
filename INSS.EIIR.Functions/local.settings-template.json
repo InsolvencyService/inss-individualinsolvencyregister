@@ -8,8 +8,10 @@
     //Controls whether faked datasources are used, defaults to false if not specified
     "UseFakedDataSources": true,
 
+    "UseDynamicIndexName": true,
+
     "EIIRIndexUrl": "__EIIRIndexUrl__",
-    "EIIRKey": "__EIIRKey__",
+    "EIIRApiKey": "__EIIRKey__",
 
     "OpenApi__Version": "v3",
     "OpenApi__DocVersion": "1.0.0",

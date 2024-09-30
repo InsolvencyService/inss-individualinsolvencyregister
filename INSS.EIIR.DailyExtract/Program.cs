@@ -13,6 +13,7 @@ using INSS.EIIR.DataSync.Application.UseCase.SyncData;
 using INSS.EIIR.Models.AutoMapperProfiles;
 using INSS.EIIR.DataSync.Application.UseCase.SyncData.AutoMapperProfiles;
 using INSS.EIIR.DataSync.Infrastructure.Source.SQL.Models.AutoMapperProfiles;
+using INSS.EIIR.AzureSearch.IndexMapper;
 
 var host = new HostBuilder()
     .ConfigureFunctionsWebApplication()
@@ -21,6 +22,11 @@ var host = new HostBuilder()
         services.ConfigureFunctionsApplicationInsights();
 
         services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
+        services.AddSetIndexMapper(new IndexMapperOptions()
+        {
+            TableStorageConnectionString = Environment.GetEnvironmentVariable("TableStorageConnectionString")
+        });
 
         // Auto Mapper Configurations
         var mapperConfig = new MapperConfiguration(mc =>

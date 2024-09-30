@@ -1,32 +1,46 @@
 ﻿using System.Text;
 using AutoMapper;
 using Azure.Search.Documents.Indexes;
+using INSS.EIIR.AzureSearch.IndexMapper;
 using INSS.EIIR.AzureSearch.Services.Constants;
 using INSS.EIIR.Interfaces.AzureSearch;
 using INSS.EIIR.Models;
 using INSS.EIIR.Models.CaseModels;
 using INSS.EIIR.Models.IndexModels;
 using INSS.EIIR.Models.SearchModels;
+using Microsoft.Extensions.Configuration;
 
 namespace INSS.EIIR.AzureSearch.Services.QueryServices;
 
 public class IndividualQueryService : BaseQueryService, IIndividualQueryService
 {
     private readonly IEnumerable<IIndiviualSearchFilter> _filters;
-
+    private readonly IGetIndexMapService _getIndexMapService;
+    private readonly bool _useDynamicIndexName;
     private const int PageSize = 10;
-
-    protected override string IndexName => SearchIndexes.EiirIndividuals;
 
     public IndividualQueryService(
         IMapper mapper,
         SearchIndexClient indexClient,
         ISearchTermFormattingService searchTermFormattingService,
         ISearchCleaningService searchCleaningService,
-        IEnumerable<IIndiviualSearchFilter> filters) 
+        IEnumerable<IIndiviualSearchFilter> filters,
+        IGetIndexMapService getIndexMapService,
+        IConfiguration config) 
         : base(mapper, indexClient, searchTermFormattingService, searchCleaningService)
     {
         _filters = filters;
+        _getIndexMapService = getIndexMapService;
+        _useDynamicIndexName = Convert.ToBoolean(config["UseDynamicIndexName"]);
+    }
+
+    protected override async Task<string> GetIndexName()
+    {
+        if (_useDynamicIndexName)
+        {
+            return await _getIndexMapService.GetIndexName();
+        }
+        else return SearchIndexes.EiirIndividuals;
     }
 
     public async Task<SearchResults> SearchIndexAsync(IndividualSearchModel searchModel)

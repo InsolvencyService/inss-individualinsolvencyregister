@@ -28,7 +28,12 @@
     //If INSSightDataFeedEnabled = true then settings need to point to func-eiir-daily-extract
     //anything else nothing, false then setting neeed to point to func-eiir
     "functionURL": "http://localhost:7071/api/",
-    "functionAPIKey": "you do not need to set this when running locally"
+    "functionAPIKey": "you do not need to set this when running locally",
 
+    "AISearchEndpoint": "__AISearchEndpoint__",
+    "AISearchKey": "__AISearchKey__",
+    "AISearchBatchLimit": "__AISearchBatchLimit__",
+
+    "TableStorageConnectionString": "__TableStorageConnectionString__"
   }
 }

@@ -65,6 +65,11 @@ jobs:
                   appSettings: |
                     [
                       {
+                        "name": "FUNCTIONS_WORKER_RUNTIME",
+                        "value": "$(FunctionsWorkerRuntime)",
+                        "slotSetting": false
+                      },
+                      {
                         "name": "functionapikey",
                         "value": "$(functionapikey)",
                         "slotSetting": false
@@ -119,7 +124,7 @@ jobs:
                         "value": "$(database__commandtimeout)",
                         "slotSetting": false
                       },
-                    {
+                      {
                         "name": "servicebus__publisherconnectionstring",
                         "value": "$(servicebus__publisherconnectionstring)",
                         "slotSetting": false
@@ -162,6 +167,16 @@ jobs:
                       {
                         "name": "WEBSITE_TIME_ZONE",
                         "value": "GMT Standard Time",
+                        "slotSetting": false
+                      },                      
+                      {
+                        "name": "UseFakedDataSources",
+                        "value": "$(UseFakedDataSourcesFuncEiir)",
+                        "slotSetting": false
+                      },                      
+                      {
+                        "name": "UseDynamicIndexName",
+                        "value": "$(UseDynamicIndexName)",
                         "slotSetting": false
                       }
                     ]
@@ -303,12 +318,42 @@ jobs:
                       },
                       {
                         "name": "FUNCTIONS_WORKER_RUNTIME",
-                        "value": "dotnet",
+                        "value": "$(FunctionsWorkerRuntime)",
                         "slotSetting": false
                       },
                       {
                         "name": "WEBSITE_TIME_ZONE",
                         "value": "GMT Standard Time",
+                        "slotSetting": false
+                      },                      
+                      {
+                        "name": "TableStorageConnectionString",
+                        "value": "$(storageconnectionstring)",
+                        "slotSetting": false
+                      },
+                      {
+                        "name": "AISearchEndpoint",
+                        "value": "$(EIIRIndexUrl)",
+                        "slotSetting": false
+                      },
+                      {
+                        "name": "AISearchKey",
+                        "value": "$(EIIRApiKey)",
+                        "slotSetting": false
+                      },
+                      {
+                        "name": "AISearchBatchLimit",
+                        "value": "10",
+                        "slotSetting": false
+                      },                      
+                      {
+                        "name": "UseFakedDataSources",
+                        "value": "$(UseFakedDataSourcesFuncEiirDailyExtract)",
+                        "slotSetting": false
+                      },
+                      {
+                        "name": "INSSightDataFeedEnabled",
+                        "value": "$(INSSightDataFeedEnabled)",
                         "slotSetting": false
                       }
                     ]
