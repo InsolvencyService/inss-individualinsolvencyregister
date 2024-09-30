@@ -163,7 +163,32 @@ jobs:
                         "name": "WEBSITE_TIME_ZONE",
                         "value": "GMT Standard Time",
                         "slotSetting": false
-                      }
+                      },
+                      {
+                        "name": "AzureWebJobs.ExtractJobScheduler.Disabled",
+                        "value": "$(AzureWebJobsExtractJobSchedulerDisabled)",
+                        "slotSetting": true
+                      },
+                      {
+                        "name": "AzureWebJobs.ExtractJobNotificationTrigger",
+                        "value": "$(AzureWebJobsExtractJobNotificationTrigger)",
+                        "slotSetting": true
+                      },
+                      {
+                        "name": "AzureWebJobs.ExtractJobServiceTrigger.Disabled",
+                        "value": "$(AzureWebJobsExtractJobServiceTriggerDisabled)",
+                        "slotSetting": true
+                      },
+                      {
+                        "name": "AzureWebJobs.EiirOrchestrator.Disabled",
+                        "value": "$(AzureWebJobsEiirOrchestratorDisabled)",
+                        "slotSetting": true
+                      },
+                      {
+                        "name": "AzureWebJobs.RebuildIndexes.Disabled",
+                        "value": "$(AzureWebJobsRebuildIndexesDisabled)",
+                        "slotSetting": true
+                      }                      
                     ]
 
               - task: AzureAppServiceManage@0
@@ -310,7 +335,17 @@ jobs:
                         "name": "WEBSITE_TIME_ZONE",
                         "value": "GMT Standard Time",
                         "slotSetting": false
-                      }
+                      },
+                      {
+                        "name": "AzureWebJobs.Snapshot.Disabled",
+                        "value": "$(AzureWebJobsSnapshotDisabled)",
+                        "slotSetting": true
+                      },
+                      {
+                        "name": "AzureWebJobs.EiiRDailyExtract.Disabled",
+                        "value": "$(AzureWebJobsEiiRDailyExtractDisabled)",
+                        "slotSetting": true
+                      }                         
                     ]
 
               - task: AzureAppServiceManage@0
