@@ -10,6 +10,7 @@ using INSS.EIIR.DataSync.Infrastructure.Sink.Failure;
 using INSS.EIIR.DataSync.Infrastructure.Sink.XML;
 using INSS.EIIR.DataSync.Infrastructure.Source.AzureTable;
 using INSS.EIIR.DataSync.Infrastructure.Source.SQL;
+using INSS.EIIR.Interfaces.DataAccess;
 using INSS.EIIR.StubbedTestData;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -25,6 +26,7 @@ namespace INSS.EIIR.DataSync.Functions.DI
             var factory = sp.GetRequiredService<ILoggerFactory>();
             var config = sp.GetRequiredService<IConfiguration>();
             var mapper = sp.GetRequiredService<IMapper>();
+            var extractRepo = sp.GetRequiredService<IExtractRepository>();
 
             IEnumerable<IDataSourceAsync<InsolventIndividualRegisterModel>> sources;
 
@@ -51,7 +53,7 @@ namespace INSS.EIIR.DataSync.Functions.DI
             {
                 //Following lines are required.. eventually, they are commented as XMLSink and AISearchSink are yet to be implemented
                 //and will crash calling function if deployed myself and Carl are actively working on this code in coming days
-                GetXMLSink(config),
+                GetXMLSink(config, extractRepo),
                 //GetAISearchSink(config)
             };
 
@@ -71,11 +73,15 @@ namespace INSS.EIIR.DataSync.Functions.DI
             return new SyncData(options, factory.CreateLogger<SyncData>());
         }
 
-        private static IDataSink<InsolventIndividualRegisterModel> GetXMLSink(IConfiguration config)
+        private static IDataSink<InsolventIndividualRegisterModel> GetXMLSink(IConfiguration config, IExtractRepository repo)
         {
-            var options = new XMLSinkOptions();
+            var options = new XMLSinkOptions() 
+            { 
+                StorageName = config.GetValue<String>("XmlContainer", null),
+                StoragePath = config.GetValue<String>("TargetBlobConnectionString", null)
+            };
 
-            return new XMLSink(options);
+            return new XMLSink(options, repo);
         }
 
         private static IDataSink<InsolventIndividualRegisterModel> GetAISearchSink(IConfiguration config)
