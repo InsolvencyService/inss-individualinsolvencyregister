@@ -37,6 +37,10 @@
     "functionURL": "http://localhost:7071/api/",
     "functionAPIKey": "you do not need to set this when running locally",
 
+    "AISearchEndpoint": "__AISearchEndpoint__",
+    "AISearchKey": "__AISearchKey__",
+    "AISearchBatchLimit": "__AISearchBatchLimit__",
+
     //Parameters for ExtractRepository
     "database__connectionstring": "__database:connectionstring__",
     "database__commandtimeout": 0,
@@ -44,5 +48,7 @@
     "database__getextractavailableprocedure": "__database:getextractavailableprocedure__",
     "database__updateextractavailableprocedure": "__database:updateextractavailableprocedure__",
     "database__databuffersize": 4194304
+
+    "TableStorageConnectionString": "__TableStorageConnectionString__"
   }
 }

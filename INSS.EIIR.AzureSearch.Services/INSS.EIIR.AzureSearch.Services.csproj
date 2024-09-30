@@ -12,10 +12,11 @@
 
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="11.0.1" />
-    <PackageReference Include="Azure.Search.Documents" Version="11.4.0" />
+    <PackageReference Include="Azure.Search.Documents" Version="11.6.0" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\INSS.EIIR.AzureSearch.IndexMapper\INSS.EIIR.AzureSearch.IndexMapper.csproj" />
     <ProjectReference Include="..\INSS.EIIR.Interfaces\INSS.EIIR.Interfaces.csproj" />
     <ProjectReference Include="..\INSS.EIIR.Models\INSS.EIIR.Models.csproj" />
   </ItemGroup>

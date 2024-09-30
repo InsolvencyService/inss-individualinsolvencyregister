@@ -14,6 +14,7 @@ using INSS.EIIR.Models.SearchModels;
 using Moq;
 using Xunit;
 using INSS.EIIR.Models.Helpers;
+using Microsoft.Extensions.Configuration;
 
 namespace INSS.EIIR.AzureSearch.Services.Tests;
 
@@ -79,7 +80,9 @@ public class IndividualQueryServiceIntegrationTests
         cleaningServiceMock.Setup(m => m.EscapeFilterSpecialCharacters(courtNameFilter)).Returns(courtNameFilter);
         cleaningServiceMock.Setup(m => m.EscapeSearchSpecialCharacters(searchTerm.Base64Decode())).Returns(searchTerm.Base64Decode());
 
-        var service = new IndividualQueryService(mapperMock.Object, indexClientMock.Object, formattingServiceMock.Object, cleaningServiceMock.Object, GetFilters(cleaningServiceMock.Object));
+        var configMock = new Mock<IConfiguration>();
+
+        var service = new IndividualQueryService(mapperMock.Object, indexClientMock.Object, formattingServiceMock.Object, cleaningServiceMock.Object, GetFilters(cleaningServiceMock.Object), null, configMock.Object);
 
         var result  = (await service.SearchIndexAsync(searchModel));
 

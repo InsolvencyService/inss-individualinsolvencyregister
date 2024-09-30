@@ -27,6 +27,7 @@ using System;
 using Microsoft.Azure.Functions.Worker;
 
 using Microsoft.Extensions.Hosting;
+using INSS.EIIR.AzureSearch.IndexMapper;
 using INSS.EIIR.StubbedTestData;
 
 
@@ -39,6 +40,11 @@ var host = new HostBuilder()
 
         services.AddHttpClient();
         services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
+        services.AddGetIndexMapper(new IndexMapperOptions()
+        {
+            TableStorageConnectionString = Environment.GetEnvironmentVariable("storageconnectionstring")
+        });
 
         services.AddHealthChecks();
 

@@ -7,18 +7,21 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\INSS.EIIR.AzureSearch.IndexMapper\INSS.EIIR.AzureSearch.IndexMapper.csproj" />
     <ProjectReference Include="..\INSS.EIIR.DataSync.Application\INSS.EIIR.DataSync.Application.csproj" />
     <ProjectReference Include="..\INSS.EIIR.Interfaces\INSS.EIIR.Interfaces.csproj" />
     <ProjectReference Include="..\INSS.EIIR.Models\INSS.EIIR.Models.csproj" />
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.AspNet.WebApi.Client" Version="6.0.0" />
     <PackageReference Include="Azure.Storage.Blobs" Version="12.22.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.8">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.8" />
+    <PackageReference Include="System.Linq.Async" Version="6.0.1" />
   </ItemGroup>
 
 </Project>

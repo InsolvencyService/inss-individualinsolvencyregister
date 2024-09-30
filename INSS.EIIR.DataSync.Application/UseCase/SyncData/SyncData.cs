@@ -26,20 +26,13 @@ namespace INSS.EIIR.DataSync.Application.UseCase.SyncData
         {
             int numErrors = 0;
 
-            try
+            foreach (IDataSink<InsolventIndividualRegisterModel> sink in _options.DataSinks)
             {
-                foreach (IDataSink<InsolventIndividualRegisterModel> sink in _options.DataSinks)
-                {
-                    await sink.Start();
-                }
+                await sink.Start();
+            }
 
-                //Following line is commented out as FailureSink not fully implemented and will cause crash if deployed
-                //await _options.FailureSink.Start();
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, $"Unhandled error starting sinks");
-            }
+            //Following line is commented out as FailureSink not fully implemented and will cause crash if deployed
+            //await _options.FailureSink.Start();
 
             foreach (IDataSourceAsync<InsolventIndividualRegisterModel> source in  _options.DataSources) 
             {
@@ -85,20 +78,13 @@ namespace INSS.EIIR.DataSync.Application.UseCase.SyncData
                 }
             }
 
-            try
+            foreach (IDataSink<InsolventIndividualRegisterModel> sink in _options.DataSinks)
             {
-                foreach (IDataSink<InsolventIndividualRegisterModel> sink in _options.DataSinks) 
-                {
-                    await sink.Complete();
-                }
+                await sink.Complete();
+            }
 
-                //Following line is commented out as FailureSink not fully implemented and will cause crash if deployed
-                //await _options.FailureSink.Complete();
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, $"Unhandled error completing sinks");
-            }
+            //Following line is commented out as FailureSink not fully implemented and will cause crash if deployed
+            //await _options.FailureSink.Complete();
 
             if (numErrors > 0)
             {
