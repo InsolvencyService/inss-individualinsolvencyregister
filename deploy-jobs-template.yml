@@ -166,27 +166,27 @@ jobs:
                       },
                       {
                         "name": "AzureWebJobs.ExtractJobScheduler.Disabled",
-                        "value": "$(AzureWebJobsExtractJobSchedulerDisabled)",
+                        "value": true,
                         "slotSetting": true
                       },
                       {
                         "name": "AzureWebJobs.ExtractJobNotificationTrigger.Disabled",
-                        "value": "$(AzureWebJobsExtractJobNotificationTriggerDisabled)",
+                        "value": true,
                         "slotSetting": true
                       },
                       {
                         "name": "AzureWebJobs.ExtractJobServiceTrigger.Disabled",
-                        "value": "$(AzureWebJobsExtractJobServiceTriggerDisabled)",
+                        "value": true,
                         "slotSetting": true
                       },
                       {
                         "name": "AzureWebJobs.EiirOrchestrator.Disabled",
-                        "value": "$(AzureWebJobsEiirOrchestratorDisabled)",
+                        "value": true,
                         "slotSetting": true
                       },
                       {
                         "name": "AzureWebJobs.RebuildIndexes.Disabled",
-                        "value": "$(AzureWebJobsRebuildIndexesDisabled)",
+                        "value": true,
                         "slotSetting": true
                       }                      
                     ]
@@ -338,12 +338,12 @@ jobs:
                       },
                       {
                         "name": "AzureWebJobs.Snapshot.Disabled",
-                        "value": "$(AzureWebJobsSnapshotDisabled)",
+                        "value": true",
                         "slotSetting": true
                       },
                       {
                         "name": "AzureWebJobs.EiiRDailyExtract.Disabled",
-                        "value": "$(AzureWebJobsEiiRDailyExtractDisabled)",
+                        "value": true,
                         "slotSetting": true
                       }                         
                     ]
