@@ -19,7 +19,7 @@ namespace INSS.EIIR.DataSync.Infrastructure.Source.SQL.Models.AutoMapperProfiles
             .ForMember(dest => dest.individualTitle, opt => opt.MapFrom(src => src.IndividualTitle))
             .ForMember(dest => dest.individualAlias, opt => opt.MapFrom(src => src.IndividualAlias))
             .ForMember(dest => dest.individualGender, opt => opt.MapFrom(src => src.IndividualGender))
-            .ForMember(dest => dest.individualDOB, opt => opt.MapFrom(src => src.IndividualDob))
+            .ForMember(dest => dest.individualDOB, opt => opt.MapFrom(src => src.IndividualDob.Trim()))
             .ForMember(dest => dest.individualOccupation, opt => opt.MapFrom(src => src.IndividualOccupation))
             .ForMember(dest => dest.individualTown, opt => opt.MapFrom(src => src.IndividualTown))
             .ForMember(dest => dest.individualAddress, opt => opt.MapFrom(src => src.IndividualAddress))
