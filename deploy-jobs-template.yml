@@ -338,7 +338,7 @@ jobs:
                       },
                       {
                         "name": "AzureWebJobs.Snapshot.Disabled",
-                        "value": true",
+                        "value": true,
                         "slotSetting": true
                       },
                       {
