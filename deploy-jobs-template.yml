@@ -170,8 +170,8 @@ jobs:
                         "slotSetting": true
                       },
                       {
-                        "name": "AzureWebJobs.ExtractJobNotificationTrigger",
-                        "value": "$(AzureWebJobsExtractJobNotificationTrigger)",
+                        "name": "AzureWebJobs.ExtractJobNotificationTrigger.Disabled",
+                        "value": "$(AzureWebJobsExtractJobNotificationTriggerDisabled)",
                         "slotSetting": true
                       },
                       {
