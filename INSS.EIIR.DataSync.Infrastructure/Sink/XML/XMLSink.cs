@@ -120,7 +120,7 @@ namespace INSS.EIIR.DataSync.Infrastructure.Sink.XML
 
             try 
             {
-                await WriteIirRecordToStream(model, _xmlStream);
+                WriteIirRecordToStream(model, ref _xmlStream);
                 _recordCount++;  
 
             }
@@ -161,7 +161,7 @@ namespace INSS.EIIR.DataSync.Infrastructure.Sink.XML
 
             if (commit)
             {
-                var responseXml = await blobClient.CommitBlockListAsync(_blockIDList);
+                await blobClient.CommitBlockListAsync(_blockIDList);
                 //await CreateAndUploadZip(filename);
             }
 
@@ -169,9 +169,9 @@ namespace INSS.EIIR.DataSync.Infrastructure.Sink.XML
             _xmlStream = new MemoryStream();    
         }
 
-        private async Task WriteIirRecordToStream(InsolventIndividualRegisterModel model, MemoryStream xmlStream)
+        private void WriteIirRecordToStream(InsolventIndividualRegisterModel model, ref MemoryStream xmlStream)
         {
-            _xmlStream = await IirXMLWriterHelper.WriteIirReportRequestToStream(model, xmlStream);
+            IirXMLWriterHelper.WriteIirReportRequestToStream(model, ref xmlStream);
         }
     }
 }

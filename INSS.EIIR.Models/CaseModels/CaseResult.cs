@@ -88,7 +88,7 @@ public class CaseResult
 
     public DateTime? dateOfPreviousOrder { get; set; }
     [NotMapped]
-    public Trading? Trading { get; set; }
+    public Trading Trading { get; set; }
     [NotMapped]
     public IIRRecordType RecordType {
         get 
