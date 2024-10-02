@@ -5,7 +5,41 @@ namespace INSS.EIIR.DataSync.Infrastructure.Sink.XML
 {
     public static class IirXMLWriterHelper
     {
-        public static async Task<Stream> WriteIirRecordToStream(InsolventIndividualRegisterModel model, MemoryStream xmlStream)
+
+        public static async Task<MemoryStream> WriteIirReportRequestToStream(InsolventIndividualRegisterModel model, MemoryStream xmlStream)
+        {
+
+            XmlWriterSettings settings = new XmlWriterSettings();
+            settings.Async = true;
+            settings.OmitXmlDeclaration = true;
+
+            using (XmlWriter writer = XmlWriter.Create(xmlStream, settings))
+            {
+                await writer.WriteStartElementAsync(null, "ReportRequest", null);
+                await writer.WriteRawAsync("\r\n");
+                await writer.WriteStartElementAsync(null, "ExtractDate", null);
+                await writer.WriteStringAsync(DateTime.Now.ToString("dd/MM/yyyy"));
+                await writer.WriteEndElementAsync();
+                await writer.WriteStartElementAsync(null, "CaseNoReportRequest", null);
+                await writer.WriteStringAsync($"{model.caseNo}");
+                await writer.WriteEndElementAsync();
+                await writer.WriteStartElementAsync(null, "IndividualDetailsText", null);
+                await writer.WriteStringAsync($"Individual Details");
+                await writer.WriteEndElementAsync();
+                xmlStream = await WriteIirIndividualDetailsToStream(model, xmlStream);
+                await writer.WriteStartElementAsync(null, "CaseDetailsText", null);
+                await writer.WriteStringAsync($"Insolvency Case Details");
+                await writer.WriteEndElementAsync();
+                await writer.WriteEndElementAsync();
+                await writer.WriteRawAsync("\r\n");
+                await writer.FlushAsync();
+            }
+
+            return xmlStream;
+        }
+
+
+        public static async Task<MemoryStream> WriteIirIndividualDetailsToStream(InsolventIndividualRegisterModel model, MemoryStream xmlStream)
         {
             XmlWriterSettings settings = new XmlWriterSettings();
             settings.Async = true;

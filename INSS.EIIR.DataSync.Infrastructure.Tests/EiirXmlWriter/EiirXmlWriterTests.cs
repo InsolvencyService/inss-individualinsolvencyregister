@@ -25,7 +25,7 @@ namespace INSS.EIIR.DataSync.Infrastructure.Tests.EiirXmlWriter
             var xmlStream = new MemoryStream();
 
             // act
-            var outStream = await IirXMLWriterHelper.WriteIirRecordToStream(model, xmlStream);
+            var outStream = await IirXMLWriterHelper.WriteIirIndividualDetailsToStream(model, xmlStream);
 
             // assert
             outStream.Seek(0, SeekOrigin.Begin);    

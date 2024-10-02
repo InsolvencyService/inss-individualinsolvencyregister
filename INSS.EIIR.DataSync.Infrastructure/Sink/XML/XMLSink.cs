@@ -19,7 +19,7 @@ namespace INSS.EIIR.DataSync.Infrastructure.Sink.XML
     public class XMLSink : IDataSink<InsolventIndividualRegisterModel>
     {
 
-        private Stream? _xmlStream;
+        private MemoryStream? _xmlStream;
         private const int _recordBufferSize = 2;
         private int _recordCount;
         private readonly IList<string> _blockIDList;
@@ -120,7 +120,7 @@ namespace INSS.EIIR.DataSync.Infrastructure.Sink.XML
 
             try 
             {
-                await WriteIirRecordToStream(model);
+                await WriteIirRecordToStream(model, _xmlStream);
                 _recordCount++;  
 
             }
@@ -169,24 +169,9 @@ namespace INSS.EIIR.DataSync.Infrastructure.Sink.XML
             _xmlStream = new MemoryStream();    
         }
 
-        private async Task WriteIirRecordToStream(InsolventIndividualRegisterModel model)
+        private async Task WriteIirRecordToStream(InsolventIndividualRegisterModel model, MemoryStream xmlStream)
         {
-
-            XmlWriterSettings settings = new XmlWriterSettings();
-            settings.Async = true;
-            settings.OmitXmlDeclaration = true;
-
-            using (XmlWriter writer = XmlWriter.Create(_xmlStream, settings))
-            {
-                await writer.WriteStartElementAsync(null, "ReportRequest", null);
-                await writer.WriteRawAsync("\r\n");
-                await writer.WriteStartElementAsync(null, "CaseNoReportRequest", null);
-                await writer.WriteStringAsync($"{model.caseNo}");
-                await writer.WriteEndElementAsync();
-                await writer.WriteEndElementAsync();
-                await writer.WriteRawAsync("\r\n");
-                await writer.FlushAsync();
-            }
+            _xmlStream = await IirXMLWriterHelper.WriteIirReportRequestToStream(model, xmlStream);
         }
     }
 }

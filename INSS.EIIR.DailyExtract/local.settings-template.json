@@ -12,7 +12,7 @@
 
     //Connection string for running Snapshot
     "SQLConnectionString": "Server=yourmachine\\yourinstance;database=yourdatabase;Integrated Security=true;TrustServerCertificate=True;",
-    
+
     //Connection string for connecting to INSSight
     "InsSightSQLConnectionString": "__InsSightSQLConnectionString__",
 
@@ -21,9 +21,9 @@
     //template to for.sql file
     "BlobContainer": "eiir/{name}",
 
-    //settings to copy .sql from drop folder to archive folder
+    //settings to copy .sql from drop folder to archive folder, and XML Extact via SyncData //**
     "SourceBlobConnectionString": "UseDevelopmentStorage=true",
-    "TargetBlobConnectionString": "UseDevelopmentStorage=true",
+    "TargetBlobConnectionString": "UseDevelopmentStorage=true", //**
     "SourceContainer": "eiir",
     "TargetContainer": "eiir-archive",
     "DeleteSourceAfterCopy": "1",
@@ -47,8 +47,9 @@
     "database__getxmldataprocedure": "__database:getxmldataprocedure__",
     "database__getextractavailableprocedure": "__database:getextractavailableprocedure__",
     "database__updateextractavailableprocedure": "__database:updateextractavailableprocedure__",
-    "database__databuffersize": 4194304
+    "database__databuffersize": 4194304,
 
+    //Supports SyncData IndexRebuilds 
     "TableStorageConnectionString": "__TableStorageConnectionString__"
   }
 }
