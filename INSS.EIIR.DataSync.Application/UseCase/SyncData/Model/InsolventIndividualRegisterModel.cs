@@ -12,6 +12,10 @@ namespace INSS.EIIR.DataSync.Application.UseCase.SyncData.Model
 
         public string Id { get => caseNo.ToString(); }
 
+        public string annulDate { get; set; }
+        
+        public string annulReason { get; set; }
+
         public override bool Equals(object? obj)
         {
             if (obj is InsolventIndividualRegisterModel model)
