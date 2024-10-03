@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Net.Security;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
@@ -89,19 +90,24 @@ namespace INSS.EIIR.DataSync.Infrastructure.Sink.XML
             _fileName = extractJob.ExtractFilename;
             _xmlStream = new MemoryStream();
 
-            //Following line commented out pending implementation of WriteIirHeaderToStream
-            //await WriteIirHeaderToStream();
+            WriteIirHeaderToStream();
 
             return; 
         }
 
-        private async Task WriteIirHeaderToStream()
+        private void WriteIirHeaderToStream()
         {
-            throw new NotImplementedException();
+            IirXMLWriterHelper.WriteIirHeaderToStream(ref _xmlStream);
+        }
+
+        private void WriteIirFoorterToStream()
+        {
+            IirXMLWriterHelper.WriteIirFooterToStream(ref _xmlStream);
         }
 
         public async Task<SinkCompleteResponse> Complete()
         {
+            WriteIirFoorterToStream();
 
             //Write out remainder of stream
             await WriteStreamToBlob(true);

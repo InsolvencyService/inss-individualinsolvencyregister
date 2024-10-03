@@ -67,7 +67,7 @@ namespace INSS.EIIR.DataSync.Infrastructure.Tests.EiirXmlWriter
             }
         }
 
-        public static IEnumerable<object[]> GetEiirBktXmlWriterData()
+        public static IEnumerable<object[]> GetEiirCaseDetailsXmlWriterData()
         {
             return GetEiirXmlWriterData().Where(x => ((InsolventIndividualRegisterModel)x[0]).IncludeCaseDetailsInXML);
         }
@@ -77,6 +77,12 @@ namespace INSS.EIIR.DataSync.Infrastructure.Tests.EiirXmlWriter
             return GetEiirXmlWriterData().Where(x => ((InsolventIndividualRegisterModel)x[0]).RecordType == IIRRecordType.BRO
                                                         || ((InsolventIndividualRegisterModel)x[0]).RecordType == IIRRecordType.BRU
                                                         || ((InsolventIndividualRegisterModel)x[0]).RecordType == IIRRecordType.IBRO);
+        }
+
+        public static IEnumerable<object[]> GetEiirDroRestrictionXmlWriterData()
+        {
+            return GetEiirXmlWriterData().Where(x => ((InsolventIndividualRegisterModel)x[0]).RecordType == IIRRecordType.DRRO
+                                                        || ((InsolventIndividualRegisterModel)x[0]).RecordType == IIRRecordType.DRRU);
         }
 
 

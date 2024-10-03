@@ -1,4 +1,5 @@
-﻿using System.Globalization;
+﻿using System.Diagnostics;
+using System.Globalization;
 using System.Xml;
 using INSS.EIIR.DataSync.Application.UseCase.SyncData.Model;
 using INSS.EIIR.Models.CaseModels;
@@ -39,8 +40,12 @@ namespace INSS.EIIR.DataSync.Infrastructure.Sink.XML
                 WriteIirIndividualDetailsToStream(model, ref xmlStream);
 
                 if (model.hasRestrictions) 
-                { 
-                    WriteIirBktRestrictionDetailsToStream(model, ref xmlStream);
+                {
+                    if (model.RecordType == IIRRecordType.BRO || model.RecordType == IIRRecordType.BRU || model.RecordType == IIRRecordType.IBRO)
+                        WriteIirBktRestrictionDetailsToStream(model, ref xmlStream);
+                    else
+                        WriteIirDroRestrictionDetailsToStream(model, ref xmlStream);
+
                 }
 
                 if (model.RecordType == Models.CaseModels.IIRRecordType.BKT && model.IncludeCaseDetailsInXML)
@@ -50,8 +55,26 @@ namespace INSS.EIIR.DataSync.Infrastructure.Sink.XML
                     writer.WriteEndElement();
 
                     writer.Flush();
-                    WriteIirBktCaseDetailsToStream(model, ref xmlStream);
+                    WriteIirCaseDetailsToStream(model, ref xmlStream);
                 }
+
+                if (model.HasIPDetails) 
+                {
+                    writer.WriteStartElement(null, "InsolvencyPractitionerText", null);
+                    writer.WriteString($"Insolvency Practitioner Contact Details");
+                    writer.WriteEndElement();
+
+                    writer.Flush();
+                    WriteIpDetailsToStream(model, ref xmlStream);
+
+                }
+
+                writer.WriteStartElement(null, "InsolvencyContactText", null);
+                writer.WriteString($"Insolvency Service Contact Details");
+                writer.WriteEndElement();
+
+                writer.Flush();
+                WriteINSSDetailsToStream(model, ref xmlStream);
 
                 writer.WriteEndElement();
                 writer.WriteRaw("\r\n");
@@ -60,6 +83,81 @@ namespace INSS.EIIR.DataSync.Infrastructure.Sink.XML
 
         }
 
+        private static void WriteINSSDetailsToStream(InsolventIndividualRegisterModel model, ref MemoryStream xmlStream)
+        {
+            XmlWriterSettings settings = new XmlWriterSettings();
+            settings.OmitXmlDeclaration = true;
+
+            using (XmlWriter writer = XmlWriter.Create(xmlStream, settings))
+            {
+                writer.WriteStartElement(null, "InsolvencyContact", null);
+
+                writer.WriteStartElement(null, "CaseNoContact", null);
+                writer.WriteString($"{model.caseNo}");
+                writer.WriteEndElement();
+
+                writer.WriteStartElement(null, "InsolvencyServiceOffice", null);
+                writer.WriteString($"{model.insolvencyServiceOffice}");
+                writer.WriteEndElement();
+
+                writer.WriteStartElement(null, "Contact", null);
+                writer.WriteString($"{model.insolvencyServiceContact}");
+                writer.WriteEndElement();
+
+                writer.WriteStartElement(null, "ContactAddress", null);
+                writer.WriteString($"{model.insolvencyServiceAddress}");
+                writer.WriteEndElement();
+
+                writer.WriteStartElement(null, "ContactPostCode", null);
+                writer.WriteString($"{model.insolvencyServicePostcode}");
+                writer.WriteEndElement();
+
+                writer.WriteStartElement(null, "ContactTelephone", null);
+                writer.WriteString($"{model.insolvencyServicePhone}");
+                writer.WriteEndElement();
+
+                writer.WriteEndElement();
+                writer.Flush();
+            }
+        }
+
+        private static void WriteIpDetailsToStream(InsolventIndividualRegisterModel model, ref MemoryStream xmlStream)
+        {
+            XmlWriterSettings settings = new XmlWriterSettings();
+            settings.OmitXmlDeclaration = true;
+
+            using (XmlWriter writer = XmlWriter.Create(xmlStream, settings))
+            {
+                writer.WriteStartElement(null, "IP", null);
+
+                writer.WriteStartElement(null, "CaseNoIP", null);
+                writer.WriteString($"{model.caseNo}");
+                writer.WriteEndElement();
+
+                writer.WriteStartElement(null, "MainIP", null);
+                writer.WriteString($"{model.insolvencyPractitionerName}");
+                writer.WriteEndElement();
+
+                writer.WriteStartElement(null, "MainIPFirm", null);
+                writer.WriteString($"{model.insolvencyPractitionerFirmName}");
+                writer.WriteEndElement();
+
+                writer.WriteStartElement(null, "MainIPFirmAddress", null);
+                writer.WriteString($"{model.insolvencyPractitionerAddress}");
+                writer.WriteEndElement();
+
+                writer.WriteStartElement(null, "MainIPFirmPostCode", null);
+                writer.WriteString($"{model.insolvencyPractitionerPostcode}");
+                writer.WriteEndElement();
+
+                writer.WriteStartElement(null, "MainIPFirmTelephone", null);
+                writer.WriteString($"{model.insolvencyPractitionerTelephone}");
+                writer.WriteEndElement();
+
+                writer.WriteEndElement();
+                writer.Flush();
+            }
+        }
 
         public static void WriteIirIndividualDetailsToStream(InsolventIndividualRegisterModel model, ref MemoryStream xmlStream)
         {
@@ -91,7 +189,18 @@ namespace INSS.EIIR.DataSync.Infrastructure.Sink.XML
                 writer.WriteEndElement();
 
                 writer.WriteStartElement(null, "Occupation", null);
-                writer.WriteString($"{model.individualOccupation}");
+                //Fix minor issue orignally fixed in APP-4951 but still in gettEiirIndex
+                switch (model.individualOccupation)
+                {
+                    case "Non Surrender":
+                    case "Non Trading":
+                    case "Self Employed":
+                        writer.WriteString($"{model.individualOccupation.Replace(" ", "-")}");
+                        break;
+                    default:
+                        writer.WriteString($"{model.individualOccupation}");
+                        break;
+                }              
                 writer.WriteEndElement();
 
                 writer.WriteStartElement(null, "DateofBirth", null);
@@ -146,7 +255,7 @@ namespace INSS.EIIR.DataSync.Infrastructure.Sink.XML
 
         }
 
-        public static void WriteIirBktCaseDetailsToStream(InsolventIndividualRegisterModel model, ref MemoryStream xmlStream)
+        public static void WriteIirCaseDetailsToStream(InsolventIndividualRegisterModel model, ref MemoryStream xmlStream)
         {
             XmlWriterSettings settings = new XmlWriterSettings();
             settings.OmitXmlDeclaration = true;
@@ -327,14 +436,8 @@ namespace INSS.EIIR.DataSync.Infrastructure.Sink.XML
                     case IIRRecordType.IBRO:
                         writer.WriteString(RestrictionsTypeXmlText.IBRO);
                         break;
-                    case IIRRecordType.DRRO:
-                        writer.WriteString(RestrictionsTypeXmlText.DRRO);
-                        break;
-                    case IIRRecordType.DRRU:
-                        writer.WriteString(RestrictionsTypeXmlText.DRRU);
-                        break;
                     default:
-                        throw new Exception($"Unknown Restrictions Type encountered generating XML for {model.caseNo}");
+                        throw new Exception($"Unknown Restrictions Type encountered in WriteIirBktRestrictionDetailsToStream generating XML for {model.caseNo}");
                 }
                 writer.WriteEndElement();
 
@@ -383,6 +486,71 @@ namespace INSS.EIIR.DataSync.Infrastructure.Sink.XML
                 writer.WriteEndElement();
                 writer.Flush();
 
+            }
+        }
+
+        public static void WriteIirDroRestrictionDetailsToStream(InsolventIndividualRegisterModel model, ref MemoryStream xmlStream)
+        {
+            XmlWriterSettings settings = new XmlWriterSettings();
+            settings.OmitXmlDeclaration = true;
+
+            using (XmlWriter writer = XmlWriter.Create(xmlStream, settings))
+            {
+                writer.WriteStartElement(null, "DebtReliefRestrictionsDetails", null);
+
+                writer.WriteStartElement(null, "DRORestrictionsType", null);
+                switch (model.RecordType)
+                {
+                    case IIRRecordType.DRRO:
+                        writer.WriteString(RestrictionsTypeXmlText.DRRO);
+                        break;
+                    case IIRRecordType.DRRU:
+                        writer.WriteString(RestrictionsTypeXmlText.DRRU);
+                        break;
+                    default:
+                        throw new Exception($"Unknown Restrictions Type encountered in WriteIirDroRestrictionDetailsToStream generating XML for {model.caseNo}");
+                }
+                writer.WriteEndElement();
+
+                writer.WriteStartElement(null, "DRORestrictionsStartDate", null);
+                writer.WriteString($"{model.restrictionsStartDate.Value.ToString("dd/MM/yyyy")}");
+                writer.WriteEndElement();
+
+                writer.WriteStartElement(null, "DRORestrictionsEndDate", null);
+                writer.WriteString($"{(model.restrictionsEndDate.HasValue ? model.restrictionsEndDate.Value.ToString("dd/MM/yyyy") : "")}");
+                writer.WriteEndElement();
+
+                writer.WriteEndElement();
+                writer.Flush();
+
+            }
+        }
+
+        public static void WriteIirHeaderToStream(ref MemoryStream? xmlStream)
+        {
+            XmlWriterSettings settings = new XmlWriterSettings();
+            settings.OmitXmlDeclaration = true;
+            settings.ConformanceLevel = ConformanceLevel.Fragment;
+
+            using (XmlWriter writer = XmlWriter.Create(xmlStream, settings))
+            {
+                writer.WriteRaw("<ReportDetails>");
+                writer.Flush();
+            }
+        }
+
+
+        public static void WriteIirFooterToStream(ref MemoryStream? xmlStream)
+        {
+            XmlWriterSettings settings = new XmlWriterSettings();
+            settings.OmitXmlDeclaration = true;
+            settings.ConformanceLevel = ConformanceLevel.Fragment;
+            
+
+            using (XmlWriter writer = XmlWriter.Create(xmlStream, settings))
+            {
+                writer.WriteRaw("</ReportDetails>\r\n");
+                writer.Flush();
             }
         }
     }

@@ -154,6 +154,13 @@ public class CaseResult
         }
     }
 
+    public bool HasIPDetails {
+        get 
+        { 
+            return insolvencyPractitionerName != null && insolvencyPractitionerAddress != null; 
+        }
+    }
+
 }
 
 [XmlRoot("Trading")]
