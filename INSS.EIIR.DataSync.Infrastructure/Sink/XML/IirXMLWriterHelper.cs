@@ -1,6 +1,7 @@
 ﻿using System.Globalization;
 using System.Xml;
 using INSS.EIIR.DataSync.Application.UseCase.SyncData.Model;
+using INSS.EIIR.Models.CaseModels;
 using INSS.EIIR.Models.Constants;
 using Microsoft.IdentityModel.Abstractions;
 
@@ -37,7 +38,12 @@ namespace INSS.EIIR.DataSync.Infrastructure.Sink.XML
                 writer.Flush();
                 WriteIirIndividualDetailsToStream(model, ref xmlStream);
 
-                if (model.RecordType == Models.CaseModels.IIRRecordType.BKT)
+                if (model.hasRestrictions) 
+                { 
+                    WriteIirBktRestrictionDetailsToStream(model, ref xmlStream);
+                }
+
+                if (model.RecordType == Models.CaseModels.IIRRecordType.BKT && model.IncludeCaseDetailsInXML)
                 {
                     writer.WriteStartElement(null, "CaseDetailsText", null);
                     writer.WriteString($"Insolvency Case Details");
@@ -249,6 +255,86 @@ namespace INSS.EIIR.DataSync.Infrastructure.Sink.XML
 
             return source;
         
+        }
+
+        public static void WriteIirBktRestrictionDetailsToStream(InsolventIndividualRegisterModel model, ref MemoryStream xmlStream)
+        {
+            XmlWriterSettings settings = new XmlWriterSettings();
+            settings.OmitXmlDeclaration = true;
+
+            using (XmlWriter writer = XmlWriter.Create(xmlStream, settings))
+            {
+                writer.WriteStartElement(null, "BankruptcyRestrictionsDetails", null);
+
+                writer.WriteStartElement(null, "RestrictionsType", null);
+                switch (model.RecordType)
+                {
+                    case IIRRecordType.BRO:
+                        writer.WriteString(RestrictionsTypeXmlText.BRO);
+                        break;
+                    case IIRRecordType.BRU:
+                        writer.WriteString(RestrictionsTypeXmlText.BRU);
+                        break;
+                    case IIRRecordType.IBRO:
+                        writer.WriteString(RestrictionsTypeXmlText.IBRO);
+                        break;
+                    case IIRRecordType.DRRO:
+                        writer.WriteString(RestrictionsTypeXmlText.DRRO);
+                        break;
+                    case IIRRecordType.DRRU:
+                        writer.WriteString(RestrictionsTypeXmlText.DRRU);
+                        break;
+                    default:
+                        throw new Exception($"Unknown Restrictions Type encountered generating XML for {model.caseNo}");
+                }
+                writer.WriteEndElement();
+
+                writer.WriteStartElement(null, "RestrictionsStartDate", null);
+                writer.WriteString($"{model.restrictionsStartDate.Value.ToString("dd/MM/yyyy")}");
+                writer.WriteEndElement();
+
+                writer.WriteStartElement(null, "RestrictionsEndDate", null);
+                writer.WriteString($"{(model.restrictionsEndDate.HasValue ? model.restrictionsEndDate.Value.ToString("dd/MM/yyyy") : "")}");
+                writer.WriteEndElement();
+
+                if (!model.IncludeCaseDetailsInXML) 
+                {
+                    writer.WriteStartElement(null, "RestrictionsCourt", null);
+                    writer.WriteString(model.courtName);
+                    writer.WriteEndElement();
+
+                    writer.WriteStartElement(null, "RestrictionsCourtNo", null);
+                    writer.WriteString(model.courtNumber.TrimStart('0'));
+                    writer.WriteEndElement();
+
+                    writer.WriteStartElement(null, "RestrictionsCaseYear", null);
+                    writer.WriteString(model.caseYear);
+                    writer.WriteEndElement();
+                }
+
+                if (model.hasaPrevInterimRestrictionsOrder) 
+                {
+                    writer.WriteStartElement(null, "PreviousIBRO", null);
+
+                    writer.WriteStartElement(null, "PreviousIBRONote", null);
+                    writer.WriteString(RestrictionsTypeXmlText.PREVIBRONOTE);
+                    writer.WriteEndElement();
+
+                    writer.WriteStartElement(null, "PreviousIBROStartDate", null);
+                    writer.WriteString($"{model.prevInterimRestrictionsOrderStartDate.Value.ToString("dd/MM/yyyy")}");
+                    writer.WriteEndElement();
+
+                    writer.WriteStartElement(null, "PreviousIBROEndDate", null);
+                    writer.WriteString($"{model.prevInterimRestrictionsOrderEndDate.Value.ToString("dd/MM/yyyy")}");
+                    writer.WriteEndElement();
+
+                    writer.WriteEndElement();
+                }
+
+                writer.WriteEndElement();
+                writer.Flush();
+
+            }
         }
     }
 }

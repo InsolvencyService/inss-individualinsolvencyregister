@@ -22,6 +22,16 @@ public static class RestrictionsType
     public const string UNDERTAKING = "Undertaking";
 }
 
+public static class RestrictionsTypeXmlText
+{
+    public const string BRO = "BANKRUPTCY RESTRICTIONS ORDER (BRO)";
+    public const string BRU = "BANKRUPTCY RESTRICTIONS UNDERTAKING (BRU)";
+    public const string IBRO = "INTERIM BANKRUPTCY RESTRICTIONS ORDER (IBRO)";
+    public const string DRRO = "DEBT RELIEF RESTRICTIONS ORDER (DRRO)";
+    public const string DRRU = "DEBT RELIEF RESTRICTION UNDERTAKING (DRRU)";
+    public const string PREVIBRONOTE = "This BRO was preceded by an Interim Bankruptcy Restrictions Order (IBRO)";
+}
+
 public static class Common
 {
     public const string NoOtherNames = "No OtherNames Found";
