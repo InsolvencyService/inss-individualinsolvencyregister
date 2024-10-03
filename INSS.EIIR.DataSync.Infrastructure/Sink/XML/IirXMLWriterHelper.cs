@@ -155,52 +155,79 @@ namespace INSS.EIIR.DataSync.Infrastructure.Sink.XML
             {
                 writer.WriteStartElement(null, "CaseDetails", null);
 
-                    writer.WriteStartElement(null, "CaseNoCase", null);
-                    writer.WriteString($"{model.caseNo}");
-                    writer.WriteEndElement();
+                writer.WriteStartElement(null, "CaseNoCase", null);
+                writer.WriteString($"{model.caseNo}");
+                writer.WriteEndElement();
 
-                    writer.WriteStartElement(null, "CaseName", null);
-                    writer.WriteString($"{model.caseName}");
-                    writer.WriteEndElement();
+                writer.WriteStartElement(null, "CaseName", null);
+                writer.WriteString($"{model.caseName}");
+                writer.WriteEndElement();
 
-                    writer.WriteStartElement(null, "Court", null);
+                writer.WriteStartElement(null, "Court", null);
+                
+                //Known issue with DRRO and Court
+                if (model.RecordType == IIRRecordType.DRRO)
+                    writer.WriteString($"{model.courtName??$"(Court does not apply to DRO)"}");
+                else
                     writer.WriteString($"{model.courtName}");
+
+                writer.WriteEndElement();
+
+                writer.WriteStartElement(null, "CaseType", null);
+                writer.WriteString($"{model.insolvencyType}");
+                writer.WriteEndElement();
+
+                writer.WriteStartElement(null, "CourtNumber", null);
+                writer.WriteString($"{model.courtNumber}");
+                writer.WriteEndElement();
+
+                writer.WriteStartElement(null, "CaseYear", null);
+                writer.WriteString($"{model.caseYear}");
+                writer.WriteEndElement();
+
+                writer.WriteStartElement(null, "StartDate", null);
+                writer.WriteString($"{model.insolvencyDate}");
+                writer.WriteEndElement();
+
+                writer.WriteStartElement(null, "Status", null);
+
+                switch (model.RecordType) 
+                {
+                    case IIRRecordType.BKT:
+                    case IIRRecordType.BRO:
+                    case IIRRecordType.BRU:
+                    case IIRRecordType.IBRO:
+                        writer.WriteString($"{Alter_BKTStatusFormat(model.caseStatus)}");
+                        break;
+                    case IIRRecordType.IVA:
+                        writer.WriteString($"{Alter_IVAStatusFormat(model.caseStatus)}");
+                        break;
+                    case IIRRecordType.DRO:
+                    case IIRRecordType.DRRO:
+                    case IIRRecordType.DRRU:
+                        writer.WriteString($"{Alter_DROStatusFormat(model.caseStatus)}");
+                        break;
+                    default:
+                        throw new Exception($"Unable to detemine recordtype for XML Extract for record: {model.caseNo}");
+                }
+                
+                    
+                writer.WriteEndElement();
+
+                if (model.annulDate != null)
+                {
+                    writer.WriteStartElement(null, "AnnulDate", null);
+                    writer.WriteString($"{model.annulDate}");
                     writer.WriteEndElement();
 
-                    writer.WriteStartElement(null, "CaseType", null);
-                    writer.WriteString($"{model.insolvencyType}");
+                    writer.WriteStartElement(null, "AnnulReason", null);
+                    writer.WriteString($"{model.annulReason}");
                     writer.WriteEndElement();
+                }
 
-                    writer.WriteStartElement(null, "CourtNumber", null);
-                    writer.WriteString($"{model.courtNumber}");
-                    writer.WriteEndElement();
-
-                    writer.WriteStartElement(null, "CaseYear", null);
-                    writer.WriteString($"{model.caseYear}");
-                    writer.WriteEndElement();
-
-                    writer.WriteStartElement(null, "StartDate", null);
-                    writer.WriteString($"{model.insolvencyDate}");
-                    writer.WriteEndElement();
-
-                    writer.WriteStartElement(null, "Status", null);
-                    writer.WriteString($"{Alter_BKTStatusFormat(model.caseStatus)}");
-                    writer.WriteEndElement();
-
-                    if (model.annulDate != null)
-                    {
-                        writer.WriteStartElement(null, "AnnulDate", null);
-                        writer.WriteString($"{model.annulDate}");
-                        writer.WriteEndElement();
-
-                        writer.WriteStartElement(null, "AnnulReason", null);
-                        writer.WriteString($"{model.annulReason}");
-                        writer.WriteEndElement();
-                    }
-
-                    writer.WriteStartElement(null, "CaseDescription", null);
-                    writer.WriteString($"{model.caseDescription}");
-                    writer.WriteEndElement();
+                writer.WriteStartElement(null, "CaseDescription", null);
+                writer.WriteString($"{model.caseDescription}");
+                writer.WriteEndElement();
 
                 #region TradingNames
                     writer.WriteStartElement(null, "TradingNames", null);
@@ -229,6 +256,28 @@ namespace INSS.EIIR.DataSync.Infrastructure.Sink.XML
                 writer.Flush();
             }
 
+        }
+
+
+        //The following transformations are based on the document EIIR Data Properties a copy of which can be
+        //found on APP-5332
+
+        private static object Alter_DROStatusFormat(string source)
+        {
+            if (source.StartsWith("Extended From"))
+                return $"Extended From {DateTime.ParseExact(source[14..24], "dd/MM/yyyy", CultureInfo.InvariantCulture).ToString("dd MMMM yyyy")}"
+                    + $" To {DateTime.ParseExact(source[28..38], "dd/MM/yyyy", CultureInfo.InvariantCulture).ToString("dd MMMM yyyy")}";
+
+            return source[0..(source.Length - 10)] + DateTime.ParseExact(source[^10..^0], "dd/MM/yyyy", CultureInfo.InvariantCulture).ToString("dd MMMM yyyy");
+        }
+
+        //Alters the IVA Status - typically date formats from dd/MM/yyyy to dd MMMM yyyy
+        private static object Alter_IVAStatusFormat(string source)
+        {
+            if (source != "Current")
+                return source[0..(source.Length - 10)] + DateTime.ParseExact(source[^10..^0], "dd/MM/yyyy", CultureInfo.InvariantCulture).ToString("dd MMMM yyyy");
+
+            return source;
         }
 
         //Alters the BKT Status - typically date formats from dd/MM/yyyy to dd MMMM yyyy
