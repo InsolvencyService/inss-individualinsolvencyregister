@@ -355,7 +355,12 @@ jobs:
                         "name": "INSSightDataFeedEnabled",
                         "value": "$(INSSightDataFeedEnabled)",
                         "slotSetting": false
-                      }
+                      },
+                      {                      
+                        "name": "InsSightSQLConnectionString",
+                        "value": "$(InsSightSQLConnectionString)",
+                        "slotSetting": false
+                      } 
                     ]
 
               - task: AzureAppServiceManage@0
