@@ -391,6 +391,13 @@ jobs:
                         "value": "$(INSSightDataFeedEnabled)",
                         "slotSetting": false
                       },
+
+                      {                      
+                        "name": "InsSightSQLConnectionString",
+                        "value": "$(InsSightSQLConnectionString)",
+                        "slotSetting": false
+                      } 
+
                       {
                         "name": "database__connectionstring",
                         "value": "$(database__connectionstring)",
