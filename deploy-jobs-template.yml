@@ -168,6 +168,31 @@ jobs:
                         "name": "WEBSITE_TIME_ZONE",
                         "value": "GMT Standard Time",
                         "slotSetting": false
+                      },
+                      {
+                        "name": "AzureWebJobs.ExtractJobScheduler.Disabled",
+                        "value": true,
+                        "slotSetting": true
+                      },
+                      {
+                        "name": "AzureWebJobs.ExtractJobNotificationTrigger.Disabled",
+                        "value": true,
+                        "slotSetting": true
+                      },
+                      {
+                        "name": "AzureWebJobs.ExtractJobServiceTrigger.Disabled",
+                        "value": true,
+                        "slotSetting": true
+                      },
+                      {
+                        "name": "AzureWebJobs.EiirOrchestrator.Disabled",
+                        "value": true,
+                        "slotSetting": true
+                      },
+                      {
+                        "name": "AzureWebJobs.RebuildIndexes.Disabled",
+                        "value": true,
+                        "slotSetting": true                                     
                       },                      
                       {
                         "name": "UseFakedDataSources",
@@ -325,6 +350,16 @@ jobs:
                         "name": "WEBSITE_TIME_ZONE",
                         "value": "GMT Standard Time",
                         "slotSetting": false
+                      },
+                      {
+                        "name": "AzureWebJobs.Snapshot.Disabled",
+                        "value": true,
+                        "slotSetting": true
+                      },
+                      {
+                        "name": "AzureWebJobs.EiiRDailyExtract.Disabled",
+                        "value": true,
+                        "slotSetting": true                                            
                       },                      
                       {
                         "name": "TableStorageConnectionString",
