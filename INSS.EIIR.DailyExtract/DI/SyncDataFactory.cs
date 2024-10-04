@@ -83,7 +83,7 @@ namespace INSS.EIIR.DataSync.Functions.DI
             {
                 StorageName = config.GetValue<String>("XmlContainer", null),
                 StoragePath = config.GetValue<String>("TargetBlobConnectionString", null),
-                WriteToBlobRecordBufferSize = config.GetValue<int>("SyncDataWriteXMLBufferSize", 3)
+                WriteToBlobRecordBufferSize = config.GetValue<int>("SyncDataWriteXMLBufferSize", 500)
             };
 
             return new XMLSink(options, repo);

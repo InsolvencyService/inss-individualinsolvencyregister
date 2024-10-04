@@ -64,30 +64,6 @@ namespace INSS.EIIR.DataSync.Infrastructure.Sink.XML
 
             var extractJob = _eiirRepository.GetExtractAvailable();
 
-            //Following section could move to beginning of getting datasource, its checking pre-conditions
-            //Which historically down before fetching data...not after
-            #region Move to ISCIS data source?
-            var today = DateOnly.FromDateTime(DateTime.Now);
-
-            var extractjobError = $"ExtractJob not found for today [{today}], snapshot has not run";
-            var snapshotError = $"Snapshot has not yet run today [{today}]";
-
-            if (extractJob == null)
-            {
-                throw new Exception(extractjobError);
-            }
-
-            if (extractJob.SnapshotCompleted?.ToLowerInvariant() == "n")
-            {
-                throw new Exception(snapshotError);
-            }
-
-            if (extractJob.ExtractCompleted?.ToLowerInvariant() == "y")
-            {
-                throw new Exception($"Subscriber xml / zip file creation has already ran successfully on [{today}]");
-            }
-            #endregion Move to ISCIS data source?
-
             _extractId = extractJob.ExtractId;
             _fileName = extractJob.ExtractFilename;
             _xmlStream = new MemoryStream();
