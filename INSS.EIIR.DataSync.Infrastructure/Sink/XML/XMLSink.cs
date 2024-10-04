@@ -21,7 +21,7 @@ namespace INSS.EIIR.DataSync.Infrastructure.Sink.XML
     {
 
         private MemoryStream? _xmlStream;
-        private const int _recordBufferSize = 2;
+        private int _recordBufferSize;
         private int _recordCount;
         private readonly IList<string> _blockIDList;
         private BlobServiceClient _blobServiceClient;
@@ -41,6 +41,7 @@ namespace INSS.EIIR.DataSync.Infrastructure.Sink.XML
 
             _blobContainerName = options.StorageName;
             _blobConnectionString = options.StoragePath;
+            _recordBufferSize = options.WriteToBlobRecordBufferSize;
 
             if (string.IsNullOrEmpty(_blobContainerName))
             {
@@ -56,6 +57,7 @@ namespace INSS.EIIR.DataSync.Infrastructure.Sink.XML
 
             //IExtractRepository required to get filename and update extract availability though comes with high overhead
             _eiirRepository = extractRepository;
+            
         }
 
         public async Task Start() {

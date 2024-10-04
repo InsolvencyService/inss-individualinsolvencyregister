@@ -79,10 +79,11 @@ namespace INSS.EIIR.DataSync.Functions.DI
 
         private static IDataSink<InsolventIndividualRegisterModel> GetXMLSink(IConfiguration config, IExtractRepository repo)
         {
-            var options = new XMLSinkOptions() 
-            { 
+            var options = new XMLSinkOptions()
+            {
                 StorageName = config.GetValue<String>("XmlContainer", null),
-                StoragePath = config.GetValue<String>("TargetBlobConnectionString", null)
+                StoragePath = config.GetValue<String>("TargetBlobConnectionString", null),
+                WriteToBlobRecordBufferSize = config.GetValue<int>("SyncDataWriteXMLBufferSize", 3)
             };
 
             return new XMLSink(options, repo);
