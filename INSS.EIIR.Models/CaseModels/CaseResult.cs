@@ -1,7 +1,9 @@
 ﻿using INSS.EIIR.Models.Constants;
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
 using System.Xml.Serialization;
 
 namespace INSS.EIIR.Models.CaseModels;
@@ -87,8 +89,10 @@ public class CaseResult
     public string? deceasedDate { get; set; }
 
     public DateTime? dateOfPreviousOrder { get; set; }
+    
     [NotMapped]
-    public Trading? Trading { get; set; }
+    public Trading Trading { get; set; }
+    
     [NotMapped]
     public IIRRecordType RecordType {
         get 
@@ -116,6 +120,45 @@ public class CaseResult
                     throw new Exception ("Undefined Insolvency Type");
             }       
         }    
+    }
+
+    //CaseDetals are output to XML for all record types with exception of
+    //BROs, BRUs, IBROs  (possibly DRROs and DRRUs)
+    //where discharge date is greater than 3 months old
+    //and not discharge not suspended
+    [NotMapped]
+    public bool IncludeCaseDetailsInXML 
+    {
+        get 
+        {
+            bool result = true;
+
+            switch (RecordType)
+            {
+                case IIRRecordType.BRO:
+                case IIRRecordType.BRU:
+                case IIRRecordType.IBRO:
+                    if (DateOnly.ParseExact(insolvencyDate, "d/M/yyyy", CultureInfo.InvariantCulture).AddMonths(15) < DateOnly.FromDateTime(DateTime.Now)
+                        && !(caseStatus??"").StartsWith("Discharge Suspended Indefinitely")
+                        && !((caseStatus??"").StartsWith("Discharge Fixed Length Suspension")
+                                //May work if first term evaluates as true => caseStatus Start with Fixed Length Suspension
+                                && DateOnly.ParseExact(caseStatus[54..64], "dd/MM/yyyy", CultureInfo.InvariantCulture).AddMonths(3) < DateOnly.FromDateTime(DateTime.Now))
+                        )
+                        result = false;
+                    break;
+                default:
+                    break;
+            }
+
+            return result;
+        }
+    }
+
+    public bool HasIPDetails {
+        get 
+        { 
+            return insolvencyPractitionerName != null && insolvencyPractitionerAddress != null; 
+        }
     }
 
 }
