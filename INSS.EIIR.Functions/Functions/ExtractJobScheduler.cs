@@ -1,5 +1,5 @@
 using Microsoft.Azure.Amqp.Framing;
-using Microsoft.Azure.WebJobs;
+using Microsoft.Azure.Functions.Worker;
 using Microsoft.Extensions.Logging;
 using Microsoft.Net.Http.Headers;
 using System;
@@ -22,7 +22,7 @@ public class ExtractJobScheduler
         _httpClientFactory = httpClientFactory;
     }
 
-    [FunctionName("ExtractJobScheduler")]
+    [Function("ExtractJobScheduler")]
     public async Task Run([TimerTrigger("%extractjobtimercron%")]TimerInfo myTimer, ILogger log)
     {
         _logger.LogInformation($"ExtractJobScheduler function executed at: {DateTime.Now}");

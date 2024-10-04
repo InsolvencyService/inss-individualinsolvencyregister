@@ -2,8 +2,11 @@ using INSS.EIIR.Interfaces.Services;
 using INSS.EIIR.Models.FeedbackModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Azure.WebJobs;
-using Microsoft.Azure.WebJobs.Extensions.Http;
+
+using Microsoft.Azure.Functions.Worker;
+using Microsoft.Azure.Functions.Worker.Http;
+
+
 using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Attributes;
 using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Enums;
 using Microsoft.Extensions.Logging;
@@ -28,13 +31,13 @@ namespace INSS.EIIR.Functions.Functions
             _feedbackDataProvider = feedbackDataProvider;
         }
 
-        [FunctionName("feedback")]
+        [Function("feedback")]
         [OpenApiOperation(operationId: "Run", tags: new[] { "Feedback" })]
         [OpenApiSecurity("apikeyheader_auth", SecuritySchemeType.ApiKey, In = OpenApiSecurityLocationType.Header, Name = "x-functions-key")]
         [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(FeedbackBody), Required = false, Description = "The body of the request")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "text/plain", bodyType: typeof(FeedbackWithPaging), Description = "A list of feedback with the paging model")]
         public async Task<IActionResult> GetFeedback(
-        [HttpTrigger(AuthorizationLevel.Function, "post", Route = "eiir/feedback")] HttpRequest req)
+        [HttpTrigger(AuthorizationLevel.Function, "post", Route = "eiir/feedback")] HttpRequestData req)
         {
             _logger.LogInformation("Feedback function retrieving all feedback.");
 
@@ -44,13 +47,13 @@ namespace INSS.EIIR.Functions.Functions
             return new OkObjectResult(subscribers);
         }
 
-        [FunctionName("feedback-create")]
+        [Function("feedback-create")]
         [OpenApiOperation(operationId: "Run", tags: new[] { "Feedback" })]
         [OpenApiSecurity("apikeyheader_auth", SecuritySchemeType.ApiKey, In = OpenApiSecurityLocationType.Header, Name = "x-functions-key")]
         [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(CreateCaseFeedback), Description = "The feedback details to create", Required = true)]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "text/json", bodyType: typeof(string), Description = "Feedback details for new record added")]
         public async Task<IActionResult> CreateFeedback(
-        [HttpTrigger(AuthorizationLevel.Function, "post", Route = "eiir/feedback/create")] HttpRequest req)
+        [HttpTrigger(AuthorizationLevel.Function, "post", Route = "eiir/feedback/create")] HttpRequestData req)
         {
             string json = await req.ReadAsStringAsync();
             if (!string.IsNullOrEmpty(json))
@@ -67,14 +70,14 @@ namespace INSS.EIIR.Functions.Functions
             return new BadRequestObjectResult(error);
         }
 
-        [FunctionName("feedback-update-status")]
+        [Function("feedback-update-status")]
         [OpenApiOperation(operationId: "Run", tags: new[] { "Feedback" })]
         [OpenApiSecurity("apikeyheader_auth", SecuritySchemeType.ApiKey, In = OpenApiSecurityLocationType.Header, Name = "x-functions-key")]
         [OpenApiParameter(name: "feedbackId", In = ParameterLocation.Path, Required = true, Type = typeof(int), Description = "The feedback Id")]
         [OpenApiParameter(name: "status", In = ParameterLocation.Path, Required = true, Type = typeof(bool), Description = "The viewed status")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "text/json", bodyType: typeof(string), Description = "feedback status updated")]
         public async Task<IActionResult> UpdateFeedbackStatus(
-        [HttpTrigger(AuthorizationLevel.Function, "put", Route = "eiir/feedback/{feedbackId}/viewed/{status}")] HttpRequest req, int feedbackId, bool status)
+        [HttpTrigger(AuthorizationLevel.Function, "put", Route = "eiir/feedback/{feedbackId}/viewed/{status}")] HttpRequestData req, int feedbackId, bool status)
         {
             if (feedbackId == 0)
             {
@@ -96,12 +99,14 @@ namespace INSS.EIIR.Functions.Functions
             return new NotFoundObjectResult(error);
         }
 
-        private async Task<FeedbackBody> GetBodyParameters(HttpRequest request)
+        private async Task<FeedbackBody> GetBodyParameters(HttpRequestData request)
         {
             FeedbackBody feedbackBody = new();
-            if (request?.Body.Length > 0)
+
+            var content = await request.ReadAsStringAsync();
+
+            if (content.Length > 0)
             {
-                var content = await new StreamReader(request.Body).ReadToEndAsync();
                 feedbackBody = JsonConvert.DeserializeObject<FeedbackBody>(content);
                 var info = $"Feedback function: Body parameters {feedbackBody}.";
                 _logger.LogInformation(info);

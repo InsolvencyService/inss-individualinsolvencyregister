@@ -1,6 +1,8 @@
 using INSS.EIIR.Interfaces.Services;
 using INSS.EIIR.Models.Configuration;
-using Microsoft.Azure.WebJobs;
+
+using Microsoft.Azure.Functions.Worker;
+
 using Microsoft.Extensions.Logging;
 using System;
 using System.Threading.Tasks;
@@ -23,7 +25,7 @@ public class ExtractJobNotificationTrigger
         _notificationService = notificationService;
     }
 
-    [FunctionName("ExtractJobNotificationTrigger")]
+    [Function("ExtractJobNotificationTrigger")]
     public async Task Run([BlobTrigger("%blobcontainername%/{name}.zip", Connection = "storageconnectionstring")] byte[] myBlob, string name, Uri uri)
     {
         string message = $"ExtractJobNotificationTrigger Blob trigger function triggered for blob\n Name: {name}  \n with uri:{uri.AbsoluteUri}";

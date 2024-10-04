@@ -11,6 +11,9 @@ param (
     
     [Parameter(Mandatory=$true)]
     [string] $azureContainerName,
+	
+	[Parameter(Mandatory=$true)]
+	[string] $azureArchiveContainerName,
     
     [Parameter(Mandatory=$true)]
     [string]$localFilePath,
@@ -22,10 +25,13 @@ param (
     [string]$logFilePath,
 
     [Parameter(Mandatory=$false)]
-    [string]$subscriptionId,
+    [boolean]$archiveFiles = $False,
 
     [Parameter(Mandatory=$false)]
-    [boolean]$archiveFiles
+    [int]$retryInterval = 60,
+
+    [Parameter(Mandatory=$false)]
+    [int]$maxRetries = 5
 )
 
 $Logfile = $logFilePath+"\DailyExtractLog.log"
@@ -34,7 +40,7 @@ $Logfile = $logFilePath+"\DailyExtractLog.log"
 Function Log-Message
 {
    Param ([string]$message)
-   $timestamp = (Get-Date).toString("dd/MM/yyyy HH:mm:ss")
+   $timestamp = (Get-Date).toString("dd/MM/yyyy HH:mm:ss ffff")
    
    $logmessage = "$timestamp $Level $message"
    If($Logfile) {
@@ -45,86 +51,131 @@ Function Log-Message
    }   
 }
 
+Log-Message("")
+Log-Message ("Script started.")
+Log-Message ("retryInterval : $retryInterval - maxRetries : $maxRetries ")
 
-try
-{
-    # Login to Azure using Managed Identity
-    Log-Message("")
-    Log-Message("Connecting to Azure with Managed Identity...")  
+try {
+    # Connect to Azure with Managed Identity    
+    Log-Message("Connecting to Azure with Managed Identity...")
     Connect-AzAccount -Identity
-    
     #Sets the tenant context
-    Log-Message("Setting tenant context...")  
+    Log-Message("Setting tenant context...")
     Set-AzContext -Tenant $TenantId
-    
-    #Sets the tenant and subscription context
-    #Set-AzContext -Tenant $TenantId -SubscriptionId $subscriptionId
-  
-    # Get the current date 
-    $today = Get-Date -Hour 0 -minute 0
-       
-
-    # Get the storage account context    
-    Log-Message("Getting storage account context...")  
-    #$storageAccount = Get-AzStorageAccount -ResourceGroupName $azureResouceGroupName -Name $azureStorageAccountName
-    $storageAccount = New-AzStorageContext -StorageAccountName $azureStorageAccountName -UseConnectedAccount #Get-AzStorageAccount -ResourceGroupName $azureResouceGroupName -Name $azureStorageAccountName
+ 
+    # Get the storage account context
+    Log-Message("Getting storage account context...")    
+    $storageAccount = New-AzStorageContext -StorageAccountName $azureStorageAccountName -UseConnectedAccount
     $storageContext = $storageAccount.Context
 
+	# Get the last file to be processed
+	$latestProcessedFileName = ""
+	$archiveblobs = Get-AzStorageBlob -Context $storageContext -Container $azureArchiveContainerName -Prefix iif  | sort @{expression="Name";Descending=$true}
+	if ($archiveblobs.Count -gt 0) {
+		$latestProcessedFileName = $archiveblobs[0].Name
+		Log-Message("Last file processed: $latestProcessedFileName")
+	}
+
     # List files in the local folder modifed today
-    Log-Message("Listing and sorting the files in local folder...")  
-     $files = Get-ChildItem -Path "$localFilePath\*.sql" | Where-Object {($_.LastWriteTime -ge $today) } | Sort-Object LastWriteTime
+    Log-Message("Listing and sorting the files in local folder...") 
+   
+    $files = Get-ChildItem -Path "$localFilePath\iif*.sql" | Where-Object {($_.Name -gt $latestProcessedFileName) } | Sort-Object -Property Name 
+    $fileCount = (Get-ChildItem -Path "$localFilePath\iif*.sql" | Where-Object {($_.Name -gt $latestProcessedFileName) } | Measure-Object).Count
 
-       
+ 
     Log-Message("===========================Start uploading files=======================")
-
-     
+    
     # check if any new files to be processed
     if ($files -eq $null){
         Log-Message("No files to upload" )	
-
     }
- 
-    foreach ($file in $files)
-    {   
-        Log-Message("File : $file was created/updated on : " + $file.LastWriteTime)	
-        
-        $blobName = $file.Name
-        
-        # Check if the blob already exists
-        $blob = Get-AzStorageBlob -Context $storageContext -Container $azureContainerName  -Blob $blobName -ErrorAction Ignore 
-		
-        
-        if (-not $blob)        
-		{               
-            # Upload the file to the blob storage if it does not exist
-            Log-Message ("Uploading the file ($blobName) to the blob storage") 
-            $filePath = $file.FullName  
 
+    Log-Message("Uploading to Storage account: $azureStorageAccountName - Container: $azureContainerName ...") 
+
+    $uploadedFilepCount = 0
+
+    foreach ($file in $files) {
+        $blobName = $file.Name
+        $filePath = $file.FullName
+
+        # Retry mechanism for checking the previous file existence
+        $retryCount = 1        
+        $fileUploaded = $false
+        
+        $blob = Get-AzStorageBlob -Context $storageContext -Container $azureContainerName  -ErrorAction Ignore  
+        
+        if ($blob.Count -eq 0)
+        {
+            # Upload the file to the blob storage if it does not exist
+            Log-Message("Uploading the file ($blobName) to the blob storage") 
             # Upload each file to the Azure Blob blob container
             Set-AzStorageBlobContent -Container $azureContainerName -File $filePath -Context $storageContext -StandardBlobTier 'Cool' -Force | Out-Null    
-                     
-            Log-Message ("File : $blobName successfully uploaded to blob storage.")
-                
-            if($archiveFiles)
-            {
+            Log-Message("File : $blobName successfully uploaded to blob storage.")
+            
+            $uploadedFilepCount ++ 
+            
+            if($archiveFiles -and $uploadedFilepCount -eq $fileCount)
+            {                
                 # Move the uploaded file to the Archive folder
-                Move-Item $blobName $archivefilePath -ErrorAction SilentlyContinue -Force
-                Log-Message ("File : $blobName - moved to archive folder.")
+                Move-Item $filePath $archivefilePath -ErrorAction SilentlyContinue -Force
+                Log-Message("File : $blobName - moved to archive folder.")                
+            }                           
+            
+        } 
+        else 
+        {            
+            Log-Message("File already exists in blob storage...")
+            
+        }
+
+        if ($uploadedFilepCount -lt $fileCount)
+        {          
+        
+            Start-Sleep -Seconds $retryInterval
+            
+            while ($retryCount -le $maxRetries -and -not $fileUploaded) 
+            {                  
+                $blob = Get-AzStorageBlob -Context $storageContext -Container $azureContainerName  -ErrorAction Ignore  
+           
+                $count = $retryCount++
+                   
+                if ($blob.Count -eq 0)            
+                {
+                    if($archiveFiles)
+                    {
+                        # Move the uploaded file to the Archive folder
+                        Move-Item $filePath $archivefilePath -ErrorAction SilentlyContinue -Force 
+                        Log-Message("File : $blobName - moved to archive folder...")
+                    }
+
+                    $fileUploaded = $true          
+
+                }
+                else
+                {                      
+                    Log-Message("File(s) already exists in blob storage. Waiting for removal... Retry # : $count ")
+                    Start-Sleep -Seconds $retryInterval
+                }                        
+                    
+                
+                }        
+            if (-not $fileUploaded) 
+            {                
+                throw "Failed to upload file after $maxRetries retries. File(s) still exists in blob storage."
             }
         }
-		else
-		{			
-            Log-Message ("File : $blobName already exists in the blob storage")		
-		}
     }
+
     Log-Message("===========================Finished uploading files=======================")
-}
-catch
-{       
-    Log-Message "`r`n Error in uploading files `r"
-    Log-Message ("---------------------------------------------")
-    Log-Message "Error : $_"
-    Log-Message ("---------------------------------------------") 
-    
+    Log-Message("Script execution completed.")
+} 
+catch 
+{
+    Log-Message(" ")
+    Log-Message("---------------------------------------------")
+    Log-Message("Error in uploading files:")
+    Log-Message("Error: $_")
+    Log-Message("---------------------------------------------")
+
 }
 

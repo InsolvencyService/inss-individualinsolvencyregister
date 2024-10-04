@@ -14,9 +14,9 @@ namespace INSS.EIIR.DailyExtract
     {
         private string _name = string.Empty;
         private Stream _blob = null;
-        private ILogger _log = null;
+        private ILogger<EiiRDailyExtract> _log = null;
 
-        public ExtractSnapshot(string name, Stream blob, ILogger log) 
+        public ExtractSnapshot(string name, Stream blob, ILogger<EiiRDailyExtract> log) 
         {
             _name = name;
             _blob = blob;
@@ -62,7 +62,7 @@ namespace INSS.EIIR.DailyExtract
         /// <summary>
         /// Copies/Moves the file to an archive folder.
         /// </summary>
-        public async void Archive()
+        public async System.Threading.Tasks.Task Archive()
         {
             // Source blob details
             BlobServiceClient sourceBlobServiceClient = new BlobServiceClient(Environment.GetEnvironmentVariable("SourceBlobConnectionString"));

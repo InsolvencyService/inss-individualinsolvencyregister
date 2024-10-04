@@ -65,6 +65,11 @@ jobs:
                   appSettings: |
                     [
                       {
+                        "name": "FUNCTIONS_WORKER_RUNTIME",
+                        "value": "$(FunctionsWorkerRuntime)",
+                        "slotSetting": false
+                      },
+                      {
                         "name": "functionapikey",
                         "value": "$(functionapikey)",
                         "slotSetting": false
@@ -119,7 +124,7 @@ jobs:
                         "value": "$(database__commandtimeout)",
                         "slotSetting": false
                       },
-                    {
+                      {
                         "name": "servicebus__publisherconnectionstring",
                         "value": "$(servicebus__publisherconnectionstring)",
                         "slotSetting": false
@@ -187,8 +192,18 @@ jobs:
                       {
                         "name": "AzureWebJobs.RebuildIndexes.Disabled",
                         "value": true,
-                        "slotSetting": true
-                      }                      
+                        "slotSetting": true                                     
+                      },                      
+                      {
+                        "name": "UseFakedDataSources",
+                        "value": "$(UseFakedDataSourcesFuncEiir)",
+                        "slotSetting": false
+                      },                      
+                      {
+                        "name": "UseDynamicIndexName",
+                        "value": "$(UseDynamicIndexName)",
+                        "slotSetting": false
+                      }
                     ]
 
               - task: AzureAppServiceManage@0
@@ -328,7 +343,7 @@ jobs:
                       },
                       {
                         "name": "FUNCTIONS_WORKER_RUNTIME",
-                        "value": "dotnet",
+                        "value": "$(FunctionsWorkerRuntime)",
                         "slotSetting": false
                       },
                       {
@@ -344,8 +359,68 @@ jobs:
                       {
                         "name": "AzureWebJobs.EiiRDailyExtract.Disabled",
                         "value": true,
-                        "slotSetting": true
-                      }                         
+                        "slotSetting": true                                            
+                      },                      
+                      {
+                        "name": "TableStorageConnectionString",
+                        "value": "$(storageconnectionstring)",
+                        "slotSetting": false
+                      },
+                      {
+                        "name": "AISearchEndpoint",
+                        "value": "$(EIIRIndexUrl)",
+                        "slotSetting": false
+                      },
+                      {
+                        "name": "AISearchKey",
+                        "value": "$(EIIRApiKey)",
+                        "slotSetting": false
+                      },
+                      {
+                        "name": "AISearchBatchLimit",
+                        "value": "10",
+                        "slotSetting": false
+                      },                      
+                      {
+                        "name": "UseFakedDataSources",
+                        "value": "$(UseFakedDataSourcesFuncEiirDailyExtract)",
+                        "slotSetting": false
+                      },
+                      {
+                        "name": "INSSightDataFeedEnabled",
+                        "value": "$(INSSightDataFeedEnabled)",
+                        "slotSetting": false
+                      },
+                      {
+                        "name": "database__connectionstring",
+                        "value": "$(database__connectionstring)",
+                        "slotSetting": false
+                      },
+                      {
+                        "name": "database__commandtimeout",
+                        "value": "$(database__commandtimeout)",
+                        "slotSetting": false
+                      },
+                      {
+                        "name": "database__getxmldataprocedure",
+                        "value": "$(database__getxmldataprocedure)",
+                        "slotSetting": false
+                      },
+                      {
+                        "name": "database__getextractavailableprocedure",
+                        "value": "$(database__getextractavailableprocedure)",
+                        "slotSetting": false
+                      },
+                      {
+                        "name": "database__updateextractavailableprocedure",
+                        "value": "$(database__updateextractavailableprocedure)",
+                        "slotSetting": false
+                      },
+                      {
+                        "name": "database__databuffersize",
+                        "value": "$(database__databuffersize)",
+                        "slotSetting": false
+                      }
                     ]
 
               - task: AzureAppServiceManage@0
