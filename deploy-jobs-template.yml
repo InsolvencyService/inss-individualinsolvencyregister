@@ -393,7 +393,6 @@ jobs:
                         "value": "$(database__databuffersize)",
                         "slotSetting": false
                       }
-
                     ]
 
               - task: AzureAppServiceManage@0
