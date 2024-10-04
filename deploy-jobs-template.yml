@@ -355,6 +355,36 @@ jobs:
                         "name": "INSSightDataFeedEnabled",
                         "value": "$(INSSightDataFeedEnabled)",
                         "slotSetting": false
+                      },
+                      {
+                        "name": "database__connectionstring",
+                        "value": "$(database__connectionstring)",
+                        "slotSetting": false
+                      },
+                      {
+                        "name": "database__commandtimeout",
+                        "value": "$(database__commandtimeout)",
+                        "slotSetting": false
+                      },
+                      {
+                        "name": "database__getxmldataprocedure",
+                        "value": "$(database__getxmldataprocedure)",
+                        "slotSetting": false
+                      },
+                      {
+                        "name": "database__getextractavailableprocedure",
+                        "value": "$(database__getextractavailableprocedure)",
+                        "slotSetting": false
+                      },
+                      {
+                        "name": "database__updateextractavailableprocedure",
+                        "value": "$(database__updateextractavailableprocedure)",
+                        "slotSetting": false
+                      },
+                      {
+                        "name": "database__databuffersize",
+                        "value": "$(database__databuffersize)",
+                        "slotSetting": false
                       }
                     ]
 
