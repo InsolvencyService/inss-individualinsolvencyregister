@@ -343,7 +343,7 @@ jobs:
                       },
                       {
                         "name": "AISearchBatchLimit",
-                        "value": "10",
+                        "value": "1000",
                         "slotSetting": false
                       },                      
                       {
