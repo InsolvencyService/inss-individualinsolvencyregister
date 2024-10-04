@@ -37,6 +37,16 @@
         </div>
 
         <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key"> Number </dt>
+            <dd class="govuk-summary-list__value"> @Html.DisplayFor(model => Model.courtNumber) </dd>
+        </div>
+
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key"> Year </dt>
+            <dd class="govuk-summary-list__value"> @Html.DisplayFor(model => Model.caseYear) </dd>
+        </div>
+
+        <div class="govuk-summary-list__row">
             <dt class="govuk-summary-list__key"> Order date </dt>
             <dd class="govuk-summary-list__value">
                 @((Model.insolvencyDate.IsValidDate()) ? Html.DisplayFor(model => (model.insolvencyDate)) : NoData.INFORMATION_NOT_AVAIALBLE)
