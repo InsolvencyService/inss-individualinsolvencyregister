@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using System.Globalization;
+using System.Text;
 using System.Xml;
 using INSS.EIIR.DataSync.Application.UseCase.SyncData.Model;
 using INSS.EIIR.Models.CaseModels;
@@ -16,6 +17,7 @@ namespace INSS.EIIR.DataSync.Infrastructure.Sink.XML
 
             XmlWriterSettings settings = new XmlWriterSettings();
             settings.OmitXmlDeclaration = true;
+            settings.Encoding = new UTF8Encoding(false);
 
             using (XmlWriter writer = XmlWriter.Create(xmlStream, settings))
             {
@@ -87,6 +89,7 @@ namespace INSS.EIIR.DataSync.Infrastructure.Sink.XML
         {
             XmlWriterSettings settings = new XmlWriterSettings();
             settings.OmitXmlDeclaration = true;
+            settings.Encoding = new UTF8Encoding(false);
 
             using (XmlWriter writer = XmlWriter.Create(xmlStream, settings))
             {
@@ -125,6 +128,7 @@ namespace INSS.EIIR.DataSync.Infrastructure.Sink.XML
         {
             XmlWriterSettings settings = new XmlWriterSettings();
             settings.OmitXmlDeclaration = true;
+            settings.Encoding = new UTF8Encoding(false);
 
             using (XmlWriter writer = XmlWriter.Create(xmlStream, settings))
             {
@@ -163,6 +167,7 @@ namespace INSS.EIIR.DataSync.Infrastructure.Sink.XML
         {
             XmlWriterSettings settings = new XmlWriterSettings();
             settings.OmitXmlDeclaration = true;
+            settings.Encoding = new UTF8Encoding(false);
 
             using (XmlWriter writer = XmlWriter.Create(xmlStream, settings))
             {
@@ -259,6 +264,7 @@ namespace INSS.EIIR.DataSync.Infrastructure.Sink.XML
         {
             XmlWriterSettings settings = new XmlWriterSettings();
             settings.OmitXmlDeclaration = true;
+            settings.Encoding = new UTF8Encoding(false);
 
             using (XmlWriter writer = XmlWriter.Create(xmlStream, settings))
             {
@@ -419,6 +425,7 @@ namespace INSS.EIIR.DataSync.Infrastructure.Sink.XML
         {
             XmlWriterSettings settings = new XmlWriterSettings();
             settings.OmitXmlDeclaration = true;
+            settings.Encoding = new UTF8Encoding(false);
 
             using (XmlWriter writer = XmlWriter.Create(xmlStream, settings))
             {
@@ -493,6 +500,7 @@ namespace INSS.EIIR.DataSync.Infrastructure.Sink.XML
         {
             XmlWriterSettings settings = new XmlWriterSettings();
             settings.OmitXmlDeclaration = true;
+            settings.Encoding = new UTF8Encoding(false);
 
             using (XmlWriter writer = XmlWriter.Create(xmlStream, settings))
             {
@@ -530,7 +538,9 @@ namespace INSS.EIIR.DataSync.Infrastructure.Sink.XML
         {
             XmlWriterSettings settings = new XmlWriterSettings();
             settings.OmitXmlDeclaration = true;
+            settings.Encoding = new UTF8Encoding(false);
             settings.ConformanceLevel = ConformanceLevel.Fragment;
+            
 
             using (XmlWriter writer = XmlWriter.Create(xmlStream, settings))
             {
@@ -544,7 +554,9 @@ namespace INSS.EIIR.DataSync.Infrastructure.Sink.XML
         {
             XmlWriterSettings settings = new XmlWriterSettings();
             settings.OmitXmlDeclaration = true;
+            settings.Encoding = new UTF8Encoding(false);
             settings.ConformanceLevel = ConformanceLevel.Fragment;
+
             
 
             using (XmlWriter writer = XmlWriter.Create(xmlStream, settings))
