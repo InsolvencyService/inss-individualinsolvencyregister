@@ -115,7 +115,7 @@ namespace INSS.EIIR.DataSync.Functions.DI
 
         private static IDataSourceAsync<InsolventIndividualRegisterModel> GetEIIRSQLSource(IConfiguration config, IMapper mapper)
         {
-            var options = new SQLSourceOptions(mapper, config.GetConnectionString("InsSightSQLConnectionString"));
+            var options = new SQLSourceOptions(mapper, config.GetValue<string>("database:connectionstring"));
 
             return new EiirSQLSource(options);
         }
