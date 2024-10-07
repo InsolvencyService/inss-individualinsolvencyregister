@@ -33,6 +33,7 @@ namespace INSS.EIIR.DataSync.Functions.DI
             var mapper = sp.GetRequiredService<IMapper>();
             var indexMapper = sp.GetRequiredService<ISetIndexMapService>();
             var extractRepo = sp.GetRequiredService<IExtractRepository>();
+            var exBankruptcyService = sp.GetRequiredService<IExistingBankruptciesService>();
 
             IEnumerable<IDataSourceAsync<InsolventIndividualRegisterModel>> sources;
 
@@ -58,7 +59,7 @@ namespace INSS.EIIR.DataSync.Functions.DI
             IEnumerable<IDataSink<InsolventIndividualRegisterModel>> sinks = new List<IDataSink<InsolventIndividualRegisterModel>>()
             {
                 GetAISearchSink(config, mapper, indexMapper, factory.CreateLogger<AISearchSink>()),
-                GetXMLSink(config, extractRepo)               
+                GetXMLSink(config, extractRepo, exBankruptcyService)               
             };
 
             IEnumerable<ITransformRule> transformRules = new List<ITransformRule>();           
@@ -77,7 +78,7 @@ namespace INSS.EIIR.DataSync.Functions.DI
             return new SyncData(options, factory.CreateLogger<SyncData>());
         }
 
-        private static IDataSink<InsolventIndividualRegisterModel> GetXMLSink(IConfiguration config, IExtractRepository repo)
+        private static IDataSink<InsolventIndividualRegisterModel> GetXMLSink(IConfiguration config, IExtractRepository repo, IExistingBankruptciesService service)
         {
             var options = new XMLSinkOptions()
             {
@@ -86,7 +87,7 @@ namespace INSS.EIIR.DataSync.Functions.DI
                 WriteToBlobRecordBufferSize = config.GetValue<int>("SyncDataWriteXMLBufferSize", 500)
             };
 
-            return new XMLSink(options, repo);
+            return new XMLSink(options, repo, service);
         }
 
         private static IDataSink<InsolventIndividualRegisterModel> GetAISearchSink(IConfiguration config, IMapper mapper, ISetIndexMapService indexMapper, ILogger<AISearchSink> logger)
