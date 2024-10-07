@@ -375,11 +375,6 @@ jobs:
                         "name": "AISearchBatchLimit",
                         "value": "1000",
                         "slotSetting": false
-                      },                      
-                      {
-                        "name": "UseFakedDataSources",
-                        "value": "$(UseFakedDataSourcesFuncEiirDailyExtract)",
-                        "slotSetting": false
                       },
                       {
                         "name": "INSSightDataFeedEnabled",
