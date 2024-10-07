@@ -193,12 +193,7 @@ jobs:
                         "name": "AzureWebJobs.RebuildIndexes.Disabled",
                         "value": true,
                         "slotSetting": true                                     
-                      },                      
-                      {
-                        "name": "UseFakedDataSources",
-                        "value": "$(UseFakedDataSourcesFuncEiir)",
-                        "slotSetting": false
-                      },                      
+                      },                   
                       {
                         "name": "UseDynamicIndexName",
                         "value": "$(UseDynamicIndexName)",
