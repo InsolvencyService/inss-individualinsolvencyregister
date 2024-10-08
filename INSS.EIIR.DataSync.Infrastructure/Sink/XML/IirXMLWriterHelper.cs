@@ -1,11 +1,20 @@
-﻿using System.Diagnostics;
+﻿using System.Collections.Concurrent;
+using System;
+using System.Diagnostics;
 using System.Globalization;
+using System.Numerics;
+using System.Reflection;
+using System.Security.Principal;
 using System.Text;
 using System.Xml;
 using INSS.EIIR.DataSync.Application.UseCase.SyncData.Model;
 using INSS.EIIR.Models.CaseModels;
 using INSS.EIIR.Models.Constants;
 using Microsoft.IdentityModel.Abstractions;
+using Newtonsoft.Json.Linq;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
+using static System.Runtime.InteropServices.JavaScript.JSType;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace INSS.EIIR.DataSync.Infrastructure.Sink.XML
 {
@@ -534,22 +543,47 @@ namespace INSS.EIIR.DataSync.Infrastructure.Sink.XML
             }
         }
 
-        public static void WriteIirHeaderToStream(ref MemoryStream? xmlStream)
+        public static void WriteIirHeaderToStream(ref MemoryStream? xmlStream, ExtractVolumes ev)
         {
             XmlWriterSettings settings = new XmlWriterSettings();
-            settings.OmitXmlDeclaration = true;
+            settings.OmitXmlDeclaration = false;
             settings.Encoding = new UTF8Encoding(false);
             settings.ConformanceLevel = ConformanceLevel.Fragment;
-            
-
             using (XmlWriter writer = XmlWriter.Create(xmlStream, settings))
             {
                 writer.WriteRaw("<ReportDetails>");
+
+                writer.WriteStartElement(null, "ExtractVolumes", null );
+
+                writer.WriteStartElement(null, "TotalEntries", null);
+                writer.WriteString($"{ev.TotalEntries}");
+                writer.WriteEndElement();
+
+                writer.WriteStartElement(null, "TotalBanks", null);
+                writer.WriteString($"{ev.TotalBanks}");
+                writer.WriteEndElement();
+
+                writer.WriteStartElement(null, "TotalIVAs", null);
+                writer.WriteString($"{ev.TotalIVAs}");
+                writer.WriteEndElement();
+
+                writer.WriteStartElement(null, "NewBanks", null);
+                writer.WriteString($"{ev.NewBanks}");
+                writer.WriteEndElement();
+
+                writer.WriteStartElement(null, "TotalDros", null);
+                writer.WriteString($"{ev.TotalDros}");
+                writer.WriteEndElement();
+
+                writer.WriteEndElement();
+
+                writer.WriteStartElement(null, "Disclaimer", null);
+                writer.WriteString($"While every effort has been made to ensure that the information provided is accurate, occasionally errors may occur. If you identify information which appears to be incorrect or omitted, please inform The Insolvency Service so that we can investigate the matter and correct the database as required.The Insolvency Case Details are taken from the Court Order made on the Order Date, and include the address(es) from which debts were incurred.They cannot be changed without the consent of the Court. The Individual Details may have changed since the Court Order but, even so, they might not reflect the person's current address or occupation at the time you make your search, and they should not be relied on as such. The Insolvency Service cannot accept responsibility for any errors or omissions as a result of negligence or otherwise. Please note that The Insolvency Service and Official Receivers cannot provide legal or financial advice. You should seek this from a Citizen's Advice Bureau, a solicitor, a qualified accountant, an authorised Insolvency Practitioner, reputable financial advisor or advice centre. The Individual Insolvency Register is a publicly available register and The Insolvency Service does not endorse, nor make any representations regarding, any use made of the data on the register by third parties.");
+                writer.WriteEndElement();
+
                 writer.Flush();
             }
         }
-
-
         public static void WriteIirFooterToStream(ref MemoryStream? xmlStream)
         {
             XmlWriterSettings settings = new XmlWriterSettings();

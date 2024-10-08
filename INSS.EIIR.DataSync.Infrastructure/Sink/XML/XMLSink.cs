@@ -14,6 +14,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
+using INSS.EIIR.Models.CaseModels;
 
 namespace INSS.EIIR.DataSync.Infrastructure.Sink.XML
 {
@@ -29,11 +30,14 @@ namespace INSS.EIIR.DataSync.Infrastructure.Sink.XML
         private readonly string _blobContainerName;
         private readonly string _blobConnectionString;
         private readonly IExtractRepository _eiirRepository;
+        private readonly IExistingBankruptciesService _existingBankruptciesService;
         private string? _fileName = null;
         private int? _extractId = null;
+        private ExtractVolumes _extractVolumes;
+        private SortedList<int, int> _existingBankruptcies;
 
 
-        public XMLSink(XMLSinkOptions options, IExtractRepository extractRepository) 
+        public XMLSink(XMLSinkOptions options, IExtractRepository extractRepository, IExistingBankruptciesService existingBankruptcies) 
         { 
             _recordCount = 0;
 
@@ -57,6 +61,10 @@ namespace INSS.EIIR.DataSync.Infrastructure.Sink.XML
 
             //IExtractRepository required to get filename and update extract availability though comes with high overhead
             _eiirRepository = extractRepository;
+
+            _extractVolumes = new ExtractVolumes();
+
+            _existingBankruptciesService = existingBankruptcies;
             
         }
 
@@ -66,29 +74,36 @@ namespace INSS.EIIR.DataSync.Infrastructure.Sink.XML
 
             _extractId = extractJob.ExtractId;
             _fileName = extractJob.ExtractFilename;
-            _xmlStream = new MemoryStream();
 
-            WriteIirHeaderToStream();
+            _existingBankruptcies = await _existingBankruptciesService.GetExistingBankruptcies();
+
+            _xmlStream = new MemoryStream();
 
             return; 
         }
 
         private void WriteIirHeaderToStream()
         {
-            IirXMLWriterHelper.WriteIirHeaderToStream(ref _xmlStream);
+            IirXMLWriterHelper.WriteIirHeaderToStream(ref _xmlStream, _extractVolumes);
         }
 
-        private void WriteIirFoorterToStream()
+        private void WriteIirFooterToStream()
         {
             IirXMLWriterHelper.WriteIirFooterToStream(ref _xmlStream);
         }
 
         public async Task<SinkCompleteResponse> Complete()
         {
-            WriteIirFoorterToStream();
 
+            WriteIirFooterToStream();
             //Write out remainder of stream
-            await WriteStreamToBlob(true);
+            await WriteStreamToBlob();
+
+            //Write out header to beginning of blob and commit
+            WriteIirHeaderToStream();
+            await WriteStreamToBlob(commit: true, appendToBegin: true);
+
+            await _existingBankruptciesService.SetExistingBankruptcies(_existingBankruptcies);
 
             //Create Zip file
             _eiirRepository.UpdateExtractAvailable();
@@ -105,6 +120,33 @@ namespace INSS.EIIR.DataSync.Infrastructure.Sink.XML
             try 
             {
                 WriteIirRecordToStream(model, ref _xmlStream);
+
+                _extractVolumes.TotalEntries++;
+
+                switch (model.RecordType) 
+                {
+                    case IIRRecordType.BKT:
+                    case IIRRecordType.BRO:
+                    case IIRRecordType.BRU:
+                    case IIRRecordType.IBRO:
+                        _extractVolumes.TotalBanks++;
+                        if (!_existingBankruptcies.ContainsKey(model.caseNo)){ 
+                            _extractVolumes.NewBanks++;
+                            _existingBankruptcies.Add(model.caseNo, model.caseNo);
+                        }
+                        break;
+                    case IIRRecordType.DRO:
+                    case IIRRecordType.DRRO:
+                    case IIRRecordType.DRRU:
+                        _extractVolumes.TotalDros++;
+                        break;
+                    case IIRRecordType.IVA:
+                        _extractVolumes.TotalIVAs++;
+                        break;
+                    default:
+                        throw new Exception($"Unable to detemine record type in XML Extract for record: {model.caseNo}");
+                }
+
                 _recordCount++;  
 
             }
@@ -132,14 +174,17 @@ namespace INSS.EIIR.DataSync.Infrastructure.Sink.XML
             return resp;
         }
 
-        private async Task WriteStreamToBlob(bool commit = false)
+        private async Task WriteStreamToBlob(bool commit = false, bool appendToBegin = false)
         {
             _xmlStream.Position = 0;
 
             BlockBlobClient blobClient = _containerClient.GetBlockBlobClient($"{_fileName}.xml");
 
             string blockID = Convert.ToBase64String(Encoding.UTF8.GetBytes(Guid.NewGuid().ToString()));
-            _blockIDList.Add(blockID);
+            if (appendToBegin)
+                _blockIDList.Insert(0, blockID);    
+            else
+                _blockIDList.Add(blockID);
 
             await blobClient.StageBlockAsync(blockID, _xmlStream);
 
