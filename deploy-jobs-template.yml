@@ -213,18 +213,18 @@ jobs:
 
               - checkout: inss-devops-common-lib
 
-              #- task: PowerShell@2
-              #  displayName: 'Performing Health Check - Staging'
-              #  inputs:
-              #      failOnStderr: true
-              #      targetType: 'filePath'
-              #      filePath: $(System.DefaultWorkingDirectory)\powershell\InvokeRequestWithRetry.ps1
-              #      arguments: > # Use this to avoid newline characters in multi-line string
-              #        -URI "https://func-eiir-${{ lower(parameters.environment) }}-staging.azurewebsites.net/"
-              #        -Method "${{ parameters.method }}"
-              #        -Retries ${{ parameters.retries }}
-              #        -SecondsDelay ${{ parameters.secondsDelay }}
-              #        -TimeoutSec ${{ parameters.timeoutSec }}
+              - task: PowerShell@2
+                displayName: 'Performing Health Check - Staging'
+                inputs:
+                    failOnStderr: true
+                    targetType: 'filePath'
+                    filePath: $(System.DefaultWorkingDirectory)\powershell\InvokeRequestWithRetry.ps1
+                    arguments: > # Use this to avoid newline characters in multi-line string
+                      -URI "https://func-eiir-${{ lower(parameters.environment) }}-staging.azurewebsites.net/"
+                      -Method "${{ parameters.method }}"
+                      -Retries ${{ parameters.retries }}
+                      -SecondsDelay ${{ parameters.secondsDelay }}
+                      -TimeoutSec ${{ parameters.timeoutSec }}
 
               - task: AzureAppServiceManage@0
                 displayName: Swap Staging Slot into Production
@@ -236,18 +236,18 @@ jobs:
                     SourceSlot: 'staging'
                     SwapWithProduction: true
 
-            #  - task: PowerShell@2
-            #    displayName: 'Performing Health Check - Production'
-            #    inputs:
-            #        failOnStderr: true
-            #        targetType: 'filePath'
-            #        filePath: $(System.DefaultWorkingDirectory)\powershell\InvokeRequestWithRetry.ps1
-            #        arguments: > # Use this to avoid newline characters in multi-line string
-            #          -URI "https://func-eiir-${{ lower(parameters.environment) }}.azurewebsites.net/"
-            #          -Method "${{ parameters.method }}"
-            #          -Retries ${{ parameters.retries }}
-            #          -SecondsDelay ${{ parameters.secondsDelay }}
-            #          -TimeoutSec ${{ parameters.timeoutSec }}
+              - task: PowerShell@2
+                displayName: 'Performing Health Check - Production'
+                inputs:
+                    failOnStderr: true
+                    targetType: 'filePath'
+                    filePath: $(System.DefaultWorkingDirectory)\powershell\InvokeRequestWithRetry.ps1
+                    arguments: > # Use this to avoid newline characters in multi-line string
+                      -URI "https://func-eiir-${{ lower(parameters.environment) }}.azurewebsites.net/"
+                      -Method "${{ parameters.method }}"
+                      -Retries ${{ parameters.retries }}
+                      -SecondsDelay ${{ parameters.secondsDelay }}
+                      -TimeoutSec ${{ parameters.timeoutSec }}
 
               - task: AzureAppServiceManage@0
                 displayName: Stop Staging Slot
@@ -435,18 +435,18 @@ jobs:
 
               - checkout: inss-devops-common-lib
 
-              #- task: PowerShell@2
-              #  displayName: 'Performing Health Check - Staging'
-              #  inputs:
-              #      failOnStderr: true
-              #      targetType: 'filePath'
-              #      filePath: $(System.DefaultWorkingDirectory)\powershell\InvokeRequestWithRetry.ps1
-              #      arguments: > # Use this to avoid newline characters in multi-line string
-              #        -URI "https://func-eiir-${{ lower(parameters.environment) }}-staging.azurewebsites.net/"
-              #        -Method "${{ parameters.method }}"
-              #        -Retries ${{ parameters.retries }}
-              #        -SecondsDelay ${{ parameters.secondsDelay }}
-              #        -TimeoutSec ${{ parameters.timeoutSec }}
+              - task: PowerShell@2
+                displayName: 'Performing Health Check - Staging'
+                inputs:
+                    failOnStderr: true
+                    targetType: 'filePath'
+                    filePath: $(System.DefaultWorkingDirectory)\powershell\InvokeRequestWithRetry.ps1
+                    arguments: > # Use this to avoid newline characters in multi-line string
+                      -URI "https://func-eiir-${{ lower(parameters.environment) }}-staging.azurewebsites.net/"
+                      -Method "${{ parameters.method }}"
+                      -Retries ${{ parameters.retries }}
+                      -SecondsDelay ${{ parameters.secondsDelay }}
+                      -TimeoutSec ${{ parameters.timeoutSec }}
 
               - task: AzureAppServiceManage@0
                 displayName: Swap Staging Slot into Production
@@ -458,18 +458,18 @@ jobs:
                     SourceSlot: 'staging'
                     SwapWithProduction: true
 
-            #  - task: PowerShell@2
-            #    displayName: 'Performing Health Check - Production'
-            #    inputs:
-            #        failOnStderr: true
-            #        targetType: 'filePath'
-            #        filePath: $(System.DefaultWorkingDirectory)\powershell\InvokeRequestWithRetry.ps1
-            #        arguments: > # Use this to avoid newline characters in multi-line string
-            #          -URI "https://func-eiir-${{ lower(parameters.environment) }}.azurewebsites.net/"
-            #          -Method "${{ parameters.method }}"
-            #          -Retries ${{ parameters.retries }}
-            #          -SecondsDelay ${{ parameters.secondsDelay }}
-            #          -TimeoutSec ${{ parameters.timeoutSec }}
+              - task: PowerShell@2
+                displayName: 'Performing Health Check - Production'
+                inputs:
+                    failOnStderr: true
+                    targetType: 'filePath'
+                    filePath: $(System.DefaultWorkingDirectory)\powershell\InvokeRequestWithRetry.ps1
+                    arguments: > # Use this to avoid newline characters in multi-line string
+                      -URI "https://func-eiir-${{ lower(parameters.environment) }}.azurewebsites.net/"
+                      -Method "${{ parameters.method }}"
+                      -Retries ${{ parameters.retries }}
+                      -SecondsDelay ${{ parameters.secondsDelay }}
+                      -TimeoutSec ${{ parameters.timeoutSec }}
 
               - task: AzureAppServiceManage@0
                 displayName: Stop Staging Slot
@@ -543,18 +543,18 @@ jobs:
                   SourceSlot: 'staging'
                   SwapWithProduction: true
 
-             # - task: PowerShell@2
-               # displayName: 'Performing Health Check - Production'    
-               # inputs:
-               #   failOnStderr: true
-                #  targetType: 'filePath'
-                #  filePath: $(System.DefaultWorkingDirectory)\powershell\InvokeRequestWithRetry.ps1
-                #  arguments: > # Use this to avoid newline characters in multi-line string
-                #    -URI "https://app-eiir-web-${{ lower(parameters.environment) }}.azurewebsites.net/"
-                  #  -Method "${{ parameters.method }}"
-                  #  -Retries ${{ parameters.retries }}
-                  #  -SecondsDelay ${{ parameters.secondsDelay }}
-                  #  -TimeoutSec ${{ parameters.timeoutSec }} 
+              - task: PowerShell@2
+                displayName: 'Performing Health Check - Production'    
+                inputs:
+                  failOnStderr: true
+                  targetType: 'filePath'
+                  filePath: $(System.DefaultWorkingDirectory)\powershell\InvokeRequestWithRetry.ps1
+                  arguments: > # Use this to avoid newline characters in multi-line string
+                    -URI "https://app-eiir-web-${{ lower(parameters.environment) }}.azurewebsites.net/"
+                    -Method "${{ parameters.method }}"
+                    -Retries ${{ parameters.retries }}
+                    -SecondsDelay ${{ parameters.secondsDelay }}
+                    -TimeoutSec ${{ parameters.timeoutSec }} 
 
               - task: AzureAppServiceManage@0
                 displayName: Stop Staging Slot
