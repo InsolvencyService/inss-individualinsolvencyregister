@@ -546,12 +546,12 @@ namespace INSS.EIIR.DataSync.Infrastructure.Sink.XML
         public static void WriteIirHeaderToStream(ref MemoryStream? xmlStream, ExtractVolumes ev)
         {
             XmlWriterSettings settings = new XmlWriterSettings();
-            settings.OmitXmlDeclaration = false;
+            settings.OmitXmlDeclaration = true;
             settings.Encoding = new UTF8Encoding(false);
             settings.ConformanceLevel = ConformanceLevel.Fragment;
             using (XmlWriter writer = XmlWriter.Create(xmlStream, settings))
             {
-                writer.WriteRaw("<ReportDetails>");
+                writer.WriteRaw("<?xml version='1.0' encoding='utf-8'?><ReportDetails>");
 
                 writer.WriteStartElement(null, "ExtractVolumes", null );
 
