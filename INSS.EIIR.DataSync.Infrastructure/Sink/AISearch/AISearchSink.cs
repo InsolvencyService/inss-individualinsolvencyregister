@@ -40,6 +40,7 @@ namespace INSS.EIIR.DataSync.Infrastructure.Sink.AISearch
             });
 
             _logger = logger;
+            _batchLimit = options.BatchLimit;
         }
 
         public async Task Start() 
