@@ -17,7 +17,7 @@ namespace INSS.EIIR.DataSync.Infrastructure.Sink.Failure
         public async Task Start() { return; }
 
 
-        public async Task<SinkCompleteResponse> Complete()
+        public async Task<SinkCompleteResponse> Complete(bool commit = true)
         {
             return new SinkCompleteResponse() { IsError = false };
         }

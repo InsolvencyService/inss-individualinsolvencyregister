@@ -13,6 +13,7 @@ namespace INSS.EIIR.DataSync.Application.UseCase.SyncData
         private readonly TransformService _transformService;
         private readonly ValidationService _validation;
         private readonly ILogger<SyncData> _logger;
+        private bool _swapIndexAndZipXml = true;
 
         public SyncData(SyncDataOptions options, ILogger<SyncData> logger)
         {
@@ -48,6 +49,7 @@ namespace INSS.EIIR.DataSync.Application.UseCase.SyncData
                         {
                             await SinkFailure(model.Id, validationResponse);
                             numErrors++;
+                            _swapIndexAndZipXml = false;
                             break; // skip to the next item.
                         }
 
@@ -56,8 +58,9 @@ namespace INSS.EIIR.DataSync.Application.UseCase.SyncData
 
                         if (transformResponse.IsError)
                         {
-                            await SinkFailure(model.Id, transformResponse);                                                    
+                            await SinkFailure(model.Id, transformResponse);
                             numErrors++;
+                            _swapIndexAndZipXml = false;
                         }
                         else
                         {
@@ -67,6 +70,7 @@ namespace INSS.EIIR.DataSync.Application.UseCase.SyncData
                                 if (sinkResponse.IsError)
                                 {
                                     _logger.LogError($"Error sinking {model.Id} to {sink.GetType()}");
+                                    _swapIndexAndZipXml= false;
                                 }
                             }
                         }
@@ -80,7 +84,7 @@ namespace INSS.EIIR.DataSync.Application.UseCase.SyncData
 
             foreach (IDataSink<InsolventIndividualRegisterModel> sink in _options.DataSinks)
             {
-                await sink.Complete();
+                await sink.Complete(_swapIndexAndZipXml);
             }
 
             //Following line is commented out as FailureSink not fully implemented and will cause crash if deployed

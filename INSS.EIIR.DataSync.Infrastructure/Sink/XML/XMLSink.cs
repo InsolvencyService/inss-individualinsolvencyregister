@@ -92,7 +92,7 @@ namespace INSS.EIIR.DataSync.Infrastructure.Sink.XML
             IirXMLWriterHelper.WriteIirFooterToStream(ref _xmlStream);
         }
 
-        public async Task<SinkCompleteResponse> Complete()
+        public async Task<SinkCompleteResponse> Complete(bool commit = true)
         {
 
             WriteIirFooterToStream();
