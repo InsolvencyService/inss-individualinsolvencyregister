@@ -34,6 +34,7 @@ namespace INSS.EIIR.DataSync.Application.UseCase.SyncData.Service
                 if (response.IsError)
                 {
                     transformResponse.ErrorMessages.Add(response.ErrorMessage);
+                    transformResponse.IsError = true;   
                 }
                 else
                 {

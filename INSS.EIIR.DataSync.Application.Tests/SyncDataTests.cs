@@ -55,6 +55,7 @@ namespace INSS.EIIR.DataSync.Application.Tests
             // assert
             await failureSink.Received().Sink(Arg.Any<SyncFailure>());
             await dataSink.DidNotReceive().Sink(Arg.Any<InsolventIndividualRegisterModel>());
+            // assert that commit => false on validation error
             await dataSink.DidNotReceive().Complete(true);
             logger.ReceivedWithAnyArgs().LogError(default, default, default, default);            
         }
@@ -79,6 +80,34 @@ namespace INSS.EIIR.DataSync.Application.Tests
 
             // assert
             await dataSink.DidNotReceive().Complete(true);
+        }
+
+        [Fact]
+        public async Task Given_transformationError_SyncData_sinks_failure_and_not_data()
+        {
+            // arrange
+            var dataSource = MockDataSourceBuilder.Create().ThatHas(ValidData.Standard()).Build();
+            var dataSink = Substitute.For<IDataSink<InsolventIndividualRegisterModel>>();
+            var transformRule = MockDataTransformRuleBuilder.Create().ThatReturns(Task.FromResult(new TransformRuleResponse() { IsError = true })).Build();
+            var logger = Substitute.For<ILogger<SyncData>>();
+            var failureSink = Substitute.For<IDataSink<SyncFailure>>();
+            var sut = SyncDataApplicationBuilder.Create()
+                .WithDataSource(dataSource)
+                .WithDataSink(dataSink)
+                .WithTransformationRule(transformRule)
+                .WithFailureSink(failureSink)
+                .WithLogger(logger)
+                .Build();
+
+            // act
+            await sut.Handle();
+
+            // assert
+            await failureSink.Received().Sink(Arg.Any<SyncFailure>());
+            await dataSink.DidNotReceive().Sink(Arg.Any<InsolventIndividualRegisterModel>());
+            // assert that commit => false on transformation error
+            await dataSink.DidNotReceive().Complete(true);
+            logger.ReceivedWithAnyArgs().LogError(default, default, default, default);
         }
 
 
