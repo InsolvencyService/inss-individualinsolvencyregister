@@ -38,7 +38,7 @@ namespace INSS.EIIR.DataSync.Application.Tests
         public async Task Given_invalid_data_SyncData_sinks_failure_and_not_data()
         {
             // arrange
-            var dataSource = MockDataSourceBuilder.Create().ThatHas(InvalidData.NoId()).Build();
+            var dataSource = MockDataSourceBuilder.Create().ThatHas(InvalidData.NegativeId()).Build();
             var dataSink = Substitute.For<IDataSink<InsolventIndividualRegisterModel>>();
             var logger = Substitute.For<ILogger<SyncData>>();
             var failureSink = Substitute.For<IDataSink<SyncFailure>>();
@@ -55,6 +55,7 @@ namespace INSS.EIIR.DataSync.Application.Tests
             // assert
             await failureSink.Received().Sink(Arg.Any<SyncFailure>());
             await dataSink.DidNotReceive().Sink(Arg.Any<InsolventIndividualRegisterModel>());
+            await dataSink.DidNotReceive().Complete(true);
             logger.ReceivedWithAnyArgs().LogError(default, default, default, default);            
         }
 

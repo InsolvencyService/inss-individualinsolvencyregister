@@ -24,7 +24,7 @@ namespace INSS.EIIR.DataSync.Application.Tests.FakeData
 
     public class InvalidData
     {
-        public static InsolventIndividualRegisterModel NoId()
+        public static InsolventIndividualRegisterModel NegativeId()
         {
             return new InsolventIndividualRegisterModel()
             {

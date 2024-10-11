@@ -30,7 +30,7 @@ namespace INSS.EIIR.DataSync.Application.Tests
             var sut = new IdValidationRule();
 
             // act
-            var response = await sut.Validate(InvalidData.NoId());
+            var response = await sut.Validate(InvalidData.NegativeId());
 
             // assert
             Assert.False(response.IsValid);
