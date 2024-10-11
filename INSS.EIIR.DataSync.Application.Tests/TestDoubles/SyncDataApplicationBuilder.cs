@@ -1,6 +1,7 @@
 ﻿using INSS.EIIR.DataSync.Application.UseCase.SyncData;
 using INSS.EIIR.DataSync.Application.UseCase.SyncData.Infrastructure;
 using INSS.EIIR.DataSync.Application.UseCase.SyncData.Model;
+using INSS.EIIR.Interfaces.DataAccess;
 using Microsoft.Extensions.Logging;
 using NSubstitute;
 using System;
@@ -19,6 +20,7 @@ namespace INSS.EIIR.DataSync.Application.Tests.TestDoubles
         private readonly List<ITransformRule> _rules = new List<ITransformRule>();
         private IDataSink<SyncFailure> _failureSink = Substitute.For<IDataSink<SyncFailure>>();
         private ILogger<SyncData>? _logger;
+        private IExtractRepository _extractRepo = Substitute.For<IExtractRepository>();
 
         public static SyncDataApplicationBuilder Create()
         {
@@ -49,6 +51,12 @@ namespace INSS.EIIR.DataSync.Application.Tests.TestDoubles
             return this;
         }
 
+        public SyncDataApplicationBuilder WithExtractRepo(IExtractRepository extractRepo)
+        {
+            _extractRepo = extractRepo;
+            return this;
+        }
+
         public SyncDataApplicationBuilder WithLogger(ILogger<SyncData> logger)
         {
             _logger = logger;
@@ -71,7 +79,7 @@ namespace INSS.EIIR.DataSync.Application.Tests.TestDoubles
                 FailureSink = _failureSink
             };
 
-            return new SyncData(options, _logger);
+            return new SyncData(options, _extractRepo, _logger);
         }
     }
 }

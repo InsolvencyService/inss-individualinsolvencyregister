@@ -21,6 +21,8 @@ using INSS.EIIR.Models.Configuration;
 using Microsoft.Extensions.Configuration;
 using INSS.EIIR.Data.Models;
 using Microsoft.EntityFrameworkCore;
+using INSS.EIIR.DataSync.Application.UseCase.SyncData.Infrastructure;
+using INSS.EIIR.DataSync.Infrastructure.Sink.Failure;
 
 var host = new HostBuilder()
     .ConfigureFunctionsWebApplication()

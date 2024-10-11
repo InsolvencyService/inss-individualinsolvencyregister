@@ -4,6 +4,7 @@ using INSS.EIIR.DataSync.Application.Tests.TestDoubles;
 using INSS.EIIR.DataSync.Application.UseCase.SyncData;
 using INSS.EIIR.DataSync.Application.UseCase.SyncData.Infrastructure;
 using INSS.EIIR.DataSync.Application.UseCase.SyncData.Model;
+using INSS.EIIR.Models.ExtractModels;
 using Microsoft.Extensions.Logging;
 using NSubstitute;
 
@@ -18,10 +19,12 @@ namespace INSS.EIIR.DataSync.Application.Tests
             var rec = ValidData.Standard();
             var dataSource = MockDataSourceBuilder.Create().ThatHas(rec).Build();
             var dataSink = MockDataSinkBuilder.Create().ThatReturns(Task.FromResult(new DataSinkResponse() { IsError = false })).Build();
+            var extractRepo = MockDataExtractRepositoryBuilder.Create().ThatReturns(new Extract() { ExtractCompleted = "N", SnapshotCompleted = "Y" }).Build();
             var logger = Substitute.For<ILogger<SyncData>>();
             var sut = SyncDataApplicationBuilder.Create()
                 .WithDataSource(dataSource)
                 .WithDataSink(dataSink)
+                .WithExtractRepo(extractRepo)   
                 .WithLogger(logger)
                 .Build();
 
@@ -40,11 +43,13 @@ namespace INSS.EIIR.DataSync.Application.Tests
             // arrange
             var dataSource = MockDataSourceBuilder.Create().ThatHas(InvalidData.NegativeId()).Build();
             var dataSink = Substitute.For<IDataSink<InsolventIndividualRegisterModel>>();
+            var extractRepo = MockDataExtractRepositoryBuilder.Create().ThatReturns(new Extract() { ExtractCompleted = "N", SnapshotCompleted = "Y" }).Build();
             var logger = Substitute.For<ILogger<SyncData>>();
             var failureSink = Substitute.For<IDataSink<SyncFailure>>();
             var sut = SyncDataApplicationBuilder.Create()
                 .WithDataSource(dataSource)
                 .WithDataSink(dataSink)
+                .WithExtractRepo(extractRepo)
                 .WithFailureSink(failureSink)
                 .WithLogger(logger)
                 .Build();
@@ -66,11 +71,13 @@ namespace INSS.EIIR.DataSync.Application.Tests
             // arrange
             var dataSource = MockDataSourceBuilder.Create().ThatHas(ValidData.Standard()).Build();
             var dataSink = MockDataSinkBuilder.Create().ThatReturns(Task.FromResult(new DataSinkResponse() { IsError = true })).Build();
+            var extractRepo = MockDataExtractRepositoryBuilder.Create().ThatReturns(new Extract() { ExtractCompleted = "N", SnapshotCompleted = "Y" }).Build();
             var logger = Substitute.For<ILogger<SyncData>>();
             var failureSink = Substitute.For<IDataSink<SyncFailure>>();
             var sut = SyncDataApplicationBuilder.Create()
                 .WithDataSource(dataSource)
                 .WithDataSink(dataSink)
+                .WithExtractRepo(extractRepo)
                 .WithFailureSink(failureSink)
                 .WithLogger(logger)
                 .Build();
@@ -88,12 +95,14 @@ namespace INSS.EIIR.DataSync.Application.Tests
             // arrange
             var dataSource = MockDataSourceBuilder.Create().ThatHas(ValidData.Standard()).Build();
             var dataSink = Substitute.For<IDataSink<InsolventIndividualRegisterModel>>();
+            var extractRepo = MockDataExtractRepositoryBuilder.Create().ThatReturns(new Extract() { ExtractCompleted = "N", SnapshotCompleted = "Y" }).Build();
             var transformRule = MockDataTransformRuleBuilder.Create().ThatReturns(Task.FromResult(new TransformRuleResponse() { IsError = true })).Build();
             var logger = Substitute.For<ILogger<SyncData>>();
             var failureSink = Substitute.For<IDataSink<SyncFailure>>();
             var sut = SyncDataApplicationBuilder.Create()
                 .WithDataSource(dataSource)
                 .WithDataSink(dataSink)
+                .WithExtractRepo(extractRepo)
                 .WithTransformationRule(transformRule)
                 .WithFailureSink(failureSink)
                 .WithLogger(logger)

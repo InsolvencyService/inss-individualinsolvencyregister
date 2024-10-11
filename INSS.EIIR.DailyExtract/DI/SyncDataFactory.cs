@@ -34,6 +34,8 @@ namespace INSS.EIIR.DataSync.Functions.DI
             var indexMapper = sp.GetRequiredService<ISetIndexMapService>();
             var extractRepo = sp.GetRequiredService<IExtractRepository>();
             var exBankruptcyService = sp.GetRequiredService<IExistingBankruptciesService>();
+            
+
 
             IEnumerable<IDataSourceAsync<InsolventIndividualRegisterModel>> sources;
 
@@ -65,7 +67,7 @@ namespace INSS.EIIR.DataSync.Functions.DI
             IEnumerable<ITransformRule> transformRules = new List<ITransformRule>();           
 
             var failureSinkOptions = new FailureSinkOptions();
-            var failureSink = new FailureSink(failureSinkOptions);
+            var failureSink = new FailureSink(factory.CreateLogger<FailureSink>(), failureSinkOptions);
 
             var options = new SyncDataOptions()
             {
@@ -75,7 +77,7 @@ namespace INSS.EIIR.DataSync.Functions.DI
                 FailureSink = failureSink
             };
 
-            return new SyncData(options, factory.CreateLogger<SyncData>());
+            return new SyncData(options, extractRepo, factory.CreateLogger<SyncData>());
         }
 
         private static IDataSink<InsolventIndividualRegisterModel> GetXMLSink(IConfiguration config, IExtractRepository repo, IExistingBankruptciesService service)

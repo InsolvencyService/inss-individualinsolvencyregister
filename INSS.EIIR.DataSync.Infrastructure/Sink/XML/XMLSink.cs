@@ -49,11 +49,11 @@ namespace INSS.EIIR.DataSync.Infrastructure.Sink.XML
 
             if (string.IsNullOrEmpty(_blobContainerName))
             {
-                throw new Exception("XML Sink options - No StorageName check XmlContainer setting in configuration");
+                throw new XmlSinkIirException("XML Sink options - No StorageName check XmlContainer setting in configuration", null);
             }
             if (string.IsNullOrEmpty(_blobConnectionString))
             {
-                throw new Exception("XML Sink options - No StoragePath check TargetBlobConnectionString setting in configuration");
+                throw new XmlSinkIirException("XML Sink options - No StoragePath check TargetBlobConnectionString setting in configuration", null);
             }
 
             _blobServiceClient = new BlobServiceClient(_blobConnectionString);
@@ -144,9 +144,12 @@ namespace INSS.EIIR.DataSync.Infrastructure.Sink.XML
                         _extractVolumes.TotalIVAs++;
                         break;
                     default:
-                        throw new Exception($"Unable to detemine record type in XML Extract for record: {model.caseNo}");
+                        resp.IsError = true;    
+                        resp.ErrorMessage = $"Unable to detemine record type in XML Extract for record: {model.caseNo}";
+                        resp.Model = model;
+                        break;
                 }
-
+                
                 _recordCount++;  
 
             }
