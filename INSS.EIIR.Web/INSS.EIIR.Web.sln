@@ -62,9 +62,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "INSS.EIIR.DataSync.Infrastr
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "INSS.EIIR.StubbedTestData", "..\INSS.EIIR.StubbedTestData\INSS.EIIR.StubbedTestData.csproj", "{B95608DF-F80A-4C67-974A-3E9E73BCD333}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "INSS.EIIR.AzureSearch.IndexMapper", "..\INSS.EIIR.AzureSearch.IndexMapper\INSS.EIIR.AzureSearch.IndexMapper.csproj", "{104CE086-0AF8-486C-A098-3E028871E9BD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "INSS.EIIR.AzureSearch.IndexMapper", "..\INSS.EIIR.AzureSearch.IndexMapper\INSS.EIIR.AzureSearch.IndexMapper.csproj", "{104CE086-0AF8-486C-A098-3E028871E9BD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "INSS.EIIR.DataSync.Infrastructure.Tests", "..\INSS.EIIR.DataSync.Infrastructure.Tests\INSS.EIIR.DataSync.Infrastructure.Tests.csproj", "{F5875966-3C2D-4A3C-9EEC-B2B90A0F8528}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "INSS.EIIR.DataSync.Infrastructure.Tests", "..\INSS.EIIR.DataSync.Infrastructure.Tests\INSS.EIIR.DataSync.Infrastructure.Tests.csproj", "{F5875966-3C2D-4A3C-9EEC-B2B90A0F8528}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

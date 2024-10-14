@@ -14,4 +14,8 @@
     <ProjectReference Include="..\INSS.EIIR.Models\INSS.EIIR.Models.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="UseCase\GetBanner\Infrastructure\" />
+  </ItemGroup>
+
 </Project>
