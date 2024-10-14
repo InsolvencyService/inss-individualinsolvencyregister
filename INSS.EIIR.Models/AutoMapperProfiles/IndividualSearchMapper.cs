@@ -67,6 +67,7 @@ public class IndividualSearchMapper : Profile
             .ForMember(m => m.individualForenames, opt => opt.MapFrom(s => s.FirstName))
             .ForMember(m => m.individualSurname, opt => opt.MapFrom(s => s.FamilyName))
             .ForMember(m => m.individualAlias, opt => opt.MapFrom(s => s.AlternativeNames))
+            .ForMember(m => m.dateOfBirth, opt => opt.MapFrom(s => s.DateOfBirth))
             .ForMember(m => m.companyName, opt => opt.MapFrom(s => s.TradingData))
             .ForMember(m => m.individualTown, opt => opt.MapFrom(s => s.LastKnownTown))
             .ForMember(m => m.individualPostcode, opt => opt.MapFrom(s => s.LastKnownPostcode))

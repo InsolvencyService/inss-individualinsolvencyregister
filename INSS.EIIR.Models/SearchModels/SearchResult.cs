@@ -9,6 +9,8 @@ public class SearchResult
     public string individualSurname { get; set; }
     public string individualAlias { get; set; }
 
+    public string dateOfBirth { get; set; } 
+
     public string companyName { get; set; }
 
     public string individualTown { get; set; }
