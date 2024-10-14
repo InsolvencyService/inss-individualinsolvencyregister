@@ -1,5 +1,6 @@
 ﻿using INSS.EIIR.Models.Home;
 using INSS.EIIR.Web.Helper;
+using INSS.EIIR.Web.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 
 namespace INSS.EIIR.Web.Controllers
@@ -15,7 +16,9 @@ namespace INSS.EIIR.Web.Controllers
 
         public IActionResult Index()
         {
-            return View();
+            var homePageViewModel = new HomePageViewModel() { BannerText = "John was here" };
+
+            return View(homePageViewModel);
         }
 
         [Route("/home/privacy")]

@@ -20,12 +20,10 @@
 
   <ItemGroup>
     <Folder Include="Extensions\" />
-    <Folder Include="ViewModels\" />
     <Folder Include="Properties\" />
     <Folder Include="Views\SearchResults\" />
     <Folder Include="wwwroot\assets\" />
     <Folder Include="Areas\Admin\Views\Subscriber\" />
-    <Folder Include="ViewModels\" />
   </ItemGroup>
 
   <ItemGroup>
