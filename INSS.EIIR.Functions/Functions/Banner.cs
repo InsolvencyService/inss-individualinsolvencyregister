@@ -1,4 +1,4 @@
-using INSS.EIIR.DataSync.Application.UseCase.GetBanner;
+using INSS.EIIR.BusinessData.Application.UseCase.GetBusinessData;
 using INSS.EIIR.Models.FeedbackModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -29,9 +29,9 @@ namespace INSS.EIIR.Functions.Functions
 
         public async Task<IActionResult> Run([HttpTrigger(AuthorizationLevel.Function, "get", Route = "eiir/banner")] HttpRequest req)
         {
-            var businessData = await new GetBusinessData().Handle();
+            var resp = await new GetBusinessData().Handle();
 
-            return new OkObjectResult(new Models.BannerModels.Banner() { Text = businessData.BannerText});
+            return new OkObjectResult(new Models.BannerModels.Banner() { Text = resp.Data.BannerText});
         }
     }
 }
