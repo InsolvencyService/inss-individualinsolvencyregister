@@ -1,6 +1,7 @@
-﻿using INSS.EIIR.BusinessData.Application.UseCase.GetBusinessData.Model;
+﻿using INSS.EIIR.BusinessData.Application.UseCase.GetBusinessData.Infrastructure;
+using INSS.EIIR.BusinessData.Application.UseCase.GetBusinessData.Model;
 using INSS.EIIR.DataSync.Application;
-
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,9 +12,18 @@ namespace INSS.EIIR.BusinessData.Application.UseCase.GetBusinessData
 {
     public class GetBusinessData : IResponseUseCase<GetBusinessDataResponse>
     {
-        public Task<GetBusinessDataResponse> Handle()
+        private readonly IGetBusinessData _getBusinessDataService;
+
+        public GetBusinessData(IGetBusinessData getBusinessDataService)
         {
-            return Task.FromResult(new GetBusinessDataResponse() { Data = new Model.BusinessData() { BannerText = "John likes to party" } });
+
+            _getBusinessDataService = getBusinessDataService;
+        }
+
+
+        public async Task<GetBusinessDataResponse> Handle()
+        {
+            return new GetBusinessDataResponse() { Data = await _getBusinessDataService.GetBusinessData()};
         }
     }
 }

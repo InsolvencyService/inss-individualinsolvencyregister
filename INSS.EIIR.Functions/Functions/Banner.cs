@@ -1,4 +1,6 @@
 using INSS.EIIR.BusinessData.Application.UseCase.GetBusinessData;
+using INSS.EIIR.BusinessData.Application.UseCase.GetBusinessData.Model;
+using INSS.EIIR.DataSync.Application;
 using INSS.EIIR.Models.FeedbackModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -15,10 +17,12 @@ namespace INSS.EIIR.Functions.Functions
     public class Banner
     {
         private readonly ILogger<Banner> _logger;
+        private readonly IResponseUseCase<GetBusinessDataResponse> _getBDService;
 
-        public Banner(ILogger<Banner> logger)
+        public Banner(ILogger<Banner> logger, IResponseUseCase<GetBusinessDataResponse> getBDService)
         {
             _logger = logger;
+            _getBDService = getBDService;
         }
 
         [Function("Banner")]
@@ -29,7 +33,7 @@ namespace INSS.EIIR.Functions.Functions
 
         public async Task<IActionResult> Run([HttpTrigger(AuthorizationLevel.Function, "get", Route = "eiir/banner")] HttpRequest req)
         {
-            var resp = await new GetBusinessData().Handle();
+            var resp = await _getBDService.Handle();
 
             return new OkObjectResult(new Models.BannerModels.Banner() { Text = resp.Data.BannerText});
         }
