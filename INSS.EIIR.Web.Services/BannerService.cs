@@ -27,6 +27,13 @@ namespace INSS.EIIR.Web.Services
             return result;
         }
 
+        public async Task<Banner> SetBannerAsync(Banner value)
+        {
+            var result = await _clientService.PostAsync<Banner, Banner>(ApiUrl, value);
+
+            return result;
+        }
+
 
     }
 }

@@ -1,4 +1,4 @@
-﻿using INSS.EIIR.BusinessData.Application.UseCase.GetBusinessData.Infrastructure;
+﻿using INSS.EIIR.BusinessData.Application.UseCase.ManageBusinessData.Infrastructure;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
@@ -14,6 +14,7 @@ namespace INSS.EIIR.BusinessData.Infrastructure.AzureTable
         public static IServiceCollection AddBusinessDataService(this IServiceCollection services, BusinessDataServiceOptions options)
         {
             services.AddSingleton<IGetBusinessData>(new BusinessDataService(options));
+            services.AddSingleton<ISetBusinessData>(new BusinessDataService(options));
 
             return services;
         }

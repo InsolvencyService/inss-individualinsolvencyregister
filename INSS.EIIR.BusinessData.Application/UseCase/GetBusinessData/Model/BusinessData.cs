@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace INSS.EIIR.BusinessData.Application.UseCase.GetBusinessData.Model
+namespace INSS.EIIR.BusinessData.Application.UseCase.ManageBusinessData.Model
 {
     public class BusinessData
     {

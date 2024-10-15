@@ -1,14 +1,13 @@
 ﻿using INSS.EIIR.Models.BannerModels;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Diagnostics.CodeAnalysis;
 
 namespace INSS.EIIR.Interfaces.Web.Services
 {
+
     public interface IBanner
     {
         Task<Banner> GetBannerAsync();
+
+        Task<Banner> SetBannerAsync(Banner value);
     }
 }

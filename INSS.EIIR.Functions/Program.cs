@@ -30,9 +30,9 @@ using Microsoft.Extensions.Hosting;
 using INSS.EIIR.AzureSearch.IndexMapper;
 using INSS.EIIR.BusinessData.Infrastructure.AzureTable;
 using INSS.EIIR.StubbedTestData;
-using INSS.EIIR.BusinessData.Application.UseCase.GetBusinessData.Model;
+using INSS.EIIR.BusinessData.Application.UseCase.ManageBusinessData.Model;
 using INSS.EIIR.DataSync.Application;
-using INSS.EIIR.BusinessData.Application.UseCase.GetBusinessData;
+using INSS.EIIR.BusinessData.Application.UseCase.ManageBusinessData;
 
 
 var host = new HostBuilder()
@@ -169,7 +169,8 @@ var host = new HostBuilder()
 
         services.AddTransient<ISearchTermFormattingService, SearchTermFormattingService>();
         services.AddTransient<ISearchCleaningService, SearchCleaningService>();
-        services.AddTransient<IResponseUseCase<GetBusinessDataResponse>, GetBusinessData>();
+        services.AddTransient<IResponseUseCase<GetBusinessDataResponse>, ManageBusinessData>();
+        services.AddTransient<IRequestResponseUseCase<SetBusinessDataRequest, SetBusinessDataResponse>, ManageBusinessData>();
 
         services.AddScoped(typeof(ITableStorageRepository<>), typeof(AzureTableStorageRepository<>));
 
