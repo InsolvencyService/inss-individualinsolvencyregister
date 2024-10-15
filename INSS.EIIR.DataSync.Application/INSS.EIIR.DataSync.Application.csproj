@@ -15,7 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="UseCase\GetBanner\Infrastructure\" />
+    <Folder Include="UseCase\GetBusinessData\Infrastructure\" />
   </ItemGroup>
 
 </Project>

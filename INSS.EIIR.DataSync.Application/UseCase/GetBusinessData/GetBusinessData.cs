@@ -8,11 +8,11 @@ using System.Threading.Tasks;
 
 namespace INSS.EIIR.DataSync.Application.UseCase.GetBanner
 {
-    public class GetBanner : IResponseUseCase<GetBannerResponse>
+    public class GetBusinessData : IResponseUseCase<GetBusinessDataResponse>
     {
-        public Task<GetBannerResponse> Handle()
+        public Task<GetBusinessDataResponse> Handle()
         {
-            return Task.FromResult(new GetBannerResponse() { BannerText = "John likes to party" });
+            return Task.FromResult(new GetBusinessDataResponse() { BannerText = "John likes to party" });
         }
     }
 }

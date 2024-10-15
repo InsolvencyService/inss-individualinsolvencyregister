@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace INSS.EIIR.DataSync.Application.UseCase.GetBanner.Model
 {
-    public class GetBannerResponse
+    public class GetBusinessDataResponse
     {
         public string BannerText { get; set; }
     }
