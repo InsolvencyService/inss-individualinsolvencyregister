@@ -33,6 +33,12 @@ namespace INSS.EIIR.Functions.Functions
             _setBDService = setBDService;
         }
 
+        //The following logic is a bit problematic in terms of Clean Architecture
+        //_getBDService & _setBDService ultimately get and set a BusinessData object from/to persistent storage containing that contains various values
+        //Would be nice to have INSS.EIIR.BusinessData.Application handle set/get functions for individual items such that
+        //the business logic below... like first getting the existing business data object before setting a specific value was encapsulated within
+        //INSS.EIIR.BusinessData.Application, the current set-up does not lend itself to this
+
         [Function("Banner")]
         [OpenApiOperation(operationId: "Run", tags: new[] { "Banner" })]
         [OpenApiSecurity("apikeyheader_auth", SecuritySchemeType.ApiKey, In = OpenApiSecurityLocationType.Header, Name = "x-functions-key")]
