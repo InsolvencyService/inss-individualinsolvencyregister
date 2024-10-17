@@ -28,45 +28,27 @@ namespace INSS.EIIR.DataSync.Application.UseCase.SyncData
 
         public async Task<SyncDataResponse> Handle()
         {
-            var resp = new SyncDataResponse() { ErrorCount = 0, ErrorMessage = string.Empty };
-
             int numErrors = 0;
 
             await _options.FailureSink.Start();
 
             #region Pre-Conditions check
-            var extractJob = _eiirRepository.GetExtractAvailable();
+            SyncDataResponse response = CheckPreconditions();
 
-            var today = DateOnly.FromDateTime(DateTime.Now);
-
-            var extractjobError = $"ExtractJob not found for today [{today}], IIR snapshot has not run";
-            var snapshotError = $"IIR Snapshot has not yet run today [{today}]";
-            var extractAlreadyExistsError = $"Subscriber xml / zip file creation has already ran successfully on [{today}]";
-
-            if (extractJob == null)
-                resp.ErrorMessage = extractjobError;
-
-            if (extractJob.SnapshotCompleted?.ToLowerInvariant() == "n")
-                resp.ErrorMessage = snapshotError;
-
-            if (extractJob.ExtractCompleted?.ToLowerInvariant() == "y")
-                resp.ErrorMessage = extractAlreadyExistsError;
-
-            if (resp.ErrorMessage != "")
+            if (response.ErrorMessage != "")
             {
-                resp.ErrorCount++;
-                await SinkFailure("SyncData Initialisation Failure", resp);
-                return resp;
+                response.ErrorCount++;
+                await SinkFailure("SyncData Initialisation Failure", response);
+                return response;
             }
             #endregion Pre-Conditions check
-
 
             foreach (IDataSink<InsolventIndividualRegisterModel> sink in _options.DataSinks)
             {
                 await sink.Start();
             }
 
-            foreach (IDataSourceAsync<InsolventIndividualRegisterModel> source in  _options.DataSources) 
+            foreach (IDataSourceAsync<InsolventIndividualRegisterModel> source in _options.DataSources)
             {
                 try
                 {
@@ -102,7 +84,7 @@ namespace INSS.EIIR.DataSync.Application.UseCase.SyncData
                                 {
                                     await SinkFailure(model.Id, sinkResponse);
                                     _logger.LogError($"Error sinking {model.Id} to {sink.GetType()}");
-                                    _swapIndexAndZipXml= false;
+                                    _swapIndexAndZipXml = false;
                                 }
                             }
                         }
@@ -119,8 +101,7 @@ namespace INSS.EIIR.DataSync.Application.UseCase.SyncData
                 await sink.Complete(_swapIndexAndZipXml);
             }
 
-            //Following line is commented out as FailureSink not fully implemented and will cause crash if deployed
-            //await _options.FailureSink.Complete();
+            await _options.FailureSink.Complete();
 
             if (numErrors > 0)
             {
@@ -131,6 +112,7 @@ namespace INSS.EIIR.DataSync.Application.UseCase.SyncData
             {
                 ErrorCount = numErrors
             };
+
         }
 
         private async Task SinkFailure(string id, SyncFailure failure)
@@ -144,5 +126,40 @@ namespace INSS.EIIR.DataSync.Application.UseCase.SyncData
                 _logger.LogError(ex, $"Error sinking {id} to failure sink {_options.FailureSink.GetType()}");
             }
         }
+
+
+        private SyncDataResponse CheckPreconditions()
+        {
+            var response = new SyncDataResponse() { ErrorCount = 0, ErrorMessage = string.Empty };
+
+            var extractJob = _eiirRepository.GetExtractAvailable();
+
+            var today = DateOnly.FromDateTime(DateTime.Now);
+
+            var extractjobError = $"ExtractJob not found for today [{today}], IIR snapshot has not run";
+            var snapshotError = $"IIR Snapshot has not yet run today [{today}]";
+            var extractAlreadyExistsError = $"Subscriber xml / zip file creation has already ran successfully on [{today}]";
+
+            if (extractJob == null)
+            {
+                response.ErrorMessage = extractjobError;
+                return response;
+            }
+
+            if (extractJob.SnapshotCompleted?.ToLowerInvariant() == "n")
+            {
+                response.ErrorMessage = snapshotError;
+                return response;
+            }
+
+            if (extractJob.ExtractCompleted?.ToLowerInvariant() == "y")
+            { 
+                response.ErrorMessage = extractAlreadyExistsError;
+                return response;
+            }
+
+            return response;
+        }
+
     }
 }

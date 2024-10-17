@@ -18,6 +18,7 @@ namespace INSS.EIIR.DataSync.Infrastructure.Sink.Failure
         {
             this._logger = logger;
         }
+
         public async Task Start() { return; }
 
 
