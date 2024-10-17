@@ -4,6 +4,7 @@ using INSS.EIIR.DataSync.Application.UseCase.SyncData.Service;
 using Microsoft.Extensions.Logging;
 using INSS.EIIR.Models.CaseModels;
 using System.Reflection;
+using INSS.EIIR.Interfaces.DataAccess;
 
 namespace INSS.EIIR.DataSync.Application.UseCase.SyncData
 {
@@ -13,28 +14,41 @@ namespace INSS.EIIR.DataSync.Application.UseCase.SyncData
         private readonly TransformService _transformService;
         private readonly ValidationService _validation;
         private readonly ILogger<SyncData> _logger;
+        private bool _swapIndexAndZipXml = true;
+        private readonly IExtractRepository _eiirRepository;
 
-        public SyncData(SyncDataOptions options, ILogger<SyncData> logger)
+        public SyncData(SyncDataOptions options, IExtractRepository extractRepository, ILogger<SyncData> logger)
         {
             _options = options;
             _logger = logger;
             _transformService = new TransformService(_options.TransformRules);
             _validation = new ValidationService();
+            _eiirRepository = extractRepository;
         }
 
         public async Task<SyncDataResponse> Handle()
         {
             int numErrors = 0;
 
+            await _options.FailureSink.Start();
+
+            #region Pre-Conditions check
+            SyncDataResponse response = CheckPreconditions();
+
+            if (response.ErrorMessage != "")
+            {
+                response.ErrorCount++;
+                await SinkFailure("SyncData Initialisation Failure", response);
+                return response;
+            }
+            #endregion Pre-Conditions check
+
             foreach (IDataSink<InsolventIndividualRegisterModel> sink in _options.DataSinks)
             {
                 await sink.Start();
             }
 
-            //Following line is commented out as FailureSink not fully implemented and will cause crash if deployed
-            //await _options.FailureSink.Start();
-
-            foreach (IDataSourceAsync<InsolventIndividualRegisterModel> source in  _options.DataSources) 
+            foreach (IDataSourceAsync<InsolventIndividualRegisterModel> source in _options.DataSources)
             {
                 try
                 {
@@ -48,6 +62,7 @@ namespace INSS.EIIR.DataSync.Application.UseCase.SyncData
                         {
                             await SinkFailure(model.Id, validationResponse);
                             numErrors++;
+                            _swapIndexAndZipXml = false;
                             break; // skip to the next item.
                         }
 
@@ -56,8 +71,9 @@ namespace INSS.EIIR.DataSync.Application.UseCase.SyncData
 
                         if (transformResponse.IsError)
                         {
-                            await SinkFailure(model.Id, transformResponse);                                                    
+                            await SinkFailure(model.Id, transformResponse);
                             numErrors++;
+                            _swapIndexAndZipXml = false;
                         }
                         else
                         {
@@ -66,7 +82,9 @@ namespace INSS.EIIR.DataSync.Application.UseCase.SyncData
                                 var sinkResponse = await sink.Sink(transformResponse.Model);
                                 if (sinkResponse.IsError)
                                 {
+                                    await SinkFailure(model.Id, sinkResponse);
                                     _logger.LogError($"Error sinking {model.Id} to {sink.GetType()}");
+                                    _swapIndexAndZipXml = false;
                                 }
                             }
                         }
@@ -80,11 +98,10 @@ namespace INSS.EIIR.DataSync.Application.UseCase.SyncData
 
             foreach (IDataSink<InsolventIndividualRegisterModel> sink in _options.DataSinks)
             {
-                await sink.Complete();
+                await sink.Complete(_swapIndexAndZipXml);
             }
 
-            //Following line is commented out as FailureSink not fully implemented and will cause crash if deployed
-            //await _options.FailureSink.Complete();
+            await _options.FailureSink.Complete();
 
             if (numErrors > 0)
             {
@@ -95,6 +112,7 @@ namespace INSS.EIIR.DataSync.Application.UseCase.SyncData
             {
                 ErrorCount = numErrors
             };
+
         }
 
         private async Task SinkFailure(string id, SyncFailure failure)
@@ -108,5 +126,40 @@ namespace INSS.EIIR.DataSync.Application.UseCase.SyncData
                 _logger.LogError(ex, $"Error sinking {id} to failure sink {_options.FailureSink.GetType()}");
             }
         }
+
+
+        private SyncDataResponse CheckPreconditions()
+        {
+            var response = new SyncDataResponse() { ErrorCount = 0, ErrorMessage = string.Empty };
+
+            var extractJob = _eiirRepository.GetExtractAvailable();
+
+            var today = DateOnly.FromDateTime(DateTime.Now);
+
+            var extractjobError = $"ExtractJob not found for today [{today}], IIR snapshot has not run";
+            var snapshotError = $"IIR Snapshot has not yet run today [{today}]";
+            var extractAlreadyExistsError = $"Subscriber xml / zip file creation has already ran successfully on [{today}]";
+
+            if (extractJob == null)
+            {
+                response.ErrorMessage = extractjobError;
+                return response;
+            }
+
+            if (extractJob.SnapshotCompleted?.ToLowerInvariant() == "n")
+            {
+                response.ErrorMessage = snapshotError;
+                return response;
+            }
+
+            if (extractJob.ExtractCompleted?.ToLowerInvariant() == "y")
+            { 
+                response.ErrorMessage = extractAlreadyExistsError;
+                return response;
+            }
+
+            return response;
+        }
+
     }
 }

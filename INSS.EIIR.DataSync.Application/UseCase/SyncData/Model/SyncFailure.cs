@@ -33,6 +33,26 @@ namespace INSS.EIIR.DataSync.Application.UseCase.SyncData.Model
             };
         }
 
+        public static implicit operator SyncFailure(DataSinkResponse response)
+        {
+            return new SyncFailure()
+            {
+                Model = response.Model,
+                ErrorMessages = new List<string>() { response.ErrorMessage },
+                IsError = response.IsError,
+            };
+        }
+
+        public static implicit operator SyncFailure(SyncDataResponse response)
+        {
+            return new SyncFailure()
+            {
+                Model = null,
+                ErrorMessages = new List<string>() { response.ErrorMessage },
+                IsError = response.IsError,
+            };
+        }
+
         public override bool Equals(object? obj)
         {
             if (obj is SyncFailure failure)

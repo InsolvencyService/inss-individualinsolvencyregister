@@ -9,6 +9,9 @@ namespace INSS.EIIR.DataSync.Application.UseCase.SyncData.Model
     public class SyncDataResponse
     {
         public int ErrorCount { get; set; }
+        
         public bool IsError { get { return ErrorCount > 0; } }
+
+        public string ErrorMessage { get; set; }     
     }
 }

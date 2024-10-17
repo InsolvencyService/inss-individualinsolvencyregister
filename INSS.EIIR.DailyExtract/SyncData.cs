@@ -18,13 +18,13 @@ namespace INSS.EIIR.DailyExtract
     {
         private readonly ILogger<SyncData> _logger;
         private readonly IResponseUseCase<SyncDataResponse> _responseUseCase;
-        private readonly IExtractRepository _eiirRepository;
 
-        public SyncData(ILogger<SyncData> logger, IResponseUseCase<SyncDataResponse> responseUseCase, IExtractRepository extractRepository)
+
+        public SyncData(ILogger<SyncData> logger, IResponseUseCase<SyncDataResponse> responseUseCase)
         {
             _logger = logger;
             _responseUseCase = responseUseCase;
-            _eiirRepository = extractRepository;
+
         }
 
         [Function("SyncData")]
@@ -32,37 +32,11 @@ namespace INSS.EIIR.DailyExtract
         {
             _logger.LogInformation("SyncData started");
 
-
-            #region Pre-Conditions check
-            var extractJob = _eiirRepository.GetExtractAvailable();
-
-            var today = DateOnly.FromDateTime(DateTime.Now);
-
-            var extractjobError = $"ExtractJob not found for today [{today}], IIR snapshot has not run";
-            var snapshotError = $"IIR Snapshot has not yet run today [{today}]";
-            var extractAlreadyExistsError = $"Subscriber xml / zip file creation has already ran successfully on [{today}]";
-
-            if (extractJob == null)
-            {
-                return new BadRequestObjectResult(extractjobError);
-            }
-
-            if (extractJob.SnapshotCompleted?.ToLowerInvariant() == "n")
-            {
-                return new BadRequestObjectResult(snapshotError);
-            }
-
-            if (extractJob.ExtractCompleted?.ToLowerInvariant() == "y")
-            {
-                return new BadRequestObjectResult(extractAlreadyExistsError);
-            }
-            #endregion Pre-Conditions check
-
             var response = await _responseUseCase.Handle();
 
             if (response.IsError)
             {
-                return new BadRequestObjectResult($"SyncData failed with {response.ErrorCount} erors");
+                return new BadRequestObjectResult($"SyncData failed with {response.ErrorCount} errors. Message: {response.ErrorMessage}");
             }
             else
             {

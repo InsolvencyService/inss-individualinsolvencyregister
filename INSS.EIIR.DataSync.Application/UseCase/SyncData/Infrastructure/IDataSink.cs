@@ -11,6 +11,6 @@ namespace INSS.EIIR.DataSync.Application.UseCase.SyncData.Infrastructure
     {
         Task Start();
         Task<DataSinkResponse> Sink(TSinkable model);
-        Task<SinkCompleteResponse> Complete();
+        Task<SinkCompleteResponse> Complete(bool commit = true);
     }
 }

@@ -76,7 +76,7 @@ namespace INSS.EIIR.DataSync.Infrastructure.Sink.AISearch
             return new DataSinkResponse() { IsError = false };
         }
 
-        public async Task<SinkCompleteResponse> Complete()
+        public async Task<SinkCompleteResponse> Complete(bool commit = true)
         {
             if (_batch.Count > 0)
             {

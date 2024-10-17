@@ -8,6 +8,8 @@ namespace INSS.EIIR.DataSync.Application.UseCase.SyncData.Model
 {
     public class DataSinkResponse
     {
+
+        public InsolventIndividualRegisterModel Model { get; set; }
         public bool IsError { get; set; }
         public string ErrorMessage { get; set; }
     }
