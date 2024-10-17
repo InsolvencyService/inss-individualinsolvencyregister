@@ -68,6 +68,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "INSS.EIIR.DataSync.Infrastr
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "INSS.EIIR.DataSync.Application.Tests", "..\INSS.EIIR.DataSync.Application.Tests\INSS.EIIR.DataSync.Application.Tests.csproj", "{B521EE66-0372-4A2D-A3B4-3126700EF35D}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "INSS.EIIR.BusinessData.Application", "..\INSS.EIIR.BusinessData.Application\INSS.EIIR.BusinessData.Application.csproj", "{E50250D2-D539-44A5-8980-6A85CE73277C}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "INSS.EIIR.BusinessData.Infrastructure", "..\INSS.EIIR.BusinessData.Infrastructure\INSS.EIIR.BusinessData.Infrastructure.csproj", "{CB84C280-0113-4730-9845-5D4EAE433724}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -174,6 +178,14 @@ Global
 		{B521EE66-0372-4A2D-A3B4-3126700EF35D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B521EE66-0372-4A2D-A3B4-3126700EF35D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B521EE66-0372-4A2D-A3B4-3126700EF35D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E50250D2-D539-44A5-8980-6A85CE73277C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E50250D2-D539-44A5-8980-6A85CE73277C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E50250D2-D539-44A5-8980-6A85CE73277C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E50250D2-D539-44A5-8980-6A85CE73277C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CB84C280-0113-4730-9845-5D4EAE433724}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CB84C280-0113-4730-9845-5D4EAE433724}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CB84C280-0113-4730-9845-5D4EAE433724}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CB84C280-0113-4730-9845-5D4EAE433724}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

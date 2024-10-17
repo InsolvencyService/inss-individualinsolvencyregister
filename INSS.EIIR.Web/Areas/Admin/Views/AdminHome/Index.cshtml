@@ -1,4 +1,6 @@
-﻿@{
+﻿@model INSS.EIIR.Web.ViewModels.AdminHomeViewModel
+
+@{
     var header = "Admin area";
     ViewData["Header"] = header;
     ViewData["Title"] = $"{header}";
@@ -12,6 +14,34 @@
     </div>
 </div>
 <div class="govuk-grid-row">
+    <div class="govuk-grid-column-one-third">
+        <h2 class="govuk-heading-m">Home page banner message</h2>
+
+        @if (!String.IsNullOrWhiteSpace(Model.BannerText))
+        {
+            <p class="govuk-body">The following banner is currently displayed on the Home page.</p>
+
+            <div class="govuk-notification-banner" role="region" aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner">
+                <div class="govuk-notification-banner__header">
+                    <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">
+                        Important
+                    </h2>
+                </div>
+                <div class="govuk-notification-banner__content">
+                    <p class="govuk-notification-banner__heading">
+                        @Model.BannerText
+                    </p>
+                </div>
+            </div>
+        } else
+        {
+            <p class="govuk-body">No banner message is currently set.</p>
+        }
+
+        <p class="govuk-body">
+            <a href="@Url.Action("Index", "BannerMessage")" class="govuk-link govuk-!-font-weight-bold">Update banner message</a>
+        </p>
+    </div>
     <div class="govuk-grid-column-one-third">
       <h2 class="govuk-heading-m">Errors or issues</h2>
       <p class="govuk-body">View reports of errors or issues from citizens and organisations.</p>
