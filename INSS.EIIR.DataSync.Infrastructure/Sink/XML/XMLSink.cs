@@ -15,6 +15,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
 using INSS.EIIR.Models.CaseModels;
+using System.IO.Compression;
 
 namespace INSS.EIIR.DataSync.Infrastructure.Sink.XML
 {
@@ -106,7 +107,11 @@ namespace INSS.EIIR.DataSync.Infrastructure.Sink.XML
             await _existingBankruptciesService.SetExistingBankruptcies(_existingBankruptcies);
 
             //Create Zip file
-            _eiirRepository.UpdateExtractAvailable();
+            if (commit)
+            { 
+                await CreateAndUploadZip(_fileName);
+                _eiirRepository.UpdateExtractAvailable();
+            }
 
             _xmlStream.Close();
             
@@ -194,7 +199,6 @@ namespace INSS.EIIR.DataSync.Infrastructure.Sink.XML
             if (commit)
             {
                 await blobClient.CommitBlockListAsync(_blockIDList);
-                //await CreateAndUploadZip(filename);
             }
 
             //Create new stream
@@ -205,5 +209,31 @@ namespace INSS.EIIR.DataSync.Infrastructure.Sink.XML
         {
             IirXMLWriterHelper.WriteIirReportRequestToStream(model, ref xmlStream);
         }
+
+        private async Task CreateAndUploadZip(string filename)
+        {
+            try
+            {
+                BlobClient blobClient = _containerClient.GetBlobClient($"{filename}.xml");
+                if (await blobClient.ExistsAsync())
+                {
+                    using var xmlFileStream = await blobClient.OpenReadAsync();
+
+                    var blobClientZip = _containerClient.GetBlobClient($"{filename}.zip");
+                    using var zipStream = await blobClientZip.OpenWriteAsync(true);
+                    using var zip = new ZipArchive(zipStream, ZipArchiveMode.Create);
+
+
+                    ZipArchiveEntry entry = zip.CreateEntry($"{filename}.xml", CompressionLevel.Optimal);
+                    using var innerFile = entry.Open();
+                    await xmlFileStream.CopyToAsync(innerFile);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new XmlSinkIirException($"Error creating zip for: {filename}", ex);
+            }
+        }
+
     }
 }
