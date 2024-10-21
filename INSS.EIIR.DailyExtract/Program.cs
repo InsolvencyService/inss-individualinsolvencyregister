@@ -4,15 +4,12 @@ using Microsoft.Extensions.Azure;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.SqlServer.Management.Smo.Wmi;
 using System;
 using INSS.EIIR.DataSync.Application.UseCase.SyncData.Model;
 using INSS.EIIR.DataSync.Application;
 using INSS.EIIR.DataSync.Functions.DI;
 using INSS.EIIR.DataSync.Application.UseCase.SyncData;
 using INSS.EIIR.Models.AutoMapperProfiles;
-using INSS.EIIR.DataSync.Application.UseCase.SyncData.AutoMapperProfiles;
-using INSS.EIIR.DataSync.Infrastructure.Source.SQL.Models.AutoMapperProfiles;
 using INSS.EIIR.AzureSearch.IndexMapper;
 using INSS.EIIR.DataSync.Infrastructure.Sink.XML;
 using INSS.EIIR.Interfaces.DataAccess;
@@ -21,8 +18,7 @@ using INSS.EIIR.Models.Configuration;
 using Microsoft.Extensions.Configuration;
 using INSS.EIIR.Data.Models;
 using Microsoft.EntityFrameworkCore;
-using INSS.EIIR.DataSync.Application.UseCase.SyncData.Infrastructure;
-using INSS.EIIR.DataSync.Infrastructure.Sink.Failure;
+using INSS.EIIR.DataSync.Application.UseCase.SyncData.Validation;
 
 var host = new HostBuilder()
     .ConfigureFunctionsWebApplication()
@@ -79,6 +75,7 @@ var host = new HostBuilder()
            });
 
         services.AddScoped<IExtractRepository, ExtractRepository>();
+        services.AddTransient<IValidationRule, IdValidationRule>();
 
         services.AddScoped<IResponseUseCase<SyncDataResponse>, SyncData>(SyncDataFactory.Get);
         

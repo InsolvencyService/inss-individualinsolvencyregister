@@ -5,6 +5,7 @@ using INSS.EIIR.AzureSearch.IndexMapper;
 using INSS.EIIR.DataSync.Application.UseCase.SyncData;
 using INSS.EIIR.DataSync.Application.UseCase.SyncData.Infrastructure;
 using INSS.EIIR.DataSync.Application.UseCase.SyncData.Model;
+using INSS.EIIR.DataSync.Application.UseCase.SyncData.Validation;
 using INSS.EIIR.DataSync.Infrastructure.Fake.Source;
 using INSS.EIIR.DataSync.Infrastructure.Sink.AISearch;
 using INSS.EIIR.DataSync.Infrastructure.Sink.Failure;
@@ -16,7 +17,7 @@ using INSS.EIIR.StubbedTestData;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
+
 
 namespace INSS.EIIR.DataSync.Functions.DI
 {
@@ -34,7 +35,8 @@ namespace INSS.EIIR.DataSync.Functions.DI
             var indexMapper = sp.GetRequiredService<ISetIndexMapService>();
             var extractRepo = sp.GetRequiredService<IExtractRepository>();
             var exBankruptcyService = sp.GetRequiredService<IExistingBankruptciesService>();
-            
+            var validationRules = sp.GetRequiredService<IEnumerable<IValidationRule>>();
+            var transformRules = sp.GetRequiredService<IEnumerable<ITransformRule>>();
 
 
             IEnumerable<IDataSourceAsync<InsolventIndividualRegisterModel>> sources;
@@ -64,8 +66,6 @@ namespace INSS.EIIR.DataSync.Functions.DI
                 GetXMLSink(config, extractRepo, exBankruptcyService)               
             };
 
-            IEnumerable<ITransformRule> transformRules = new List<ITransformRule>();           
-
             var failureSinkOptions = new FailureSinkOptions();
             var failureSink = new FailureSink(factory.CreateLogger<FailureSink>(), failureSinkOptions);
 
@@ -74,6 +74,7 @@ namespace INSS.EIIR.DataSync.Functions.DI
                 DataSources = sources,
                 DataSinks = sinks,
                 TransformRules = transformRules,
+                ValidationRules = validationRules,
                 FailureSink = failureSink
             };
 
