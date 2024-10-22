@@ -50,11 +50,11 @@ namespace INSS.EIIR.DataSync.Infrastructure.Sink.XML
 
             if (string.IsNullOrEmpty(_blobContainerName))
             {
-                throw new XmlSinkIirException("XML Sink options - No StorageName check XmlContainer setting in configuration", null);
+                throw new XmlSinkException("XML Sink options - No StorageName check XmlContainer setting in configuration", null);
             }
             if (string.IsNullOrEmpty(_blobConnectionString))
             {
-                throw new XmlSinkIirException("XML Sink options - No StoragePath check TargetBlobConnectionString setting in configuration", null);
+                throw new XmlSinkException("XML Sink options - No StoragePath check TargetBlobConnectionString setting in configuration", null);
             }
 
             _blobServiceClient = new BlobServiceClient(_blobConnectionString);
@@ -231,7 +231,7 @@ namespace INSS.EIIR.DataSync.Infrastructure.Sink.XML
             }
             catch (Exception ex)
             {
-                throw new XmlSinkIirException($"Error creating zip for: {filename}", ex);
+                throw new XmlSinkException($"Error creating zip for: {filename}", ex);
             }
         }
 
