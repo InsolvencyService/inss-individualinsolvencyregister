@@ -66,9 +66,9 @@ namespace INSS.EIIR.DataSync.Infrastructure.Sink.XML
             {
                 await _tableClient.UpsertEntityAsync(indexMapEntity);
             }
-            catch (RequestFailedException)
+            catch (RequestFailedException ex)
             {
-                throw new Exception($"Failed to save existing bankruptcy identifiers");
+                throw new XmlSinkException($"Failed to save existing bankruptcy identifiers", ex);
             }
         }
     }
