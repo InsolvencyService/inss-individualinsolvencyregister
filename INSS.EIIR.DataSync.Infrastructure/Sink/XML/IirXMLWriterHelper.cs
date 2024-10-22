@@ -241,18 +241,23 @@ namespace INSS.EIIR.DataSync.Infrastructure.Sink.XML
                 {
                     var othernames = model.individualAlias.Split(",", StringSplitOptions.TrimEntries & StringSplitOptions.RemoveEmptyEntries);
 
-                    foreach (var othername in othernames) 
+                    foreach (var othername in othernames)
                     {
                         writer.WriteStartElement(null, "OtherName", null);
 
                         var names = othername.Split(" ", StringSplitOptions.RemoveEmptyEntries);
 
-                        //write out forenames, there may not be any
-                        for (int i = 1; i < names.Length; i++) {
-                            writer.WriteString($"{names[i]} ");
+                        //There can be examples where OtherName just contains whitespace
+                        if (names.Length > 0)
+                        { 
+                            //write out forenames, there may not be any
+                            for (int i = 1; i < names.Length; i++)
+                            {
+                                writer.WriteString($"{names[i]} ");
+                            }
+                            //write out surname for which there will always be one
+                            writer.WriteString($"{names[0]}");
                         }
-                        //write out surname for which there will always be one
-                        writer.WriteString($"{names[0]}");
 
                         writer.WriteEndElement();
                     }
