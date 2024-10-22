@@ -2,6 +2,10 @@
 {
     public class ExistingBankruptciesOptions
     {
-        public string TableStorageConnectionString { get; set; }
+        public string BlobStorageConnectionString { get; set; }
+
+        public string BlobStorageContainer { get; set; }
+
+        public string ExistingBankruptciesFileName { get; set; }
     }
 }

@@ -35,7 +35,11 @@ var host = new HostBuilder()
 
         services.AddExistingBankrupticesService(new ExistingBankruptciesOptions()
         {
-            TableStorageConnectionString = Environment.GetEnvironmentVariable("TableStorageConnectionString")
+            BlobStorageConnectionString = Environment.GetEnvironmentVariable("TargetBlobConnectionString"),
+            
+            //defaults for following items are set, if they do not exist in config
+            BlobStorageContainer = Environment.GetEnvironmentVariable("ExistingBankruptciesContainer"),
+            ExistingBankruptciesFileName = Environment.GetEnvironmentVariable("ExistingBankruptciesFile")
         });
 
         // Auto Mapper Configurations
