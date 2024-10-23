@@ -50,12 +50,9 @@ namespace INSS.EIIR.DataSync.Infrastructure.Sink.XML
 
             try 
             { 
-                BlobDownloadInfo download = await _blobClient.DownloadAsync();
-                byte[] result = new byte[download.ContentLength];
-                await download.Content.ReadAsync(result, 0, (int)download.ContentLength);
+                BlobDownloadResult download = await _blobClient.DownloadContentAsync();
 
-                return JsonSerializer.Deserialize<SortedList<int, int>>(Encoding.UTF8.GetString(result));
-
+                return JsonSerializer.Deserialize<SortedList<int, int>>(download.Content.ToString());
 
             } catch (RequestFailedException)
             {
