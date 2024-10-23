@@ -59,7 +59,7 @@ namespace INSS.EIIR.DataSync.Infrastructure.Sink.XML
 
                 }
 
-                if (model.RecordType == Models.CaseModels.IIRRecordType.BKT && model.IncludeCaseDetailsInXML)
+                if (model.IncludeCaseDetailsInXML)
                 {
                     writer.WriteStartElement(null, "CaseDetailsText", null);
                     writer.WriteString($"Insolvency Case Details");
@@ -218,7 +218,7 @@ namespace INSS.EIIR.DataSync.Infrastructure.Sink.XML
                 writer.WriteEndElement();
 
                 writer.WriteStartElement(null, "DateofBirth", null);
-                writer.WriteString($"{model.individualDOB}");
+                writer.WriteString($"{model.individualDOB.Trim()}");
                 writer.WriteEndElement();
 
                 writer.WriteStartElement(null, "LastKnownAddress", null);
