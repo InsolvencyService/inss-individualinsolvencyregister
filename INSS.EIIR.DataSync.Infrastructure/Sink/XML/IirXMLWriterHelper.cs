@@ -237,6 +237,9 @@ namespace INSS.EIIR.DataSync.Infrastructure.Sink.XML
 
                 if (model.individualAlias == Common.NoOtherNames)
                     writer.WriteString($"{model.individualAlias}");
+                //APP-5394 Othernames not currently output for IVAs
+                else if (model.RecordType == IIRRecordType.IVA)
+                    writer.WriteString(Common.NoOtherNames);
                 else 
                 {
                     var othernames = model.individualAlias.Split(",", StringSplitOptions.TrimEntries & StringSplitOptions.RemoveEmptyEntries);
