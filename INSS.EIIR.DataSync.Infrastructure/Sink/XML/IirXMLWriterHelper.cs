@@ -226,7 +226,11 @@ namespace INSS.EIIR.DataSync.Infrastructure.Sink.XML
                 writer.WriteEndElement();
 
                 writer.WriteStartElement(null, "LastKnownPostCode", null);
-                writer.WriteString($"{model.individualPostcode}");
+                
+                if (string.IsNullOrWhiteSpace(model.individualPostcode))
+                    writer.WriteString(Common.NoLastKnownPostCode);
+                else
+                    writer.WriteString($"{model.individualPostcode}");
                 writer.WriteEndElement();
 
                 //OtherNames in getEiirIndex currently come accross as comma separated string e.g. "lastname firstname secondname, lastname firstname"
