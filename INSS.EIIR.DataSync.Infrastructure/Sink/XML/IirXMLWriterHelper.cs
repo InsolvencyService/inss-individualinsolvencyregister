@@ -371,7 +371,7 @@ namespace INSS.EIIR.DataSync.Infrastructure.Sink.XML
                         foreach (var td in model.Trading.TradingDetails)
                         {
                             writer.WriteStartElement(null, "TradingName", null);
-                            writer.WriteString($"{td.TradingName}");
+                            writer.WriteString($"{td.TradingName.ToUpper()}");
                             writer.WriteEndElement();
 
                             if (td != null) { 

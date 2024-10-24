@@ -2,6 +2,7 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.Design;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Xml.Serialization;
@@ -91,7 +92,23 @@ public class CaseResult
     public DateTime? dateOfPreviousOrder { get; set; }
     
     [NotMapped]
-    public Trading Trading { get; set; }
+    public Trading Trading { 
+        get {
+            if (!string.IsNullOrEmpty(tradingNames) && tradingNames != Common.NoTradingNames)
+            {
+                var serializer = new XmlSerializer(typeof(Trading));
+
+                using (StringReader reader = new StringReader(tradingNames))
+                {
+                    return (Trading)serializer.Deserialize(reader);
+                }
+            }
+            else 
+            {
+                return null;
+            }
+        } 
+    }
     
     [NotMapped]
     public IIRRecordType RecordType {

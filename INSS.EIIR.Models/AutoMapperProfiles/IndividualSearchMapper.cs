@@ -10,9 +10,6 @@ public class IndividualSearchMapper : Profile
 {
     public IndividualSearchMapper()
     {
-        CreateMap<string, TradingDetails>().ConvertUsing<XmlStringToTradingDetailsRootConverter>();
-        CreateMap<string, Trading>().ConvertUsing<XmlStringToTradingRootConverter>();
-
         CreateMap<CaseResult, IndividualSearch>()
             .ForMember(dest => dest.FirstName, opt => opt.MapFrom(src => src.individualForenames))
             .ForMember(dest => dest.FamilyName, opt => opt.MapFrom(src => src.individualSurname))
@@ -57,10 +54,6 @@ public class IndividualSearchMapper : Profile
             .ForMember(dest => dest.DateOfPreviousOrder, opt => opt.MapFrom(src => src.dateOfPreviousOrder))
             .ForMember(dest => dest.DeceasedDate, opt => opt.MapFrom(src => src.deceasedDate))
         .ReverseMap()
-        .ForPath(s => s.Trading,
-                opt => opt.MapFrom(
-                    src => (!string.IsNullOrEmpty(src.TradingData) && src.TradingData != "<No Trading Names Found>")
-                        ? src.TradingData : null))
         .ForPath(s => s.individualDOB, opt => opt.MapFrom(src => src.DateOfBirth.Trim()));
 
         CreateMap<IndividualSearch, SearchResult>()
