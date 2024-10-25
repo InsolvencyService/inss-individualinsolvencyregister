@@ -1,27 +1,29 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Text;
 using System.Xml;
 using System.Xml.Linq;
 using System.Xml.XPath;
-using Azure;
 using INSS.EIIR.DataSync.Application.UseCase.SyncData.Model;
 using INSS.EIIR.DataSync.Infrastructure.Sink.XML;
 
 
 namespace INSS.EIIR.DataSync.Infrastructure.Tests.EiirXmlWriter
 {
-    public  class EiirXmlWriterTests
+    public class EiirXmlWriterTests
     {
+        public EiirXmlWriterTests()
+        {
+            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+        }
+        
 
         [Theory]
         [MemberData(nameof(EiirXmlWriterTestsData.GetEiirXmlWriterData), MemberType = typeof(EiirXmlWriterTestsData))]
         public async Task EiirXMLWriter_IndividualDetails(InsolventIndividualRegisterModel model, string expected)
         {
+
+
             // arrange
+            
             var xmlStream = new MemoryStream();
 
             // act

@@ -195,11 +195,17 @@ namespace INSS.EIIR.DataSync.Infrastructure.Sink.XML
                 writer.WriteEndElement();
 
                 writer.WriteStartElement(null, "FirstName", null);
-                writer.WriteString($"{model.individualForenames}");
+                if (model.individualForenames == null || model.individualForenames == Common.NoForenames)
+                    writer.WriteString($"{model.individualForenames}");
+                else
+                    writer.WriteString($"{FixSQLEncoding(model.individualForenames.ToLower()).ToUpper()}");
                 writer.WriteEndElement();
 
                 writer.WriteStartElement(null, "Surname", null);
-                writer.WriteString($"{model.individualSurname}");
+                if (model.individualSurname == null || model.individualSurname == Common.NoSurname)
+                    writer.WriteString($"{model.individualSurname}");
+                else
+                    writer.WriteString($"{FixSQLEncoding(model.individualSurname.ToLower()).ToUpper()}");
                 writer.WriteEndElement();
 
                 writer.WriteStartElement(null, "Occupation", null);
@@ -220,6 +226,13 @@ namespace INSS.EIIR.DataSync.Infrastructure.Sink.XML
                 writer.WriteStartElement(null, "DateofBirth", null);
                 writer.WriteString($"{model.individualDOB.Trim()}");
                 writer.WriteEndElement();
+
+                if (!string.IsNullOrEmpty(model.deceasedDate))
+                {
+                    writer.WriteStartElement(null, "DeceasedDate", null);
+                    writer.WriteString($"{model.individualDOB.Trim()}");
+                    writer.WriteEndElement();
+                }
 
                 writer.WriteStartElement(null, "LastKnownAddress", null);
                 writer.WriteString($"{model.individualAddress}");
@@ -256,7 +269,7 @@ namespace INSS.EIIR.DataSync.Infrastructure.Sink.XML
 
                         //There can be examples where OtherName just contains whitespace
                         if (names.Length > 0)
-                        { 
+                        {
                             //write out forenames, there may not be any
                             for (int i = 1; i < names.Length; i++)
                             {
@@ -264,6 +277,10 @@ namespace INSS.EIIR.DataSync.Infrastructure.Sink.XML
                             }
                             //write out surname for which there will always be one
                             writer.WriteString($"{names[0]}");
+                        }
+                        else //likely Othername is whitespace write out empty node
+                        {
+                            writer.WriteString("");
                         }
 
                         writer.WriteEndElement();
@@ -296,7 +313,10 @@ namespace INSS.EIIR.DataSync.Infrastructure.Sink.XML
                 writer.WriteEndElement();
 
                 writer.WriteStartElement(null, "CaseName", null);
-                writer.WriteString($"{model.caseName}");
+                if (model.caseName == null)
+                    writer.WriteString($"{model.caseName}");
+                else
+                    writer.WriteString($"{FixSQLEncoding(model.caseName)}");
                 writer.WriteEndElement();
 
                 writer.WriteStartElement(null, "Court", null);
@@ -346,7 +366,6 @@ namespace INSS.EIIR.DataSync.Infrastructure.Sink.XML
                     default:
                         throw new Exception($"Unable to detemine recordtype for XML Extract for record: {model.caseNo}");
                 }
-                
                     
                 writer.WriteEndElement();
 
@@ -362,11 +381,21 @@ namespace INSS.EIIR.DataSync.Infrastructure.Sink.XML
                 }
 
                 writer.WriteStartElement(null, "CaseDescription", null);
-                writer.WriteString($"{model.caseDescription}");
+                if (model.caseDescription == null)
+                    writer.WriteString($"{model.caseDescription}");
+                else
+                    writer.WriteString($"{FixSQLEncoding(model.caseDescription)}");
                 writer.WriteEndElement();
 
+                if (!string.IsNullOrEmpty(model.deceasedDate))
+                {
+                    writer.WriteStartElement(null, "SpecicalNote", null);
+                    writer.WriteString($"Please note that this person is deceased (Deceased Date {model.deceasedDate})");
+                    writer.WriteEndElement();
+                }
+
                 #region TradingNames
-                    writer.WriteStartElement(null, "TradingNames", null);
+                writer.WriteStartElement(null, "TradingNames", null);
 
                     if (model.Trading == null)
                         writer.WriteString($"No Trading Names Found");
@@ -611,5 +640,25 @@ namespace INSS.EIIR.DataSync.Infrastructure.Sink.XML
                 writer.Flush();
             }
         }
+
+
+        /// <summary>
+        ///Addresses previous 8 bit encoding issues with various data fields, may need to be modified for INSSight depending on their encoding
+        ///Here we are using 1252 which is what EIIR database is configure for/// 
+        /// </summary>
+        /// <param name="instr">Needs in general to be lower case to work given typically problematic characters </param>
+        /// <returns></returns>
+        private static string FixSQLEncoding(string instr) 
+        {
+            if (instr == null)
+                return instr;
+
+            var windows1252Encoding = Encoding.GetEncoding(1252);
+            var windows1252bytes = windows1252Encoding.GetBytes(instr);
+            var utf8bytes = Encoding.Convert(windows1252Encoding, Encoding.UTF8, windows1252bytes);
+
+            return Encoding.UTF8.GetString(utf8bytes);
+        }
+
     }
 }
