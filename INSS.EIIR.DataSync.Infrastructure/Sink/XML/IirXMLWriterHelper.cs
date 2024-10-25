@@ -230,7 +230,7 @@ namespace INSS.EIIR.DataSync.Infrastructure.Sink.XML
                 if (!string.IsNullOrEmpty(model.deceasedDate))
                 {
                     writer.WriteStartElement(null, "DeceasedDate", null);
-                    writer.WriteString($"{model.individualDOB.Trim()}");
+                    writer.WriteString($"{model.deceasedDate}");
                     writer.WriteEndElement();
                 }
 
@@ -389,7 +389,7 @@ namespace INSS.EIIR.DataSync.Infrastructure.Sink.XML
 
                 if (!string.IsNullOrEmpty(model.deceasedDate))
                 {
-                    writer.WriteStartElement(null, "SpecicalNote", null);
+                    writer.WriteStartElement(null, "SpecialNote", null);
                     writer.WriteString($"Please note that this person is deceased (Deceased Date {model.deceasedDate})");
                     writer.WriteEndElement();
                 }
