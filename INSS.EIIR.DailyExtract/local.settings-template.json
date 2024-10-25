@@ -31,6 +31,10 @@
     //Location of Subscriber XML file to be created
     "XmlContainer": "eiirdailyextracts",
 
+    //Existing bankruptcites json file
+    "ExistingBankruptciesContainer": "existingbankruptcies",
+    "ExistingBankruptciesFile":  "existingbankruptcies.json",
+
     //settings to call either orchestrator (ISCIS all record types) or SyncData (INSSight for BKTs and IVAs)
     //If INSSightDataFeedEnabled = true then settings need to point to func-eiir-daily-extract
     //anything else nothing, false then setting neeed to point to func-eiir
