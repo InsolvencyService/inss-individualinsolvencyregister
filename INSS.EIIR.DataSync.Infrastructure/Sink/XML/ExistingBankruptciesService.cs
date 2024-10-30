@@ -1,9 +1,13 @@
 ﻿using Azure;
 using Azure.Data.Tables;
+using Azure.Storage.Blobs;
+using Azure.Storage.Blobs.Models;
+using Azure.Storage.Blobs.Specialized;
 using INSS.EIIR.AzureSearch.IndexMapper;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -12,26 +16,29 @@ namespace INSS.EIIR.DataSync.Infrastructure.Sink.XML
 {
     public class ExistingBankruptciesService : IExistingBankruptciesService
     {
-        public const string EX_BANK_TABLE_NAME = "ExistingBankruptcies";
-        public const string EX_BANK_PARTITION_KEY = "existingbankruptcies_partition_key";
-        public const string EX_BANK_ROW_KEY = "existingbankruptcies_row_key";
-        public const string EX_BANK_PROPERTY_NAME = "bankruptcy_ids_json";
 
+        private readonly string _connectionString;
+        private readonly string _containerName;
 
-        private TableClient _tableClient;
+        private BlobClient _blobClient;
 
-        public ExistingBankruptciesService(ExistingBankruptciesOptions options) 
+        public ExistingBankruptciesService(ExistingBankruptciesOptions options)
         {
-            _tableClient = new TableClient(
-                options.TableStorageConnectionString,
-                EX_BANK_TABLE_NAME,
-                new TableClientOptions()
+            _connectionString = options.BlobStorageConnectionString;
+            _containerName = options.BlobStorageContainer;
+
+            _blobClient = new BlobClient(
+                options.BlobStorageConnectionString,
+                options.BlobStorageContainer,
+                options.ExistingBankruptciesFileName,
+                new BlobClientOptions()
                 {
                     Retry =
                     {
                         MaxRetries = 5,
                         Delay = TimeSpan.FromSeconds(2),
                         Mode = Azure.Core.RetryMode.Exponential
+
                     }
                 }
             );
@@ -39,16 +46,15 @@ namespace INSS.EIIR.DataSync.Infrastructure.Sink.XML
 
         async Task<SortedList<int, int>> IExistingBankruptciesService.GetExistingBankruptcies()
         {
-            var defaultReturn = new SortedList<int, int>(); 
+            var defaultReturn = new SortedList<int, int>();
 
-            try
-            {
-                var entityResponse = await _tableClient.GetEntityAsync<TableEntity>(EX_BANK_PARTITION_KEY, EX_BANK_ROW_KEY);
-                var entity = entityResponse.Value;
-                return JsonSerializer.Deserialize<SortedList<int, int>>(entity[EX_BANK_PROPERTY_NAME].ToString());
-            }
-            //If entity doesn't exist return the default
-            catch (RequestFailedException)
+            try 
+            { 
+                BlobDownloadResult download = await _blobClient.DownloadContentAsync();
+
+                return JsonSerializer.Deserialize<SortedList<int, int>>(download.Content.ToString());
+
+            } catch (RequestFailedException)
             {
                 return defaultReturn;
             }
@@ -56,20 +62,27 @@ namespace INSS.EIIR.DataSync.Infrastructure.Sink.XML
 
         async Task IExistingBankruptciesService.SetExistingBankruptcies(SortedList<int, int> existingBankruptcies)
         {
-            var table = await _tableClient.CreateIfNotExistsAsync();
-            var indexMapEntity = new TableEntity(EX_BANK_PARTITION_KEY, EX_BANK_ROW_KEY)
-            {
-                { EX_BANK_PROPERTY_NAME, JsonSerializer.Serialize(existingBankruptcies) }
-            };
+            await CreateContainer();
 
             try
             {
-                await _tableClient.UpsertEntityAsync(indexMapEntity);
+                var stream = new MemoryStream();
+                await JsonSerializer.SerializeAsync(stream, existingBankruptcies);
+                stream.Seek(0, SeekOrigin.Begin);   
+                await _blobClient.UploadAsync(stream, overwrite: true);
             }
-            catch (RequestFailedException)
+            catch (Exception ex)
             {
-                throw new Exception($"Failed to save existing bankruptcy identifiers");
+                throw new XmlSinkException($"Failed to save existing bankruptcy identifiers", ex);
             }
+        }
+
+        private async Task CreateContainer()
+        {
+            var blobServiceClient = new BlobServiceClient(_connectionString);
+            var containerClient = blobServiceClient.GetBlobContainerClient(_containerName);
+
+            await containerClient.CreateIfNotExistsAsync();
         }
     }
 }

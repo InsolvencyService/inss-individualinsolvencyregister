@@ -1,5 +1,6 @@
 ﻿using INSS.EIIR.DataSync.Application.UseCase.SyncData.Infrastructure;
 using INSS.EIIR.DataSync.Application.UseCase.SyncData.Model;
+using INSS.EIIR.DataSync.Application.UseCase.SyncData.Validation;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,5 +15,6 @@ namespace INSS.EIIR.DataSync.Application.UseCase.SyncData
         public IEnumerable<IDataSink<InsolventIndividualRegisterModel>> DataSinks { get; set; }
         public IEnumerable<ITransformRule> TransformRules { get; set; }
         public IDataSink<SyncFailure> FailureSink { get; set; }
+        public IEnumerable<IValidationRule> ValidationRules { get; set; }
     }
 }

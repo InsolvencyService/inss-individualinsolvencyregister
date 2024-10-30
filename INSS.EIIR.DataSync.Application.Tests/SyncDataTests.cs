@@ -1,4 +1,3 @@
-using Castle.Core.Logging;
 using INSS.EIIR.DataSync.Application.Tests.FakeData;
 using INSS.EIIR.DataSync.Application.Tests.TestDoubles;
 using INSS.EIIR.DataSync.Application.UseCase.SyncData;
@@ -7,6 +6,9 @@ using INSS.EIIR.DataSync.Application.UseCase.SyncData.Model;
 using INSS.EIIR.Models.ExtractModels;
 using Microsoft.Extensions.Logging;
 using NSubstitute;
+using INSS.EIIR.DataSync.Application.UseCase.SyncData.Exceptions;
+using INSS.EIIR.DataSync.Application.UseCase.SyncData.Validation;
+using NSubstitute.ExceptionExtensions;
 
 namespace INSS.EIIR.DataSync.Application.Tests
 {
@@ -50,6 +52,7 @@ namespace INSS.EIIR.DataSync.Application.Tests
                 .WithDataSource(dataSource)
                 .WithDataSink(dataSink)
                 .WithExtractRepo(extractRepo)
+                .WithValidationRule(new IdValidationRule())
                 .WithFailureSink(failureSink)
                 .WithLogger(logger)
                 .Build();
@@ -119,7 +122,144 @@ namespace INSS.EIIR.DataSync.Application.Tests
             logger.ReceivedWithAnyArgs().LogError(default, default, default, default);
         }
 
+        [Fact]
+        public async Task Given_precondtion_failure_SyncData_sinks_failure_returns_error_response()
+        {
+            // arrange
+            var dataSource = MockDataSourceBuilder.Create().ThatHas(ValidData.Standard()).Build();
+            var dataSink = Substitute.For<IDataSink<InsolventIndividualRegisterModel>>();
+            var extractRepo = MockDataExtractRepositoryBuilder.Create().ThatReturns(new Extract() { ExtractCompleted = "N", SnapshotCompleted = "N" }).Build();
+            var transformRule = MockDataTransformRuleBuilder.Create().ThatReturns(Task.FromResult(new TransformRuleResponse() { IsError = true })).Build();
+            var logger = Substitute.For<ILogger<SyncData>>();
+            var failureSink = Substitute.For<IDataSink<SyncFailure>>();
+            var sut = SyncDataApplicationBuilder.Create()
+                .WithDataSource(dataSource)
+                .WithDataSink(dataSink)
+                .WithExtractRepo(extractRepo)
+                .WithTransformationRule(transformRule)
+                .WithFailureSink(failureSink)
+                .WithLogger(logger)
+                .Build();
+
+            // act
+            var response = await sut.Handle();
+
+            // assert
+            await failureSink.Received().Sink(Arg.Any<SyncFailure>());
+            await dataSink.DidNotReceive().Sink(Arg.Any<InsolventIndividualRegisterModel>());
+            // assert that commit => false on transformation error
+            await dataSink.DidNotReceive().Complete(true);
+            Assert.Equal(1, response.ErrorCount);
+        }
+
+        [Fact]
+        public async Task Given_tranformation_rule_throws_exception_SyncData_throws_TransformException()
+        {
+            // arrange
+            var dataSource = MockDataSourceBuilder.Create().ThatHas(ValidData.Standard()).Build();
+            var dataSink = Substitute.For<IDataSink<InsolventIndividualRegisterModel>>();
+            var extractRepo = MockDataExtractRepositoryBuilder.Create().ThatReturns(new Extract() { ExtractCompleted = "N", SnapshotCompleted = "Y" }).Build();
+            var transformRule = MockDataTransformRuleBuilder.Create().ThatReturns(Task.FromException<TransformRuleResponse>(new Exception("john was here"))).Build();
+            var logger = Substitute.For<ILogger<SyncData>>();
+            var failureSink = Substitute.For<IDataSink<SyncFailure>>();
+            var sut = SyncDataApplicationBuilder.Create()
+                .WithDataSource(dataSource)
+                .WithDataSink(dataSink)
+                .WithExtractRepo(extractRepo)
+                .WithTransformationRule(transformRule)
+                .WithFailureSink(failureSink)
+                .WithLogger(logger)
+                .Build();
+
+            // act & assert
+            await Assert.ThrowsAsync<TransformRuleException>(async() => await sut.Handle());
+
+        }
+
+        [Fact]
+        public async Task Given_validation_rule_throws_exception_SyncData_throws_ValidationRuleException()
+        {
+            // arrange
+            var dataSource = MockDataSourceBuilder.Create().ThatHas(ValidData.Standard()).Build();
+            var dataSink = Substitute.For<IDataSink<InsolventIndividualRegisterModel>>();
+            var extractRepo = MockDataExtractRepositoryBuilder.Create().ThatReturns(new Extract() { ExtractCompleted = "N", SnapshotCompleted = "Y" }).Build();
+            var transformRule = MockDataTransformRuleBuilder.Create().ThatReturns(Task.FromResult(new TransformRuleResponse() { IsError = true })).Build();
+            var validationRule = MockDataValidationRuleBuilder.Create().ThatReturns(Task.FromException<ValidationRuleResponse>(new Exception("john was here"))).Build();
+            var logger = Substitute.For<ILogger<SyncData>>();
+            var failureSink = Substitute.For<IDataSink<SyncFailure>>();
+            var sut = SyncDataApplicationBuilder.Create()
+                .WithDataSource(dataSource)
+                .WithDataSink(dataSink)
+                .WithExtractRepo(extractRepo)
+                .WithTransformationRule(transformRule)
+                .WithValidationRule(validationRule)
+                .WithFailureSink(failureSink)
+                .WithLogger(logger)
+                .Build();
+
+            // act & assert
+            await Assert.ThrowsAsync<ValidationRuleException>(async () => await sut.Handle());
+
+        }
 
 
+        [Fact]
+        public async Task Given_failureSink_throws_exception_SyncData_throws_DataSinkException()
+        {
+            // arrange
+            var dataSource = MockDataSourceBuilder.Create().ThatHas(ValidData.Standard()).Build();
+            var dataSink = Substitute.For<IDataSink<InsolventIndividualRegisterModel>>();
+            var extractRepo = MockDataExtractRepositoryBuilder.Create().ThatReturns(new Extract() { ExtractCompleted = "N", SnapshotCompleted = "Y" }).Build();
+            var transformRule = MockDataTransformRuleBuilder.Create().ThatReturns(Task.FromResult(new TransformRuleResponse() { IsError = true })).Build();
+            var validationRule = MockDataValidationRuleBuilder.Create().ThatReturns(Task.FromResult(new ValidationRuleResponse() { IsValid = true })).Build();
+            var logger = Substitute.For<ILogger<SyncData>>();
+            var failureSink = Substitute.For<IDataSink<SyncFailure>>(); 
+
+            failureSink.Sink(Arg.Any<SyncFailure>()).Throws(new Exception());
+
+            var sut = SyncDataApplicationBuilder.Create()
+                .WithDataSource(dataSource)
+                .WithDataSink(dataSink)
+                .WithExtractRepo(extractRepo)
+                .WithTransformationRule(transformRule)
+                .WithValidationRule(validationRule)
+                .WithFailureSink(failureSink)
+                .WithLogger(logger)
+                .Build();
+
+            // act & assert
+            await Assert.ThrowsAsync<DataSinkException>(async () => await sut.Handle());
+
+        }
+
+        [Fact]
+        public async Task Given_a_dataSink_throws_exception_SyncData_throws_DataSinkException()
+        {
+            // arrange
+            var dataSource = MockDataSourceBuilder.Create().ThatHas(ValidData.Standard()).Build();
+            var dataSink = Substitute.For<IDataSink<InsolventIndividualRegisterModel>>();
+
+            dataSink.Sink(Arg.Any<InsolventIndividualRegisterModel>()).Throws(new Exception());
+
+            var extractRepo = MockDataExtractRepositoryBuilder.Create().ThatReturns(new Extract() { ExtractCompleted = "N", SnapshotCompleted = "Y" }).Build();
+            var transformRule = MockDataTransformRuleBuilder.Create().ThatReturns(Task.FromResult(new TransformRuleResponse() { IsError = false })).Build();
+            var validationRule = MockDataValidationRuleBuilder.Create().ThatReturns(Task.FromResult(new ValidationRuleResponse() { IsValid = true })).Build();
+            var logger = Substitute.For<ILogger<SyncData>>();
+            var failureSink = Substitute.For<IDataSink<SyncFailure>>();
+
+            var sut = SyncDataApplicationBuilder.Create()
+                .WithDataSource(dataSource)
+                .WithDataSink(dataSink)
+                .WithExtractRepo(extractRepo)
+                .WithTransformationRule(transformRule)
+                .WithValidationRule(validationRule)
+                .WithFailureSink(failureSink)
+                .WithLogger(logger)
+                .Build();
+
+            // act & assert
+            await Assert.ThrowsAsync<DataSinkException>(async () => await sut.Handle());
+
+        }
     }
 }

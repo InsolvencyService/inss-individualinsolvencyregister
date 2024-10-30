@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace INSS.EIIR.DataSync.Infrastructure.Sink.XML
 {
-    public class XmlSinkIirException : Exception
+    public class XmlSinkException : Exception
     {
-        public XmlSinkIirException(string message, Exception innerException) : base(message, innerException)
+        public XmlSinkException(string message, Exception innerException) : base(message, innerException)
         { }
     }
 }

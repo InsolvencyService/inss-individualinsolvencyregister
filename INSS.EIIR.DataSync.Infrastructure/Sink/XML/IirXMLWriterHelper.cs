@@ -59,7 +59,7 @@ namespace INSS.EIIR.DataSync.Infrastructure.Sink.XML
 
                 }
 
-                if (model.RecordType == Models.CaseModels.IIRRecordType.BKT && model.IncludeCaseDetailsInXML)
+                if (model.IncludeCaseDetailsInXML)
                 {
                     writer.WriteStartElement(null, "CaseDetailsText", null);
                     writer.WriteString($"Insolvency Case Details");
@@ -195,11 +195,17 @@ namespace INSS.EIIR.DataSync.Infrastructure.Sink.XML
                 writer.WriteEndElement();
 
                 writer.WriteStartElement(null, "FirstName", null);
-                writer.WriteString($"{model.individualForenames}");
+                if (model.individualForenames == null || model.individualForenames == Common.NoForenames)
+                    writer.WriteString($"{model.individualForenames}");
+                else
+                    writer.WriteString($"{FixSQLEncoding(model.individualForenames.ToLower()).ToUpper()}");
                 writer.WriteEndElement();
 
                 writer.WriteStartElement(null, "Surname", null);
-                writer.WriteString($"{model.individualSurname}");
+                if (model.individualSurname == null || model.individualSurname == Common.NoSurname)
+                    writer.WriteString($"{model.individualSurname}");
+                else
+                    writer.WriteString($"{FixSQLEncoding(model.individualSurname.ToLower()).ToUpper()}");
                 writer.WriteEndElement();
 
                 writer.WriteStartElement(null, "Occupation", null);
@@ -218,15 +224,26 @@ namespace INSS.EIIR.DataSync.Infrastructure.Sink.XML
                 writer.WriteEndElement();
 
                 writer.WriteStartElement(null, "DateofBirth", null);
-                writer.WriteString($"{model.individualDOB}");
+                writer.WriteString($"{model.individualDOB.Trim()}");
                 writer.WriteEndElement();
+
+                if (!string.IsNullOrEmpty(model.deceasedDate))
+                {
+                    writer.WriteStartElement(null, "DeceasedDate", null);
+                    writer.WriteString($"{model.deceasedDate}");
+                    writer.WriteEndElement();
+                }
 
                 writer.WriteStartElement(null, "LastKnownAddress", null);
                 writer.WriteString($"{model.individualAddress}");
                 writer.WriteEndElement();
 
                 writer.WriteStartElement(null, "LastKnownPostCode", null);
-                writer.WriteString($"{model.individualPostcode}");
+                
+                if (string.IsNullOrWhiteSpace(model.individualPostcode))
+                    writer.WriteString(Common.NoLastKnownPostCode);
+                else
+                    writer.WriteString($"{model.individualPostcode}");
                 writer.WriteEndElement();
 
                 //OtherNames in getEiirIndex currently come accross as comma separated string e.g. "lastname firstname secondname, lastname firstname"
@@ -237,22 +254,34 @@ namespace INSS.EIIR.DataSync.Infrastructure.Sink.XML
 
                 if (model.individualAlias == Common.NoOtherNames)
                     writer.WriteString($"{model.individualAlias}");
+                //APP-5394 Othernames not currently output for IVAs
+                else if (model.RecordType == IIRRecordType.IVA)
+                    writer.WriteString(Common.NoOtherNames);
                 else 
                 {
                     var othernames = model.individualAlias.Split(",", StringSplitOptions.TrimEntries & StringSplitOptions.RemoveEmptyEntries);
 
-                    foreach (var othername in othernames) 
+                    foreach (var othername in othernames)
                     {
                         writer.WriteStartElement(null, "OtherName", null);
 
                         var names = othername.Split(" ", StringSplitOptions.RemoveEmptyEntries);
 
-                        //write out forenames, there may not be any
-                        for (int i = 1; i < names.Length; i++) {
-                            writer.WriteString($"{names[i]} ");
+                        //There can be examples where OtherName just contains whitespace
+                        if (names.Length > 0)
+                        {
+                            //write out forenames, there may not be any
+                            for (int i = 1; i < names.Length; i++)
+                            {
+                                writer.WriteString($"{names[i]} ");
+                            }
+                            //write out surname for which there will always be one
+                            writer.WriteString($"{names[0]}");
                         }
-                        //write out surname for which there will always be one
-                        writer.WriteString($"{names[0]}");
+                        else //likely Othername is whitespace write out empty node
+                        {
+                            writer.WriteString("");
+                        }
 
                         writer.WriteEndElement();
                     }
@@ -284,7 +313,10 @@ namespace INSS.EIIR.DataSync.Infrastructure.Sink.XML
                 writer.WriteEndElement();
 
                 writer.WriteStartElement(null, "CaseName", null);
-                writer.WriteString($"{model.caseName}");
+                if (model.caseName == null)
+                    writer.WriteString($"{model.caseName}");
+                else
+                    writer.WriteString($"{FixSQLEncoding(model.caseName)}");
                 writer.WriteEndElement();
 
                 writer.WriteStartElement(null, "Court", null);
@@ -334,7 +366,6 @@ namespace INSS.EIIR.DataSync.Infrastructure.Sink.XML
                     default:
                         throw new Exception($"Unable to detemine recordtype for XML Extract for record: {model.caseNo}");
                 }
-                
                     
                 writer.WriteEndElement();
 
@@ -350,11 +381,21 @@ namespace INSS.EIIR.DataSync.Infrastructure.Sink.XML
                 }
 
                 writer.WriteStartElement(null, "CaseDescription", null);
-                writer.WriteString($"{model.caseDescription}");
+                if (model.caseDescription == null)
+                    writer.WriteString($"{model.caseDescription}");
+                else
+                    writer.WriteString($"{FixSQLEncoding(model.caseDescription)}");
                 writer.WriteEndElement();
 
+                if (!string.IsNullOrEmpty(model.deceasedDate))
+                {
+                    writer.WriteStartElement(null, "SpecialNote", null);
+                    writer.WriteString($"Please note that this person is deceased (Deceased Date {model.deceasedDate})");
+                    writer.WriteEndElement();
+                }
+
                 #region TradingNames
-                    writer.WriteStartElement(null, "TradingNames", null);
+                writer.WriteStartElement(null, "TradingNames", null);
 
                     if (model.Trading == null)
                         writer.WriteString($"No Trading Names Found");
@@ -363,7 +404,7 @@ namespace INSS.EIIR.DataSync.Infrastructure.Sink.XML
                         foreach (var td in model.Trading.TradingDetails)
                         {
                             writer.WriteStartElement(null, "TradingName", null);
-                            writer.WriteString($"{td.TradingName}");
+                            writer.WriteString($"{td.TradingName.ToUpper()}");
                             writer.WriteEndElement();
 
                             if (td != null) { 
@@ -597,6 +638,123 @@ namespace INSS.EIIR.DataSync.Infrastructure.Sink.XML
             {
                 writer.WriteRaw("</ReportDetails>\r\n");
                 writer.Flush();
+            }
+        }
+
+
+        /// <summary>
+        ///Addresses previous 8 bit encoding issues with various data fields, may need to be modified for INSSight depending on their encoding
+        ///Here we are using 1252 which is what EIIR database is configure for
+        ///First scans through arrray looking for any single byte 1252 characters > 7F, converting them to UTF8, before reading all bytes as UTF8
+        /// </summary>
+        /// <param name="instr">Needs in general to be lower case to work given typically problematic characters </param>
+        /// <returns></returns>
+        public static string FixSQLEncoding(string instr) 
+        {
+            if (instr == null)
+                return instr;
+
+            var windows1252Encoding = Encoding.GetEncoding(1252);
+            var windows1252bytes = windows1252Encoding.GetBytes(instr);
+
+            var utf8BytesList = new List<byte[]>();
+
+            //Find all single bytes over 127 convert them to UTF8
+            //Any sequence than looks like UTF8 encoding copy to output
+            
+            var byteLength = windows1252bytes.Length;
+            var startIndex = 0;
+
+            for (int i = 0; i < byteLength;)
+            {
+                var byteCount = 1;
+
+                AdvancePastUTF8Characters(windows1252bytes, byteLength, ref i, ref byteCount);
+
+                if (byteCount == 1)
+                {
+                    if (windows1252bytes[i] >= 0x80)
+                    {
+                        var utf8CharBytes = Encoding.Convert(windows1252Encoding, Encoding.UTF8, windows1252bytes, i, 1);
+
+                        if (i - startIndex > 0)
+                        { 
+                            utf8BytesList.Add(windows1252bytes[startIndex..i]);
+                            startIndex = i;
+                        }
+
+                        utf8BytesList.Add(utf8CharBytes);
+                        startIndex++;
+                        
+                        i++;
+                    }
+                    else
+                    {
+                        i++;
+                    }
+
+                }
+            }
+
+            if (startIndex < byteLength) 
+            {
+                utf8BytesList.Add(windows1252bytes[startIndex..byteLength]); 
+            }
+
+            return Encoding.UTF8.GetString(utf8BytesList.SelectMany(i => i).ToArray());
+        }
+
+        private static void AdvancePastUTF8Characters(byte[] windows1252bytes, int byteLength, ref int i, ref int byteCount)
+        {
+            if (windows1252bytes[i] >= 0xF0)  //11110000
+            {
+                while (i <= byteLength - 4 && byteCount < 4)
+                {
+                    var aByte = windows1252bytes[i + byteCount];
+                    if (aByte > 0x7F && aByte < 0xA0)
+                        byteCount++;
+                    else
+                        break;
+                }
+
+                if (byteCount == 4)
+                    i = i + 4;
+                else
+                    byteCount = 1;
+            }
+            //three byte utf8
+            else if (windows1252bytes[i] >= 0xE0) //11100000
+            {
+                while (i <= byteLength - 3 && byteCount < 3)
+                {
+                    var aByte = windows1252bytes[i + byteCount];
+                    if (aByte > 0x7F && aByte < 0xC0)
+                        byteCount++;
+                    else
+                        break;
+                }
+
+                if (byteCount == 3)
+                    i = i + 3;
+                else
+                    byteCount = 1;
+            }
+            //two byte utf8
+            else if (windows1252bytes[i] >= 0xC0) //11000000
+            {
+                while (i <= byteLength - 2 && byteCount < 2)
+                {
+                    var aByte = windows1252bytes[i + byteCount];
+                    if (aByte > 0x7F && aByte < 0xC0)
+                        byteCount++;
+                    else
+                        break;
+                }
+
+                if (byteCount == 2)
+                    i = i + 2;
+                else
+                    byteCount = 1;
             }
         }
     }
