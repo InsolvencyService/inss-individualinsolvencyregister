@@ -649,7 +649,7 @@ namespace INSS.EIIR.DataSync.Infrastructure.Sink.XML
         /// </summary>
         /// <param name="instr">Needs in general to be lower case to work given typically problematic characters </param>
         /// <returns></returns>
-        private static string FixSQLEncoding(string instr) 
+        public static string FixSQLEncoding(string instr) 
         {
             if (instr == null)
                 return instr;
@@ -677,13 +677,14 @@ namespace INSS.EIIR.DataSync.Infrastructure.Sink.XML
                     {
                         var utf8CharBytes = Encoding.Convert(windows1252Encoding, Encoding.UTF8, windows1252bytes, i, 1);
 
-                        if (i - startIndex > 1)
+                        if (i - startIndex > 0)
                         { 
                             utf8BytesList.Add(windows1252bytes[startIndex..i]);
-                            startIndex = i + 1;
+                            startIndex = i;
                         }
 
                         utf8BytesList.Add(utf8CharBytes);
+                        startIndex++;
                         
                         i++;
                     }
@@ -707,7 +708,7 @@ namespace INSS.EIIR.DataSync.Infrastructure.Sink.XML
         {
             if (windows1252bytes[i] >= 0xF0)  //11110000
             {
-                while (i < byteLength - 4 && byteCount < 4)
+                while (i <= byteLength - 4 && byteCount < 4)
                 {
                     var aByte = windows1252bytes[i + byteCount];
                     if (aByte > 0x7F && aByte < 0xA0)
@@ -724,7 +725,7 @@ namespace INSS.EIIR.DataSync.Infrastructure.Sink.XML
             //three byte utf8
             else if (windows1252bytes[i] >= 0xE0) //11100000
             {
-                while (i < byteLength - 3 && byteCount < 3)
+                while (i <= byteLength - 3 && byteCount < 3)
                 {
                     var aByte = windows1252bytes[i + byteCount];
                     if (aByte > 0x7F && aByte < 0xC0)
@@ -741,7 +742,7 @@ namespace INSS.EIIR.DataSync.Infrastructure.Sink.XML
             //two byte utf8
             else if (windows1252bytes[i] >= 0xC0) //11000000
             {
-                while (i < byteLength - 2 && byteCount < 2)
+                while (i <= byteLength - 2 && byteCount < 2)
                 {
                     var aByte = windows1252bytes[i + byteCount];
                     if (aByte > 0x7F && aByte < 0xC0)
