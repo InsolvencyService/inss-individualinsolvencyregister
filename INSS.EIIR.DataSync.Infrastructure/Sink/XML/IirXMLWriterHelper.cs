@@ -679,7 +679,7 @@ namespace INSS.EIIR.DataSync.Infrastructure.Sink.XML
 
                         if (i - startIndex > 1)
                         { 
-                            utf8BytesList.Add(windows1252bytes[startIndex..(i - 1)]);
+                            utf8BytesList.Add(windows1252bytes[startIndex..i]);
                             startIndex = i + 1;
                         }
 
