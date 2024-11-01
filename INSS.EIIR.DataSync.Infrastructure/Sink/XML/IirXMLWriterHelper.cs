@@ -470,11 +470,11 @@ namespace INSS.EIIR.DataSync.Infrastructure.Sink.XML
             if (source.StartsWith("Currently Bankrupt : Automatic Discharge", StringComparison.OrdinalIgnoreCase))
                 return $"Currently Bankrupt : Automatic Discharge  will be  {DateTime.ParseExact(source[^10..^0], "dd/MM/yyyy", CultureInfo.InvariantCulture).ToString("dd MMMM yyyy")}";
 
-            //This scenario current uses dd/MM/yyyy format for date element
+            //This scenario current uses dd/MM/yyyy format for date element - commented code left in on purpose should alternative formatting be requried
             //if (source.StartsWith("Discharge Suspended Indefinitely", StringComparison.OrdinalIgnoreCase))
             //    return $"Discharge Suspended Indefinitely (from {DateTime.ParseExact(source[39..49], "dd/MM/yyyy", CultureInfo.InvariantCulture).ToString("dd MMMM yyyy")})";
 
-            //This scenario current uses dd/MM/yyyy format for date element
+            //This scenario current uses dd/MM/yyyy format for date element - commented code left in on purpose should alternative formatting be requried
             //if (source.StartsWith("Discharge Fixed Length Suspension", StringComparison.OrdinalIgnoreCase))
             //    return $"Discharge Fixed Length Suspension (from "
             //        + $"{DateTime.ParseExact(source[40..50], "dd/MM/yyyy", CultureInfo.InvariantCulture).ToString("dd MMMM yyyy")} to "
