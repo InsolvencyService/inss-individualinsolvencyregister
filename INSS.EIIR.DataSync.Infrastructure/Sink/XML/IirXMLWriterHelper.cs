@@ -198,14 +198,14 @@ namespace INSS.EIIR.DataSync.Infrastructure.Sink.XML
                 if (model.individualForenames == null || model.individualForenames == Common.NoForenames)
                     writer.WriteString($"{model.individualForenames}");
                 else
-                    writer.WriteString($"{FixSQLEncoding(model.individualForenames.ToLower()).ToUpper()}");
+                    writer.WriteString($"{FixSQLEncoding(model.individualForenames).ToUpper()}");
                 writer.WriteEndElement();
 
                 writer.WriteStartElement(null, "Surname", null);
                 if (model.individualSurname == null || model.individualSurname == Common.NoSurname)
                     writer.WriteString($"{model.individualSurname}");
                 else
-                    writer.WriteString($"{FixSQLEncoding(model.individualSurname.ToLower()).ToUpper()}");
+                    writer.WriteString($"{FixSQLEncoding(model.individualSurname).ToUpper()}");
                 writer.WriteEndElement();
 
                 writer.WriteStartElement(null, "Occupation", null);
@@ -361,7 +361,7 @@ namespace INSS.EIIR.DataSync.Infrastructure.Sink.XML
                     case IIRRecordType.DRO:
                     case IIRRecordType.DRRO:
                     case IIRRecordType.DRRU:
-                        writer.WriteString($"{Alter_DROStatusFormat(model.caseStatus)}");
+                        writer.WriteString($"{Alter_DROStatusFormat(model.insolvencyDate, model.caseStatus)}");
                         break;
                     default:
                         throw new Exception($"Unable to detemine recordtype for XML Extract for record: {model.caseNo}");
@@ -426,14 +426,29 @@ namespace INSS.EIIR.DataSync.Infrastructure.Sink.XML
 
         //The following transformations are based on the document EIIR Data Properties a copy of which can be
         //found on APP-5332
-
-        private static object Alter_DROStatusFormat(string source)
+        private static object Alter_DROStatusFormat(string insolvencyDate, string source)
         {
-            if (source.StartsWith("Extended From"))
-                return $"Extended From {DateTime.ParseExact(source[14..24], "dd/MM/yyyy", CultureInfo.InvariantCulture).ToString("dd MMMM yyyy")}"
-                    + $" To {DateTime.ParseExact(source[28..38], "dd/MM/yyyy", CultureInfo.InvariantCulture).ToString("dd MMMM yyyy")}";
+            var endDate = DateTime.ParseExact(source[^10..^0], "dd/MM/yyyy", CultureInfo.InvariantCulture);
+            var returnValue = source[0..(source.Length - 10)] + DateTime.ParseExact(source[^10..^0], "dd/MM/yyyy", CultureInfo.InvariantCulture).ToString("dd MMMM yyyy");
 
-            return source[0..(source.Length - 10)] + DateTime.ParseExact(source[^10..^0], "dd/MM/yyyy", CultureInfo.InvariantCulture).ToString("dd MMMM yyyy");
+            DateTime dateResult;
+
+            //Following section only applies to approximately 10 of 40000 records
+            if (source.Contains("Moratorium Period"))
+            {
+                if (DateTime.TryParseExact(insolvencyDate, "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.AssumeLocal, out dateResult)) 
+                {
+                    var insolvencyDatePlus12 = dateResult.AddMonths(12);
+                    if ((endDate - insolvencyDatePlus12).Days > 1)
+                    {
+                        return returnValue
+                            + $" Extended From {insolvencyDatePlus12.ToString("dd/MM/yyyy")}"
+                             + $" To {endDate.ToString("dd/MM/yyyy")}";
+                    }
+                }
+            }
+
+            return returnValue;
         }
 
         //Alters the IVA Status - typically date formats from dd/MM/yyyy to dd MMMM yyyy
@@ -459,10 +474,11 @@ namespace INSS.EIIR.DataSync.Infrastructure.Sink.XML
             //if (source.StartsWith("Discharge Suspended Indefinitely", StringComparison.OrdinalIgnoreCase))
             //    return $"Discharge Suspended Indefinitely (from {DateTime.ParseExact(source[39..49], "dd/MM/yyyy", CultureInfo.InvariantCulture).ToString("dd MMMM yyyy")})";
 
-            if (source.StartsWith("Discharge Fixed Length Suspension", StringComparison.OrdinalIgnoreCase))
-                return $"Discharge Fixed Length Suspension (from "
-                    + $"{DateTime.ParseExact(source[40..50], "dd/MM/yyyy", CultureInfo.InvariantCulture).ToString("dd MMMM yyyy")} to "
-                    + $"{DateTime.ParseExact(source[54..64], "dd/MM/yyyy", CultureInfo.InvariantCulture).ToString("dd MMMM yyyy")})";
+            //This scenario current uses dd/MM/yyyy format for date element
+            //if (source.StartsWith("Discharge Fixed Length Suspension", StringComparison.OrdinalIgnoreCase))
+            //    return $"Discharge Fixed Length Suspension (from "
+            //        + $"{DateTime.ParseExact(source[40..50], "dd/MM/yyyy", CultureInfo.InvariantCulture).ToString("dd MMMM yyyy")} to "
+            //        + $"{DateTime.ParseExact(source[54..64], "dd/MM/yyyy", CultureInfo.InvariantCulture).ToString("dd MMMM yyyy")})";
 
             if (source.Contains("(Early Discharge)"))
                 return $"Discharged On {DateTime.ParseExact(source[14..24], "dd/MM/yyyy", CultureInfo.InvariantCulture).ToString("dd MMMM yyyy")} (Early Discharge)";
