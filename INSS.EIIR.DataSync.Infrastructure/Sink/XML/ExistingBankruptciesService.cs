@@ -1,16 +1,8 @@
 ﻿using Azure;
-using Azure.Data.Tables;
 using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
-using Azure.Storage.Blobs.Specialized;
-using INSS.EIIR.AzureSearch.IndexMapper;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
 using System.Text.Json;
-using System.Threading.Tasks;
+
 
 namespace INSS.EIIR.DataSync.Infrastructure.Sink.XML
 {

@@ -1,20 +1,9 @@
-﻿using System.Collections.Concurrent;
-using System;
-using System.Diagnostics;
-using System.Globalization;
-using System.Numerics;
-using System.Reflection;
-using System.Security.Principal;
+﻿using System.Globalization;
 using System.Text;
 using System.Xml;
 using INSS.EIIR.DataSync.Application.UseCase.SyncData.Model;
 using INSS.EIIR.Models.CaseModels;
 using INSS.EIIR.Models.Constants;
-using Microsoft.IdentityModel.Abstractions;
-using Newtonsoft.Json.Linq;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
-using static System.Runtime.InteropServices.JavaScript.JSType;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace INSS.EIIR.DataSync.Infrastructure.Sink.XML
 {
