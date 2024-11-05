@@ -40,6 +40,7 @@ public static class Common
     public const string NoTradingNames = "<No Trading Names Found>";
     public const string NoForenames = "No Forenames Found";
     public const string NoSurname = "No Surname Found";
+    public const string NoCaseDescription = "No Case Description Found";
 
 
 }

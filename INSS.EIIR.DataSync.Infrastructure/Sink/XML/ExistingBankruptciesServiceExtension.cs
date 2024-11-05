@@ -1,11 +1,5 @@
-﻿using INSS.EIIR.AzureSearch.IndexMapper;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace INSS.EIIR.DataSync.Infrastructure.Sink.XML
 {

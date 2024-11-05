@@ -1,20 +1,9 @@
-﻿using System.Collections.Concurrent;
-using System;
-using System.Diagnostics;
-using System.Globalization;
-using System.Numerics;
-using System.Reflection;
-using System.Security.Principal;
+﻿using System.Globalization;
 using System.Text;
 using System.Xml;
 using INSS.EIIR.DataSync.Application.UseCase.SyncData.Model;
 using INSS.EIIR.Models.CaseModels;
 using INSS.EIIR.Models.Constants;
-using Microsoft.IdentityModel.Abstractions;
-using Newtonsoft.Json.Linq;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
-using static System.Runtime.InteropServices.JavaScript.JSType;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace INSS.EIIR.DataSync.Infrastructure.Sink.XML
 {
@@ -382,7 +371,7 @@ namespace INSS.EIIR.DataSync.Infrastructure.Sink.XML
 
                 writer.WriteStartElement(null, "CaseDescription", null);
                 if (model.caseDescription == null)
-                    writer.WriteString($"{model.caseDescription}");
+                    writer.WriteString(Common.NoCaseDescription);
                 else
                     writer.WriteString($"{FixSQLEncoding(model.caseDescription)}");
                 writer.WriteEndElement();
@@ -404,7 +393,7 @@ namespace INSS.EIIR.DataSync.Infrastructure.Sink.XML
                         foreach (var td in model.Trading.TradingDetails)
                         {
                             writer.WriteStartElement(null, "TradingName", null);
-                            writer.WriteString($"{td.TradingName.ToUpper()}");
+                            writer.WriteString($"{td.TradingName.Trim().ToUpper()}");
                             writer.WriteEndElement();
 
                             if (td != null) { 
@@ -442,8 +431,8 @@ namespace INSS.EIIR.DataSync.Infrastructure.Sink.XML
                     if ((endDate - insolvencyDatePlus12).Days > 1)
                     {
                         return returnValue
-                            + $" Extended From {insolvencyDatePlus12.ToString("dd/MM/yyyy")}"
-                             + $" To {endDate.ToString("dd/MM/yyyy")}";
+                            + $" (Extended From {insolvencyDatePlus12.ToString("dd/MM/yyyy")}"
+                             + $" To {endDate.ToString("dd/MM/yyyy")})";
                     }
                 }
             }

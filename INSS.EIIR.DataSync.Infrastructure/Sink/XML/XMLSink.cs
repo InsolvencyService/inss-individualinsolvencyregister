@@ -3,17 +3,7 @@ using Azure.Storage.Blobs.Specialized;
 using INSS.EIIR.DataSync.Application.UseCase.SyncData.Infrastructure;
 using INSS.EIIR.DataSync.Application.UseCase.SyncData.Model;
 using INSS.EIIR.Interfaces.DataAccess;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Net.Security;
-using System.Reflection;
 using System.Text;
-using System.Threading.Tasks;
-using System.Xml;
 using INSS.EIIR.Models.CaseModels;
 using System.IO.Compression;
 
