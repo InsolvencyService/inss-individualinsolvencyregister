@@ -55,8 +55,12 @@ namespace INSS.EIIR.DataSync.Functions.DI
             {
                 sources = new List<IDataSourceAsync<InsolventIndividualRegisterModel>>()
                 {
-                    GetINSSightSQLSource(config, mapper),
-                    GetEIIRSQLSource(config, mapper)
+                    //Temporary disablement of INSSight feed to allow isolated testing of new Integration functionality
+                    //GetINSSightSQLSource(config, mapper),
+                    GetEIIRSQLSource(config, mapper),
+                    
+                    //Follow call should be removed once INSSight feed is in use
+                    GetEIIRLocalSQLIVAB(config, mapper)
                 };
             }
 
@@ -122,6 +126,17 @@ namespace INSS.EIIR.DataSync.Functions.DI
             var options = new SQLSourceOptions(mapper, config.GetValue<string>("database:connectionstring"));
 
             return new EiirSQLSource(options);
+        }
+
+        /// <summary>
+        /// Temporary method to allow localised testing of INSSight Integration functionality
+        /// To be removed once INSSight feed is available
+        /// </summary>
+        private static IDataSourceAsync<InsolventIndividualRegisterModel> GetEIIRLocalSQLIVAB(IConfiguration config, IMapper mapper)
+        {
+            var options = new SQLSourceOptions(mapper, config.GetValue<string>("database:connectionstring"));
+
+            return new EIIRLocalSQLIVAB(options);
         }
 
         private static IDataSourceAsync<InsolventIndividualRegisterModel> GetEIIRSQLSourceFake(IConfiguration config, IMapper mapper)
