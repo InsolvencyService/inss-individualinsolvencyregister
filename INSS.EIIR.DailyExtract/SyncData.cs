@@ -27,8 +27,8 @@ namespace INSS.EIIR.DailyExtract
 
         }
 
-        [Function("SyncData")]
-        public async Task<IActionResult> Run([HttpTrigger(AuthorizationLevel.Function, "get", "post")] HttpRequest req)
+        [Function(nameof(SyncData))]
+        public async Task Run([ActivityTrigger] string name)
         {
             _logger.LogInformation("SyncData started");
 
@@ -36,11 +36,11 @@ namespace INSS.EIIR.DailyExtract
 
             if (response.IsError)
             {
-                return new BadRequestObjectResult($"SyncData failed with {response.ErrorCount} errors. Message: {response.ErrorMessage}");
+                _logger.LogWarning($"SyncData failed with {response.ErrorCount} errors. Message: {response.ErrorMessage}");
             }
             else
             {
-                return new OkResult();
+                _logger.LogInformation($"SyncData completed successfully at: {DateTime.Now}");
             }
         }
     }

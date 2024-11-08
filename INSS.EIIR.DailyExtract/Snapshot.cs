@@ -42,7 +42,7 @@ namespace INSS.EIIR.DailyExtract
                 {
                     //start orchestration
                     _logger.LogInformation("Calling SyncData - Using INSSight data feeds for BKTs & IVAs, ISCIS for DROs");
-                    callPostHttpFunction("SyncData");
+                    callPostHttpFunction("SyncDataOrchestrator_Start");
                 }
                 else 
                 {
