@@ -288,12 +288,12 @@ jobs:
                     [  
                       {
                         "name": "functionURL",
-                        "value": "$(functionBaseUrl)",
+                        "value": "$(extractfunctionBaseUrl)",
                         "slotSetting": false
                       },
                       {
                         "name": "functionAPIKey",
-                        "value": "$(functionapikey)",
+                        "value": "$(extractfunctionapikey)",
                         "slotSetting": false
                       },                 
                       {
