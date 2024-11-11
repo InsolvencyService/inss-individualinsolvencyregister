@@ -23,31 +23,5 @@ namespace INSS.EIIR.DailyExtract
 
         }
 
-        //[Function(nameof(SayHello))]
-        //public static string SayHello([ActivityTrigger] string name, FunctionContext executionContext)
-        //{
-        //    ILogger logger = executionContext.GetLogger("SayHello");
-        //    logger.LogInformation("Saying hello to {name}.", name);
-        //    return $"Hello {name}!";
-        //}
-
-        //[Function("SyncDataOrchestrator_HttpStart")]
-        //public static async Task<HttpResponseData> HttpStart(
-        //    [HttpTrigger(AuthorizationLevel.Anonymous, "get", "post")] HttpRequestData req,
-        //    [DurableClient] DurableTaskClient client,
-        //    FunctionContext executionContext)
-        //{
-        //    ILogger logger = executionContext.GetLogger("SyncDataOrchestrator_HttpStart");
-
-        //    // Function input comes from the request content.
-        //    string instanceId = await client.ScheduleNewOrchestrationInstanceAsync(
-        //        nameof(SyncDataOrchestrator));
-
-        //    logger.LogInformation("Started orchestration with ID = '{instanceId}'.", instanceId);
-
-        //    // Returns an HTTP 202 response with an instance management payload.
-        //    // See https://learn.microsoft.com/azure/azure-functions/durable/durable-functions-http-api#start-orchestration
-        //    return await client.CreateCheckStatusResponseAsync(req, instanceId);
-        //}
     }
 }
