@@ -1,6 +1,7 @@
 using INSS.EIIR.Models;
 using INSS.EIIR.Models.CaseModels;
 using INSS.EIIR.Models.Constants;
+using System.Globalization;
 
 namespace INSS.EIIR.Models.Tests
 {
@@ -61,5 +62,43 @@ namespace INSS.EIIR.Models.Tests
             Assert.Equal("Undefined Insolvency Type", ex.Message);
 
         }
+
+        /// <summary>
+        /// Test the determination of IncludeCaseDetailsInXML
+        /// </summary>
+        /// Only tests valid input scenarios for determination of RecordType 
+        [Theory]
+        [InlineData("Bankruptcy", false, null, "10/08/2023", "09/11/2024 07:15:00", true)]
+        [InlineData("Bankruptcy", true, "Order", "10/08/2023", "09/11/2024 07:15:00", true)]
+        [InlineData("Bankruptcy", true, "Undertaking", "10/08/2023", "09/11/2024 07:15:00", true)]
+        [InlineData("Bankruptcy", true, "Interim Order", "10/08/2023", "09/11/2024 07:15:00", true)]
+        [InlineData("Bankruptcy", true, "Order", "10/08/2023", "10/11/2024 00:00:00", true)]
+        [InlineData("Bankruptcy", true, "Order", "10/08/2023", "10/11/2024 07:15:00", false)]
+        [InlineData("Bankruptcy", true, "Undertaking", "10/08/2023", "10/11/2024 07:15:00", false)]       
+        [InlineData("Bankruptcy", true, "Interim Order", "10/08/2023", "10/11/2024 07:15:00", false)]
+        [InlineData("Individual Voluntary Arrangement", false, null, "10/08/2023", "09/11/2024 07:15:00", true)]
+        [InlineData("Debt Relief Order", false, null, "10/08/2023", "09/11/2024 07:15:00", true)]
+        [InlineData("Debt Relief Order", true, "Order", "10/08/2023", "09/11/2024 07:15:00", true)]
+        [InlineData("Debt Relief Order", true, "Undertaking", "10/08/2023", "09/11/2024 07:15:00", true)]
+        [InlineData("Debt Relief Order", true, "Order", "10/08/2023", "10/11/2024 07:15:00", true)]
+        [InlineData("Debt Relief Order", true, "Undertaking", "10/08/2023", "10/11/2024 07:15:00", true)]      
+        public void IncludeCaseDetailsInXML_currentdate(string insolvencytype, bool hasRestrictions, string restrictionsType, string insolvencyDate, string currentDate, bool expected)
+        {
+            //Arrange
+            var cr = new CaseModels.CaseResult();
+            cr.insolvencyType = insolvencytype;
+            cr.hasRestrictions = hasRestrictions;
+            cr.restrictionsType = restrictionsType;
+            cr.insolvencyDate = insolvencyDate;
+
+            //Act
+            var result = cr.IncludeCaseDetailsInXML(DateTime.ParseExact(currentDate, "dd/MM/yyyy hh:mm:ss", CultureInfo.InvariantCulture));
+
+            //Assert
+            Assert.Equal(expected, result);
+
+        }
+
+
     }
 }
