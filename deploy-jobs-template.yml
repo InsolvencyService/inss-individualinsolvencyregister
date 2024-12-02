@@ -193,7 +193,12 @@ jobs:
                         "name": "UseDynamicIndexName",
                         "value": "$(UseDynamicIndexName)",
                         "slotSetting": false
-                      }
+                      },
+                      {
+                        "name": "WEBSITE_OVERRIDE_STICKY_DIAGNOSTICS_SETTINGS",
+                        "value": 0,
+                        "slotSetting": false
+                      }         
                     ]
 
               - task: AzureAppServiceManage@0
@@ -410,6 +415,11 @@ jobs:
                         "name": "XMLContainer",
                         "value": "$(XMLContainer)",
                         "slotSetting": false
+                      },
+                      {
+                        "name": "WEBSITE_OVERRIDE_STICKY_DIAGNOSTICS_SETTINGS",
+                        "value": 0,
+                        "slotSetting": true
                       }
                     ]
 
