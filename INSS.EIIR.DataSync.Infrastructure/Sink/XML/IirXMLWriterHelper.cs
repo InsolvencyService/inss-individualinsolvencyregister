@@ -48,7 +48,7 @@ namespace INSS.EIIR.DataSync.Infrastructure.Sink.XML
 
                 }
 
-                if (model.IncludeCaseDetailsInXML)
+                if (model.IncludeCaseDetailsInXML(DateTime.Now))
                 {
                     writer.WriteStartElement(null, "CaseDetailsText", null);
                     writer.WriteString($"Insolvency Case Details");
@@ -511,7 +511,7 @@ namespace INSS.EIIR.DataSync.Infrastructure.Sink.XML
                 writer.WriteString($"{(model.restrictionsEndDate.HasValue ? model.restrictionsEndDate.Value.ToString("dd/MM/yyyy") : "")}");
                 writer.WriteEndElement();
 
-                if (!model.IncludeCaseDetailsInXML) 
+                if (!model.IncludeCaseDetailsInXML(DateTime.Now)) 
                 {
                     writer.WriteStartElement(null, "RestrictionsCourt", null);
                     writer.WriteString(model.courtName);

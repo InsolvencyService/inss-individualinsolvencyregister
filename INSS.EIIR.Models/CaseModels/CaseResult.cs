@@ -141,34 +141,30 @@ public class CaseResult
 
     //CaseDetals are output to XML for all record types with exception of
     //BROs, BRUs, IBROs  (possibly DRROs and DRRUs)
-    //where discharge date is greater than 3 months old
-    //and not discharge not suspended
-    [NotMapped]
-    public bool IncludeCaseDetailsInXML 
+    //  where discharge date is greater than 3 months old
+    //  and not discharge not suspended
+    public bool IncludeCaseDetailsInXML(DateTime now)
     {
-        get 
+        bool result = true;
+
+        switch (RecordType)
         {
-            bool result = true;
-
-            switch (RecordType)
-            {
-                case IIRRecordType.BRO:
-                case IIRRecordType.BRU:
-                case IIRRecordType.IBRO:
-                    if (DateOnly.ParseExact(insolvencyDate, "d/M/yyyy", CultureInfo.InvariantCulture).AddMonths(15) < DateOnly.FromDateTime(DateTime.Now)
-                        && !(caseStatus??"").StartsWith("Discharge Suspended Indefinitely")
-                        && !((caseStatus??"").StartsWith("Discharge Fixed Length Suspension")
-                                //May work if first term evaluates as true => caseStatus Start with Fixed Length Suspension
-                                && DateOnly.ParseExact(caseStatus[54..64], "dd/MM/yyyy", CultureInfo.InvariantCulture).AddMonths(3) < DateOnly.FromDateTime(DateTime.Now))
-                        )
-                        result = false;
-                    break;
-                default:
-                    break;
-            }
-
-            return result;
+            case IIRRecordType.BRO:
+            case IIRRecordType.BRU:
+            case IIRRecordType.IBRO:
+                if (DateOnly.ParseExact(insolvencyDate, "d/M/yyyy", CultureInfo.InvariantCulture).AddMonths(15).ToDateTime(new TimeOnly(0,0,0)) < now
+                    && !(caseStatus??"").StartsWith("Discharge Suspended Indefinitely")
+                    && !((caseStatus??"").StartsWith("Discharge Fixed Length Suspension")
+                            //May work if first term evaluates as true => caseStatus Start with Fixed Length Suspension
+                            && DateOnly.ParseExact(caseStatus[54..64], "dd/MM/yyyy", CultureInfo.InvariantCulture).AddMonths(3) < DateOnly.FromDateTime(DateTime.Now))
+                    )
+                    result = false;
+                break;
+            default:
+                break;
         }
+
+        return result;
     }
 
     public bool HasIPDetails {

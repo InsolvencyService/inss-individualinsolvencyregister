@@ -69,7 +69,7 @@ namespace INSS.EIIR.DataSync.Infrastructure.Tests.EiirXmlWriter
 
         public static IEnumerable<object[]> GetEiirCaseDetailsXmlWriterData()
         {
-            return GetEiirXmlWriterData().Where(x => ((InsolventIndividualRegisterModel)x[0]).IncludeCaseDetailsInXML);
+            return GetEiirXmlWriterData().Where(x => ((InsolventIndividualRegisterModel)x[0]).IncludeCaseDetailsInXML(new DateTime(2024,8,31,7,15,0)));
         }
 
         public static IEnumerable<object[]> GetEiirBktRestrictionXmlWriterData()
