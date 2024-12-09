@@ -3,6 +3,9 @@ using INSS.EIIR.Models.CaseModels;
 using INSS.EIIR.Models.Helpers;
 using INSS.EIIR.Models.IndexModels;
 using INSS.EIIR.Models.SearchModels;
+using INSS.EIIR.Models;
+using Azure.Search.Documents.Indexes.Models;
+using System.Globalization;
 
 namespace INSS.EIIR.Models.AutoMapperProfiles;
 
@@ -11,8 +14,8 @@ public class IndividualSearchMapper : Profile
     public IndividualSearchMapper()
     {
         CreateMap<CaseResult, IndividualSearch>()
-            .ForMember(dest => dest.FirstName, opt => opt.MapFrom(src => src.individualForenames))
-            .ForMember(dest => dest.FamilyName, opt => opt.MapFrom(src => src.individualSurname))
+            .ForMember(dest => dest.FirstName, opt => opt.MapFrom(src => IirEncodingHelper.FixSQLEncoding(src.individualForenames).ToUpper()))
+            .ForMember(dest => dest.FamilyName, opt => opt.MapFrom(src => IirEncodingHelper.FixSQLEncoding(src.individualSurname).ToUpper()))
             .ForMember(dest => dest.Title, opt => opt.MapFrom(src => src.individualTitle))
             .ForMember(dest => dest.AlternativeNames, opt => opt.MapFrom(src => src.individualAlias))
             .ForMember(dest => dest.Gender, opt => opt.MapFrom(src => src.individualGender))
@@ -54,7 +57,9 @@ public class IndividualSearchMapper : Profile
             .ForMember(dest => dest.DateOfPreviousOrder, opt => opt.MapFrom(src => src.dateOfPreviousOrder))
             .ForMember(dest => dest.DeceasedDate, opt => opt.MapFrom(src => src.deceasedDate))
         .ReverseMap()
-        .ForPath(s => s.individualDOB, opt => opt.MapFrom(src => src.DateOfBirth.Trim()));
+        .ForPath(s => s.individualDOB, opt => opt.MapFrom(src => src.DateOfBirth.Trim()))
+        .ForPath(s => s.individualForenames, opt => opt.MapFrom(src => CultureInfo.InvariantCulture.TextInfo.ToTitleCase(src.FirstName.ToLower())))
+        .ForPath(s => s.individualSurname, opt => opt.MapFrom(src => CultureInfo.InvariantCulture.TextInfo.ToTitleCase(src.FamilyName.ToLower())));
 
         CreateMap<IndividualSearch, SearchResult>()
             .ForMember(m => m.individualForenames, opt => opt.MapFrom(s => s.FirstName))

@@ -16,6 +16,7 @@ namespace INSS.EIIR.DataSync.Infrastructure.Source.SQL.Models.AutoMapperProfiles
         public InsolventIndividualRegisterModelMapper()
         {
             CreateMap<Models.VwEiir, InsolventIndividualRegisterModel>()
+            //APP-5472 not fixing encoding issue here at thisn stage as will see what comes through from INSSight
             .ForMember(dest => dest.individualForenames, opt => opt.MapFrom(src => src.IndividualForenames))
             .ForMember(dest => dest.individualSurname, opt => opt.MapFrom(src => src.IndividualSurname))
             .ForMember(dest => dest.individualTitle, opt => opt.MapFrom(src => src.IndividualTitle))

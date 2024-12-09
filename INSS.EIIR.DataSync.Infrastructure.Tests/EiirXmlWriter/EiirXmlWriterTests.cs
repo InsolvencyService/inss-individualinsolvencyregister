@@ -4,6 +4,7 @@ using System.Xml.Linq;
 using System.Xml.XPath;
 using INSS.EIIR.DataSync.Application.UseCase.SyncData.Model;
 using INSS.EIIR.DataSync.Infrastructure.Sink.XML;
+using INSS.EIIR.Models;
 
 
 namespace INSS.EIIR.DataSync.Infrastructure.Tests.EiirXmlWriter
@@ -168,7 +169,7 @@ namespace INSS.EIIR.DataSync.Infrastructure.Tests.EiirXmlWriter
             var inputString = Encoding.GetEncoding(1252).GetString(source1252Array);
 
             //Act
-            var convertedString = IirXMLWriterHelper.FixSQLEncoding(inputString);
+            var convertedString = IirEncodingHelper.FixSQLEncoding(inputString);
 
             //Assert
             Assert.Equal(expected, Encoding.UTF8.GetBytes(convertedString));

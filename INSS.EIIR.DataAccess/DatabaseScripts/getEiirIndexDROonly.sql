@@ -184,8 +184,8 @@ FROM #Cases c
     individual.indiv_no AS indivNo, 
 
     -- Individual details        
-    ISNULL(NULLIF(UPPER(individual.forenames),''), 'No Forenames Found') AS individualForenames, 
-    ISNULL(NULLIF(UPPER(individual.surname), ''), 'No Surname Found') AS individualSurname, 
+    ISNULL(NULLIF(individual.forenames,''), 'No Forenames Found') AS individualForenames, 
+    ISNULL(NULLIF(individual.surname, ''), 'No Surname Found') AS individualSurname, 
     ISNULL(NULLIF(individual.title, ''), 'No Title Found') AS individualTitle,
 
     CASE 
