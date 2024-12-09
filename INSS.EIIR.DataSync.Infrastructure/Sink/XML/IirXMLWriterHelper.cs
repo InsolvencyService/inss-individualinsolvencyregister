@@ -306,7 +306,7 @@ namespace INSS.EIIR.DataSync.Infrastructure.Sink.XML
                 if (model.caseName == null)
                     writer.WriteString($"{model.caseName}");
                 else
-                    writer.WriteString($"{IirEncodingHelper.FixSQLEncoding(model.caseName)}");
+                    writer.WriteString($"{model.caseName}");
                 writer.WriteEndElement();
 
                 writer.WriteStartElement(null, "Court", null);
@@ -374,7 +374,7 @@ namespace INSS.EIIR.DataSync.Infrastructure.Sink.XML
                 if (model.caseDescription == null)
                     writer.WriteString(Common.NoCaseDescription);
                 else
-                    writer.WriteString($"{IirEncodingHelper.FixSQLEncoding(model.caseDescription)}");
+                    writer.WriteString($"{model.caseDescription}");
                 writer.WriteEndElement();
 
                 if (!string.IsNullOrEmpty(model.deceasedDate))

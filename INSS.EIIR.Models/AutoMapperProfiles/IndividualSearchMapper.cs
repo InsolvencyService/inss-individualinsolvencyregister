@@ -25,14 +25,14 @@ public class IndividualSearchMapper : Profile
             .ForMember(dest => dest.LastKnownAddress, opt => opt.MapFrom(src => src.individualAddress))
             .ForMember(dest => dest.LastKnownPostcode, opt => opt.MapFrom(src => src.individualPostcode))
             .ForMember(dest => dest.AddressWithheld, opt => opt.MapFrom(src => src.individualAddressWithheld))
-            .ForMember(dest => dest.CaseName, opt => opt.MapFrom(src => src.caseName))
+            .ForMember(dest => dest.CaseName, opt => opt.MapFrom(src => IirEncodingHelper.FixSQLEncoding(src.caseName)))
             .ForMember(dest => dest.Court, opt => opt.MapFrom(src => src.courtName))
             .ForMember(dest => dest.CourtNumber, opt => opt.MapFrom(src => src.courtNumber))
             .ForMember(dest => dest.CaseYear, opt => opt.MapFrom(src => src.caseYear))
             .ForMember(dest => dest.InsolvencyType, opt => opt.MapFrom(src => src.insolvencyType))
             .ForMember(dest => dest.NotificationDate, opt => opt.MapFrom(src => src.notificationDate))
             .ForMember(dest => dest.CaseStatus, opt => opt.MapFrom(src => src.caseStatus))
-            .ForMember(dest => dest.CaseDescription, opt => opt.MapFrom(src => src.caseDescription))
+            .ForMember(dest => dest.CaseDescription, opt => opt.MapFrom(src => IirEncodingHelper.FixSQLEncoding(src.caseDescription)))
             .ForMember(dest => dest.TradingData, opt => opt.MapFrom(src => src.tradingNames))
             .ForMember(dest => dest.InsolvencyDate, opt => opt.MapFrom(src => src.insolvencyDate))
             .ForMember(dest => dest.HasRestrictions, opt => opt.MapFrom(src => src.hasRestrictions))
@@ -59,7 +59,9 @@ public class IndividualSearchMapper : Profile
         .ReverseMap()
         .ForPath(s => s.individualDOB, opt => opt.MapFrom(src => src.DateOfBirth.Trim()))
         .ForPath(s => s.individualForenames, opt => opt.MapFrom(src => CultureInfo.InvariantCulture.TextInfo.ToTitleCase(src.FirstName.ToLower())))
-        .ForPath(s => s.individualSurname, opt => opt.MapFrom(src => CultureInfo.InvariantCulture.TextInfo.ToTitleCase(src.FamilyName.ToLower())));
+        .ForPath(s => s.individualSurname, opt => opt.MapFrom(src => CultureInfo.InvariantCulture.TextInfo.ToTitleCase(src.FamilyName.ToLower())))
+        .ForPath(s => s.caseName, opt => opt.MapFrom(src => src.CaseName))
+        .ForPath(s => s.caseDescription, opt => opt.MapFrom(src => src.CaseDescription));
 
         CreateMap<IndividualSearch, SearchResult>()
             .ForMember(m => m.individualForenames, opt => opt.MapFrom(s => s.FirstName))
