@@ -134,7 +134,14 @@ public class CaseResult
     public string OtherNamesAsString {
         get
         {
-            return Helpers.OtherNameHelper.GetOtherNames(individualAlias);
+            var txt = Helpers.OtherNameHelper.GetOtherNames(individualAlias);
+
+            if (txt != Common.NoOtherNames)
+            { 
+                txt = txt.ToUpper();
+            }
+           
+            return txt;
         }
     }
     

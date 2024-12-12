@@ -252,7 +252,7 @@ namespace INSS.EIIR.DataSync.Infrastructure.Sink.XML
                     foreach (var othername in model.OtherNames.Names)
                     {
                         writer.WriteStartElement(null, "OtherName", null);
-                        writer.WriteString($"{othername.Forenames ?? ""} {othername.Surname ?? ""}".Trim());
+                        writer.WriteString($"{(othername.Forenames ?? "").ToUpper()} {(othername.Surname ?? "").ToUpper()}".Trim());
                         writer.WriteEndElement();
                     }               
                 }
