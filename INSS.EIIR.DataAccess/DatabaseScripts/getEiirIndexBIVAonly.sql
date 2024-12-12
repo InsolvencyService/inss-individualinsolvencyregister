@@ -255,7 +255,7 @@ FROM #Cases c
                                         AND n1.indiv_no = n2.indiv_no 
                 WHERE n1.case_no = snap.CaseNo AND n1.indiv_no = snap.IndivNo 
             ) AS ci_other_name_CTE
-            FOR XML PATH('Othername'), ROOT('OtherNames')
+            FOR XML PATH('OtherName'), ROOT('OtherNames')
         )
     )
     ELSE 'No OtherNames Found'
