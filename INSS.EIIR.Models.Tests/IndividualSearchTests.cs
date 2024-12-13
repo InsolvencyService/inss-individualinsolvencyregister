@@ -2,6 +2,7 @@
 
 using AutoMapper;
 using INSS.EIIR.Models.IndexModels;
+using INSS.EIIR.Models.Helpers;
 using INSS.EIIR.Models.AutoMapperProfiles;
 
 
@@ -41,10 +42,13 @@ namespace INSS.EIIR.Models.Tests
         [InlineData("Macdonald", "No OtherNames Found", "Macdonald")]
         [InlineData("Macdonald", "", "Macdonald")]
         [InlineData("Macdonald", " ", "Macdonald")]
-        [InlineData("Macdonald", "Macdonald James Stuart", "Macdonald")]
-        [InlineData("Macdonald", "Macdonald James Stuart,Dove James", "Macdonald Dove")]
-        [InlineData("Macdonald", ",  Macdonald James Stuart, Dove James", "Macdonald Dove")]
-        [InlineData("Macdonald", ",  MACDONALD James Stuart, Dove James", "Macdonald Dove")]
+        [InlineData("Macdonald", "<OtherNames><OtherName><Forenames>James Stuart</Forenames><Surname>Macdonald</Surname></OtherName></OtherNames>", "Macdonald")]
+        [InlineData("Macdonald", "<OtherNames><OtherName><Forenames>James Stuart</Forenames><Surname>Macdonald</Surname></OtherName><OtherName><Forenames>James</Forenames><Surname>Dove</Surname></OtherName></OtherNames>", "Macdonald Dove")]
+        [InlineData("Macdonald", "<OtherNames><OtherName><Forenames>James Stuart</Forenames><Surname>MACDONALD</Surname></OtherName><OtherName><Forenames>James</Forenames><Surname>Dove</Surname></OtherName></OtherNames>", "Macdonald Dove")]
+        [InlineData("Macdonald", "<OtherNames><OtherName><Forenames>James</Forenames><Surname></Surname></OtherName></OtherNames>", "Macdonald")]
+        [InlineData("Macdonald", "<OtherNames><OtherName><Forenames>James</Forenames><Surname/></OtherName></OtherNames>", "Macdonald")]
+        [InlineData("Macdonald", "<OtherNames><OtherName><Forenames>James</Forenames><Surname> </Surname></OtherName></OtherNames>", "Macdonald")]
+        [InlineData("Macdonald", "<OtherNames><OtherName><Forenames>James</Forenames></OtherName></OtherNames>", "Macdonald")]
 
         public void LastNamesSearchField_Property(string lastname, string otherNames, string expected)
         {
@@ -66,15 +70,18 @@ namespace INSS.EIIR.Models.Tests
         [InlineData(null, "No OtherNames Found", null)]
         [InlineData(null, "", null)]
         [InlineData(null, " ", null)]
-        [InlineData(null, "Macdonald James", "James")]
+        [InlineData(null, "<OtherNames><OtherName><Forenames>James</Forenames><Surname>Macdonald</Surname></OtherName></OtherNames>", "James")]
         [InlineData("John Scott", null, "John Scott")]
         [InlineData("John Scott", "No OtherNames Found", "John Scott")]
         [InlineData("John Scott", "", "John Scott")]
         [InlineData("John Scott", " ", "John Scott")]
-        [InlineData("John Scott", "Macdonald James Stuart", "John Scott James Stuart")]
-        [InlineData("John Scott", "Macdonald James Stuart,Dove Jim Scott", "John Scott James Stuart Jim")]
-        [InlineData("John Scott", ",  Macdonald James Stuart, Dove James", "John Scott James Stuart")]
-        [InlineData("John", ",  MACDONALD James Stuart, Dove James", "John James Stuart")]
+        [InlineData("John Scott", "<OtherNames><OtherName><Forenames>James Stuart</Forenames><Surname>Macdonald</Surname></OtherName></OtherNames>", "John Scott James Stuart")]
+        [InlineData("John Scott", "<OtherNames><OtherName><Forenames>James Stuart</Forenames><Surname>Macdonald</Surname></OtherName><OtherName><Forenames>Jim Scott</Forenames><Surname>Dove</Surname></OtherName></OtherNames>", "John Scott James Stuart Jim")]
+        [InlineData("John Scott", "<OtherNames><OtherName><Forenames>James Stuart</Forenames><Surname>Macdonald</Surname></OtherName><OtherName><Forenames>James</Forenames><Surname>Dove</Surname></OtherName></OtherNames>", "John Scott James Stuart")]
+        [InlineData("John", "<OtherNames><OtherName><Forenames>James Stuart</Forenames><Surname>MACDONALD</Surname></OtherName><OtherName><Forenames>James</Forenames><Surname>Dove</Surname></OtherName></OtherNames>", "John James Stuart")]
+        [InlineData("John", "<OtherNames><Forenames></Forenames><Surname>Dove</Surname></OtherName></OtherNames>", "John")]
+        [InlineData("John", "<OtherNames><Forenames/><Surname>Dove</Surname></OtherName></OtherNames>", "John")]
+        [InlineData("John", "<OtherNames><Surname>Dove</Surname></OtherName></OtherNames>", "John")]
 
         public void ForeNamesSearchField_Property(string forenames, string otherNames, string expected)
         {
@@ -87,6 +94,32 @@ namespace INSS.EIIR.Models.Tests
             //Act
             //Assert
             Assert.Equal(expected, model.ForeNamesSearchField);
+
+        }
+
+        [Theory]
+        [InlineData(null, "No OtherNames Found")]
+        [InlineData("No OtherNames Found", "No OtherNames Found")]
+        [InlineData("", "No OtherNames Found")]
+        [InlineData(" ", "No OtherNames Found")]
+        [InlineData("<OtherNames><OtherName><Forenames>James</Forenames><Surname>Macdonald</Surname></OtherName></OtherNames>", "Macdonald James")]
+        [InlineData("<OtherNames><OtherName><Forenames>James Stuart</Forenames><Surname>Macdonald</Surname></OtherName></OtherNames>", "Macdonald James Stuart")]
+        [InlineData("<OtherNames><OtherName><Forenames>James Stuart</Forenames><Surname>Macdonald</Surname></OtherName><OtherName><Forenames>Jim Scott</Forenames><Surname>Dove</Surname></OtherName></OtherNames>", "Macdonald James Stuart, Dove Jim Scott")]
+        [InlineData("<OtherNames><OtherName><Forenames>James Stuart</Forenames><Surname>Macdonald</Surname></OtherName><OtherName><Forenames>James</Forenames><Surname>Dove</Surname></OtherName></OtherNames>", "Macdonald James Stuart, Dove James")]
+        [InlineData("<OtherNames><OtherName><Forenames></Forenames><Surname>Dove</Surname></OtherName></OtherNames>", "Dove")]
+        [InlineData("<OtherNames><OtherName><Forenames/><Surname>Dove</Surname></OtherName></OtherNames>", "Dove")]
+        [InlineData("<OtherNames><OtherName><Surname>Dove</Surname></OtherName></OtherNames>", "Dove")]
+        [InlineData("<OtherNames><OtherName><Forenames>John</Forenames><Surname></Surname></OtherName></OtherNames>", "John")]
+        [InlineData("<OtherNames><OtherName><Forenames>John</Forenames><Surname/></OtherName></OtherNames>", "John")]
+        [InlineData("<OtherNames><OtherName><Forenames>John</Forenames></OtherName></OtherNames>", "John")]
+
+        public void OtherNames_Property(string otherNames, string expected)
+        {
+
+            //Arrange
+            //Act
+            //Assert
+            Assert.Equal(expected, OtherNameHelper.GetOtherNames(otherNames));
 
         }
 

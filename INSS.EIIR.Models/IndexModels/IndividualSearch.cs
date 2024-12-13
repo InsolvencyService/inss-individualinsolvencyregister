@@ -60,13 +60,11 @@ public class IndividualSearch
     {
         get
         {
-            //Combine surname with alternatnames (which is comma seperated list of "lastname firstname"
-            var lastnameFirstnamesString = $"{FamilyName?.Trim()},{(AlternativeNames == Common.NoOtherNames ? "" : AlternativeNames)}";
-
-            var lastnameFirstnames = lastnameFirstnamesString.Split(",", StringSplitOptions.RemoveEmptyEntries);
-
-            //Get the first non empty element from each lastnamefirstname => lastname
-            var lastnames = lastnameFirstnames.Select(s => s.Split(" ", StringSplitOptions.RemoveEmptyEntries)).Select(n => n.Count() != 0 ? n.First(f => !string.IsNullOrEmpty(f)) : null);
+            //Split FamilyName into an array of strings
+            var lastnames = FamilyName?.Split(" ", StringSplitOptions.RemoveEmptyEntries) ?? new string[0];
+            
+            //Add alternative surname names
+            lastnames = lastnames.Union(OtherSurnames).ToArray();
 
             //Select distinct values which are not null/empty
             return lastnames.Where(s => !string.IsNullOrEmpty(s)).Count() == 0 ? null : string.Join(" ", lastnames.Where(s => !string.IsNullOrEmpty(s)).Distinct(StringComparer.CurrentCultureIgnoreCase));
@@ -74,27 +72,21 @@ public class IndividualSearch
     }
 
     /// <summary>
-    /// Contains names from Firstname and any firstnames from alternative names with no duplicates which would biase results
+    /// Contains names from Firstname and any forenames from alternative names with no duplicates which would biase results
     /// </summary>
     [SearchableField]
     public string ForeNamesSearchField
     {
         get
         {
-            //Get alternatnames (which is comma seperated list of "lastname firstname"
-            var altLastnameFirstnamesString = $"{(AlternativeNames == Common.NoOtherNames ? "" : AlternativeNames)}";
+            //Split FirstName into an array of strings
+            var combinedFirstnames = FirstName?.Split(" ", StringSplitOptions.RemoveEmptyEntries) ?? new string [0];
 
-            var altLastnameFirstnamesArray = altLastnameFirstnamesString.Split(",", StringSplitOptions.RemoveEmptyEntries);
-
-            //Get the 2+ non empty element from each lastnamefirstname => forenames
-            var altFirstnames = altLastnameFirstnamesArray.Select(s => s.Split(" ", StringSplitOptions.RemoveEmptyEntries)).Select(n => n.Count() > 1 ? string.Join(" ", n.Skip(1)) : "");
-
-            //Combine Firstnames with alternative first names
-            var combinedFirstnames = string.IsNullOrWhiteSpace(FirstName) ? new string[] { } : FirstName.Trim().Split(" ").Select(s=>s);
-            combinedFirstnames = combinedFirstnames.Concat(altFirstnames.Where(x => !string.IsNullOrWhiteSpace(x)).Select(a => a.Split(" ")).SelectMany(x => x));
+            //Add alternative forenames
+            combinedFirstnames = combinedFirstnames.Union(OtherForenames).ToArray();
 
             //Select distinct values which are not null/empty
-            return combinedFirstnames?.Any() != true ? null : string.Join(" ", combinedFirstnames.Distinct(StringComparer.CurrentCultureIgnoreCase).Where(s => !string.IsNullOrEmpty(s)));
+            return combinedFirstnames.Where(s => !string.IsNullOrEmpty(s)).Count() == 0 ? null : string.Join(" ", combinedFirstnames.Where(s => !string.IsNullOrEmpty(s)).Distinct(StringComparer.CurrentCultureIgnoreCase));
         }
     }
 
@@ -214,6 +206,77 @@ public class IndividualSearch
         }
 
     }
+
+
+    /// <summary>
+    /// Returns any other Forenames in AlertativeNames XML or an empty array
+    /// </summary>
+    public IEnumerable<string> OtherForenames
+    {
+        get
+        {
+            if (AlternativeNames == Common.NoOtherNames || string.IsNullOrWhiteSpace(AlternativeNames)) return new string[] { };
+
+            OtherNames othernames;
+
+            try
+            {
+                var serializer = new XmlSerializer(typeof(OtherNames));
+
+                using (TextReader reader = new StringReader(AlternativeNames))
+                {
+                    othernames = (OtherNames)serializer.Deserialize(reader);
+                }
+
+            }
+            catch (InvalidOperationException ex)
+            {
+                if (ex.InnerException is XmlException)
+                    return new string[]{ };
+
+                throw;
+            }
+
+            return othernames.Names.Where(x => x.Forenames != null).Select(on => on.Forenames.Split(" ", StringSplitOptions.RemoveEmptyEntries)).SelectMany(x => x);
+        }
+
+    }
+
+
+    /// <summary>
+    /// Returns any other Surnames in AlertativeNames XML or an empty array
+    /// </summary>
+    public IEnumerable<string> OtherSurnames
+    {
+        get
+        {
+            if (AlternativeNames == Common.NoOtherNames || string.IsNullOrWhiteSpace(AlternativeNames)) return new string[] { };
+
+            OtherNames othernames;
+
+            try
+            {
+                var serializer = new XmlSerializer(typeof(OtherNames));
+
+                using (TextReader reader = new StringReader(AlternativeNames))
+                {
+                    othernames = (OtherNames)serializer.Deserialize(reader);
+                }
+
+            }
+            catch (InvalidOperationException ex)
+            {
+                if (ex.InnerException is XmlException)
+                    return new string[] { };
+
+                throw;
+            }
+
+            return othernames.Names.Where(x => x.Surname != null).Select(on => on.Surname.Split(" ", StringSplitOptions.RemoveEmptyEntries)).SelectMany(x => x);
+        }
+
+    }
+
 
     /*          Restriction related fields - Start            */
 
