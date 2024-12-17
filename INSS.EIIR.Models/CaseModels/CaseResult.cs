@@ -109,6 +109,41 @@ public class CaseResult
             }
         } 
     }
+
+    public OtherNames OtherNames
+    {
+        get
+        {
+            if (!string.IsNullOrEmpty(individualAlias) && individualAlias != Common.NoOtherNames)
+            {
+                var serializer = new XmlSerializer(typeof(OtherNames));
+
+                using (StringReader reader = new StringReader(individualAlias))
+                {
+                    return (OtherNames)serializer.Deserialize(reader);
+                }
+            }
+            else
+            {
+                return null;
+            }
+        }
+    }
+
+    [NotMapped]
+    public string OtherNamesAsString {
+        get
+        {
+            var txt = Helpers.OtherNameHelper.GetOtherNames(individualAlias);
+
+            if (txt != Common.NoOtherNames)
+            { 
+                txt = txt.ToUpper();
+            }
+           
+            return txt;
+        }
+    }
     
     [NotMapped]
     public IIRRecordType RecordType {
@@ -189,6 +224,22 @@ public class TradingDetails
     public string TradingName { get; set; }
     [XmlElement("TradingAddress")]
     public string TradingAddress { get; set; }
+}
+
+[XmlRoot("OtherNames")]
+public class OtherNames
+{
+    [XmlElement("OtherName")]
+    public List<OtherName> Names { get; set; }
+}
+
+public class OtherName
+{ 
+    [XmlElement("Forenames")]
+    public string Forenames { get; set; }
+
+    [XmlElement("Surname")]
+    public string Surname { get; set; }
 }
 
 public enum IIRRecordType
