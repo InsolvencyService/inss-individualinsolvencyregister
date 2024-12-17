@@ -8,6 +8,7 @@ using Microsoft.SqlServer.Management.Common;
 using System.Threading.Tasks;
 using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Extensions;
 using AutoMapper.Configuration.Annotations;
+using System.Reflection.Metadata;
 
 
 
@@ -19,6 +20,7 @@ namespace INSS.EIIR.DailyExtract
         private Stream _blob = null;
         private ILogger<EiiRDailyExtract> _log = null;
 
+        private const long defaultMaxFileSize = 50; 
 
 
         public ExtractSnapshot(string name, Stream blob, ILogger<EiiRDailyExtract> log) 
@@ -103,13 +105,13 @@ namespace INSS.EIIR.DailyExtract
 
                 BlobContainerClient sourceContainerClient = sourceBlobServiceClient.GetBlobContainerClient(Environment.GetEnvironmentVariable("SourceContainer"));
 
-                string maxFileSizeTxt = Environment.GetEnvironmentVariable("MaxEiirDailyExtractFileSize").IsNullOrWhiteSpace() ? "50" : Environment.GetEnvironmentVariable("MaxEiirDailyExtractFileSize");
-                long maxFilesSize = 50;
+                string maxFileSizeTxt = Environment.GetEnvironmentVariable("MaxEiirDailyExtractFileSize").IsNullOrWhiteSpace() ? $"{defaultMaxFileSize}" : Environment.GetEnvironmentVariable("MaxEiirDailyExtractFileSize");
+                long maxFilesSize;
 
                 if (!long.TryParse(maxFileSizeTxt, out maxFilesSize))
                 {
-                    _log.LogWarning("Unable to parse MaxEiirDailyExtractFileSize default of 50 MB set.");
-                    maxFilesSize = 50;  
+                    _log.LogWarning($"Unable to parse MaxEiirDailyExtractFileSize default of {defaultMaxFileSize} MB set.");
+                    maxFilesSize = defaultMaxFileSize;  
                 } 
 
                 BlobClient blob = sourceContainerClient.GetBlobClient(_name);
