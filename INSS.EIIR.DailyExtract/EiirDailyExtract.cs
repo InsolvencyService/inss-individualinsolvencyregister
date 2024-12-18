@@ -27,19 +27,41 @@ namespace INSS.EIIR.DailyExtract
             */
             ExtractSnapshot snapshot = new ExtractSnapshot(name, myBlob, _logger);
 
-            /*
-                Process the received snapshot file
-                */
-            snapshot.Process();
-            _logger.LogInformation($"    - Snapshot processed succesfully");
 
-            /*
-                Archive the received snapshot file
+            if (snapshot.WithinFileSizeLimits)
+            {
+                /*
+                    Process the received snapshot file
                 */
-            snapshot.Archive();
-            _logger.LogInformation($"    - Snapshot archived.");
-            _logger.LogInformation($"Update of Snapshot {name} successfull");
+                snapshot.Process();
+                _logger.LogInformation($"    - Snapshot processed succesfully");
+
+                /*
+                    Archive the received snapshot file
+                */
+                snapshot.Archive();
+                _logger.LogInformation($"    - Snapshot archived.");
+                _logger.LogInformation($"Update of Snapshot {name} successfull");
+            }
+            else 
+            {
+                _logger.LogInformation($"The file {name} is outside the Maximum Daily Extract File Size limit. " 
+                     + $"The file should be applied manually to the EIIR database using a suitable SQL client such as SQLCMD or powershell Invoke-Sqlcmd. " 
+                     + $"The file may be too large to be processed with SSMS.  See APP-5666 for further detail.");
+
+                //Throw custom exception so it really stands out in Application Insights
+                throw new MaximumFileSizeExceededException($"The file {name} exceeds the maximum file size to be processed automatically by EiirDailyExtract.  See Trace Messages for furher detail.", null);
+            
+            }
 
         }
     }
+
+
+    public class MaximumFileSizeExceededException : Exception
+    {
+        public MaximumFileSizeExceededException(string message, Exception innerException) : base(message, innerException)
+        { }
+    }
+
 }
