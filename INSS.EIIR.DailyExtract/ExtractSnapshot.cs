@@ -96,8 +96,8 @@ namespace INSS.EIIR.DailyExtract
         }
 
         public bool WithinFileSizeLimits 
-        { 
-            get { 
+        {
+            get {
 
                 var result = false;
 
@@ -105,12 +105,18 @@ namespace INSS.EIIR.DailyExtract
 
                 BlobContainerClient sourceContainerClient = sourceBlobServiceClient.GetBlobContainerClient(Environment.GetEnvironmentVariable("SourceContainer"));
 
-                string maxFileSizeTxt = Environment.GetEnvironmentVariable("MaxEiirDailyExtractFileSize").IsNullOrWhiteSpace() ? $"{defaultMaxFileSize}" : Environment.GetEnvironmentVariable("MaxEiirDailyExtractFileSize");
+                string maxFileSizeTxt = Environment.GetEnvironmentVariable("MaxEiirDailyExtractFileSize");
                 long maxFilesSize;
+
+                if (maxFileSizeTxt.IsNullOrWhiteSpace())
+                {
+                    _log.LogWarning($"MaxEiirDailyExtractFileSize is not set, default of {defaultMaxFileSize} MB set.");
+                    maxFileSizeTxt = $"{defaultMaxFileSize}";
+                }
 
                 if (!long.TryParse(maxFileSizeTxt, out maxFilesSize))
                 {
-                    _log.LogWarning($"Unable to parse MaxEiirDailyExtractFileSize default of {defaultMaxFileSize} MB set.");
+                    _log.LogWarning($"Unable to parse MaxEiirDailyExtractFileSize, default of {defaultMaxFileSize} MB set.");
                     maxFilesSize = defaultMaxFileSize;  
                 } 
 

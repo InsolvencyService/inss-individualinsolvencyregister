@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Extensions.Logging;
+using Microsoft.OpenApi.Validations;
 
 namespace INSS.EIIR.DailyExtract
 {
@@ -45,13 +46,12 @@ namespace INSS.EIIR.DailyExtract
             }
             else 
             {
-                _logger.LogInformation($"The file {name} is outside the Maximum Daily Extract File Size limit. " 
-                     + $"The file should be applied manually to the EIIR database using a suitable SQL client such as SQLCMD or powershell Invoke-Sqlcmd. " 
-                     + $"The file may be too large to be processed with SSMS.  See APP-5666 for further detail.");
+                var message = $"The file {name} is outside the Maximum Daily Extract File Size limit. "
+                     + $"The file should be applied manually to the EIIR database using a suitable SQL client such as SQLCMD or powershell Invoke-Sqlcmd. "
+                     + $"The file may be too large to be applied with SSMS.  See Jira ticket APP-5666 for further detail.";
 
                 //Throw custom exception so it really stands out in Application Insights
-                throw new MaximumFileSizeExceededException($"The file {name} exceeds the maximum file size to be processed automatically by EiirDailyExtract.  See Trace Messages for furher detail.", null);
-            
+                throw new MaximumFileSizeExceededException(message, null);           
             }
 
         }
