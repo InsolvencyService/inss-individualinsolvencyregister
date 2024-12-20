@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using INSS.EIIR.Data.Models;
+using INSS.EIIR.Models;
 using INSS.EIIR.Models.FeedbackModels;
 
 namespace INSS.EIIR.Data.AutoMapperProfiles
@@ -8,7 +9,9 @@ namespace INSS.EIIR.Data.AutoMapperProfiles
     {
         public FeedbackMapper()
         {
-            CreateMap<CiCaseFeedback, CaseFeedback>();
+            CreateMap<CiCaseFeedback, CaseFeedback>()
+                .ForMember(dest => dest.OrderDate, opt => opt.MapFrom(src => src.InsolvencyDate));
+
             CreateMap<CreateCaseFeedback, CiCaseFeedback>();
         }
     }

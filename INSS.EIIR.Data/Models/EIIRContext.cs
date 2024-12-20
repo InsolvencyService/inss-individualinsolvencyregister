@@ -1635,6 +1635,21 @@ public partial class EIIRContext : DbContext
             entity.Property(e => e.Viewed).HasColumnName("Viewed");
 
             entity.Property(e => e.ViewedDate).HasColumnName("ViewedDate").IsRequired(false);
+
+            entity.Property(e => e.InsolvencyType)
+                .HasMaxLength(1)
+                .IsUnicode(false)
+                .HasColumnName("InsolvencyType");
+
+            entity.Property(e => e.CaseName)
+                .HasMaxLength(96)
+                .IsUnicode(false)
+                .HasColumnName("CaseName");
+
+            entity.Property(e => e.InsolvencyDate).HasColumnName("InsolvencyDate").IsRequired(false);
+
+            entity.Property(e => e.IndivNo).HasColumnName("IndivNo");
+
         });
 
         modelBuilder.Entity<EiirSnapshotTable>(entity =>
