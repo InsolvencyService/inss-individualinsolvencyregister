@@ -24,5 +24,14 @@ namespace INSS.EIIR.Models.FeedbackModels
 
         [Required(ErrorMessage = "Select an organisation")]
         public string ReporterOrganisation { get; set; } = null!;
+
+        public string InsolvencyType { get; set; }
+
+        public string CaseName { get; set; }
+
+        public DateTime? InsolvencyDate { get; set; }
+
+        public int IndivNo { get; set; }
+
     }
 }
