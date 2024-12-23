@@ -49,6 +49,7 @@ namespace INSS.EIIR.Models.Tests
         [InlineData("Macdonald", "<OtherNames><OtherName><Forenames>James</Forenames><Surname/></OtherName></OtherNames>", "Macdonald")]
         [InlineData("Macdonald", "<OtherNames><OtherName><Forenames>James</Forenames><Surname> </Surname></OtherName></OtherNames>", "Macdonald")]
         [InlineData("Macdonald", "<OtherNames><OtherName><Forenames>James</Forenames></OtherName></OtherNames>", "Macdonald")]
+        [InlineData("Macdonald Dove", "No OtherNames Found", "Macdonald Dove")]
 
         public void LastNamesSearchField_Property(string lastname, string otherNames, string expected)
         {
