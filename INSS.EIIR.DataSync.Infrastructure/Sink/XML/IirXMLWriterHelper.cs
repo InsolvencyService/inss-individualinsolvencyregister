@@ -288,15 +288,13 @@ namespace INSS.EIIR.DataSync.Infrastructure.Sink.XML
                     writer.WriteString($"{model.caseName}");
                 writer.WriteEndElement();
 
-                writer.WriteStartElement(null, "Court", null);
-                
-                //Known issue with DRRO and Court
-                if (model.RecordType == IIRRecordType.DRRO)
-                    writer.WriteString($"{model.courtName??$"(Court does not apply to DRO)"}");
-                else
+                //APP-5725 Donot output Court for DRRO for consitency with earlier behaviour
+                if (model.RecordType != IIRRecordType.DRRO)
+                { 
+                    writer.WriteStartElement(null, "Court", null);               
                     writer.WriteString($"{model.courtName}");
-
-                writer.WriteEndElement();
+                    writer.WriteEndElement();
+                }
 
                 writer.WriteStartElement(null, "CaseType", null);
                 writer.WriteString($"{model.insolvencyType}");
