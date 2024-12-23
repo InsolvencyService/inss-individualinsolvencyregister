@@ -10,6 +10,8 @@ using AutoMapper;
 using INSS.EIIR.Models.Helpers;
 using System.ComponentModel.Design;
 using System.Linq;
+using INSS.EIIR.DataSync.Infrastructure.Fake.Source;
+using AutoMapper.Configuration;
 
 namespace INSS.EIIR.StubbedTestData
 {
@@ -41,7 +43,7 @@ namespace INSS.EIIR.StubbedTestData
             if (results.Any())
                 result = results.First();
 
-            return Task.FromResult(_mapper.Map<IndividualSearch, CaseResult>(result));
+            return Task.FromResult(_mapper.Map<IndividualSearch, CaseResult>(result.SetDynamicTestData()));
         }
 
         Task<CaseResult> IIndividualQueryService.SearchDetailIndexAsync(CaseRequest caseModel)
@@ -59,6 +61,8 @@ namespace INSS.EIIR.StubbedTestData
                 string json = r.ReadToEnd();
                 source = JsonSerializer.Deserialize<List<IndividualSearch>>(json);
             }
+
+            source.ForEach(x => x = x.SetDynamicTestData());
 
             List<SearchResult> result = new List<SearchResult> { };
 

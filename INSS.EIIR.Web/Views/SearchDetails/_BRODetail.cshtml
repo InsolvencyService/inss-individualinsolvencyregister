@@ -27,6 +27,19 @@
             <dd class="govuk-summary-list__value"> @(Model.restrictionsStartDate.Duration(Model.restrictionsEndDate)) </dd>
         </div>
 
+        @if (Model.IncludeCaseDetailsInXML(DateTime.Now))
+        {
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key"> NOTE </dt>
+                <dd class="govuk-summary-list__value"> This Bankruptcy Restrictions Order is related to the following Bankruptcy </dd>
+            </div>
+
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key"> Case name </dt>
+                <dd class="govuk-summary-list__value"> @Html.DisplayFor(model => Model.caseName) </dd>
+            </div>
+        }
+
         <div class="govuk-summary-list__row">
             <dt class="govuk-summary-list__key"> Court </dt>
             <dd class="govuk-summary-list__value"> @Html.DisplayFor(model => Model.courtName) </dd>
@@ -41,6 +54,26 @@
             <dt class="govuk-summary-list__key"> Year </dt>
             <dd class="govuk-summary-list__value"> @Html.DisplayFor(model => Model.caseYear) </dd>
         </div>
+
+        @if (Model.IncludeCaseDetailsInXML(DateTime.Now))
+        {
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key"> Order date </dt>
+                <dd class="govuk-summary-list__value">
+                    @((Model.insolvencyDate.IsValidDate()) ? Html.DisplayFor(model => (model.insolvencyDate)) : NoData.INFORMATION_NOT_AVAIALBLE)
+                </dd>
+            </div>
+
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key"> Status </dt>
+                <dd class="govuk-summary-list__value"> @Html.DisplayFor(model => Model.caseStatus) </dd>
+            </div>
+
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key"> Case description </dt>
+                <dd class="govuk-summary-list__value"> @Html.DisplayFor(model => Model.caseDescription) </dd>
+            </div>
+        }
 
         @if (Model.hasaPrevInterimRestrictionsOrder)
         {
