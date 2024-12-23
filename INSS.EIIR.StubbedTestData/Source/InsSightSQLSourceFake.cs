@@ -72,6 +72,16 @@ namespace INSS.EIIR.DataSync.Infrastructure.Fake.Source
                 rec.RestrictionsEndDate = currentDateTime.AddDays(-16).AddYears(5).AddDays(-1);
             }
 
+            //Record for BRO whose bankruptcy has been discharged
+            if (rec.CaseNumber == "782635253")
+            {
+                rec.InsolvencyDate = currentDateTime.AddDays(-451).ToString("dd/MM/yyyy");
+                rec.CaseYear = currentDateTime.AddDays(-451).ToString("yyyy");
+                rec.CaseStatus = rec.CaseStatus[0..^10] + currentDateTime.AddDays(-451).AddYears(1).ToString("dd/MM/yyyy");
+                rec.RestrictionsStartDate = currentDateTime.AddDays(-4).Date;
+                rec.RestrictionsEndDate = currentDateTime.AddDays(-4).AddYears(13).AddDays(-1);
+            }
+
             return rec; 
         }
     }
