@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using INSS.EIIR.Models.Breadcrumb;
+using INSS.EIIR.Models.CustomValidators;
 using INSS.EIIR.Models.SubscriberModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
@@ -21,7 +22,7 @@ namespace INSS.EIIR.Web.ViewModels
         [Required(ErrorMessage = "Enter the name of the company or organisation")]
         [MaxLength(50)]
         [Display(Name = "Name")]
-        [RegularExpression(NameValidCharacters, ErrorMessage = InvalidCharactersValidationError)]
+        [ContainsOnly7bitCharacters]
         public string OrganisationName { get; set; }
 
         [Required(ErrorMessage = "Select the type of company or organisation")]
@@ -32,13 +33,13 @@ namespace INSS.EIIR.Web.ViewModels
         [Required(ErrorMessage = "Enter the first name")]
         [Display(Name = "First name")]
         [MaxLength(40)]
-        [RegularExpression(NameValidCharacters, ErrorMessage = InvalidCharactersValidationError)]
+        [ContainsOnly7bitCharacters]
         public string ContactForename { get; set; }
 
         [Required(ErrorMessage = "Enter the last name")]
         [Display(Name = "Last name")]
         [MaxLength(40)]
-        [RegularExpression(NameValidCharacters, ErrorMessage = InvalidCharactersValidationError)]
+        [ContainsOnly7bitCharacters]
         public string ContactSurname { get; set; }
 
         [Required(ErrorMessage = "Enter line 1 of the address")]
