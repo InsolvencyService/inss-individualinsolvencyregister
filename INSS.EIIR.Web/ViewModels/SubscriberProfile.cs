@@ -1,6 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using INSS.EIIR.Models.Breadcrumb;
-using INSS.EIIR.Models.CustomValidators;
 using INSS.EIIR.Models.SubscriberModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
@@ -9,9 +8,10 @@ namespace INSS.EIIR.Web.ViewModels
 {
     public class SubscriberProfile
     {
-        private const string NameValidCharacters = "^[a-zA-Z ]+(([',.\\-][a-zA-Z ])?[a-zA-Z ]*)*$";
+        private const string NameValidCharacters = "^[a-zA-Z0-9 ]+(([',.\\-&()][a-zA-Z0-9 ])?[a-zA-Z0-9 ]*)*$";
         private const string AddressValidCharacters = "^[a-zA-Z0-9 ]+(([',.\\-][a-zA-Z0-9 ])?[a-zA-Z0-9 ]*)*$";
-        private const string InvalidCharactersValidationError = "{0} contains invalid characters";
+        private const string InvalidAddressCharactersValidationError = "{0} must start and end with a number, letter or space and can contain ',.\\-";
+        private const string InvalidNameCharactersValidationError = "{0} must start and end with a number, letter or space and can contain ',.\\-&()";
 
         public SubscriberProfile()
         {
@@ -22,7 +22,7 @@ namespace INSS.EIIR.Web.ViewModels
         [Required(ErrorMessage = "Enter the name of the company or organisation")]
         [MaxLength(50)]
         [Display(Name = "Name")]
-        [ContainsOnly7bitCharacters]
+        [RegularExpression(NameValidCharacters, ErrorMessage = InvalidNameCharactersValidationError)]
         public string OrganisationName { get; set; }
 
         [Required(ErrorMessage = "Select the type of company or organisation")]
@@ -32,31 +32,31 @@ namespace INSS.EIIR.Web.ViewModels
 
         [Required(ErrorMessage = "Enter the first name")]
         [Display(Name = "First name")]
-        [MaxLength(40)]
-        [ContainsOnly7bitCharacters]
+        [MaxLength(40)]       
+        [RegularExpression(NameValidCharacters, ErrorMessage = InvalidNameCharactersValidationError)]
         public string ContactForename { get; set; }
 
         [Required(ErrorMessage = "Enter the last name")]
         [Display(Name = "Last name")]
         [MaxLength(40)]
-        [ContainsOnly7bitCharacters]
+        [RegularExpression(NameValidCharacters, ErrorMessage = InvalidNameCharactersValidationError)]
         public string ContactSurname { get; set; }
 
         [Required(ErrorMessage = "Enter line 1 of the address")]
         [Display(Name = "Address line 1")]
         [MaxLength(60)]
-        [RegularExpression(AddressValidCharacters, ErrorMessage = InvalidCharactersValidationError)]
+        [RegularExpression(AddressValidCharacters, ErrorMessage = InvalidAddressCharactersValidationError)]
         public string ContactAddress1 { get; set; }
 
         [Display(Name = "Address line 2")]
         [MaxLength(60)]
-        [RegularExpression(AddressValidCharacters, ErrorMessage = InvalidCharactersValidationError)]
+        [RegularExpression(AddressValidCharacters, ErrorMessage = InvalidAddressCharactersValidationError)]
         public string ContactAddress2 { get; set; }
 
         [Required(ErrorMessage = "Enter the town or city")]
         [Display(Name = "Town or city")]
         [MaxLength(60)]
-        [RegularExpression(AddressValidCharacters, ErrorMessage = InvalidCharactersValidationError)]
+        [RegularExpression(AddressValidCharacters, ErrorMessage = InvalidAddressCharactersValidationError)]
         public string ContactCity { get; set; }
 
         [Required(ErrorMessage = "Enter the postcode")]
