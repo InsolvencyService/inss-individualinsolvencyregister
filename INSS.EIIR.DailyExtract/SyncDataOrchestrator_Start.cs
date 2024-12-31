@@ -1,5 +1,3 @@
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Extensions.Logging;
 using System.Net;
@@ -12,6 +10,10 @@ using Microsoft.OpenApi.Models;
 using Microsoft.Azure.Functions.Worker.Http;
 using System.Threading.Tasks;
 using Microsoft.DurableTask.Client;
+using Newtonsoft.Json;
+using Microsoft.IdentityModel.Tokens;
+using INSS.EIIR.Models.SyncData;
+
 
 namespace INSS.EIIR.DailyExtract
 {
@@ -27,12 +29,26 @@ namespace INSS.EIIR.DailyExtract
         [Function("SyncDataOrchestrator_Start")]
         [OpenApiOperation(operationId: "Run", tags: new[] { "EIIR" })]
         [OpenApiSecurity("apikeyheader_auth", SecuritySchemeType.ApiKey, In = OpenApiSecurityLocationType.Header, Name = "x-functions-key")]
+        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(Models.SyncData.SyncDataRequest),
+                Description = "The Modes and Datasources to be applied by SyncData. Both are bitwise values each covering multiple options, seek guidance for usage.", Required = false)]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "text/plain", bodyType: typeof(string), Description = "The OK response")]
         public async Task<HttpResponseData> HttpStart(
-            [HttpTrigger(AuthorizationLevel.Function, "get", "post")] HttpRequestData req,
+            [HttpTrigger(AuthorizationLevel.Function, "post")] HttpRequestData req,
             [DurableClient] DurableTaskClient client)
         {
-            string instanceId = await client.ScheduleNewOrchestrationInstanceAsync(nameof(SyncDataOrchestrator));
+            string json = await req.ReadAsStringAsync();
+            SyncDataRequest settings;
+
+            if (json.IsNullOrEmpty())
+            {
+                settings = new SyncDataRequest();
+                _logger.LogWarning("SyncData settings unable to be determined from request body, defaults set.");
+            } else
+            {
+                settings = JsonConvert.DeserializeObject<Models.SyncData.SyncDataRequest>(json);
+            }
+
+            string instanceId = await client.ScheduleNewOrchestrationInstanceAsync(nameof(SyncDataOrchestrator), settings);
 
             _logger.LogInformation($"Started orchestration with ID = '{instanceId}'.");
 
