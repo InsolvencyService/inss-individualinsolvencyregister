@@ -3,6 +3,7 @@ using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.DurableTask;
 using Microsoft.DurableTask.Client;
 using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -18,8 +19,10 @@ namespace INSS.EIIR.DailyExtract
 
             logger.LogInformation("Calling SyncData Activity.");
 
+            var inputParams = context.GetInput<Models.SyncData.SyncDataRequest>();
+
             // Replace name and input with values relevant for your Durable Functions Activity
-            await context.CallActivityAsync(nameof(SyncData));
+            await context.CallActivityAsync(nameof(SyncData), inputParams);
 
         }
 

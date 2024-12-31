@@ -2,15 +2,9 @@
 using INSS.EIIR.DataSync.Application;
 using INSS.EIIR.DataSync.Application.UseCase.SyncData.Model;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 using Microsoft.Azure.Functions.Worker;
 using System;
-using INSS.EIIR.Interfaces.DataAccess;
-using System.Drawing;
 
 namespace INSS.EIIR.DailyExtract
 {
@@ -28,10 +22,11 @@ namespace INSS.EIIR.DailyExtract
         }
 
         [Function(nameof(SyncData))]
-        public async Task Run([ActivityTrigger] string name)
+        public async Task Run([ActivityTrigger] Models.SyncData.SyncDataRequest inputs )
         {
             _logger.LogInformation("SyncData started");
 
+            //inputs to be passed to Handle() method... once implemented
             var response = await _responseUseCase.Handle();
 
             if (response.IsError)
