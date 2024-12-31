@@ -4,6 +4,10 @@
     "AzureWebJobsStorage": "UseDevelopmentStorage=true",
     "FUNCTIONS_WORKER_RUNTIME": "dotnet-isolated",
 
+    //Controls whether new SyncData method is used or old two stored proc/RebuildIndexes/ExtractJobServiceTrigger
+    //Should be short lived removedby April 2025, as later should be removed as redundant
+    "SyncDataEnabled": true,
+
     //Controls whether faked datasources are used, defaults to false if not specified
     "UseFakedDataSources": true,
 
@@ -33,7 +37,7 @@
 
     //Existing bankruptcites json file
     "ExistingBankruptciesContainer": "existingbankruptcies",
-    "ExistingBankruptciesFile":  "existingbankruptcies.json",
+    "ExistingBankruptciesFile": "existingbankruptcies.json",
 
     //settings to call either orchestrator (ISCIS all record types) or SyncData (INSSight for BKTs and IVAs)
     //If INSSightDataFeedEnabled = true then settings need to point to func-eiir-daily-extract
