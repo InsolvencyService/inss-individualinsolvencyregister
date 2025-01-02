@@ -461,6 +461,70 @@ namespace INSS.EIIR.DataSync.Application.Tests
             await dataSink.DidNotReceive().Complete(Arg.Any<bool>());
         }
 
+        [Fact]
+        public async Task Given_RebuildIndexDisabled_SyncData_XML_sinks()
+        {
+            // arrange
+            var rec = ValidData.Standard();
+            var dataSource = MockDataSourceBuilder.Create().ThatHas(rec).Build();
+            var dataSink = MockDataSinkBuilder.Create()
+                .ThatReturns(Task.FromResult(new DataSinkResponse() { IsError = false }))
+                .ThatHasPropertyEnabledCheckBit(Models.Constants.SyncData.Mode.DisableXMLExtract)
+                .Build();
+            var extractRepo = MockDataExtractRepositoryBuilder.Create().ThatReturns(new Extract() { ExtractCompleted = "N", SnapshotCompleted = "Y" }).Build();
+            var logger = Substitute.For<ILogger<SyncData>>();
+            var sut = SyncDataApplicationBuilder.Create()
+                .WithDataSource(dataSource)
+                .WithDataSink(dataSink)
+                .WithExtractRepo(extractRepo)
+                .WithLogger(logger)
+                .Build();
+
+            // act
+            await sut.Handle(new SyncDataRequest()
+            {
+                Modes = Models.Constants.SyncData.Mode.DisableIndexRebuild,
+                DataSources = Models.Constants.SyncData.Datasource.FakeBKTandIVA
+            });
+
+            // assert
+            await dataSink.Received().Start();
+            await dataSink.Received().Sink(Arg.Any<InsolventIndividualRegisterModel>());
+            await dataSink.Received().Complete(Arg.Any<bool>());
+        }
+
+        [Fact]
+        public async Task Given_XMLDisabled_SyncData_IndexRebuild_sinks()
+        {
+            // arrange
+            var rec = ValidData.Standard();
+            var dataSource = MockDataSourceBuilder.Create().ThatHas(rec).Build();
+            var dataSink = MockDataSinkBuilder.Create()
+                .ThatReturns(Task.FromResult(new DataSinkResponse() { IsError = false }))
+                .ThatHasPropertyEnabledCheckBit(Models.Constants.SyncData.Mode.DisableIndexRebuild)
+                .Build();
+            var extractRepo = MockDataExtractRepositoryBuilder.Create().ThatReturns(new Extract() { ExtractCompleted = "N", SnapshotCompleted = "Y" }).Build();
+            var logger = Substitute.For<ILogger<SyncData>>();
+            var sut = SyncDataApplicationBuilder.Create()
+                .WithDataSource(dataSource)
+                .WithDataSink(dataSink)
+                .WithExtractRepo(extractRepo)
+                .WithLogger(logger)
+                .Build();
+
+            // act
+            await sut.Handle(new SyncDataRequest()
+            {
+                Modes = Models.Constants.SyncData.Mode.DisableXMLExtract,
+                DataSources = Models.Constants.SyncData.Datasource.FakeBKTandIVA
+            });
+
+            // assert
+            await dataSink.Received().Start();
+            await dataSink.Received().Sink(Arg.Any<InsolventIndividualRegisterModel>());
+            await dataSink.Received().Complete(Arg.Any<bool>());
+        }
+
 
     }
 }
