@@ -37,18 +37,18 @@ namespace INSS.EIIR.DailyExtract
             [DurableClient] DurableTaskClient client)
         {
             string json = await req.ReadAsStringAsync();
-            SyncDataRequest settings;
+            SyncDataRequest syncDataRequest;
 
             if (json.IsNullOrEmpty())
             {
-                settings = new SyncDataRequest();
-                _logger.LogWarning("SyncData settings unable to be determined from request body, defaults set.");
+                syncDataRequest = new SyncDataRequest();
+                _logger.LogWarning("SyncData settings unable to be determined from request body, defaults");
             } else
             {
-                settings = JsonConvert.DeserializeObject<Models.SyncData.SyncDataRequest>(json);
+                syncDataRequest = JsonConvert.DeserializeObject<Models.SyncData.SyncDataRequest>(json);
             }
 
-            string instanceId = await client.ScheduleNewOrchestrationInstanceAsync(nameof(SyncDataOrchestrator), settings);
+            string instanceId = await client.ScheduleNewOrchestrationInstanceAsync(nameof(SyncDataOrchestrator), syncDataRequest);
 
             _logger.LogInformation($"Started orchestration with ID = '{instanceId}'.");
 
