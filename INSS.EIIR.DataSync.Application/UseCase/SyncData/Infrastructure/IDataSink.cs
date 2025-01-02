@@ -9,6 +9,8 @@ namespace INSS.EIIR.DataSync.Application.UseCase.SyncData.Infrastructure
 {
     public interface IDataSink<TSinkable>
     {
+        Models.Constants.SyncData.Mode EnabledCheckBit { get; }
+        string Description { get; }
         Task Start();
         Task<DataSinkResponse> Sink(TSinkable model);
         Task<SinkCompleteResponse> Complete(bool commit = true);

@@ -11,13 +11,21 @@ namespace INSS.EIIR.DataSync.Application.Tests.TestDoubles
 {
     public class MockDataSinkBuilder
     {
-        private Task<DataSinkResponse> sinkResponse;
+        private Task<DataSinkResponse> _sinkResponse;
+        private Models.Constants.SyncData.Mode _enabledCheckBit;
 
         public static MockDataSinkBuilder Create() { return new MockDataSinkBuilder(); }
 
         public MockDataSinkBuilder ThatReturns(Task<DataSinkResponse> model)
         {
-            sinkResponse = model;
+            _sinkResponse = model;
+
+            return this;
+        }
+
+        public MockDataSinkBuilder ThatHasPropertyEnabledCheckBit(Models.Constants.SyncData.Mode enabledCheckBit)
+        {
+            _enabledCheckBit = enabledCheckBit;
 
             return this;
         }
@@ -26,7 +34,8 @@ namespace INSS.EIIR.DataSync.Application.Tests.TestDoubles
         {
             var mock = Substitute.For<IDataSink<InsolventIndividualRegisterModel>>();
 
-            mock.Sink(Arg.Any<InsolventIndividualRegisterModel>()).Returns(sinkResponse);
+            mock.Sink(Arg.Any<InsolventIndividualRegisterModel>()).Returns(_sinkResponse);
+            mock.EnabledCheckBit.Returns(_enabledCheckBit);
 
             return mock;
         }

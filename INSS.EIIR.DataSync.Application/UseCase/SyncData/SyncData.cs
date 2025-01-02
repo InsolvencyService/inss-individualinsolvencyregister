@@ -51,19 +51,30 @@ namespace INSS.EIIR.DataSync.Application.UseCase.SyncData
             #endregion Pre-Conditions check
 
             //Check if no datasources have been specified 
-            if (request.DataSources == Models.Constants.SyncData.Datasource.None || _options.DataSources.Where(s => (s.Type & request.DataSources) > 0).Count() == 0)
+            if (request.DataSources == Models.Constants.SyncData.Datasource.None || _options.DataSources.Where(s => (s.Type & request.DataSources) == s.Type).Count() == 0)
             {
                 response = new SyncDataResponse() { ErrorCount = 1, ErrorMessage = "No DataSources detected when calling SyncData" };
                 await SinkFailure("SyncData Initialisation Failure", response);
                 return response;
             }
 
-            foreach (IDataSink<InsolventIndividualRegisterModel> sink in _options.DataSinks)
+            //Check if no sinks are enabled
+            if ((request.Modes & (Models.Constants.SyncData.Mode.DisableXMLExtract | Models.Constants.SyncData.Mode.DisableIndexRebuild)) 
+                    == (Models.Constants.SyncData.Mode.DisableXMLExtract | Models.Constants.SyncData.Mode.DisableIndexRebuild))
             {
+                response = new SyncDataResponse() { ErrorCount = 1, ErrorMessage = "All data sinks disabled detected when calling SyncData" };
+                await SinkFailure("SyncData Initialisation Failure", response);
+                return response;
+            }
+
+
+            foreach (IDataSink<InsolventIndividualRegisterModel> sink in _options.DataSinks.Where(s => (s.EnabledCheckBit & ~request.Modes) == s.EnabledCheckBit ))
+            {
+                _logger.LogWarning(sink.Description);
                 await sink.Start();
             }
 
-            foreach (IDataSourceAsync<InsolventIndividualRegisterModel> source in _options.DataSources.Where(s => (s.Type & request.DataSources) > 0))
+            foreach (IDataSourceAsync<InsolventIndividualRegisterModel> source in _options.DataSources.Where(s => (s.Type & request.DataSources) == s.Type))
             {
                 try
                 {
@@ -93,7 +104,7 @@ namespace INSS.EIIR.DataSync.Application.UseCase.SyncData
                         }
                         else
                         {
-                            foreach (IDataSink<InsolventIndividualRegisterModel> sink in _options.DataSinks)
+                            foreach (IDataSink<InsolventIndividualRegisterModel> sink in _options.DataSinks.Where(s => (s.EnabledCheckBit & ~request.Modes) == s.EnabledCheckBit))
                             {
                                 var sinkResponse = await SinkModel(transformResponse.Model, sink);
                                 if (sinkResponse.IsError)
@@ -112,7 +123,7 @@ namespace INSS.EIIR.DataSync.Application.UseCase.SyncData
                 }
             }
 
-            foreach (IDataSink<InsolventIndividualRegisterModel> sink in _options.DataSinks)
+            foreach (IDataSink<InsolventIndividualRegisterModel> sink in _options.DataSinks.Where(s => (s.EnabledCheckBit & ~request.Modes) == s.EnabledCheckBit))
             {
                 await sink.Complete(_swapIndexAndZipXml);
             }

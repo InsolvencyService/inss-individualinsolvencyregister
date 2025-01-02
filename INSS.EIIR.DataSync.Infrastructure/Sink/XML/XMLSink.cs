@@ -6,6 +6,7 @@ using INSS.EIIR.Interfaces.DataAccess;
 using System.Text;
 using INSS.EIIR.Models.CaseModels;
 using System.IO.Compression;
+using INSS.EIIR.Models.Constants;
 
 namespace INSS.EIIR.DataSync.Infrastructure.Sink.XML
 {
@@ -27,6 +28,9 @@ namespace INSS.EIIR.DataSync.Infrastructure.Sink.XML
         private ExtractVolumes _extractVolumes;
         private SortedList<int, int> _existingBankruptcies;
 
+        public SyncData.Mode EnabledCheckBit => SyncData.Mode.DisableXMLExtract;
+
+        public string Description => "XML Extract being created";
 
         public XMLSink(XMLSinkOptions options, IExtractRepository extractRepository, IExistingBankruptciesService existingBankruptcies) 
         { 
