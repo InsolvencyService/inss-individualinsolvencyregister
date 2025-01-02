@@ -24,6 +24,10 @@ namespace INSS.EIIR.StubbedTestData
             _mapper = mapper;
         }
 
+        public SyncData.Datasource Type =>  SyncData.Datasource.FakeDRO;
+
+        public string Description => "Fake DRO Data from searchdata.json";
+
         public async IAsyncEnumerable<InsolventIndividualRegisterModel> GetInsolventIndividualRegistrationsAsync()
         {
             List<IndividualSearch> source = new List<IndividualSearch>();

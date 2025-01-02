@@ -2,6 +2,7 @@
 using INSS.EIIR.DataSync.Application.UseCase.SyncData.Infrastructure;
 using INSS.EIIR.DataSync.Application.UseCase.SyncData.Model;
 using INSS.EIIR.Models.CaseModels;
+using INSS.EIIR.Models.Constants;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -12,8 +13,7 @@ using System.Threading.Tasks;
 namespace INSS.EIIR.DataSync.Infrastructure.Source.SQL
 {
     /// <summary>
-    /// A temporary IDataSourceAsync<InsolventIndividualRegisterModel> implementation to be used as far as SIT environment
-    /// To be used to test INSSight Integration functionality prior to actual INSSight feed being finalised
+    /// Bankrupcties and IVAs from ISCIS
     /// </summary>
     public class EIIRLocalSQLIVAB : IDataSourceAsync<InsolventIndividualRegisterModel>
     {
@@ -30,6 +30,10 @@ namespace INSS.EIIR.DataSync.Infrastructure.Source.SQL
             this._options = options;
 
         }
+
+        public SyncData.Datasource Type => SyncData.Datasource.IscisBKTandIVA;
+
+        public string Description => "ISCIS Bankruptcies and IVAs";
 
         public async IAsyncEnumerable<InsolventIndividualRegisterModel> GetInsolventIndividualRegistrationsAsync()
         {

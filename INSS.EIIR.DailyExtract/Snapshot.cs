@@ -77,7 +77,7 @@ namespace INSS.EIIR.DailyExtract
                     settings = new SyncDataRequest()
                     {
                         Modes = Models.Constants.SyncData.Mode.Default,
-                        DataSources = Models.Constants.SyncData.Datasource.InnSightBKTandIVA | Models.Constants.SyncData.Datasource.IscisDRO
+                        DataSources = Models.Constants.SyncData.Datasource.FakeBKTandIVA | Models.Constants.SyncData.Datasource.FakeDRO
                     };
                     _logger.LogInformation("Calling SyncData - Using Faked data from searchdata.json for BKTs & IVAs, ISCIS for DROs");
                 }

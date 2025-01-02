@@ -38,31 +38,21 @@ namespace INSS.EIIR.DataSync.Functions.DI
             var validationRules = sp.GetRequiredService<IEnumerable<IValidationRule>>();
             var transformRules = sp.GetRequiredService<IEnumerable<ITransformRule>>();
 
-
-            IEnumerable<IDataSourceAsync<InsolventIndividualRegisterModel>> sources;
-
-            var useFakeData = config.GetValue<Boolean>("UseFakedDataSources", false);
-
-            if (useFakeData)
+            //Datasources and selected in SyncData via their Type property
+            IEnumerable<IDataSourceAsync<InsolventIndividualRegisterModel>> sources = new List<IDataSourceAsync<InsolventIndividualRegisterModel>>()
             {
-                sources = new List<IDataSourceAsync<InsolventIndividualRegisterModel>>()
-                {
-                    GetInsSightFakeDataSource(config, mapper),
-                    GetEIIRSQLSourceFake(config, mapper)
-                };
-            }
-            else
-            {
-                sources = new List<IDataSourceAsync<InsolventIndividualRegisterModel>>()
-                {
-                    //Temporary disablement of INSSight feed to allow isolated testing of new Integration functionality
-                    //GetINSSightSQLSource(config, mapper),
-                    GetEIIRSQLSource(config, mapper),
-                    
-                    //Follow call should be removed once INSSight feed is in use
-                    GetEIIRLocalSQLIVAB(config, mapper)
-                };
-            }
+                //Fake Data Sources
+                GetInsSightFakeDataSource(config, mapper),
+                GetEIIRSQLSourceFake(config, mapper),
+
+                //ISCIS Data Sources
+                GetEIIRSQLSource(config, mapper),
+                GetEIIRLocalSQLIVAB(config, mapper),
+
+                //INSSight Data Sources
+                GetINSSightSQLSource(config, mapper)
+            };
+
 
             IEnumerable<IDataSink<InsolventIndividualRegisterModel>> sinks = new List<IDataSink<InsolventIndividualRegisterModel>>()
             {

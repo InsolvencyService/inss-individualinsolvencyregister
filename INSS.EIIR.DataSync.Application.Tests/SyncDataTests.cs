@@ -9,6 +9,8 @@ using NSubstitute;
 using INSS.EIIR.DataSync.Application.UseCase.SyncData.Exceptions;
 using INSS.EIIR.DataSync.Application.UseCase.SyncData.Validation;
 using NSubstitute.ExceptionExtensions;
+using INSS.EIIR.Models.SyncData;
+using Azure;
 
 namespace INSS.EIIR.DataSync.Application.Tests
 {
@@ -31,7 +33,11 @@ namespace INSS.EIIR.DataSync.Application.Tests
                 .Build();
 
             // act
-            await sut.Handle();
+            await sut.Handle(new SyncDataRequest() 
+            { 
+                Modes = Models.Constants.SyncData.Mode.Default, 
+                DataSources = Models.Constants.SyncData.Datasource.FakeBKTandIVA
+            });
 
             // assert
             await dataSink.Received().Sink(Arg.Is(rec));
@@ -58,7 +64,11 @@ namespace INSS.EIIR.DataSync.Application.Tests
                 .Build();
 
             // act
-            await sut.Handle();
+            await sut.Handle(new SyncDataRequest()
+            {
+                Modes = Models.Constants.SyncData.Mode.Default,
+                DataSources = Models.Constants.SyncData.Datasource.FakeBKTandIVA
+            });
 
             // assert
             await failureSink.Received().Sink(Arg.Any<SyncFailure>());
@@ -86,7 +96,11 @@ namespace INSS.EIIR.DataSync.Application.Tests
                 .Build();
 
             // act
-            await sut.Handle();
+            await sut.Handle(new SyncDataRequest()
+            {
+                Modes = Models.Constants.SyncData.Mode.Default,
+                DataSources = Models.Constants.SyncData.Datasource.FakeBKTandIVA
+            });
 
             // assert
             await dataSink.DidNotReceive().Complete(true);
@@ -112,7 +126,11 @@ namespace INSS.EIIR.DataSync.Application.Tests
                 .Build();
 
             // act
-            await sut.Handle();
+            await sut.Handle(new SyncDataRequest()
+            {
+                Modes = Models.Constants.SyncData.Mode.Default,
+                DataSources = Models.Constants.SyncData.Datasource.FakeBKTandIVA
+            });
 
             // assert
             await failureSink.Received().Sink(Arg.Any<SyncFailure>());
@@ -142,7 +160,11 @@ namespace INSS.EIIR.DataSync.Application.Tests
                 .Build();
 
             // act
-            var response = await sut.Handle();
+            var response = await sut.Handle(new SyncDataRequest()
+            {
+                Modes = Models.Constants.SyncData.Mode.Default,
+                DataSources = Models.Constants.SyncData.Datasource.FakeBKTandIVA
+            });
 
             // assert
             await failureSink.Received().Sink(Arg.Any<SyncFailure>());
@@ -172,7 +194,11 @@ namespace INSS.EIIR.DataSync.Application.Tests
                 .Build();
 
             // act & assert
-            await Assert.ThrowsAsync<TransformRuleException>(async() => await sut.Handle());
+            await Assert.ThrowsAsync<TransformRuleException>(async() => await sut.Handle(new SyncDataRequest()
+            {
+                Modes = Models.Constants.SyncData.Mode.Default,
+                DataSources = Models.Constants.SyncData.Datasource.FakeBKTandIVA
+            }));
 
         }
 
@@ -198,7 +224,11 @@ namespace INSS.EIIR.DataSync.Application.Tests
                 .Build();
 
             // act & assert
-            await Assert.ThrowsAsync<ValidationRuleException>(async () => await sut.Handle());
+            await Assert.ThrowsAsync<ValidationRuleException>(async () => await sut.Handle(new SyncDataRequest()
+            {
+                Modes = Models.Constants.SyncData.Mode.Default,
+                DataSources = Models.Constants.SyncData.Datasource.FakeBKTandIVA
+            }));
 
         }
 
@@ -228,7 +258,11 @@ namespace INSS.EIIR.DataSync.Application.Tests
                 .Build();
 
             // act & assert
-            await Assert.ThrowsAsync<DataSinkException>(async () => await sut.Handle());
+            await Assert.ThrowsAsync<DataSinkException>(async () => await sut.Handle(new SyncDataRequest()
+            {
+                Modes = Models.Constants.SyncData.Mode.Default,
+                DataSources = Models.Constants.SyncData.Datasource.FakeBKTandIVA
+            }));
 
         }
 
@@ -258,8 +292,78 @@ namespace INSS.EIIR.DataSync.Application.Tests
                 .Build();
 
             // act & assert
-            await Assert.ThrowsAsync<DataSinkException>(async () => await sut.Handle());
+            await Assert.ThrowsAsync<DataSinkException>(async () => await sut.Handle(new SyncDataRequest()
+            {
+                Modes = Models.Constants.SyncData.Mode.Default,
+                DataSources = Models.Constants.SyncData.Datasource.FakeBKTandIVA
+            }));
 
         }
+
+
+        [Fact]
+        public async Task Given_requestdataSourceIsNone_SyncData_sinks_failure_returns_error_response()
+        {
+            // arrange
+            var rec = ValidData.Standard();
+            var dataSource = MockDataSourceBuilder.Create().ThatHas(rec).Build();
+            var dataSink = MockDataSinkBuilder.Create().ThatReturns(Task.FromResult(new DataSinkResponse() { IsError = false })).Build();
+            var extractRepo = MockDataExtractRepositoryBuilder.Create().ThatReturns(new Extract() { ExtractCompleted = "N", SnapshotCompleted = "Y" }).Build();
+            var failureSink = Substitute.For<IDataSink<SyncFailure>>();
+            var logger = Substitute.For<ILogger<SyncData>>();
+            var sut = SyncDataApplicationBuilder.Create()
+                .WithDataSource(dataSource)
+                .WithDataSink(dataSink)
+                .WithExtractRepo(extractRepo)
+                .WithFailureSink(failureSink)
+                .WithLogger(logger)
+                .Build();
+
+            // act
+            var response = await sut.Handle(new SyncDataRequest()
+            {
+                Modes = Models.Constants.SyncData.Mode.Default,
+                DataSources = Models.Constants.SyncData.Datasource.None
+            });
+
+            // assert
+            await failureSink.Received().Sink(Arg.Any<SyncFailure>());
+            await dataSink.DidNotReceive().Sink(Arg.Any<InsolventIndividualRegisterModel>());
+            await dataSink.DidNotReceive().Complete(true);
+            Assert.Equal(1, response.ErrorCount);
+        }
+
+        [Fact]
+        public async Task Given_requestdataSourceIsNotValid_SyncData_sinks_failure_returns_error_response()
+        {
+            // arrange
+            var rec = ValidData.Standard();
+            var dataSource = MockDataSourceBuilder.Create().ThatHas(rec).Build();
+            var dataSink = MockDataSinkBuilder.Create().ThatReturns(Task.FromResult(new DataSinkResponse() { IsError = false })).Build();
+            var extractRepo = MockDataExtractRepositoryBuilder.Create().ThatReturns(new Extract() { ExtractCompleted = "N", SnapshotCompleted = "Y" }).Build();
+            var failureSink = Substitute.For<IDataSink<SyncFailure>>();
+            var logger = Substitute.For<ILogger<SyncData>>();
+            var sut = SyncDataApplicationBuilder.Create()
+                .WithDataSource(dataSource)
+                .WithDataSink(dataSink)
+                .WithExtractRepo(extractRepo)
+                .WithFailureSink(failureSink)
+                .WithLogger(logger)
+                .Build();
+
+            // act
+            var response = await sut.Handle(new SyncDataRequest()
+            {
+                Modes = Models.Constants.SyncData.Mode.Default,
+                DataSources = Models.Constants.SyncData.Datasource.FakeDRO
+            });
+
+            // assert
+            await failureSink.Received().Sink(Arg.Any<SyncFailure>());
+            await dataSink.DidNotReceive().Sink(Arg.Any<InsolventIndividualRegisterModel>());
+            await dataSink.DidNotReceive().Complete(true);
+            Assert.Equal(1, response.ErrorCount);
+        }
+
     }
 }
