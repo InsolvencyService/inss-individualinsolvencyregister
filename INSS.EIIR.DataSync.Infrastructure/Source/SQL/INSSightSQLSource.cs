@@ -2,6 +2,7 @@
 using INSS.EIIR.DataSync.Application.UseCase.SyncData.Model;
 using INSS.EIIR.DataSync.Infrastructure.Source.SQL.Context;
 using INSS.EIIR.Models.CaseModels;
+using INSS.EIIR.Models.Constants;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -24,6 +25,10 @@ namespace INSS.EIIR.DataSync.Infrastructure.Source.SQL
             _externalInssContext = new ExternalInssContext(dbContextOptsBldr.Options);
             this._options = options;
         }
+
+        public SyncData.Datasource Type =>  SyncData.Datasource.InnSightBKTandIVA;
+
+        public string Description => "INSSight Bankruptcies and IVAs";
 
         public async IAsyncEnumerable<InsolventIndividualRegisterModel> GetInsolventIndividualRegistrationsAsync()
         {

@@ -17,8 +17,10 @@ using INSS.EIIR.DataAccess;
 using INSS.EIIR.Models.Configuration;
 using Microsoft.Extensions.Configuration;
 using INSS.EIIR.Data.Models;
+using INSS.EIIR.Models.SyncData;
 using Microsoft.EntityFrameworkCore;
 using INSS.EIIR.DataSync.Application.UseCase.SyncData.Validation;
+
 
 var host = new HostBuilder()
     .ConfigureFunctionsWebApplication()
@@ -81,7 +83,7 @@ var host = new HostBuilder()
         services.AddScoped<IExtractRepository, ExtractRepository>();
         services.AddTransient<IValidationRule, IdValidationRule>();
 
-        services.AddScoped<IResponseUseCase<SyncDataResponse>, SyncData>(SyncDataFactory.Get);
+        services.AddScoped<IRequestResponseUseCase<SyncDataRequest, SyncDataResponse>, SyncData>(SyncDataFactory.Get);
         
     })
     .Build();

@@ -23,6 +23,10 @@ namespace INSS.EIIR.DataSync.Infrastructure.Fake.Source
             _mapper = mapper;
         }
 
+        public SyncData.Datasource Type => SyncData.Datasource.FakeBKTandIVA;
+
+        public string Description => "Fake Bankruptcies and IVAs from searchdata.json";
+
         public async IAsyncEnumerable<InsolventIndividualRegisterModel> GetInsolventIndividualRegistrationsAsync()
         {
             using (Stream r = new FileStream("searchdata.json", FileMode.Open))

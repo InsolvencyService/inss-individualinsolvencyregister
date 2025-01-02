@@ -36,6 +36,9 @@ namespace INSS.EIIR.DataSync.Application.Tests.TestDoubles
             else
                 mock.GetInsolventIndividualRegistrationsAsync().Returns(GetTestValues());
 
+            mock.Type.Returns(Models.Constants.SyncData.Datasource.FakeBKTandIVA);
+            mock.Description.Returns("Mocked Date Source");
+
             return mock;
         }
 

@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using INSS.EIIR.DataSync.Infrastructure.Source.SQL.Context;
 using INSS.EIIR.Data.Models;
+using INSS.EIIR.Models.Constants;
 
 namespace INSS.EIIR.DataSync.Infrastructure.Source.SQL
 {
@@ -26,6 +27,10 @@ namespace INSS.EIIR.DataSync.Infrastructure.Source.SQL
             this._options = options;
 
         }
+
+        public SyncData.Datasource Type => SyncData.Datasource.IscisDRO;
+
+        public string Description => "ISCIS Debt Relief Orders";
 
         public async IAsyncEnumerable<InsolventIndividualRegisterModel> GetInsolventIndividualRegistrationsAsync()
         {

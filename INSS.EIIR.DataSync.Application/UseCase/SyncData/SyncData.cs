@@ -4,10 +4,11 @@ using INSS.EIIR.DataSync.Application.UseCase.SyncData.Model;
 using INSS.EIIR.DataSync.Application.UseCase.SyncData.Service;
 using Microsoft.Extensions.Logging;
 using INSS.EIIR.Interfaces.DataAccess;
+using INSS.EIIR.Models.SyncData;
 
 namespace INSS.EIIR.DataSync.Application.UseCase.SyncData
 {
-    public class SyncData : IResponseUseCase<SyncDataResponse>
+    public class SyncData : IRequestResponseUseCase<SyncDataRequest, SyncDataResponse>
     {
         private readonly SyncDataOptions _options;
         private readonly TransformService _transformService;
@@ -25,7 +26,7 @@ namespace INSS.EIIR.DataSync.Application.UseCase.SyncData
             _eiirRepository = extractRepository;
         }
 
-        public async Task<SyncDataResponse> Handle()
+        public async Task<SyncDataResponse> Handle(SyncDataRequest request)
         {
             int numErrors = 0;
 
@@ -42,15 +43,24 @@ namespace INSS.EIIR.DataSync.Application.UseCase.SyncData
             }
             #endregion Pre-Conditions check
 
+            //Check if no datasources have been specified 
+            if (request.DataSources == Models.Constants.SyncData.Datasource.None || _options.DataSources.Where(s => (s.Type & request.DataSources) > 0).Count() == 0)
+            {
+                response = new SyncDataResponse() { ErrorCount = 1, ErrorMessage = "No DataSources detected when calling SyncData" };
+                await SinkFailure("SyncData Initialisation Failure", response);
+                return response;
+            }
+
             foreach (IDataSink<InsolventIndividualRegisterModel> sink in _options.DataSinks)
             {
                 await sink.Start();
             }
 
-            foreach (IDataSourceAsync<InsolventIndividualRegisterModel> source in _options.DataSources)
+            foreach (IDataSourceAsync<InsolventIndividualRegisterModel> source in _options.DataSources.Where(s => (s.Type & request.DataSources) > 0))
             {
                 try
                 {
+                    _logger.LogWarning($"Processing DataSource for: {source.Description}");
                     await foreach (var model in source.GetInsolventIndividualRegistrationsAsync())
                     {
                         // validate
