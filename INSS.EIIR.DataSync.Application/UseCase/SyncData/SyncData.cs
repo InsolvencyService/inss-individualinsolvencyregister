@@ -32,14 +32,21 @@ namespace INSS.EIIR.DataSync.Application.UseCase.SyncData
 
             await _options.FailureSink.Start();
 
-            #region Pre-Conditions check
             SyncDataResponse response = CheckPreconditions();
 
-            if (response.ErrorMessage != "")
+            #region Pre-Conditions check
+            if ((request.Modes & Models.Constants.SyncData.Mode.IgnorePreConditionChecks) == Models.Constants.SyncData.Mode.IgnorePreConditionChecks)
             {
-                response.ErrorCount++;
-                await SinkFailure("SyncData Initialisation Failure", response);
-                return response;
+                _logger.LogWarning($"SyncData pre-condition checks ignored {(response.ErrorMessage != string.Empty ? "Error: " + response.ErrorMessage : "")}");
+            }
+            else
+            {
+                if (response.ErrorMessage != "")
+                {
+                    response.ErrorCount++;
+                    await SinkFailure("SyncData Initialisation Failure", response);
+                    return response;
+                }
             }
             #endregion Pre-Conditions check
 

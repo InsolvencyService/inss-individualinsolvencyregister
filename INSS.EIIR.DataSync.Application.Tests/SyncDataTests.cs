@@ -365,5 +365,37 @@ namespace INSS.EIIR.DataSync.Application.Tests
             Assert.Equal(1, response.ErrorCount);
         }
 
+        [Fact]
+        public async Task Given_precondtions_ignored_SyncData_sinks_record_completes()
+        {
+            // arrange
+            var rec = ValidData.Standard();
+            var dataSource = MockDataSourceBuilder.Create().ThatHas(rec).Build();
+            var dataSink = MockDataSinkBuilder.Create().ThatReturns(Task.FromResult(new DataSinkResponse() { IsError = false })).Build();
+            var extractRepo = MockDataExtractRepositoryBuilder.Create().ThatReturns(new Extract() { ExtractCompleted = "N", SnapshotCompleted = "N" }).Build();
+            var transformRule = MockDataTransformRuleBuilder.Create().ThatReturns(Task.FromResult(new TransformRuleResponse() { IsError = false })).Build();
+            var logger = Substitute.For<ILogger<SyncData>>();
+            var failureSink = Substitute.For<IDataSink<SyncFailure>>();
+            var sut = SyncDataApplicationBuilder.Create()
+                .WithDataSource(dataSource)
+                .WithDataSink(dataSink)
+                .WithExtractRepo(extractRepo)
+                .WithTransformationRule(transformRule)
+                .WithFailureSink(failureSink)
+                .WithLogger(logger)
+                .Build();
+
+            // act
+            var response = await sut.Handle(new SyncDataRequest()
+            {
+                Modes = Models.Constants.SyncData.Mode.IgnorePreConditionChecks,
+                DataSources = Models.Constants.SyncData.Datasource.FakeBKTandIVA
+            });
+
+            // assert
+            await dataSink.Received().Sink(Arg.Is(rec));
+            await dataSink.Received().Complete(true);
+        }
+
     }
 }
