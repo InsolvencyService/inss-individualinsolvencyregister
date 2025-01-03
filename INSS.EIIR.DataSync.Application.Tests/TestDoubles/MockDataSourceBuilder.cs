@@ -1,5 +1,6 @@
 ﻿using INSS.EIIR.DataSync.Application.UseCase.SyncData.Infrastructure;
 using INSS.EIIR.DataSync.Application.UseCase.SyncData.Model;
+using INSS.EIIR.Models.SyncData;
 using NSubstitute;
 using NSubstitute.ExceptionExtensions;
 
@@ -36,7 +37,7 @@ namespace INSS.EIIR.DataSync.Application.Tests.TestDoubles
             else
                 mock.GetInsolventIndividualRegistrationsAsync().Returns(GetTestValues());
 
-            mock.Type.Returns(Models.Constants.SyncData.Datasource.FakeBKTandIVA);
+            mock.Type.Returns(SyncDataEnums.Datasource.FakeBKTandIVA);
             mock.Description.Returns("Mocked Date Source");
 
             return mock;

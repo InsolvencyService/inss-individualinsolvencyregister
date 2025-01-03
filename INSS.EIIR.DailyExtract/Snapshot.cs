@@ -7,8 +7,8 @@ using Microsoft.SqlServer.Management.Common;
 using System.Net.Http;
 using Microsoft.Azure.Functions.Worker;
 using INSS.EIIR.Models.SyncData;
-using INSS.EIIR.Models.Constants;
 using Newtonsoft.Json;
+
 
 namespace INSS.EIIR.DailyExtract
 {
@@ -76,8 +76,8 @@ namespace INSS.EIIR.DailyExtract
                 {
                     settings = new SyncDataRequest()
                     {
-                        Modes = Models.Constants.SyncData.Mode.Default,
-                        DataSources = Models.Constants.SyncData.Datasource.FakeBKTandIVA | Models.Constants.SyncData.Datasource.FakeDRO
+                        Modes = SyncDataEnums.Mode.Default,
+                        DataSources = SyncDataEnums.Datasource.FakeBKTandIVA | SyncDataEnums.Datasource.FakeDRO
                     };
                     _logger.LogInformation("Calling SyncData - Using Faked data from searchdata.json for BKTs & IVAs, ISCIS for DROs");
                 }
@@ -85,8 +85,8 @@ namespace INSS.EIIR.DailyExtract
                 {
                     settings = new SyncDataRequest()
                     {
-                        Modes = Models.Constants.SyncData.Mode.Default,
-                        DataSources = Models.Constants.SyncData.Datasource.InnSightBKTandIVA | Models.Constants.SyncData.Datasource.IscisDRO
+                        Modes = SyncDataEnums.Mode.Default,
+                        DataSources = SyncDataEnums.Datasource.InnSightBKTandIVA | SyncDataEnums.Datasource.IscisDRO
                     };
                     _logger.LogInformation("Calling SyncData - Using INSSight data feeds for BKTs & IVAs, ISCIS for DROs");
                 }
@@ -94,8 +94,8 @@ namespace INSS.EIIR.DailyExtract
                 {
                     settings = new SyncDataRequest()
                     {
-                        Modes = Models.Constants.SyncData.Mode.Default,
-                        DataSources = Models.Constants.SyncData.Datasource.IscisBKTandIVA | Models.Constants.SyncData.Datasource.IscisDRO
+                        Modes = SyncDataEnums.Mode.Default,
+                        DataSources = SyncDataEnums.Datasource.IscisBKTandIVA | SyncDataEnums.Datasource.IscisDRO
                     };
                     _logger.LogInformation("Calling SyncData - Using ISCIS data feeds for BKTs, IVAs & DROs");
                 }

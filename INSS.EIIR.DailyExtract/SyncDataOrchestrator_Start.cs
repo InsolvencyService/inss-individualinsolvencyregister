@@ -29,7 +29,7 @@ namespace INSS.EIIR.DailyExtract
         [Function("SyncDataOrchestrator_Start")]
         [OpenApiOperation(operationId: "Run", tags: new[] { "EIIR" })]
         [OpenApiSecurity("apikeyheader_auth", SecuritySchemeType.ApiKey, In = OpenApiSecurityLocationType.Header, Name = "x-functions-key")]
-        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(Models.SyncData.SyncDataRequest),
+        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(SyncDataRequest),
                 Description = "The Modes and Datasources to be applied by SyncData. Both are bitwise values each covering multiple options, seek guidance for usage.", Required = false)]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "text/plain", bodyType: typeof(string), Description = "The OK response")]
         public async Task<HttpResponseData> HttpStart(
@@ -45,7 +45,7 @@ namespace INSS.EIIR.DailyExtract
                 _logger.LogWarning("SyncData settings unable to be determined from request body, defaults");
             } else
             {
-                syncDataRequest = JsonConvert.DeserializeObject<Models.SyncData.SyncDataRequest>(json);
+                syncDataRequest = JsonConvert.DeserializeObject<SyncDataRequest>(json);
             }
 
             string instanceId = await client.ScheduleNewOrchestrationInstanceAsync(nameof(SyncDataOrchestrator), syncDataRequest);

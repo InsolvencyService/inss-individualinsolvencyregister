@@ -17,9 +17,9 @@ using INSS.EIIR.DataAccess;
 using INSS.EIIR.Models.Configuration;
 using Microsoft.Extensions.Configuration;
 using INSS.EIIR.Data.Models;
-using INSS.EIIR.Models.SyncData;
 using Microsoft.EntityFrameworkCore;
 using INSS.EIIR.DataSync.Application.UseCase.SyncData.Validation;
+using INSS.EIIR.Models.SyncData;
 
 
 var host = new HostBuilder()

@@ -4,13 +4,9 @@ using INSS.EIIR.DataSync.Application.UseCase.SyncData.Model;
 using INSS.EIIR.Models.CaseModels;
 using INSS.EIIR.Models.Constants;
 using INSS.EIIR.Models.IndexModels;
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Text;
+using INSS.EIIR.Models.SyncData;
 using System.Text.Json;
-using System.Threading.Tasks;
+
 
 namespace INSS.EIIR.DataSync.Infrastructure.Fake.Source
 {
@@ -23,7 +19,7 @@ namespace INSS.EIIR.DataSync.Infrastructure.Fake.Source
             _mapper = mapper;
         }
 
-        public SyncData.Datasource Type => SyncData.Datasource.FakeBKTandIVA;
+        public SyncDataEnums.Datasource Type => SyncDataEnums.Datasource.FakeBKTandIVA;
 
         public string Description => "Fake Bankruptcies and IVAs from searchdata.json";
 

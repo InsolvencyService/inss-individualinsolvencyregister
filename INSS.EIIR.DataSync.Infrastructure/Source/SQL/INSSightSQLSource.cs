@@ -1,14 +1,9 @@
 ﻿using INSS.EIIR.DataSync.Application.UseCase.SyncData.Infrastructure;
 using INSS.EIIR.DataSync.Application.UseCase.SyncData.Model;
 using INSS.EIIR.DataSync.Infrastructure.Source.SQL.Context;
-using INSS.EIIR.Models.CaseModels;
-using INSS.EIIR.Models.Constants;
+using INSS.EIIR.Models.SyncData;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace INSS.EIIR.DataSync.Infrastructure.Source.SQL
 {
@@ -26,7 +21,7 @@ namespace INSS.EIIR.DataSync.Infrastructure.Source.SQL
             this._options = options;
         }
 
-        public SyncData.Datasource Type =>  SyncData.Datasource.InnSightBKTandIVA;
+        public SyncDataEnums.Datasource Type =>  SyncDataEnums.Datasource.InnSightBKTandIVA;
 
         public string Description => "INSSight Bankruptcies and IVAs";
 
