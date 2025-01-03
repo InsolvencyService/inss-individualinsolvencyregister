@@ -1,14 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Text.Json.Serialization;
-using System.Threading.Tasks;
+﻿using System.Text.Json.Serialization;
 
-namespace INSS.EIIR.Models.Constants
+namespace INSS.EIIR.Models.SyncData
 {
-    public class SyncData
+    public class SyncDataEnums
     {
         //JsonConverter here does have desired effect => enums appear as string inputs through OpenAPI/Swagger UI
         //Many other options attempted (this is .NET 9 syntax) - parked for now to concentrate on implementing parameters as intger values

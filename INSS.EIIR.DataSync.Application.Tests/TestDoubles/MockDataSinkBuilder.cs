@@ -1,18 +1,14 @@
 ﻿using INSS.EIIR.DataSync.Application.UseCase.SyncData.Infrastructure;
 using INSS.EIIR.DataSync.Application.UseCase.SyncData.Model;
+using INSS.EIIR.Models.SyncData;
 using NSubstitute;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace INSS.EIIR.DataSync.Application.Tests.TestDoubles
 {
     public class MockDataSinkBuilder
     {
         private Task<DataSinkResponse> _sinkResponse;
-        private Models.Constants.SyncData.Mode _enabledCheckBit;
+        private SyncDataEnums.Mode _enabledCheckBit;
 
         public static MockDataSinkBuilder Create() { return new MockDataSinkBuilder(); }
 
@@ -23,7 +19,7 @@ namespace INSS.EIIR.DataSync.Application.Tests.TestDoubles
             return this;
         }
 
-        public MockDataSinkBuilder ThatHasPropertyEnabledCheckBit(Models.Constants.SyncData.Mode enabledCheckBit)
+        public MockDataSinkBuilder ThatHasPropertyEnabledCheckBit(SyncDataEnums.Mode enabledCheckBit)
         {
             _enabledCheckBit = enabledCheckBit;
 

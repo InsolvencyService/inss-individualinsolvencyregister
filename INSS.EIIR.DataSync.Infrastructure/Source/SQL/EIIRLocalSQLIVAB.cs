@@ -2,13 +2,9 @@
 using INSS.EIIR.DataSync.Application.UseCase.SyncData.Infrastructure;
 using INSS.EIIR.DataSync.Application.UseCase.SyncData.Model;
 using INSS.EIIR.Models.CaseModels;
-using INSS.EIIR.Models.Constants;
+using INSS.EIIR.Models.SyncData;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace INSS.EIIR.DataSync.Infrastructure.Source.SQL
 {
@@ -31,7 +27,7 @@ namespace INSS.EIIR.DataSync.Infrastructure.Source.SQL
 
         }
 
-        public SyncData.Datasource Type => SyncData.Datasource.IscisBKTandIVA;
+        public SyncDataEnums.Datasource Type => SyncDataEnums.Datasource.IscisBKTandIVA;
 
         public string Description => "ISCIS Bankruptcies and IVAs";
 

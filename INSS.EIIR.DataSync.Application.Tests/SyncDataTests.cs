@@ -9,8 +9,8 @@ using NSubstitute;
 using INSS.EIIR.DataSync.Application.UseCase.SyncData.Exceptions;
 using INSS.EIIR.DataSync.Application.UseCase.SyncData.Validation;
 using NSubstitute.ExceptionExtensions;
-using INSS.EIIR.Models.SyncData;
 using Azure;
+using INSS.EIIR.Models.SyncData;
 
 namespace INSS.EIIR.DataSync.Application.Tests
 {
@@ -35,8 +35,8 @@ namespace INSS.EIIR.DataSync.Application.Tests
             // act
             await sut.Handle(new SyncDataRequest() 
             { 
-                Modes = Models.Constants.SyncData.Mode.Default, 
-                DataSources = Models.Constants.SyncData.Datasource.FakeBKTandIVA
+                Modes = SyncDataEnums.Mode.Default, 
+                DataSources = SyncDataEnums.Datasource.FakeBKTandIVA
             });
 
             // assert
@@ -66,8 +66,8 @@ namespace INSS.EIIR.DataSync.Application.Tests
             // act
             await sut.Handle(new SyncDataRequest()
             {
-                Modes = Models.Constants.SyncData.Mode.Default,
-                DataSources = Models.Constants.SyncData.Datasource.FakeBKTandIVA
+                Modes = SyncDataEnums.Mode.Default,
+                DataSources = SyncDataEnums.Datasource.FakeBKTandIVA
             });
 
             // assert
@@ -98,8 +98,8 @@ namespace INSS.EIIR.DataSync.Application.Tests
             // act
             await sut.Handle(new SyncDataRequest()
             {
-                Modes = Models.Constants.SyncData.Mode.Default,
-                DataSources = Models.Constants.SyncData.Datasource.FakeBKTandIVA
+                Modes = SyncDataEnums.Mode.Default,
+                DataSources = SyncDataEnums.Datasource.FakeBKTandIVA
             });
 
             // assert
@@ -128,8 +128,8 @@ namespace INSS.EIIR.DataSync.Application.Tests
             // act
             await sut.Handle(new SyncDataRequest()
             {
-                Modes = Models.Constants.SyncData.Mode.Default,
-                DataSources = Models.Constants.SyncData.Datasource.FakeBKTandIVA
+                Modes = SyncDataEnums.Mode.Default,
+                DataSources = SyncDataEnums.Datasource.FakeBKTandIVA
             });
 
             // assert
@@ -162,8 +162,8 @@ namespace INSS.EIIR.DataSync.Application.Tests
             // act
             var response = await sut.Handle(new SyncDataRequest()
             {
-                Modes = Models.Constants.SyncData.Mode.Default,
-                DataSources = Models.Constants.SyncData.Datasource.FakeBKTandIVA
+                Modes = SyncDataEnums.Mode.Default,
+                DataSources = SyncDataEnums.Datasource.FakeBKTandIVA
             });
 
             // assert
@@ -196,8 +196,8 @@ namespace INSS.EIIR.DataSync.Application.Tests
             // act & assert
             await Assert.ThrowsAsync<TransformRuleException>(async() => await sut.Handle(new SyncDataRequest()
             {
-                Modes = Models.Constants.SyncData.Mode.Default,
-                DataSources = Models.Constants.SyncData.Datasource.FakeBKTandIVA
+                Modes = SyncDataEnums.Mode.Default,
+                DataSources = SyncDataEnums.Datasource.FakeBKTandIVA
             }));
 
         }
@@ -226,8 +226,8 @@ namespace INSS.EIIR.DataSync.Application.Tests
             // act & assert
             await Assert.ThrowsAsync<ValidationRuleException>(async () => await sut.Handle(new SyncDataRequest()
             {
-                Modes = Models.Constants.SyncData.Mode.Default,
-                DataSources = Models.Constants.SyncData.Datasource.FakeBKTandIVA
+                Modes = SyncDataEnums.Mode.Default,
+                DataSources = SyncDataEnums.Datasource.FakeBKTandIVA
             }));
 
         }
@@ -260,8 +260,8 @@ namespace INSS.EIIR.DataSync.Application.Tests
             // act & assert
             await Assert.ThrowsAsync<DataSinkException>(async () => await sut.Handle(new SyncDataRequest()
             {
-                Modes = Models.Constants.SyncData.Mode.Default,
-                DataSources = Models.Constants.SyncData.Datasource.FakeBKTandIVA
+                Modes = SyncDataEnums.Mode.Default,
+                DataSources = SyncDataEnums.Datasource.FakeBKTandIVA
             }));
 
         }
@@ -294,8 +294,8 @@ namespace INSS.EIIR.DataSync.Application.Tests
             // act & assert
             await Assert.ThrowsAsync<DataSinkException>(async () => await sut.Handle(new SyncDataRequest()
             {
-                Modes = Models.Constants.SyncData.Mode.Default,
-                DataSources = Models.Constants.SyncData.Datasource.FakeBKTandIVA
+                Modes = SyncDataEnums.Mode.Default,
+                DataSources = SyncDataEnums.Datasource.FakeBKTandIVA
             }));
 
         }
@@ -322,8 +322,8 @@ namespace INSS.EIIR.DataSync.Application.Tests
             // act
             var response = await sut.Handle(new SyncDataRequest()
             {
-                Modes = Models.Constants.SyncData.Mode.Default,
-                DataSources = Models.Constants.SyncData.Datasource.None
+                Modes = SyncDataEnums.Mode.Default,
+                DataSources = SyncDataEnums.Datasource.None
             });
 
             // assert
@@ -354,8 +354,8 @@ namespace INSS.EIIR.DataSync.Application.Tests
             // act
             var response = await sut.Handle(new SyncDataRequest()
             {
-                Modes = Models.Constants.SyncData.Mode.Default,
-                DataSources = Models.Constants.SyncData.Datasource.FakeDRO
+                Modes = SyncDataEnums.Mode.Default,
+                DataSources = SyncDataEnums.Datasource.FakeDRO
             });
 
             // assert
@@ -388,8 +388,8 @@ namespace INSS.EIIR.DataSync.Application.Tests
             // act
             var response = await sut.Handle(new SyncDataRequest()
             {
-                Modes = Models.Constants.SyncData.Mode.IgnorePreConditionChecks,
-                DataSources = Models.Constants.SyncData.Datasource.FakeBKTandIVA
+                Modes = SyncDataEnums.Mode.IgnorePreConditionChecks,
+                DataSources = SyncDataEnums.Datasource.FakeBKTandIVA
             });
 
             // assert
@@ -405,7 +405,7 @@ namespace INSS.EIIR.DataSync.Application.Tests
             var dataSource = MockDataSourceBuilder.Create().ThatHas(rec).Build();
             var dataSink = MockDataSinkBuilder.Create()
                 .ThatReturns(Task.FromResult(new DataSinkResponse() { IsError = false }))
-                .ThatHasPropertyEnabledCheckBit(Models.Constants.SyncData.Mode.DisableXMLExtract)
+                .ThatHasPropertyEnabledCheckBit(SyncDataEnums.Mode.DisableXMLExtract)
                 .Build();
             var extractRepo = MockDataExtractRepositoryBuilder.Create().ThatReturns(new Extract() { ExtractCompleted = "N", SnapshotCompleted = "Y" }).Build();
             var logger = Substitute.For<ILogger<SyncData>>();
@@ -419,8 +419,8 @@ namespace INSS.EIIR.DataSync.Application.Tests
             // act
             await sut.Handle(new SyncDataRequest()
             {
-                Modes = Models.Constants.SyncData.Mode.DisableXMLExtract,
-                DataSources = Models.Constants.SyncData.Datasource.FakeBKTandIVA
+                Modes = SyncDataEnums.Mode.DisableXMLExtract,
+                DataSources = SyncDataEnums.Datasource.FakeBKTandIVA
             });
 
             // assert
@@ -437,7 +437,7 @@ namespace INSS.EIIR.DataSync.Application.Tests
             var dataSource = MockDataSourceBuilder.Create().ThatHas(rec).Build();
             var dataSink = MockDataSinkBuilder.Create()
                 .ThatReturns(Task.FromResult(new DataSinkResponse() { IsError = false }))
-                .ThatHasPropertyEnabledCheckBit(Models.Constants.SyncData.Mode.DisableIndexRebuild)
+                .ThatHasPropertyEnabledCheckBit(SyncDataEnums.Mode.DisableIndexRebuild)
                 .Build();
             var extractRepo = MockDataExtractRepositoryBuilder.Create().ThatReturns(new Extract() { ExtractCompleted = "N", SnapshotCompleted = "Y" }).Build();
             var logger = Substitute.For<ILogger<SyncData>>();
@@ -451,8 +451,8 @@ namespace INSS.EIIR.DataSync.Application.Tests
             // act
             await sut.Handle(new SyncDataRequest()
             {
-                Modes = Models.Constants.SyncData.Mode.DisableIndexRebuild,
-                DataSources = Models.Constants.SyncData.Datasource.FakeBKTandIVA
+                Modes = SyncDataEnums.Mode.DisableIndexRebuild,
+                DataSources = SyncDataEnums.Datasource.FakeBKTandIVA
             });
 
             // assert
@@ -469,7 +469,7 @@ namespace INSS.EIIR.DataSync.Application.Tests
             var dataSource = MockDataSourceBuilder.Create().ThatHas(rec).Build();
             var dataSink = MockDataSinkBuilder.Create()
                 .ThatReturns(Task.FromResult(new DataSinkResponse() { IsError = false }))
-                .ThatHasPropertyEnabledCheckBit(Models.Constants.SyncData.Mode.DisableXMLExtract)
+                .ThatHasPropertyEnabledCheckBit(SyncDataEnums.Mode.DisableXMLExtract)
                 .Build();
             var extractRepo = MockDataExtractRepositoryBuilder.Create().ThatReturns(new Extract() { ExtractCompleted = "N", SnapshotCompleted = "Y" }).Build();
             var logger = Substitute.For<ILogger<SyncData>>();
@@ -483,8 +483,8 @@ namespace INSS.EIIR.DataSync.Application.Tests
             // act
             await sut.Handle(new SyncDataRequest()
             {
-                Modes = Models.Constants.SyncData.Mode.DisableIndexRebuild,
-                DataSources = Models.Constants.SyncData.Datasource.FakeBKTandIVA
+                Modes = SyncDataEnums.Mode.DisableIndexRebuild,
+                DataSources = SyncDataEnums.Datasource.FakeBKTandIVA
             });
 
             // assert
@@ -501,7 +501,7 @@ namespace INSS.EIIR.DataSync.Application.Tests
             var dataSource = MockDataSourceBuilder.Create().ThatHas(rec).Build();
             var dataSink = MockDataSinkBuilder.Create()
                 .ThatReturns(Task.FromResult(new DataSinkResponse() { IsError = false }))
-                .ThatHasPropertyEnabledCheckBit(Models.Constants.SyncData.Mode.DisableIndexRebuild)
+                .ThatHasPropertyEnabledCheckBit(SyncDataEnums.Mode.DisableIndexRebuild)
                 .Build();
             var extractRepo = MockDataExtractRepositoryBuilder.Create().ThatReturns(new Extract() { ExtractCompleted = "N", SnapshotCompleted = "Y" }).Build();
             var logger = Substitute.For<ILogger<SyncData>>();
@@ -515,8 +515,8 @@ namespace INSS.EIIR.DataSync.Application.Tests
             // act
             await sut.Handle(new SyncDataRequest()
             {
-                Modes = Models.Constants.SyncData.Mode.DisableXMLExtract,
-                DataSources = Models.Constants.SyncData.Datasource.FakeBKTandIVA
+                Modes = SyncDataEnums.Mode.DisableXMLExtract,
+                DataSources = SyncDataEnums.Datasource.FakeBKTandIVA
             });
 
             // assert

@@ -1,5 +1,4 @@
-﻿
-using INSS.EIIR.Models.Constants;
+﻿using INSS.EIIR.Models.SyncData;
 
 namespace INSS.EIIR.DataSync.Application.UseCase.SyncData.Infrastructure
 {
@@ -7,7 +6,7 @@ namespace INSS.EIIR.DataSync.Application.UseCase.SyncData.Infrastructure
     {
         IAsyncEnumerable<T> GetInsolventIndividualRegistrationsAsync();
 
-        Models.Constants.SyncData.Datasource Type { get; }
+        SyncDataEnums.Datasource Type { get; }
 
         string Description { get; }
     }

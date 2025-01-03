@@ -6,7 +6,7 @@ using INSS.EIIR.Interfaces.DataAccess;
 using System.Text;
 using INSS.EIIR.Models.CaseModels;
 using System.IO.Compression;
-using INSS.EIIR.Models.Constants;
+using INSS.EIIR.Models.SyncData;
 
 namespace INSS.EIIR.DataSync.Infrastructure.Sink.XML
 {
@@ -28,7 +28,7 @@ namespace INSS.EIIR.DataSync.Infrastructure.Sink.XML
         private ExtractVolumes _extractVolumes;
         private SortedList<int, int> _existingBankruptcies;
 
-        public SyncData.Mode EnabledCheckBit => SyncData.Mode.DisableXMLExtract;
+        public SyncDataEnums.Mode EnabledCheckBit => SyncDataEnums.Mode.DisableXMLExtract;
 
         public string Description => "XML Extract being created";
 

@@ -6,8 +6,8 @@ using Azure.Search.Documents.Indexes.Models;
 using INSS.EIIR.AzureSearch.IndexMapper;
 using INSS.EIIR.DataSync.Application.UseCase.SyncData.Infrastructure;
 using INSS.EIIR.DataSync.Application.UseCase.SyncData.Model;
-using INSS.EIIR.Models.Constants;
 using INSS.EIIR.Models.IndexModels;
+using INSS.EIIR.Models.SyncData;
 using Microsoft.Extensions.Logging;
 
 namespace INSS.EIIR.DataSync.Infrastructure.Sink.AISearch
@@ -26,7 +26,7 @@ namespace INSS.EIIR.DataSync.Infrastructure.Sink.AISearch
         private string? _newSearchIndex;
         private List<InsolventIndividualRegisterModel> _batch = new List<InsolventIndividualRegisterModel>();
 
-        public SyncData.Mode EnabledCheckBit => SyncData.Mode.DisableIndexRebuild;
+        public SyncDataEnums.Mode EnabledCheckBit => SyncDataEnums.Mode.DisableIndexRebuild;
 
         public string Description => "New Azure AI Search Index being created";
 

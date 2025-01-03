@@ -23,7 +23,7 @@ namespace INSS.EIIR.DailyExtract
         }
 
         [Function(nameof(SyncData))]
-        public async Task Run([ActivityTrigger] Models.SyncData.SyncDataRequest inputs )
+        public async Task Run([ActivityTrigger] SyncDataRequest inputs )
         {
             _logger.LogInformation("SyncData started");
 

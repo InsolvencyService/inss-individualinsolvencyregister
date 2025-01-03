@@ -1,12 +1,9 @@
 ﻿using INSS.EIIR.DataSync.Application.UseCase.SyncData.Infrastructure;
 using INSS.EIIR.DataSync.Application.UseCase.SyncData.Model;
-using INSS.EIIR.Models.Constants;
+using INSS.EIIR.Models.SyncData;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+
 
 namespace INSS.EIIR.DataSync.Infrastructure.Sink.Failure
 {
@@ -16,7 +13,7 @@ namespace INSS.EIIR.DataSync.Infrastructure.Sink.Failure
         private readonly ILogger<FailureSink> _logger;
 
         //Property never referenced for IDataSink<SyncFailure> though required by IDataSink
-        public SyncData.Mode EnabledCheckBit => throw new NotImplementedException();
+        public SyncDataEnums.Mode EnabledCheckBit => throw new NotImplementedException();
 
         public string Description => "Sink for logging failures";
 
