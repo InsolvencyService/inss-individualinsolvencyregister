@@ -96,19 +96,17 @@ namespace INSS.EIIR.DataSync.Infrastructure.Sink.AISearch
                 {
                     await _indexMapSetter.SetIndexName(_newSearchIndex);
                     _logger.LogInformation($"Swapped alias to {_newSearchIndex}");
+
+                    await DeleteIndexes();
+                    _logger.LogInformation("Deleted old indexes");
                 }
                 else
-                    throw new ArgumentNullException("newSearchIndex cannot be null.");
-                
+                    throw new ArgumentNullException("newSearchIndex cannot be null.");               
             }
             else 
             {
-                _logger.LogInformation($"Index not swapped due to errors during SyncData");
+                _logger.LogWarning($"Index not swapped due to errors or testmode applied during SyncData");
             }
-
-            await DeleteIndexes();
-
-            _logger.LogInformation("Deleted old indexes");
 
             _logger.LogInformation("Completed AI Search sink");
 

@@ -15,6 +15,7 @@ namespace INSS.EIIR.DataSync.Application.UseCase.SyncData
         private readonly ValidationService _validation;
         private readonly ILogger<SyncData> _logger;
         private bool _swapIndexAndZipXml = true;
+        private bool _testModeNotActive = true;
         private readonly IExtractRepository _eiirRepository;
 
         public SyncData(SyncDataOptions options, IExtractRepository extractRepository, ILogger<SyncData> logger)
@@ -66,6 +67,11 @@ namespace INSS.EIIR.DataSync.Application.UseCase.SyncData
                 return response;
             }
 
+            if (IsTestModeActive(request))
+            {
+                _testModeNotActive = false;
+                _logger.LogWarning("Testmode is active Zip file will not be created for XML Extract nor Search Index swapped");
+            }
 
             foreach (IDataSink<InsolventIndividualRegisterModel> sink in GetEnabledDataSinks(request))
             {
@@ -124,7 +130,7 @@ namespace INSS.EIIR.DataSync.Application.UseCase.SyncData
 
             foreach (IDataSink<InsolventIndividualRegisterModel> sink in GetEnabledDataSinks(request))
             {
-                await sink.Complete(_swapIndexAndZipXml);
+                await sink.Complete(_swapIndexAndZipXml && _testModeNotActive);
             }
 
             await _options.FailureSink.Complete();
@@ -138,6 +144,11 @@ namespace INSS.EIIR.DataSync.Application.UseCase.SyncData
             {
                 ErrorCount = numErrors
             };
+        }
+
+        private bool IsTestModeActive(SyncDataRequest request)
+        {
+            return (request.Modes & SyncDataEnums.Mode.Test) == SyncDataEnums.Mode.Test;
         }
 
         private IEnumerable<IDataSourceAsync<InsolventIndividualRegisterModel>> GetSpecifiedDataSources(SyncDataRequest request)
