@@ -526,5 +526,37 @@ namespace INSS.EIIR.DataSync.Application.Tests
         }
 
 
+        [Fact]
+        public async Task Given_TestModeEnable_SyncData_data_sinks_butcommitFalse()
+        {
+            // arrange
+            var rec = ValidData.Standard();
+            var dataSource = MockDataSourceBuilder.Create().ThatHas(rec).Build();
+            var dataSink = MockDataSinkBuilder.Create()
+                .ThatReturns(Task.FromResult(new DataSinkResponse() { IsError = false }))
+                .ThatHasPropertyEnabledCheckBit(SyncDataEnums.Mode.DisableIndexRebuild)
+                .Build();
+            var extractRepo = MockDataExtractRepositoryBuilder.Create().ThatReturns(new Extract() { ExtractCompleted = "N", SnapshotCompleted = "Y" }).Build();
+            var logger = Substitute.For<ILogger<SyncData>>();
+            var sut = SyncDataApplicationBuilder.Create()
+                .WithDataSource(dataSource)
+                .WithDataSink(dataSink)
+                .WithExtractRepo(extractRepo)
+                .WithLogger(logger)
+                .Build();
+
+            // act
+            await sut.Handle(new SyncDataRequest()
+            {
+                Modes = SyncDataEnums.Mode.Test,
+                DataSources = SyncDataEnums.Datasource.FakeBKTandIVA
+            });
+
+            // assert
+            await dataSink.Received().Sink(Arg.Any<InsolventIndividualRegisterModel>());
+            await dataSink.Received().Complete(false);
+        }
+
+
     }
 }
