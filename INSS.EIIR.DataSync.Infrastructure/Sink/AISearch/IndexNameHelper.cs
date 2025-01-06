@@ -1,16 +1,13 @@
 ﻿using Azure;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using INSS.EIIR.Models.Constants;
+using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
 
 namespace INSS.EIIR.DataSync.Infrastructure.Sink.AISearch
 {
     public static class IndexNameHelper
     {
         public const string EiirIndividuals = "eiir_individuals";
-        public const string NON_PERMITTED_DATA = "ContainsNonPermittedData";
+        public const string NON_PERMITTED_DATA = SyncData.ContainsNonPermittedData;
 
         public static async Task<string> GetNewIndexName(AsyncPageable<string> indexNames)
         {
@@ -21,14 +18,13 @@ namespace INSS.EIIR.DataSync.Infrastructure.Sink.AISearch
             {
                 var todaysLastIndex = await indexNames.Where(i => i.StartsWith(todaysIndexName)).OrderBy(x => x).LastAsync();
 
-                var startOfAttempt = todaysLastIndex.LastIndexOf('-') + 1;
-                var attemptLength = todaysLastIndex.Length - startOfAttempt;
-
-                //Correct attempt length for NON_PERMITTED_DATA
+                //Remove NON_PERMITTED_DATA if it exists
                 if (todaysLastIndex.EndsWith(NON_PERMITTED_DATA))
-                    attemptLength = attemptLength - (NON_PERMITTED_DATA.Length + 1);
+                    todaysLastIndex = todaysLastIndex.Substring(0, todaysLastIndex.Length - NON_PERMITTED_DATA.Length - 1);
 
-                int attemptNumber = Convert.ToInt32(todaysLastIndex.Substring(startOfAttempt, attemptLength));
+                var startOfAttempt = todaysLastIndex.LastIndexOf("-") + 1;
+
+                int attemptNumber = Convert.ToInt32(todaysLastIndex.Substring(startOfAttempt));
                 todaysIndexAttempt = $"{todaysIndexName}-{attemptNumber + 1}";
             }
 

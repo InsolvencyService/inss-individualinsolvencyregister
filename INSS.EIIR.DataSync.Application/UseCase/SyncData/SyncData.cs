@@ -31,7 +31,7 @@ namespace INSS.EIIR.DataSync.Application.UseCase.SyncData
         {
             int numErrors = 0;
 
-            await _options.FailureSink.Start();
+            await _options.FailureSink.Start(request.DataSources);
 
             SyncDataResponse response = CheckPreconditions();
 
@@ -107,7 +107,7 @@ namespace INSS.EIIR.DataSync.Application.UseCase.SyncData
             foreach (IDataSink<InsolventIndividualRegisterModel> sink in GetEnabledDataSinks(request))
             {
                 _logger.LogWarning(sink.Description);
-                await sink.Start();
+                await sink.Start(request.DataSources);
             }
 
             foreach (IDataSourceAsync<InsolventIndividualRegisterModel> source in GetSpecifiedDataSources(request))

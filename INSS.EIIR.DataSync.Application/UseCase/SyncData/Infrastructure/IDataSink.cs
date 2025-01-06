@@ -7,7 +7,7 @@ namespace INSS.EIIR.DataSync.Application.UseCase.SyncData.Infrastructure
     {
         SyncDataEnums.Mode EnabledCheckBit { get; }
         string Description { get; }
-        Task Start();
+        Task Start(SyncDataEnums.Datasource specifiedDataSources);
         Task<DataSinkResponse> Sink(TSinkable model);
         Task<SinkCompleteResponse> Complete(bool commit = true);
     }

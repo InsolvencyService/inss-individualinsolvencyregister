@@ -424,7 +424,7 @@ namespace INSS.EIIR.DataSync.Application.Tests
             });
 
             // assert
-            await dataSink.DidNotReceive().Start();
+            await dataSink.DidNotReceive().Start(Arg.Any<SyncDataEnums.Datasource>());
             await dataSink.DidNotReceive().Sink(Arg.Any<InsolventIndividualRegisterModel>());
             await dataSink.DidNotReceive().Complete(Arg.Any<bool>());
         }
@@ -456,7 +456,7 @@ namespace INSS.EIIR.DataSync.Application.Tests
             });
 
             // assert
-            await dataSink.DidNotReceive().Start();
+            await dataSink.DidNotReceive().Start(Arg.Any<SyncDataEnums.Datasource>());
             await dataSink.DidNotReceive().Sink(Arg.Any<InsolventIndividualRegisterModel>());
             await dataSink.DidNotReceive().Complete(Arg.Any<bool>());
         }
@@ -488,7 +488,7 @@ namespace INSS.EIIR.DataSync.Application.Tests
             });
 
             // assert
-            await dataSink.Received().Start();
+            await dataSink.Received().Start(Arg.Any<SyncDataEnums.Datasource>());
             await dataSink.Received().Sink(Arg.Any<InsolventIndividualRegisterModel>());
             await dataSink.Received().Complete(Arg.Any<bool>());
         }
@@ -520,7 +520,7 @@ namespace INSS.EIIR.DataSync.Application.Tests
             });
 
             // assert
-            await dataSink.Received().Start();
+            await dataSink.Received().Start(Arg.Any<SyncDataEnums.Datasource>());
             await dataSink.Received().Sink(Arg.Any<InsolventIndividualRegisterModel>());
             await dataSink.Received().Complete(Arg.Any<bool>());
         }
@@ -631,7 +631,7 @@ namespace INSS.EIIR.DataSync.Application.Tests
             });
 
             // assert
-            await dataSink.DidNotReceive().Start();
+            await dataSink.DidNotReceive().Start(Arg.Any<SyncDataEnums.Datasource>());
             await dataSink.DidNotReceive().Sink(Arg.Any<InsolventIndividualRegisterModel>());
             await dataSink.DidNotReceive().Complete(Arg.Any<bool>());
         }
