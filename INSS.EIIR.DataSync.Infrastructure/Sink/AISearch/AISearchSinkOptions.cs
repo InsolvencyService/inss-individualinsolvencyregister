@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using INSS.EIIR.Models.SyncData;
 using Microsoft.Identity.Client;
 using System;
 using System.Collections.Generic;
@@ -14,5 +15,6 @@ namespace INSS.EIIR.DataSync.Infrastructure.Sink.AISearch
         public string AISearchKey { get; set; }
         public int BatchLimit { get; set; }
         public IMapper Mapper { get; set; }
+        public SyncDataEnums.Datasource PermittedDataSources { get; set; }
     }
 }
