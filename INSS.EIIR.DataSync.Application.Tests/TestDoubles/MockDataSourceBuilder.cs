@@ -10,12 +10,20 @@ namespace INSS.EIIR.DataSync.Application.Tests.TestDoubles
     {
         private InsolventIndividualRegisterModel _fakeData = new InsolventIndividualRegisterModel();
         private Exception _exception = null;
+        private SyncDataEnums.Datasource _datasource = SyncDataEnums.Datasource.FakeBKTandIVA;
 
         public static MockDataSourceBuilder Create() { return new MockDataSourceBuilder(); }
 
         public MockDataSourceBuilder ThatHas(InsolventIndividualRegisterModel model)
         {
             _fakeData = model;
+
+            return this;
+        }
+
+        public MockDataSourceBuilder ThatIsA(SyncDataEnums.Datasource datasource)
+        {
+            _datasource = datasource;
 
             return this;
         }
@@ -37,7 +45,7 @@ namespace INSS.EIIR.DataSync.Application.Tests.TestDoubles
             else
                 mock.GetInsolventIndividualRegistrationsAsync().Returns(GetTestValues());
 
-            mock.Type.Returns(SyncDataEnums.Datasource.FakeBKTandIVA);
+            mock.Type.Returns(_datasource);
             mock.Description.Returns("Mocked Date Source");
 
             return mock;
