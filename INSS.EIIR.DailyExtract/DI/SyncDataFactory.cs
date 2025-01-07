@@ -83,6 +83,14 @@ namespace INSS.EIIR.DataSync.Functions.DI
             return new SyncData(options, extractRepo, factory.CreateLogger<SyncData>());
         }
 
+        /// <summary>
+        /// Converts a delimited ('|') string (also works just as well for an int)
+        /// trys parsing each element as SyncDataEnums.Datasource, failures => 0
+        /// Then applys 'bitwise or' to them all using Linq Aggregator returning a single bitwise value
+        /// Parses the likes of "FakeDRO|FakeBKTandIVA" => 3
+        /// </summary>
+        /// <param name="config"></param>
+        /// <returns>SyncDataEnums.Datasource</returns>
         private static SyncDataEnums.Datasource GetPermittedDataSources(IConfiguration config)
         {
             var setting = config.GetValue<object>("PermittedDataSources", 0);
@@ -93,10 +101,10 @@ namespace INSS.EIIR.DataSync.Functions.DI
             {
                 value = setting.ToString().Split('|').ToList().Select(e =>
                 {
-                    SyncDataEnums.Datasource u;
-                    Enum.TryParse(e.Trim(), true, out u);
-                    return u;
-                }).Aggregate((u, c) => u = u | c);
+                    SyncDataEnums.Datasource aDataSource;
+                    Enum.TryParse(e.Trim(), true, out aDataSource);
+                    return aDataSource;
+                }).Aggregate((accumulatedValue, nextValue) => accumulatedValue = accumulatedValue | nextValue);
             }
             return value;
         }
