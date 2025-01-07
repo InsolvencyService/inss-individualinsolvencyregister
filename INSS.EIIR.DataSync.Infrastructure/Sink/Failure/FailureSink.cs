@@ -22,7 +22,7 @@ namespace INSS.EIIR.DataSync.Infrastructure.Sink.Failure
             this._logger = logger;
         }
 
-        public async Task Start() { return; }
+        public async Task Start(SyncDataEnums.Datasource specifiedDataSources) { return; }
 
 
         public async Task<SinkCompleteResponse> Complete(bool commit = true)

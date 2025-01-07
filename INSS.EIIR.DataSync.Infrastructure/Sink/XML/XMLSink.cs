@@ -5,6 +5,7 @@ using INSS.EIIR.DataSync.Application.UseCase.SyncData.Model;
 using INSS.EIIR.Interfaces.DataAccess;
 using System.Text;
 using INSS.EIIR.Models.CaseModels;
+using INSS.EIIR.Models.Constants;
 using System.IO.Compression;
 using INSS.EIIR.Models.SyncData;
 
@@ -12,8 +13,10 @@ namespace INSS.EIIR.DataSync.Infrastructure.Sink.XML
 {
     public class XMLSink : IDataSink<InsolventIndividualRegisterModel>
     {
+        public const string NON_PERMITTED_DATA = SyncData.ContainsNonPermittedData;
 
         private MemoryStream? _xmlStream;
+        private SyncDataEnums.Datasource _permittedDataSources;
         private int _recordBufferSize;
         private int _recordCount;
         private readonly IList<string> _blockIDList;
@@ -38,6 +41,7 @@ namespace INSS.EIIR.DataSync.Infrastructure.Sink.XML
 
             _blockIDList = new List<string>();
 
+            _permittedDataSources = options.PermittedDataSources;
             _blobContainerName = options.StorageName;
             _blobConnectionString = options.StoragePath;
             _recordBufferSize = options.WriteToBlobRecordBufferSize;
@@ -63,12 +67,15 @@ namespace INSS.EIIR.DataSync.Infrastructure.Sink.XML
             
         }
 
-        public async Task Start() {
+        public async Task Start(SyncDataEnums.Datasource specifiedDataSources) {
 
             var extractJob = _eiirRepository.GetExtractAvailable();
 
             _extractId = extractJob.ExtractId;
             _fileName = extractJob.ExtractFilename;
+
+            if (_permittedDataSources != specifiedDataSources)
+                _fileName = $"{_fileName}-{NON_PERMITTED_DATA}";
 
             _existingBankruptcies = await _existingBankruptciesService.GetExistingBankruptcies();
 

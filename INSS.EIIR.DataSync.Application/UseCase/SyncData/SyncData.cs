@@ -31,7 +31,7 @@ namespace INSS.EIIR.DataSync.Application.UseCase.SyncData
         {
             int numErrors = 0;
 
-            await _options.FailureSink.Start();
+            await _options.FailureSink.Start(request.DataSources);
 
             SyncDataResponse response = CheckPreconditions();
 
@@ -70,13 +70,44 @@ namespace INSS.EIIR.DataSync.Application.UseCase.SyncData
             if (IsTestModeActive(request))
             {
                 _testModeNotActive = false;
-                _logger.LogWarning("Testmode is active Zip file will not be created for XML Extract nor Search Index swapped");
+                _logger.LogWarning("Test mode is active Zip file will not be created for XML Extract nor Search Index swapped");
             }
+
+            if (_testModeNotActive) {
+
+                _logger.LogWarning($"Test mode is not active, Permitted DataSources are: {_options.PermittedDataSources}");
+
+                if (_options.PermittedDataSources != request.DataSources)
+                {
+                    response = new SyncDataResponse() { ErrorCount = 0, ErrorMessage = "SyncData terminated as specified data sources do not match permitted data sources\r\n" };
+
+                    var nonPermittedDataSources = GetNonPermittedSpecifiedDataSources(request);
+
+                    if (nonPermittedDataSources != SyncDataEnums.Datasource.None)
+                    {
+                        response.ErrorCount++;
+                        response.ErrorMessage = response.ErrorMessage + $"The following data sources are not permitted outside Test mode:{nonPermittedDataSources.ToString()}\r\n";
+                    }
+
+                    var nonSpecifiedPermittedDataSources = GetNonSpecifiedPermittedDataSources(request);
+
+                    if (nonSpecifiedPermittedDataSources != SyncDataEnums.Datasource.None)
+                    {
+                        response.ErrorCount++;
+                        response.ErrorMessage = response.ErrorMessage + $"The following data sources are required outside Test mode:{nonSpecifiedPermittedDataSources.ToString()}\r\n";
+                    }
+
+                    await SinkFailure("SyncData Initialisation Failure", response);
+                    return response;
+                }
+
+            }
+
 
             foreach (IDataSink<InsolventIndividualRegisterModel> sink in GetEnabledDataSinks(request))
             {
                 _logger.LogWarning(sink.Description);
-                await sink.Start();
+                await sink.Start(request.DataSources);
             }
 
             foreach (IDataSourceAsync<InsolventIndividualRegisterModel> source in GetSpecifiedDataSources(request))
@@ -144,6 +175,16 @@ namespace INSS.EIIR.DataSync.Application.UseCase.SyncData
             {
                 ErrorCount = numErrors
             };
+        }
+
+        private SyncDataEnums.Datasource GetNonSpecifiedPermittedDataSources(SyncDataRequest request)
+        {
+            return _options.PermittedDataSources ^ request.DataSources & _options.PermittedDataSources;
+        }
+
+        private SyncDataEnums.Datasource GetNonPermittedSpecifiedDataSources(SyncDataRequest request)
+        {
+            return ~_options.PermittedDataSources & request.DataSources;
         }
 
         private bool IsTestModeActive(SyncDataRequest request)

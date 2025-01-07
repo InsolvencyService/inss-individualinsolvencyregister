@@ -8,6 +8,7 @@ using INSS.EIIR.DataSync.Application.UseCase.SyncData.Infrastructure;
 using INSS.EIIR.DataSync.Application.UseCase.SyncData.Model;
 using INSS.EIIR.Models.IndexModels;
 using INSS.EIIR.Models.SyncData;
+using INSS.EIIR.Models.Constants;
 using Microsoft.Extensions.Logging;
 
 namespace INSS.EIIR.DataSync.Infrastructure.Sink.AISearch
@@ -15,6 +16,7 @@ namespace INSS.EIIR.DataSync.Infrastructure.Sink.AISearch
     public class AISearchSink : IDataSink<InsolventIndividualRegisterModel>
     {
         public const string SEARCH_INDEX_BASE_NAME = "eiir-individuals";
+        public const string NON_PERMITTED_DATA = SyncData.ContainsNonPermittedData;
 
         private readonly ILogger<AISearchSink> _logger;
         private readonly SearchIndexClient _indexClient;
@@ -48,11 +50,15 @@ namespace INSS.EIIR.DataSync.Infrastructure.Sink.AISearch
             _batchLimit = options.BatchLimit;
         }
 
-        public async Task Start() 
+        public async Task Start(SyncDataEnums.Datasource specifiedDataSources) 
         {
             _logger.LogInformation("Starting AI Search sink");
 
             _newSearchIndex = await IndexNameHelper.GetNewIndexName(_indexClient.GetIndexNamesAsync());
+
+            if (_options.PermittedDataSources != specifiedDataSources)
+                _newSearchIndex = $"{_newSearchIndex}-{NON_PERMITTED_DATA}";
+
             await CreateNewIndex(_newSearchIndex);
 
             _searchClient = new SearchClient(new Uri(_options.AISearchEndpoint), _newSearchIndex, new Azure.AzureKeyCredential(_options.AISearchKey), new SearchClientOptions()

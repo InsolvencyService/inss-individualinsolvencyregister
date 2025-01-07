@@ -28,14 +28,14 @@ namespace INSS.EIIR.DataSync.Application.Tests
             var sut = SyncDataApplicationBuilder.Create()
                 .WithDataSource(dataSource)
                 .WithDataSink(dataSink)
-                .WithExtractRepo(extractRepo)   
+                .WithExtractRepo(extractRepo)
                 .WithLogger(logger)
                 .Build();
 
             // act
-            await sut.Handle(new SyncDataRequest() 
-            { 
-                Modes = SyncDataEnums.Mode.Default, 
+            await sut.Handle(new SyncDataRequest()
+            {
+                Modes = SyncDataEnums.Mode.Default,
                 DataSources = SyncDataEnums.Datasource.FakeBKTandIVA
             });
 
@@ -75,7 +75,7 @@ namespace INSS.EIIR.DataSync.Application.Tests
             await dataSink.DidNotReceive().Sink(Arg.Any<InsolventIndividualRegisterModel>());
             // assert that commit => false on validation error
             await dataSink.DidNotReceive().Complete(true);
-            logger.ReceivedWithAnyArgs().LogError(default, default, default, default);            
+            logger.ReceivedWithAnyArgs().LogError(default, default, default, default);
         }
 
         [Fact]
@@ -194,7 +194,7 @@ namespace INSS.EIIR.DataSync.Application.Tests
                 .Build();
 
             // act & assert
-            await Assert.ThrowsAsync<TransformRuleException>(async() => await sut.Handle(new SyncDataRequest()
+            await Assert.ThrowsAsync<TransformRuleException>(async () => await sut.Handle(new SyncDataRequest()
             {
                 Modes = SyncDataEnums.Mode.Default,
                 DataSources = SyncDataEnums.Datasource.FakeBKTandIVA
@@ -243,7 +243,7 @@ namespace INSS.EIIR.DataSync.Application.Tests
             var transformRule = MockDataTransformRuleBuilder.Create().ThatReturns(Task.FromResult(new TransformRuleResponse() { IsError = true })).Build();
             var validationRule = MockDataValidationRuleBuilder.Create().ThatReturns(Task.FromResult(new ValidationRuleResponse() { IsValid = true })).Build();
             var logger = Substitute.For<ILogger<SyncData>>();
-            var failureSink = Substitute.For<IDataSink<SyncFailure>>(); 
+            var failureSink = Substitute.For<IDataSink<SyncFailure>>();
 
             failureSink.Sink(Arg.Any<SyncFailure>()).Throws(new Exception());
 
@@ -424,7 +424,7 @@ namespace INSS.EIIR.DataSync.Application.Tests
             });
 
             // assert
-            await dataSink.DidNotReceive().Start();
+            await dataSink.DidNotReceive().Start(Arg.Any<SyncDataEnums.Datasource>());
             await dataSink.DidNotReceive().Sink(Arg.Any<InsolventIndividualRegisterModel>());
             await dataSink.DidNotReceive().Complete(Arg.Any<bool>());
         }
@@ -456,7 +456,7 @@ namespace INSS.EIIR.DataSync.Application.Tests
             });
 
             // assert
-            await dataSink.DidNotReceive().Start();
+            await dataSink.DidNotReceive().Start(Arg.Any<SyncDataEnums.Datasource>());
             await dataSink.DidNotReceive().Sink(Arg.Any<InsolventIndividualRegisterModel>());
             await dataSink.DidNotReceive().Complete(Arg.Any<bool>());
         }
@@ -488,7 +488,7 @@ namespace INSS.EIIR.DataSync.Application.Tests
             });
 
             // assert
-            await dataSink.Received().Start();
+            await dataSink.Received().Start(Arg.Any<SyncDataEnums.Datasource>());
             await dataSink.Received().Sink(Arg.Any<InsolventIndividualRegisterModel>());
             await dataSink.Received().Complete(Arg.Any<bool>());
         }
@@ -520,7 +520,7 @@ namespace INSS.EIIR.DataSync.Application.Tests
             });
 
             // assert
-            await dataSink.Received().Start();
+            await dataSink.Received().Start(Arg.Any<SyncDataEnums.Datasource>());
             await dataSink.Received().Sink(Arg.Any<InsolventIndividualRegisterModel>());
             await dataSink.Received().Complete(Arg.Any<bool>());
         }
@@ -557,6 +557,85 @@ namespace INSS.EIIR.DataSync.Application.Tests
             await dataSink.Received().Complete(false);
         }
 
+        [Theory]
+        [InlineData(SyncDataEnums.Datasource.FakeBKTandIVA, SyncDataEnums.Datasource.FakeDRO)]
+        [InlineData(SyncDataEnums.Datasource.FakeBKTandIVA|SyncDataEnums.Datasource.IscisDRO, SyncDataEnums.Datasource.FakeDRO)]
+        [InlineData(SyncDataEnums.Datasource.FakeBKTandIVA, SyncDataEnums.Datasource.FakeDRO|SyncDataEnums.Datasource.IscisDRO)]
+        public async Task Given_TestModeEnabled_PermittedDSIssue_SyncData_data_sinks_butcommitFalse(SyncDataEnums.Datasource permitted, SyncDataEnums.Datasource specified)
+        {
+            // arrange
+            var rec = ValidData.Standard();
+            var dataSource = MockDataSourceBuilder.Create().ThatHas(rec).ThatIsA(permitted).Build();
+            var dataSource2 = MockDataSourceBuilder.Create().ThatHas(rec).ThatIsA(SyncDataEnums.Datasource.FakeDRO).Build();
+            var dataSource3 = MockDataSourceBuilder.Create().ThatHas(rec).ThatIsA(SyncDataEnums.Datasource.IscisDRO).Build();
+            var dataSink = MockDataSinkBuilder.Create()
+                .ThatReturns(Task.FromResult(new DataSinkResponse() { IsError = false }))
+                .ThatHasPropertyEnabledCheckBit(SyncDataEnums.Mode.DisableIndexRebuild)
+                .Build();
+            var extractRepo = MockDataExtractRepositoryBuilder.Create().ThatReturns(new Extract() { ExtractCompleted = "N", SnapshotCompleted = "Y" }).Build();
+            var logger = Substitute.For<ILogger<SyncData>>();
+            var sut = SyncDataApplicationBuilder.Create()
+                .WithDataSource(dataSource)
+                .WithDataSource(dataSource2)
+                .WithDataSource(dataSource3)
+                .WithDataSink(dataSink)
+                .WithExtractRepo(extractRepo)
+                .WithLogger(logger)
+                .WithPermittedDataSource(permitted)
+                .Build();
+
+            // act
+            await sut.Handle(new SyncDataRequest()
+            {
+                Modes = SyncDataEnums.Mode.Test,
+                DataSources = specified
+            });
+
+            // assert
+            await dataSink.Received().Sink(Arg.Any<InsolventIndividualRegisterModel>());
+            await dataSink.Received().Complete(false);
+        }
+
+        [Theory]
+        [InlineData(SyncDataEnums.Datasource.FakeBKTandIVA, SyncDataEnums.Datasource.FakeDRO)]
+        [InlineData(SyncDataEnums.Datasource.FakeBKTandIVA|SyncDataEnums.Datasource.IscisDRO, SyncDataEnums.Datasource.FakeDRO)]
+        [InlineData(SyncDataEnums.Datasource.FakeBKTandIVA, SyncDataEnums.Datasource.FakeDRO|SyncDataEnums.Datasource.IscisDRO)]
+        public async Task Given_PermittedDSIssue_SyncData_data_does_not_sinks_or_complete(SyncDataEnums.Datasource permitted, SyncDataEnums.Datasource specified)
+        {
+            // arrange
+            var rec = ValidData.Standard();
+            var dataSource = MockDataSourceBuilder.Create().ThatHas(rec).ThatIsA(permitted).Build();
+            var dataSource2 = MockDataSourceBuilder.Create().ThatHas(rec).ThatIsA(SyncDataEnums.Datasource.FakeDRO).Build();
+            var dataSource3 = MockDataSourceBuilder.Create().ThatHas(rec).ThatIsA(SyncDataEnums.Datasource.IscisDRO).Build();
+            var dataSink = MockDataSinkBuilder.Create()
+                .ThatReturns(Task.FromResult(new DataSinkResponse() { IsError = false }))
+                .ThatHasPropertyEnabledCheckBit(SyncDataEnums.Mode.DisableIndexRebuild)
+                .Build();
+            var extractRepo = MockDataExtractRepositoryBuilder.Create().ThatReturns(new Extract() { ExtractCompleted = "N", SnapshotCompleted = "Y" }).Build();
+            var logger = Substitute.For<ILogger<SyncData>>();
+            var sut = SyncDataApplicationBuilder.Create()
+                .WithDataSource(dataSource)
+                .WithDataSource(dataSource2)
+                .WithDataSource(dataSource3)
+                .WithDataSink(dataSink)
+                .WithExtractRepo(extractRepo)
+                .WithLogger(logger)
+                .WithPermittedDataSource(permitted)
+                .Build();
+
+            // act
+            await sut.Handle(new SyncDataRequest()
+            {
+                Modes = SyncDataEnums.Mode.Default,
+                DataSources = specified
+            });
+
+            // assert
+            await dataSink.DidNotReceive().Start(Arg.Any<SyncDataEnums.Datasource>());
+            await dataSink.DidNotReceive().Sink(Arg.Any<InsolventIndividualRegisterModel>());
+            await dataSink.DidNotReceive().Complete(Arg.Any<bool>());
+        }
 
     }
+
 }

@@ -1,5 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
+using System.Linq;
+using System.Windows.Markup;
 using AutoMapper;
 using INSS.EIIR.AzureSearch.IndexMapper;
 using INSS.EIIR.DataSync.Application.UseCase.SyncData;
@@ -13,6 +16,7 @@ using INSS.EIIR.DataSync.Infrastructure.Sink.XML;
 using INSS.EIIR.DataSync.Infrastructure.Source.AzureTable;
 using INSS.EIIR.DataSync.Infrastructure.Source.SQL;
 using INSS.EIIR.Interfaces.DataAccess;
+using INSS.EIIR.Models.SyncData;
 using INSS.EIIR.StubbedTestData;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -38,6 +42,9 @@ namespace INSS.EIIR.DataSync.Functions.DI
             var validationRules = sp.GetRequiredService<IEnumerable<IValidationRule>>();
             var transformRules = sp.GetRequiredService<IEnumerable<ITransformRule>>();
 
+
+            var permittedDataSources = GetPermittedDataSources(config);
+
             //Datasources and selected in SyncData via their Type property
             IEnumerable<IDataSourceAsync<InsolventIndividualRegisterModel>> sources = new List<IDataSourceAsync<InsolventIndividualRegisterModel>>()
             {
@@ -56,8 +63,8 @@ namespace INSS.EIIR.DataSync.Functions.DI
 
             IEnumerable<IDataSink<InsolventIndividualRegisterModel>> sinks = new List<IDataSink<InsolventIndividualRegisterModel>>()
             {
-                GetAISearchSink(config, mapper, indexMapper, factory.CreateLogger<AISearchSink>()),
-                GetXMLSink(config, extractRepo, exBankruptcyService)               
+                GetAISearchSink(config, mapper, indexMapper, factory.CreateLogger<AISearchSink>(), permittedDataSources),
+                GetXMLSink(config, extractRepo, exBankruptcyService, permittedDataSources)               
             };
 
             var failureSinkOptions = new FailureSinkOptions();
@@ -65,6 +72,7 @@ namespace INSS.EIIR.DataSync.Functions.DI
 
             var options = new SyncDataOptions()
             {
+                PermittedDataSources = permittedDataSources,
                 DataSources = sources,
                 DataSinks = sinks,
                 TransformRules = transformRules,
@@ -75,10 +83,37 @@ namespace INSS.EIIR.DataSync.Functions.DI
             return new SyncData(options, extractRepo, factory.CreateLogger<SyncData>());
         }
 
-        private static IDataSink<InsolventIndividualRegisterModel> GetXMLSink(IConfiguration config, IExtractRepository repo, IExistingBankruptciesService service)
+        /// <summary>
+        /// Converts a delimited ('|') string (also works just as well for an int)
+        /// trys parsing each element as SyncDataEnums.Datasource, failures => 0
+        /// Then applys 'bitwise or' to them all using Linq Aggregator returning a single bitwise value
+        /// Parses the likes of "FakeDRO|FakeBKTandIVA" => 3
+        /// </summary>
+        /// <param name="config"></param>
+        /// <returns>SyncDataEnums.Datasource</returns>
+        private static SyncDataEnums.Datasource GetPermittedDataSources(IConfiguration config)
+        {
+            var setting = config.GetValue<object>("PermittedDataSources", 0);
+
+            SyncDataEnums.Datasource value = 0;
+
+            if (!Enum.TryParse(setting.ToString(),true,out value))
+            {
+                value = setting.ToString().Split('|').ToList().Select(e =>
+                {
+                    SyncDataEnums.Datasource aDataSource;
+                    Enum.TryParse(e.Trim(), true, out aDataSource);
+                    return aDataSource;
+                }).Aggregate((accumulatedValue, nextValue) => accumulatedValue = accumulatedValue | nextValue);
+            }
+            return value;
+        }
+
+        private static IDataSink<InsolventIndividualRegisterModel> GetXMLSink(IConfiguration config, IExtractRepository repo, IExistingBankruptciesService service, SyncDataEnums.Datasource permittedDataSources)
         {
             var options = new XMLSinkOptions()
             {
+                PermittedDataSources = permittedDataSources,
                 StorageName = config.GetValue<String>("XmlContainer", null),
                 StoragePath = config.GetValue<String>("TargetBlobConnectionString", null),
                 WriteToBlobRecordBufferSize = config.GetValue<int>("SyncDataWriteXMLBufferSize", 500)
@@ -87,9 +122,10 @@ namespace INSS.EIIR.DataSync.Functions.DI
             return new XMLSink(options, repo, service);
         }
 
-        private static IDataSink<InsolventIndividualRegisterModel> GetAISearchSink(IConfiguration config, IMapper mapper, ISetIndexMapService indexMapper, ILogger<AISearchSink> logger)
+        private static IDataSink<InsolventIndividualRegisterModel> GetAISearchSink(IConfiguration config, IMapper mapper, ISetIndexMapService indexMapper, ILogger<AISearchSink> logger, SyncDataEnums.Datasource permittedDataSources)
         {
             var options = new AISearchSinkOptions();
+            options.PermittedDataSources = permittedDataSources;
             options.AISearchEndpoint = config.GetValue<string>(AI_SEARCH_ENDPOINT_SETTING);
             options.AISearchKey = config.GetValue<string>(AI_SEARCH_KEY_SETTING);
             options.BatchLimit = config.GetValue<int>(AI_SEARCH_BATCH_LIMIT_SETTING);

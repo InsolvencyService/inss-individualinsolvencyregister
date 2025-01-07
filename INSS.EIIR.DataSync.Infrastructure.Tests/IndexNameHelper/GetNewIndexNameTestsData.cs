@@ -1,19 +1,14 @@
 ﻿using Azure;
 using Moq;
-using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Dynamic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using INSS.EIIR.Models.Constants;
 
 namespace INSS.EIIR.DataSync.Infrastructure.Tests.IndexNameHelper
 {
     public static class GetNewIndexNameTestsData
     {
         public const string INDEX_BASE_NAME = "eiir-individuals";
-        public const string DATETIME_TOSTRING = "dd-MM-yyyy";
+        public const string DATETIME_TOSTRING = "yyyy-MM-dd";
+        public const string NON_PERMITTED_DATA = SyncData.ContainsNonPermittedData;
 
         public static IEnumerable<object[]> GetNewIndexNameData()
         {
@@ -38,7 +33,8 @@ namespace INSS.EIIR.DataSync.Infrastructure.Tests.IndexNameHelper
             var page = Page<string>.FromValues(new List<string>
             {
                $"{INDEX_BASE_NAME}-{DateTime.Today.AddDays(-1).ToString(DATETIME_TOSTRING)}-1",
-               $"{INDEX_BASE_NAME}-{DateTime.Today.AddDays(-2).ToString(DATETIME_TOSTRING)}-1"
+               $"{INDEX_BASE_NAME}-{DateTime.Today.AddDays(-2).ToString(DATETIME_TOSTRING)}-1",
+               $"{INDEX_BASE_NAME}-{DateTime.Today.AddDays(-3).ToString(DATETIME_TOSTRING)}-1-{NON_PERMITTED_DATA}"
             }, continuationToken: null, new Mock<Response>().Object);
 
             var pages = AsyncPageable<string>.FromPages(new[] { page });
@@ -52,13 +48,14 @@ namespace INSS.EIIR.DataSync.Infrastructure.Tests.IndexNameHelper
         {
             var page = Page<string>.FromValues(new List<string>
             {
+               $"{INDEX_BASE_NAME}-{DateTime.Today.ToString(DATETIME_TOSTRING)}-2-{NON_PERMITTED_DATA}",
                $"{INDEX_BASE_NAME}-{DateTime.Today.ToString(DATETIME_TOSTRING)}-1",
                $"{INDEX_BASE_NAME}-{DateTime.Today.AddDays(-1).ToString(DATETIME_TOSTRING)}-1"
             }, continuationToken: null, new Mock<Response>().Object);
 
             var pages = AsyncPageable<string>.FromPages(new[] { page });
 
-            var expectedValue = $"{INDEX_BASE_NAME}-{DateTime.Today.ToString(DATETIME_TOSTRING)}-2";
+            var expectedValue = $"{INDEX_BASE_NAME}-{DateTime.Today.ToString(DATETIME_TOSTRING)}-3";
 
             return new object[] { pages, expectedValue };
         }

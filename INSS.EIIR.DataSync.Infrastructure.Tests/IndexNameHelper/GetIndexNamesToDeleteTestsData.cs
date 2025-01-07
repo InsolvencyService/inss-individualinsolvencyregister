@@ -9,7 +9,8 @@ namespace INSS.EIIR.DataSync.Infrastructure.Tests.IndexNameHelper
     public static class GetIndexNamesToDeleteTestsData
     {
         public const string INDEX_BASE_NAME = "eiir-individuals";
-        public const string DATETIME_TOSTRING = "dd-MM-yyyy";
+        public const string DATETIME_TOSTRING = "yyyy-MM-dd";
+        public const string NON_PERMITTED_DATA = "ContainsNonPermittedData";
 
         public static IEnumerable<object[]> GetNamesToDeleteData()
         {
@@ -22,26 +23,31 @@ namespace INSS.EIIR.DataSync.Infrastructure.Tests.IndexNameHelper
             {
                 $"{INDEX_BASE_NAME}-{DateTime.Today.ToString(DATETIME_TOSTRING)}-1",
                 $"{INDEX_BASE_NAME}-{DateTime.Today.ToString(DATETIME_TOSTRING)}-2",
-                $"{INDEX_BASE_NAME}-{DateTime.Today.ToString(DATETIME_TOSTRING)}-3", // latest index..
-                $"{INDEX_BASE_NAME}-{DateTime.Today.AddDays(-1).ToString(DATETIME_TOSTRING)}-1",
+                $"{INDEX_BASE_NAME}-{DateTime.Today.ToString(DATETIME_TOSTRING)}-3-{NON_PERMITTED_DATA}",
+                $"{INDEX_BASE_NAME}-{DateTime.Today.ToString(DATETIME_TOSTRING)}-4", // latest index..
+                $"{INDEX_BASE_NAME}-{DateTime.Today.AddDays(-1).ToString(DATETIME_TOSTRING)}-1-{NON_PERMITTED_DATA}",
                 $"{INDEX_BASE_NAME}-{DateTime.Today.AddDays(-1).ToString(DATETIME_TOSTRING)}-2",
                 $"{INDEX_BASE_NAME}-{DateTime.Today.AddDays(-2).ToString(DATETIME_TOSTRING)}-1",
                 $"{INDEX_BASE_NAME}-{DateTime.Today.AddDays(-3).ToString(DATETIME_TOSTRING)}-1",
+                $"{INDEX_BASE_NAME}-{DateTime.Today.AddDays(-3).ToString(DATETIME_TOSTRING)}-2-{NON_PERMITTED_DATA}",
                 $"{INDEX_BASE_NAME}-{DateTime.Today.AddDays(-4).ToString(DATETIME_TOSTRING)}-1",
                 $"{INDEX_BASE_NAME}-{DateTime.Today.AddDays(-5).ToString(DATETIME_TOSTRING)}-1",
                 $"{INDEX_BASE_NAME}-{DateTime.Today.AddDays(-6).ToString(DATETIME_TOSTRING)}-1",
-                $"{INDEX_BASE_NAME}-{DateTime.Today.AddDays(-7).ToString(DATETIME_TOSTRING)}-1"
+                $"{INDEX_BASE_NAME}-{DateTime.Today.AddDays(-7).ToString(DATETIME_TOSTRING)}-1",
+                $"{INDEX_BASE_NAME}-{DateTime.Today.AddDays(-7).ToString(DATETIME_TOSTRING)}-2-{NON_PERMITTED_DATA}"
             };
 
             List<string> expected = new List<string>()
             {
                 $"{INDEX_BASE_NAME}-{DateTime.Today.ToString(DATETIME_TOSTRING)}-1",
                 $"{INDEX_BASE_NAME}-{DateTime.Today.ToString(DATETIME_TOSTRING)}-2",
+                $"{INDEX_BASE_NAME}-{DateTime.Today.ToString(DATETIME_TOSTRING)}-3-{NON_PERMITTED_DATA}",
                 $"{INDEX_BASE_NAME}-{DateTime.Today.AddDays(-6).ToString(DATETIME_TOSTRING)}-1",
-                $"{INDEX_BASE_NAME}-{DateTime.Today.AddDays(-7).ToString(DATETIME_TOSTRING)}-1"
+                $"{INDEX_BASE_NAME}-{DateTime.Today.AddDays(-7).ToString(DATETIME_TOSTRING)}-1",
+                $"{INDEX_BASE_NAME}-{DateTime.Today.AddDays(-7).ToString(DATETIME_TOSTRING)}-2-{NON_PERMITTED_DATA}"
             };
 
-            var keepMe = $"{INDEX_BASE_NAME}-{DateTime.Today.ToString(DATETIME_TOSTRING)}-3";
+            var keepMe = $"{INDEX_BASE_NAME}-{DateTime.Today.ToString(DATETIME_TOSTRING)}-4";
 
             return new object[] { names, expected, keepMe };
         }

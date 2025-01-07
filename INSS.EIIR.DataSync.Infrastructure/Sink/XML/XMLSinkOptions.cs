@@ -1,4 +1,6 @@
-﻿namespace INSS.EIIR.DataSync.Infrastructure.Sink.XML
+﻿using INSS.EIIR.Models.SyncData;
+
+namespace INSS.EIIR.DataSync.Infrastructure.Sink.XML
 {
     public class XMLSinkOptions
     {
@@ -10,6 +12,6 @@
 
         //The number of records to be written to BlobStorage at a time
         public int WriteToBlobRecordBufferSize { get; set; }
-
+        public SyncDataEnums.Datasource PermittedDataSources { get; set; }
     }
 }

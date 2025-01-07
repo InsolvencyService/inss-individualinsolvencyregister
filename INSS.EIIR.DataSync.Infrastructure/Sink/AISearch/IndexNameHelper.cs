@@ -1,25 +1,30 @@
 ﻿using Azure;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using INSS.EIIR.Models.Constants;
+using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
 
 namespace INSS.EIIR.DataSync.Infrastructure.Sink.AISearch
 {
     public static class IndexNameHelper
     {
         public const string EiirIndividuals = "eiir_individuals";
+        public const string NON_PERMITTED_DATA = SyncData.ContainsNonPermittedData;
 
         public static async Task<string> GetNewIndexName(AsyncPageable<string> indexNames)
         {
-            var todaysIndexName = $"{AISearchSink.SEARCH_INDEX_BASE_NAME}-{DateTime.Today.ToString("dd-MM-yyyy")}";
+            var todaysIndexName = $"{AISearchSink.SEARCH_INDEX_BASE_NAME}-{DateTime.Today.ToString("yyyy-MM-dd")}";
             var todaysIndexAttempt = $"{todaysIndexName}-1";
 
             if (await indexNames.AnyAsync(n => n.StartsWith(todaysIndexName)))
             {
                 var todaysLastIndex = await indexNames.Where(i => i.StartsWith(todaysIndexName)).OrderBy(x => x).LastAsync();
-                int attemptNumber = Convert.ToInt32(todaysLastIndex.Substring(todaysLastIndex.LastIndexOf('-') + 1));
+
+                //Remove NON_PERMITTED_DATA if it exists
+                if (todaysLastIndex.EndsWith(NON_PERMITTED_DATA))
+                    todaysLastIndex = todaysLastIndex.Substring(0, todaysLastIndex.Length - NON_PERMITTED_DATA.Length - 1);
+
+                var startOfAttempt = todaysLastIndex.LastIndexOf("-") + 1;
+
+                int attemptNumber = Convert.ToInt32(todaysLastIndex.Substring(startOfAttempt));
                 todaysIndexAttempt = $"{todaysIndexName}-{attemptNumber + 1}";
             }
 
@@ -40,7 +45,7 @@ namespace INSS.EIIR.DataSync.Infrastructure.Sink.AISearch
 
             foreach (var dateTime  in dateRange)
             {
-                keepList.AddRange(names.Where(x => x.Contains(dateTime.ToString("dd-MM-yyyy"))));
+                keepList.AddRange(names.Where(x => x.Contains(dateTime.ToString("yyyy-MM-dd"))));
             }
 
             return names.Except(keepList);

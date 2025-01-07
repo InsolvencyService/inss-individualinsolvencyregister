@@ -5,11 +5,13 @@ using INSS.EIIR.DataSync.Application.UseCase.SyncData.Model;
 using INSS.EIIR.Interfaces.DataAccess;
 using Microsoft.Extensions.Logging;
 using NSubstitute;
+using INSS.EIIR.Models.SyncData;
 
 namespace INSS.EIIR.DataSync.Application.Tests.TestDoubles
 {
     public class SyncDataApplicationBuilder
     {
+        private SyncDataEnums.Datasource _permittedDataSource = SyncDataEnums.Datasource.FakeBKTandIVA;
         private readonly List<IDataSourceAsync<InsolventIndividualRegisterModel>> _dataSources = new List<IDataSourceAsync<InsolventIndividualRegisterModel>>();
         private readonly List<IDataSink<InsolventIndividualRegisterModel>> _dataSinks = new List<IDataSink<InsolventIndividualRegisterModel>>();   
         private readonly List<ITransformRule> _rules = new List<ITransformRule>();
@@ -65,6 +67,12 @@ namespace INSS.EIIR.DataSync.Application.Tests.TestDoubles
             return this;
         }
 
+        public SyncDataApplicationBuilder WithPermittedDataSource(SyncDataEnums.Datasource dataSource)
+        {
+            _permittedDataSource = dataSource;
+            return this;
+        }
+
         public SyncData Build()
         {
             // if we didn't call it we don't care but it is necessary...
@@ -75,6 +83,7 @@ namespace INSS.EIIR.DataSync.Application.Tests.TestDoubles
 
             var options = new SyncDataOptions()
             {
+                PermittedDataSources = _permittedDataSource,
                 DataSources = _dataSources,
                 DataSinks = _dataSinks,
                 TransformRules = _rules,
