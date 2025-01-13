@@ -410,6 +410,26 @@ jobs:
                         "name": "XMLContainer",
                         "value": "$(XMLContainer)",
                         "slotSetting": false
+                      },
+                      {
+                        "name": "AzureWebJobs.SyncData.Disabled",
+                        "value": true,
+                        "slotSetting": true
+                      },
+                      {
+                        "name": "AzureWebJobs.SyncDataOrchestrator_Start.Disabled",
+                        "value": true,
+                        "slotSetting": true                                     
+                      },                   
+                      {
+                        "name": "AzureWebJobs.SyncDataOrchestrator.Disabled",
+                        "value": true,
+                        "slotSetting": true
+                      },
+                      {
+                        "name": "PermittedDataSources",
+                        "value": "$(PermittedDataSources)",
+                        "slotSetting": false                                     
                       }
                     ]
 
