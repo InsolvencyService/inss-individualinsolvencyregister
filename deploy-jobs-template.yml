@@ -428,13 +428,8 @@ jobs:
                       },
                       {
                         "name": "PermittedDataSources",
-                        "value": "IscisDRO|IscisBKTandIVA",
+                        "value": "$(PermittedDataSources)",
                         "slotSetting": false                                     
-                      },                   
-                      {
-                        "name": "INNSightDataFeedEnabled",
-                        "value": false,
-                        "slotSetting": false
                       }
                     ]
 
