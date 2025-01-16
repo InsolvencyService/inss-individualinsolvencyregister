@@ -15,7 +15,7 @@ namespace INSS.EIIR.DataSync.Infrastructure.Source.SQL
         public EiirSQLSource(SQLSourceOptions options) {
 
             var dbContextOptsBldr = new DbContextOptionsBuilder<EIIRContext>();
-            dbContextOptsBldr.UseSqlServer(options.ConnectionString, sqlServerOptions => sqlServerOptions.CommandTimeout(0));
+            dbContextOptsBldr.UseSqlServer(options.ConnectionString, sqlServerOptions => sqlServerOptions.CommandTimeout(3600));
 
             _eiirContext = new EIIRContext(dbContextOptsBldr.Options);
             this._options = options;
