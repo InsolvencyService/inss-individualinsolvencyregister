@@ -15,7 +15,7 @@ namespace INSS.EIIR.DataSync.Infrastructure.Source.SQL
         public INSSightSQLSource(SQLSourceOptions options) 
         {
             var dbContextOptsBldr = new DbContextOptionsBuilder<ExternalInssContext>();
-            dbContextOptsBldr.UseSqlServer(options.ConnectionString, sqlServerOptions => sqlServerOptions.CommandTimeout(60));
+            dbContextOptsBldr.UseSqlServer(options.ConnectionString, sqlServerOptions => sqlServerOptions.CommandTimeout(0));
 
             _externalInssContext = new ExternalInssContext(dbContextOptsBldr.Options);
             this._options = options;
