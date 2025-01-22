@@ -84,11 +84,14 @@ var host = new HostBuilder()
            });
 
         services.AddScoped<IExtractRepository, ExtractRepository>();
+
         services.AddTransient<IValidationRule, IdValidationRule>();
         services.AddTransient<IValidationRule, AliasValidationRule>();
         services.AddTransient<IValidationRule, TradingNamesValidationRule>();
+        services.AddTransient<IValidationRule, RestrictionsTypeValidationRule>();
 
         services.AddTransient<ITransformRule, AliasTransformRule>();
+        services.AddTransient<ITransformRule, RestrictionsTypeTransformRule>();
 
         services.AddScoped<IRequestResponseUseCase<SyncDataRequest, SyncDataResponse>, SyncData>(SyncDataFactory.Get);
         

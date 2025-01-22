@@ -88,5 +88,33 @@ namespace INSS.EIIR.DataSync.Application.Tests
             Assert.True(response.IsValid);
         }
 
+        [Theory]
+        [MemberData(nameof(InvalidData.InvalidRestrictionsTypeData), MemberType = typeof(InvalidData))]
+        public async Task Given_InvalidRestrictionsTypeData_RestrictionsTypeValidationRule_fails(InsolventIndividualRegisterModel model)
+        {
+            // arrange
+            var sut = new RestrictionsTypeValidationRule();
+
+            // act
+            var response = await sut.Validate(model);
+
+            // assert
+            Assert.False(response.IsValid);
+        }
+
+        [Theory]
+        [MemberData(nameof(ValidData.ValidRestrictionsTypeData), MemberType = typeof(ValidData))]
+        public async Task Given_ValidRestrictionsTypeData_RestrictionsTypeValidationRule_passes(InsolventIndividualRegisterModel model)
+        {
+            // arrange
+            var sut = new RestrictionsTypeValidationRule();
+
+            // act
+            var response = await sut.Validate(model);
+
+            // assert
+            Assert.True(response.IsValid);
+        }
+
     }
 }

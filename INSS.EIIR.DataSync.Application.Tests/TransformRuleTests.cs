@@ -31,5 +31,22 @@ namespace INSS.EIIR.DataSync.Application.Tests
             Assert.Equal(expected, response.Model.individualAlias);
         }
 
+        [Theory]
+        [InlineData("", null)]
+        [InlineData(null, null)]
+        [InlineData("SomeText", "SomeText")]
+        public async Task Given_RestrictionsType_RestrictionsTypeTransformRule_normalisesRestrictionsType(string? input, string? expected)
+        {
+            // arrange
+            var sut = new RestrictionsTypeTransformRule();
+            var model = new InsolventIndividualRegisterModel() { restrictionsType = input };
+
+            // act
+            var response = await sut.Transform(model);
+
+            // assert
+            Assert.Equal(expected, response.Model.restrictionsType);
+        }
+
     }
 }

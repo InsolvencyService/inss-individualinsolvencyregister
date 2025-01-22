@@ -76,6 +76,56 @@ namespace INSS.EIIR.DataSync.Application.Tests.FakeData
 
         #endregion Valid TradingNames Data
 
+        #region Valid RestrictionType Data
+
+        public static InsolventIndividualRegisterModel RestrictionsType_Order()
+        {
+            return new InsolventIndividualRegisterModel()
+            {
+                restrictionsType = "Order"
+            };
+        }
+
+        public static InsolventIndividualRegisterModel RestrictionsType_Undertaking()
+        {
+            return new InsolventIndividualRegisterModel()
+            {
+                restrictionsType = "Undertaking"
+            };
+        }
+
+        public static InsolventIndividualRegisterModel RestrictionsType_Interim_Order()
+        {
+            return new InsolventIndividualRegisterModel()
+            {
+                restrictionsType = "Interim Order"
+            };
+        }
+
+        //Doesn't match the Data Properties document - require because FCMC current providing ""
+        public static InsolventIndividualRegisterModel RestrictionsType_EmptyString()
+        {
+            return new InsolventIndividualRegisterModel()
+            {
+                restrictionsType = ""
+            };
+        }
+
+
+        public static IEnumerable<object[]> ValidRestrictionsTypeData()
+        {
+            //null restrictionsType
+            yield return new object[] { InvalidData.NoData()};
+            yield return new object[] { RestrictionsType_Order() };
+            yield return new object[] { RestrictionsType_Undertaking() };
+            yield return new object[] { RestrictionsType_Interim_Order() };
+            yield return new object[] { RestrictionsType_EmptyString() };
+        }
+
+        #endregion Valid RestrictionsType Data
+
+
+
     }
 
     public class InvalidData
@@ -140,6 +190,22 @@ namespace INSS.EIIR.DataSync.Application.Tests.FakeData
         }
 
         #endregion Invalid TradingNames Data
+
+        #region Invalid RestrictionsType Data
+
+        public static InsolventIndividualRegisterModel InvalidRestrictionsType()
+        {
+            return new InsolventIndividualRegisterModel()
+            {
+                restrictionsType = "john was here"
+            };
+        }
+
+        public static IEnumerable<object[]> InvalidRestrictionsTypeData()
+        {
+            yield return new object[] { InvalidData.InvalidRestrictionsType() };
+        }
+        #endregion Invalid RestrictionsType Data
 
     }
 
