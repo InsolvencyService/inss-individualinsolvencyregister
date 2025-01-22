@@ -124,8 +124,47 @@ namespace INSS.EIIR.DataSync.Application.Tests.FakeData
 
         #endregion Valid RestrictionsType Data
 
+        #region Valid Restriction Data
 
+        public static InsolventIndividualRegisterModel ValidRestriction_false_null_null()
+        {
+            return new InsolventIndividualRegisterModel()
+            {
+                hasRestrictions = false,
+                restrictionsType = null,
+                restrictionsStartDate = null,
+            };
+        }
 
+        //Be kind to INSSight
+        public static InsolventIndividualRegisterModel ValidRestriction_false_space_null()
+        {
+            return new InsolventIndividualRegisterModel()
+            {
+                hasRestrictions = false,
+                restrictionsType = "",
+                restrictionsStartDate = null,
+            };
+        }
+
+        public static InsolventIndividualRegisterModel ValidRestriction_true_order_date()
+        {
+            return new InsolventIndividualRegisterModel()
+            {
+                hasRestrictions = true,
+                restrictionsType = "Order",
+                restrictionsStartDate = new DateTime(2025,12,11,0,0,0)
+            };
+        }
+
+        public static IEnumerable<object[]> ValidRestrictionData()
+        {
+            yield return new object[] { ValidRestriction_false_null_null() };
+            yield return new object[] { ValidRestriction_false_space_null() };
+            yield return new object[] { ValidRestriction_true_order_date() };
+        }
+
+        #endregion Valid Restrictions Data
     }
 
     public class InvalidData
@@ -206,6 +245,80 @@ namespace INSS.EIIR.DataSync.Application.Tests.FakeData
             yield return new object[] { InvalidData.InvalidRestrictionsType() };
         }
         #endregion Invalid RestrictionsType Data
+
+        #region Invalid Restrictions Data
+
+        public static InsolventIndividualRegisterModel InvalidRestrictions_StartDate_noHasRestrictions()
+        {
+            return new InsolventIndividualRegisterModel()
+            {
+                restrictionsStartDate = new DateTime(2025, 12, 11, 0, 0, 0),
+                hasRestrictions = false,
+                restrictionsType = "Order"
+            };
+        }
+
+        public static InsolventIndividualRegisterModel InvalidRestrictions_StartDate_noRestrictionType()
+        {
+            return new InsolventIndividualRegisterModel()
+            {
+                restrictionsStartDate = new DateTime(2025, 12, 11, 0, 0, 0),
+                hasRestrictions = true,
+                restrictionsType = null
+            };
+        }
+
+        public static InsolventIndividualRegisterModel InvalidRestrictions_StartDate_noRestrictionType_noHasRestictions()
+        {
+            return new InsolventIndividualRegisterModel()
+            {
+                restrictionsStartDate = new DateTime(2025, 12, 11, 0, 0, 0),
+                hasRestrictions = false,
+                restrictionsType = null
+            };
+        }
+
+        public static InsolventIndividualRegisterModel InvalidRestrictions_HasRestrictions_noType_noStartDate()
+        {
+            return new InsolventIndividualRegisterModel()
+            {
+                restrictionsStartDate = null,
+                hasRestrictions = true,
+                restrictionsType = null
+            };
+        }
+
+        public static InsolventIndividualRegisterModel InvalidRestrictions_HasRestrictions_Type_noStartDate()
+        {
+            return new InsolventIndividualRegisterModel()
+            {
+                restrictionsStartDate = null,
+                hasRestrictions = true,
+                restrictionsType = "Order"
+            };
+        }
+
+        public static InsolventIndividualRegisterModel InvalidRestrictions_HasRestrictions_noType_StartDate()
+        {
+            return new InsolventIndividualRegisterModel()
+            {
+                restrictionsStartDate = new DateTime(2025, 12, 11, 0, 0, 0),
+                hasRestrictions = true,
+                restrictionsType = null
+            };
+        }
+
+        public static IEnumerable<object[]> InvalidRestrictionsData()
+        {
+            yield return new object[] { InvalidData.InvalidRestrictions_HasRestrictions_noType_noStartDate() };
+            yield return new object[] { InvalidData.InvalidRestrictions_HasRestrictions_noType_StartDate() };
+            yield return new object[] { InvalidData.InvalidRestrictions_HasRestrictions_Type_noStartDate() };
+            yield return new object[] { InvalidData.InvalidRestrictions_StartDate_noHasRestrictions() };
+            yield return new object[] { InvalidData.InvalidRestrictions_StartDate_noRestrictionType() };
+            yield return new object[] { InvalidData.InvalidRestrictions_StartDate_noRestrictionType_noHasRestictions() };
+        }
+        #endregion Invalid Restrictions Data
+
 
     }
 
