@@ -1,10 +1,6 @@
 ﻿using INSS.EIIR.DataSync.Application.Tests.FakeData;
+using INSS.EIIR.DataSync.Application.UseCase.SyncData.Model;
 using INSS.EIIR.DataSync.Application.UseCase.SyncData.Validation;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace INSS.EIIR.DataSync.Application.Tests
 {
@@ -35,5 +31,118 @@ namespace INSS.EIIR.DataSync.Application.Tests
             // assert
             Assert.False(response.IsValid);
         }
+
+        [Theory]
+        [MemberData(nameof(InvalidData.InvalidAliasData), MemberType = typeof(InvalidData))]
+        public async Task Given_InvalidAliasData_AliasValidationRule_fails(InsolventIndividualRegisterModel model)
+        {
+            // arrange
+            var sut = new AliasValidationRule();
+
+            // act
+            var response = await sut.Validate(model);
+
+            // assert
+            Assert.False(response.IsValid);
+        }
+
+        [Theory]
+        [MemberData(nameof(ValidData.ValidAliasData), MemberType = typeof(ValidData))]
+        public async Task Given_ValidAliasData_AliasValidationRule_passes(InsolventIndividualRegisterModel model)
+        {
+            // arrange
+            var sut = new AliasValidationRule();
+
+            // act
+            var response = await sut.Validate(model);
+
+            // assert
+            Assert.True(response.IsValid);
+        }
+
+        [Theory]
+        [MemberData(nameof(InvalidData.InvalidTradingNamesData), MemberType = typeof(InvalidData))]
+        public async Task Given_InvalidTradingNamesData_TradingNamesValidationRule_fails(InsolventIndividualRegisterModel model)
+        {
+            // arrange
+            var sut = new TradingNamesValidationRule();
+
+            // act
+            var response = await sut.Validate(model);
+
+            // assert
+            Assert.False(response.IsValid);
+        }
+
+        [Theory]
+        [MemberData(nameof(ValidData.ValidTradingNamesData), MemberType = typeof(ValidData))]
+        public async Task Given_ValidTradingNamesData_TradingNamesValidationRule_passes(InsolventIndividualRegisterModel model)
+        {
+            // arrange
+            var sut = new TradingNamesValidationRule();
+
+            // act
+            var response = await sut.Validate(model);
+
+            // assert
+            Assert.True(response.IsValid);
+        }
+
+        [Theory]
+        [MemberData(nameof(InvalidData.InvalidRestrictionsTypeData), MemberType = typeof(InvalidData))]
+        public async Task Given_InvalidRestrictionsTypeData_RestrictionsTypeValidationRule_fails(InsolventIndividualRegisterModel model)
+        {
+            // arrange
+            var sut = new RestrictionsTypeValidationRule();
+
+            // act
+            var response = await sut.Validate(model);
+
+            // assert
+            Assert.False(response.IsValid);
+        }
+
+        [Theory]
+        [MemberData(nameof(ValidData.ValidRestrictionsTypeData), MemberType = typeof(ValidData))]
+        public async Task Given_ValidRestrictionsTypeData_RestrictionsTypeValidationRule_passes(InsolventIndividualRegisterModel model)
+        {
+            // arrange
+            var sut = new RestrictionsTypeValidationRule();
+
+            // act
+            var response = await sut.Validate(model);
+
+            // assert
+            Assert.True(response.IsValid);
+        }
+
+        [Theory]
+        [MemberData(nameof(InvalidData.InvalidRestrictionsData), MemberType = typeof(InvalidData))]
+        public async Task Given_InvalidRestrictionsData_RestrictionValidationRule_fails(InsolventIndividualRegisterModel model)
+        {
+            // arrange
+            var sut = new RestrictionValidationRule();
+
+            // act
+            var response = await sut.Validate(model);
+
+            // assert
+            Assert.False(response.IsValid);
+        }
+
+        [Theory]
+        [MemberData(nameof(ValidData.ValidRestrictionData), MemberType = typeof(ValidData))]
+        public async Task Given_ValidRestrictionData_RestrictionValidationRule_passes(InsolventIndividualRegisterModel model)
+        {
+            // arrange
+            var sut = new RestrictionValidationRule();
+
+            // act
+            var response = await sut.Validate(model);
+
+            // assert
+            Assert.True(response.IsValid);
+        }
+
     }
 }
