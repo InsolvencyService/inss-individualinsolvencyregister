@@ -7,7 +7,7 @@ namespace INSS.EIIR.DataSync.Application.UseCase.SyncData.Transformation
     {
         public async Task<TransformRuleResponse> Transform(InsolventIndividualRegisterModel model)
         {
-            if (model.restrictionsType == null || model.restrictionsType=="")
+            if (model.restrictionsType == null || model.restrictionsType == "")
                 model.restrictionsType = null;
 
             return new TransformRuleResponse()

@@ -126,7 +126,7 @@ namespace INSS.EIIR.DataSync.Application.UseCase.SyncData
                             await SinkFailure(model.Id, validationResponse);
                             numErrors++;
                             _swapIndexAndZipXml = false;
-                            continue; // skip to the next item.
+                            continue;
                         }
 
                         // transform

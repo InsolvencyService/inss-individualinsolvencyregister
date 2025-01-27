@@ -15,7 +15,6 @@ namespace INSS.EIIR.DataSync.Application.UseCase.SyncData.Validation
             {
                 isValid = false;
                 errorMessage = $"case {model.caseNo} individualAlias may not be null";
-
             }
             else
             {
