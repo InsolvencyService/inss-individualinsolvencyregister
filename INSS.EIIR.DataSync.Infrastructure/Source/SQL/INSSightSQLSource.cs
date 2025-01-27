@@ -29,7 +29,7 @@ namespace INSS.EIIR.DataSync.Infrastructure.Source.SQL
         {
 
             //The following where clause is temporary measure, to retrieve some records from INSSight should it needed "Bankruptcy" should turned into a constant
-            await foreach (var x in _externalInssContext.VwEiirs.Where(p => p.InsolvencyType == "Bankruptcy" && p.HasRestrictions == 1).AsNoTracking().AsAsyncEnumerable())
+            await foreach (var x in _externalInssContext.VwEiirs.AsNoTracking().AsAsyncEnumerable())
             {
                 yield return _options.Mapper.Map<Models.VwEiir, InsolventIndividualRegisterModel>(x);
             }
