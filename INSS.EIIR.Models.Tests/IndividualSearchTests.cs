@@ -124,6 +124,34 @@ namespace INSS.EIIR.Models.Tests
 
         }
 
+        [Theory]
+        [InlineData("Frank", "RnJhbms")]
+        [InlineData("smith", "c21pdGg")]
+        [InlineData("Macdonald", "TWFjZG9uYWxk")]
+        [InlineData("C & C Block Paving", "QyAmIEMgQmxvY2sgUGF2aW5n")]
+        [InlineData("Macdona", "TWFjZG9uYQ")]
+        public void SearchTermEncode(string term, string expected)
+        {
+            //Arrange
+            //Act
+            //Assert
+            Assert.Equal(expected, term.Base64Encode());
+        }
+
+        [Theory]
+        [InlineData("RnJhbms", "Frank")]
+        [InlineData("c21pdGg", "smith")]
+        [InlineData("TWFjZG9uYWxk", "Macdonald")]
+        [InlineData("QyAmIEMgQmxvY2sgUGF2aW5n","C & C Block Paving")]
+        [InlineData("TWFjZG9uYQ", "Macdona")]
+        public void SearchDecodeEncode(string encodedTerm, string expected)
+        {
+            //Arrange
+            //Act
+            //Assert
+            Assert.Equal(expected, encodedTerm.Base64Decode());
+        }
+
 
     }
 }
