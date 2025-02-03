@@ -8,10 +8,11 @@ namespace INSS.EIIR.Web.ViewModels
 {
     public class SubscriberProfile
     {
-        private const string NameValidCharacters = @"(^[\s',-.\\a-zA-Z0-9]*$)";
-        private const string AddressValidCharacters = @"(^[\s',-.\\&()a-zA-Z0-9]*$)";
-        private const string InvalidAddressCharactersValidationError = "{0} can contain letters, numbers, whitespace and special characters ',.\\-";
+        private const string NameValidCharacters = @"(^[\s',-.\\&()a-zA-Z0-9]*$)";
         private const string InvalidNameCharactersValidationError = "{0} can contain letters, numbers, whitespace and special characters ',.\\-&()";
+        private const string AddressValidCharacters = @"(^[\s',-.\\a-zA-Z0-9]*$)";
+        private const string InvalidAddressCharactersValidationError = "{0} can contain letters, numbers, whitespace and special characters ',.\\-";
+
 
         public SubscriberProfile()
         {
