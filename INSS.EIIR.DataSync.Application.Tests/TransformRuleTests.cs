@@ -35,6 +35,10 @@ namespace INSS.EIIR.DataSync.Application.Tests
         [InlineData("", null)]
         [InlineData(null, null)]
         [InlineData("SomeText", "SomeText")]
+        [InlineData("Order", "Order")]
+        [InlineData("Order Made", "Order")] //Temporary allowance for INSSight development, should hopefully be removed for production
+        [InlineData("Undertaking", "Undertaking")]
+        [InlineData("Interim Order", "Interim Order")]
         public async Task Given_RestrictionsType_RestrictionsTypeTransformRule_normalisesRestrictionsType(string? input, string? expected)
         {
             // arrange

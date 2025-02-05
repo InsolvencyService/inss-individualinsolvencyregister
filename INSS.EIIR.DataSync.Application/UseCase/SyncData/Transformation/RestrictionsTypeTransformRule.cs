@@ -10,6 +10,10 @@ namespace INSS.EIIR.DataSync.Application.UseCase.SyncData.Transformation
             if (model.restrictionsType == null || model.restrictionsType == "")
                 model.restrictionsType = null;
 
+            //Allows for "Order Made", hopefully INSSight we factor this out before going live
+            if (model.restrictionsType != null && model.restrictionsType.StartsWith("Order"))
+                model.restrictionsType = "Order";
+
             return new TransformRuleResponse()
             {
                 ErrorMessage = "",
