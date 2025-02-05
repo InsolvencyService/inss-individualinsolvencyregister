@@ -93,6 +93,7 @@ var host = new HostBuilder()
 
         services.AddTransient<ITransformRule, AliasTransformRule>();
         services.AddTransient<ITransformRule, RestrictionsTypeTransformRule>();
+        services.AddTransient<ITransformRule, AddressTransformRule>();
 
         services.AddScoped<IRequestResponseUseCase<SyncDataRequest, SyncDataResponse>, SyncData>(SyncDataFactory.Get);
         
