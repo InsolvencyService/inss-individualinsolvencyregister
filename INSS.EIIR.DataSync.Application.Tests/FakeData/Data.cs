@@ -111,15 +111,25 @@ namespace INSS.EIIR.DataSync.Application.Tests.FakeData
             };
         }
 
+        //Be kind to INSSight currently supplying "Order Made" rather than "Order"
+        public static InsolventIndividualRegisterModel RestrictionsType_OrderMade()
+        {
+            return new InsolventIndividualRegisterModel()
+            {
+                restrictionsType = "Order Made"
+            };
+        }
+
 
         public static IEnumerable<object[]> ValidRestrictionsTypeData()
         {
             //null restrictionsType
-            yield return new object[] { InvalidData.NoData()};
+            yield return new object[] { InvalidData.NoData() };
             yield return new object[] { RestrictionsType_Order() };
             yield return new object[] { RestrictionsType_Undertaking() };
             yield return new object[] { RestrictionsType_Interim_Order() };
             yield return new object[] { RestrictionsType_EmptyString() };
+            yield return new object[] { RestrictionsType_OrderMade() };
         }
 
         #endregion Valid RestrictionsType Data
@@ -157,11 +167,22 @@ namespace INSS.EIIR.DataSync.Application.Tests.FakeData
             };
         }
 
+        public static InsolventIndividualRegisterModel ValidRestriction_true_ordermade_date()
+        {
+            return new InsolventIndividualRegisterModel()
+            {
+                hasRestrictions = true,
+                restrictionsType = "Order Made",
+                restrictionsStartDate = new DateTime(2025, 12, 11, 0, 0, 0)
+            };
+        }
+
         public static IEnumerable<object[]> ValidRestrictionData()
         {
             yield return new object[] { ValidRestriction_false_null_null() };
             yield return new object[] { ValidRestriction_false_space_null() };
             yield return new object[] { ValidRestriction_true_order_date() };
+            yield return new object[] { ValidRestriction_true_ordermade_date()};
         }
 
         #endregion Valid Restrictions Data
