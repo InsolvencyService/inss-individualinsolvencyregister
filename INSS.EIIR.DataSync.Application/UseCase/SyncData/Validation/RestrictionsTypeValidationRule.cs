@@ -15,6 +15,7 @@ namespace INSS.EIIR.DataSync.Application.UseCase.SyncData.Validation
                 {
                     case "":
                     case "Order":
+                    case "Order Made": //Be kind to INSSight.. should hopefully come out before going to production
                     case "Undertaking":
                     case "Interim Order":
                         break;

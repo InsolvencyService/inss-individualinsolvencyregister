@@ -3,16 +3,14 @@ using INSS.EIIR.DataSync.Application.UseCase.SyncData.Model;
 
 namespace INSS.EIIR.DataSync.Application.UseCase.SyncData.Transformation
 {
-    public class RestrictionsTypeTransformRule : ITransformRule
+    public class AddressTransformRule : ITransformRule
     {
+
         public async Task<TransformRuleResponse> Transform(InsolventIndividualRegisterModel model)
         {
-            if (model.restrictionsType == null || model.restrictionsType == "")
-                model.restrictionsType = null;
 
-            //Allows for "Order Made", hopefully INSSight we factor this out before going live
-            if (model.restrictionsType != null && model.restrictionsType.StartsWith("Order"))
-                model.restrictionsType = "Order";
+            var transformedAddress = string.Join(", ", (model.individualAddress ?? "").Split(',', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries));
+            model.individualAddress = transformedAddress;
 
             return new TransformRuleResponse()
             {
