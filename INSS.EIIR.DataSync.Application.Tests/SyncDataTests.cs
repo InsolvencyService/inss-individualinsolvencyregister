@@ -50,7 +50,7 @@ namespace INSS.EIIR.DataSync.Application.Tests
         {
             // arrange
             var dataSource = MockDataSourceBuilder.Create().ThatHas(InvalidData.NegativeId()).Build();
-            var dataSink = Substitute.For<IDataSink<InsolventIndividualRegisterModel>>();
+            var dataSink = MockDataSinkBuilder.Create().ThatReturns(Task.FromResult(new DataSinkResponse() { IsError = false })).Build();
             var extractRepo = MockDataExtractRepositoryBuilder.Create().ThatReturns(new Extract() { ExtractCompleted = "N", SnapshotCompleted = "Y" }).Build();
             var logger = Substitute.For<ILogger<SyncData>>();
             var failureSink = Substitute.For<IDataSink<SyncFailure>>();
@@ -71,11 +71,10 @@ namespace INSS.EIIR.DataSync.Application.Tests
             });
 
             // assert
-            await failureSink.Received().Sink(Arg.Any<SyncFailure>());
-            await dataSink.DidNotReceive().Sink(Arg.Any<InsolventIndividualRegisterModel>());
+            await failureSink.DidNotReceive().Sink(Arg.Any<SyncFailure>());
+            await dataSink.Received().Sink(Arg.Any<InsolventIndividualRegisterModel>());
             // assert that commit => false on validation error
-            await dataSink.DidNotReceive().Complete(true);
-            logger.ReceivedWithAnyArgs().LogError(default, default, default, default);
+            await dataSink.Received().Complete(true);
         }
 
         [Fact]
@@ -226,7 +225,7 @@ namespace INSS.EIIR.DataSync.Application.Tests
             // act & assert
             await Assert.ThrowsAsync<ValidationRuleException>(async () => await sut.Handle(new SyncDataRequest()
             {
-                Modes = SyncDataEnums.Mode.Default,
+                Modes = SyncDataEnums.Mode.EnableValidations,
                 DataSources = SyncDataEnums.Datasource.FakeBKTandIVA
             }));
 
@@ -634,6 +633,39 @@ namespace INSS.EIIR.DataSync.Application.Tests
             await dataSink.DidNotReceive().Start(Arg.Any<SyncDataEnums.Datasource>());
             await dataSink.DidNotReceive().Sink(Arg.Any<InsolventIndividualRegisterModel>());
             await dataSink.DidNotReceive().Complete(Arg.Any<bool>());
+        }
+
+        [Fact]
+        public async Task Given_ValidationRuleReturns_false_ValidationsEnabled_SyncData_does_not_complete()
+        {
+            // arrange
+            var dataSource = MockDataSourceBuilder.Create().ThatHas(InvalidData.NegativeId()).Build();
+            var dataSink = Substitute.For<IDataSink<InsolventIndividualRegisterModel>>();
+            var extractRepo = MockDataExtractRepositoryBuilder.Create().ThatReturns(new Extract() { ExtractCompleted = "N", SnapshotCompleted = "Y" }).Build();
+            var logger = Substitute.For<ILogger<SyncData>>();
+            var failureSink = Substitute.For<IDataSink<SyncFailure>>();
+            var sut = SyncDataApplicationBuilder.Create()
+                .WithDataSource(dataSource)
+                .WithDataSink(dataSink)
+                .WithExtractRepo(extractRepo)
+                .WithValidationRule(new IdValidationRule())
+                .WithFailureSink(failureSink)
+                .WithLogger(logger)
+                .Build();
+
+            // act
+            await sut.Handle(new SyncDataRequest()
+            {
+                Modes = SyncDataEnums.Mode.EnableValidations,
+                DataSources = SyncDataEnums.Datasource.FakeBKTandIVA
+            });
+
+            // assert
+            await failureSink.Received().Sink(Arg.Any<SyncFailure>());
+            await dataSink.DidNotReceive().Sink(Arg.Any<InsolventIndividualRegisterModel>());
+            // assert that commit => false on validation error
+            await dataSink.DidNotReceive().Complete(true);
+            logger.ReceivedWithAnyArgs().LogError(default, default, default, default);
         }
 
     }
