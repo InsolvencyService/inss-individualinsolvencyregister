@@ -5,8 +5,6 @@ namespace INSS.EIIR.Interfaces.Services;
 
 public interface IExtractDataProvider
 {
-    Task GenerateSubscriberFile(string filename);
-
     Task<ExtractWithPaging> ListExtractsAsync(PagingParameters pagingParameters);
     Task<Extract> GetLatestExtractForDownload();
 
