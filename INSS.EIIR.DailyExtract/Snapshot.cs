@@ -86,7 +86,7 @@ namespace INSS.EIIR.DailyExtract
                     settings = new SyncDataRequest()
                     {
                         Modes = SyncDataEnums.Mode.Default,
-                        DataSources = SyncDataEnums.Datasource.InnSightBKTandIVA | SyncDataEnums.Datasource.IscisDRO
+                        DataSources = SyncDataEnums.Datasource.INSSightBKTandIVA | SyncDataEnums.Datasource.IscisDRO
                     };
                     _logger.LogInformation("Calling SyncData - Using INSSight data feeds for BKTs & IVAs, ISCIS for DROs");
                 }

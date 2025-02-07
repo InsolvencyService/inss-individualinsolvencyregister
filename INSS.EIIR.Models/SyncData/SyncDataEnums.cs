@@ -25,7 +25,7 @@ namespace INSS.EIIR.Models.SyncData
             FakeBKTandIVA = 2,              //Fake BKT and IVA dataset based on searchdata.json
             IscisDRO = 4,                   //DROs from ISCIS
             IscisBKTandIVA = 8,             //BKTs and IVAs from ISCIS
-            InnSightBKTandIVA = 16,         //BKTs and IVAs from INNSight
+            INSSightBKTandIVA = 16,         //BKTs and IVAs from INNSight
             InnSightDRO = 32,               //DROs from INNSight
         }
 
