@@ -14,6 +14,7 @@ namespace INSS.EIIR.Models.SyncData
             IgnorePreConditionChecks = 2,   //Pre-condition checks will prevent SyncData from running, e.g. when previously run is current day
             DisableXMLExtract = 4,          //Permits just IndexRebuild to take place
             DisableIndexRebuild = 8,        //Permits just XMLExtract to take place
+            EnableValidations = 16,         //Enable validations to be performed
         }
 
         [Flags, JsonConverter(typeof(JsonStringEnumConverter<Datasource>))]
