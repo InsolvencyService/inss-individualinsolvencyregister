@@ -103,6 +103,10 @@ namespace INSS.EIIR.DataSync.Application.UseCase.SyncData
 
             }
 
+            if (AreValidationsEnabled(request))
+            {
+                _logger.LogWarning("Validation Rules are enabled, any Validation failures will be logged and cause Zip file not to be created for XML Extract nor Search Index swapped");
+            }
 
             foreach (IDataSink<InsolventIndividualRegisterModel> sink in GetEnabledDataSinks(request))
             {
