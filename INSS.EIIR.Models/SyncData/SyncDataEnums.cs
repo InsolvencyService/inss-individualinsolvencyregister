@@ -27,6 +27,7 @@ namespace INSS.EIIR.Models.SyncData
             IscisBKTandIVA = 8,             //BKTs and IVAs from ISCIS
             INSSightBKTandIVA = 16,         //BKTs and IVAs from INNSight
             InnSightDRO = 32,               //DROs from INNSight
+            FakeBKTandIVA_VF = 64           //BKTs and IVAs with a couple of Validation Faults
         }
 
     }
