@@ -2,6 +2,7 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.Design;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Xml.Serialization;
@@ -91,7 +92,58 @@ public class CaseResult
     public DateTime? dateOfPreviousOrder { get; set; }
     
     [NotMapped]
-    public Trading Trading { get; set; }
+    public Trading Trading { 
+        get {
+            if (!string.IsNullOrEmpty(tradingNames) && tradingNames != Common.NoTradingNames)
+            {
+                var serializer = new XmlSerializer(typeof(Trading));
+
+                using (StringReader reader = new StringReader(tradingNames))
+                {
+                    return (Trading)serializer.Deserialize(reader);
+                }
+            }
+            else 
+            {
+                return null;
+            }
+        } 
+    }
+
+    public OtherNames OtherNames
+    {
+        get
+        {
+            if (!string.IsNullOrEmpty(individualAlias) && individualAlias != Common.NoOtherNames)
+            {
+                var serializer = new XmlSerializer(typeof(OtherNames));
+
+                using (StringReader reader = new StringReader(individualAlias))
+                {
+                    return (OtherNames)serializer.Deserialize(reader);
+                }
+            }
+            else
+            {
+                return null;
+            }
+        }
+    }
+
+    [NotMapped]
+    public string OtherNamesAsString {
+        get
+        {
+            var txt = Helpers.OtherNameHelper.GetOtherNames(individualAlias);
+
+            if (txt != Common.NoOtherNames)
+            { 
+                txt = txt.ToUpper();
+            }
+           
+            return txt;
+        }
+    }
     
     [NotMapped]
     public IIRRecordType RecordType {
@@ -124,34 +176,30 @@ public class CaseResult
 
     //CaseDetals are output to XML for all record types with exception of
     //BROs, BRUs, IBROs  (possibly DRROs and DRRUs)
-    //where discharge date is greater than 3 months old
-    //and not discharge not suspended
-    [NotMapped]
-    public bool IncludeCaseDetailsInXML 
+    //  where discharge date is greater than 3 months old
+    //  and not discharge not suspended
+    public bool IncludeCaseDetailsInXML(DateTime now)
     {
-        get 
+        bool result = true;
+
+        switch (RecordType)
         {
-            bool result = true;
-
-            switch (RecordType)
-            {
-                case IIRRecordType.BRO:
-                case IIRRecordType.BRU:
-                case IIRRecordType.IBRO:
-                    if (DateOnly.ParseExact(insolvencyDate, "d/M/yyyy", CultureInfo.InvariantCulture).AddMonths(15) < DateOnly.FromDateTime(DateTime.Now)
-                        && !(caseStatus??"").StartsWith("Discharge Suspended Indefinitely")
-                        && !((caseStatus??"").StartsWith("Discharge Fixed Length Suspension")
-                                //May work if first term evaluates as true => caseStatus Start with Fixed Length Suspension
-                                && DateOnly.ParseExact(caseStatus[54..64], "dd/MM/yyyy", CultureInfo.InvariantCulture).AddMonths(3) < DateOnly.FromDateTime(DateTime.Now))
-                        )
-                        result = false;
-                    break;
-                default:
-                    break;
-            }
-
-            return result;
+            case IIRRecordType.BRO:
+            case IIRRecordType.BRU:
+            case IIRRecordType.IBRO:
+                if (DateOnly.ParseExact(insolvencyDate, "d/M/yyyy", CultureInfo.InvariantCulture).AddMonths(15).ToDateTime(new TimeOnly(0,0,0)) < now
+                    && !(caseStatus??"").StartsWith("Discharge Suspended Indefinitely")
+                    && !((caseStatus??"").StartsWith("Discharge Fixed Length Suspension")
+                            //May work if first term evaluates as true => caseStatus Start with Fixed Length Suspension
+                            && DateOnly.ParseExact(caseStatus[54..64], "dd/MM/yyyy", CultureInfo.InvariantCulture).AddMonths(3) < DateOnly.FromDateTime(DateTime.Now))
+                    )
+                    result = false;
+                break;
+            default:
+                break;
         }
+
+        return result;
     }
 
     public bool HasIPDetails {
@@ -176,6 +224,22 @@ public class TradingDetails
     public string TradingName { get; set; }
     [XmlElement("TradingAddress")]
     public string TradingAddress { get; set; }
+}
+
+[XmlRoot("OtherNames")]
+public class OtherNames
+{
+    [XmlElement("OtherName")]
+    public List<OtherName> Names { get; set; }
+}
+
+public class OtherName
+{ 
+    [XmlElement("Forenames")]
+    public string Forenames { get; set; }
+
+    [XmlElement("Surname")]
+    public string Surname { get; set; }
 }
 
 public enum IIRRecordType

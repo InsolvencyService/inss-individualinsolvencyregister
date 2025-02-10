@@ -1,14 +1,9 @@
 ﻿using INSS.EIIR.DataSync.Application.UseCase.SyncData.Infrastructure;
 using INSS.EIIR.Models.CaseModels;
 using INSS.EIIR.DataSync.Application.UseCase.SyncData.Model;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using INSS.EIIR.DataSync.Infrastructure.Source.SQL.Context;
 using INSS.EIIR.Data.Models;
+using INSS.EIIR.Models.SyncData;
 
 namespace INSS.EIIR.DataSync.Infrastructure.Source.SQL
 {
@@ -20,12 +15,16 @@ namespace INSS.EIIR.DataSync.Infrastructure.Source.SQL
         public EiirSQLSource(SQLSourceOptions options) {
 
             var dbContextOptsBldr = new DbContextOptionsBuilder<EIIRContext>();
-            dbContextOptsBldr.UseSqlServer(options.ConnectionString, sqlServerOptions => sqlServerOptions.CommandTimeout(60));
+            dbContextOptsBldr.UseSqlServer(options.ConnectionString, sqlServerOptions => sqlServerOptions.CommandTimeout(3600));
 
             _eiirContext = new EIIRContext(dbContextOptsBldr.Options);
             this._options = options;
 
         }
+
+        public SyncDataEnums.Datasource Type => SyncDataEnums.Datasource.IscisDRO;
+
+        public string Description => "ISCIS Debt Relief Orders";
 
         public async IAsyncEnumerable<InsolventIndividualRegisterModel> GetInsolventIndividualRegistrationsAsync()
         {

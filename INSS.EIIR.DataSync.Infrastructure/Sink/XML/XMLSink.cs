@@ -3,25 +3,20 @@ using Azure.Storage.Blobs.Specialized;
 using INSS.EIIR.DataSync.Application.UseCase.SyncData.Infrastructure;
 using INSS.EIIR.DataSync.Application.UseCase.SyncData.Model;
 using INSS.EIIR.Interfaces.DataAccess;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Net.Security;
-using System.Reflection;
 using System.Text;
-using System.Threading.Tasks;
-using System.Xml;
 using INSS.EIIR.Models.CaseModels;
+using INSS.EIIR.Models.Constants;
+using System.IO.Compression;
+using INSS.EIIR.Models.SyncData;
 
 namespace INSS.EIIR.DataSync.Infrastructure.Sink.XML
 {
     public class XMLSink : IDataSink<InsolventIndividualRegisterModel>
     {
+        public const string NON_PERMITTED_DATA = SyncData.ContainsNonPermittedData;
 
         private MemoryStream? _xmlStream;
+        private SyncDataEnums.Datasource _permittedDataSources;
         private int _recordBufferSize;
         private int _recordCount;
         private readonly IList<string> _blockIDList;
@@ -36,6 +31,9 @@ namespace INSS.EIIR.DataSync.Infrastructure.Sink.XML
         private ExtractVolumes _extractVolumes;
         private SortedList<int, int> _existingBankruptcies;
 
+        public SyncDataEnums.Mode EnabledCheckBit => SyncDataEnums.Mode.DisableXMLExtract;
+
+        public string Description => "XML Extract being created";
 
         public XMLSink(XMLSinkOptions options, IExtractRepository extractRepository, IExistingBankruptciesService existingBankruptcies) 
         { 
@@ -43,17 +41,18 @@ namespace INSS.EIIR.DataSync.Infrastructure.Sink.XML
 
             _blockIDList = new List<string>();
 
+            _permittedDataSources = options.PermittedDataSources;
             _blobContainerName = options.StorageName;
             _blobConnectionString = options.StoragePath;
             _recordBufferSize = options.WriteToBlobRecordBufferSize;
 
             if (string.IsNullOrEmpty(_blobContainerName))
             {
-                throw new Exception("XML Sink options - No StorageName check XmlContainer setting in configuration");
+                throw new XmlSinkException("XML Sink options - No StorageName check XmlContainer setting in configuration", null);
             }
             if (string.IsNullOrEmpty(_blobConnectionString))
             {
-                throw new Exception("XML Sink options - No StoragePath check TargetBlobConnectionString setting in configuration");
+                throw new XmlSinkException("XML Sink options - No StoragePath check TargetBlobConnectionString setting in configuration", null);
             }
 
             _blobServiceClient = new BlobServiceClient(_blobConnectionString);
@@ -68,12 +67,15 @@ namespace INSS.EIIR.DataSync.Infrastructure.Sink.XML
             
         }
 
-        public async Task Start() {
+        public async Task Start(SyncDataEnums.Datasource specifiedDataSources) {
 
             var extractJob = _eiirRepository.GetExtractAvailable();
 
             _extractId = extractJob.ExtractId;
             _fileName = extractJob.ExtractFilename;
+
+            if (_permittedDataSources != specifiedDataSources)
+                _fileName = $"{_fileName}-{NON_PERMITTED_DATA}";
 
             _existingBankruptcies = await _existingBankruptciesService.GetExistingBankruptcies();
 
@@ -92,7 +94,7 @@ namespace INSS.EIIR.DataSync.Infrastructure.Sink.XML
             IirXMLWriterHelper.WriteIirFooterToStream(ref _xmlStream);
         }
 
-        public async Task<SinkCompleteResponse> Complete()
+        public async Task<SinkCompleteResponse> Complete(bool commit = true)
         {
 
             WriteIirFooterToStream();
@@ -106,7 +108,11 @@ namespace INSS.EIIR.DataSync.Infrastructure.Sink.XML
             await _existingBankruptciesService.SetExistingBankruptcies(_existingBankruptcies);
 
             //Create Zip file
-            _eiirRepository.UpdateExtractAvailable();
+            if (commit)
+            { 
+                await CreateAndUploadZip(_fileName);
+                _eiirRepository.UpdateExtractAvailable();
+            }
 
             _xmlStream.Close();
             
@@ -144,9 +150,12 @@ namespace INSS.EIIR.DataSync.Infrastructure.Sink.XML
                         _extractVolumes.TotalIVAs++;
                         break;
                     default:
-                        throw new Exception($"Unable to detemine record type in XML Extract for record: {model.caseNo}");
+                        resp.IsError = true;    
+                        resp.ErrorMessage = $"Unable to detemine record type in XML Extract for record: {model.caseNo}";
+                        resp.Model = model;
+                        break;
                 }
-
+                
                 _recordCount++;  
 
             }
@@ -191,7 +200,6 @@ namespace INSS.EIIR.DataSync.Infrastructure.Sink.XML
             if (commit)
             {
                 await blobClient.CommitBlockListAsync(_blockIDList);
-                //await CreateAndUploadZip(filename);
             }
 
             //Create new stream
@@ -202,5 +210,31 @@ namespace INSS.EIIR.DataSync.Infrastructure.Sink.XML
         {
             IirXMLWriterHelper.WriteIirReportRequestToStream(model, ref xmlStream);
         }
+
+        private async Task CreateAndUploadZip(string filename)
+        {
+            try
+            {
+                BlobClient blobClient = _containerClient.GetBlobClient($"{filename}.xml");
+                if (await blobClient.ExistsAsync())
+                {
+                    using var xmlFileStream = await blobClient.OpenReadAsync();
+
+                    var blobClientZip = _containerClient.GetBlobClient($"{filename}.zip");
+                    using var zipStream = await blobClientZip.OpenWriteAsync(true);
+                    using var zip = new ZipArchive(zipStream, ZipArchiveMode.Create);
+
+
+                    ZipArchiveEntry entry = zip.CreateEntry($"{filename}.xml", CompressionLevel.Optimal);
+                    using var innerFile = entry.Open();
+                    await xmlFileStream.CopyToAsync(innerFile);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new XmlSinkException($"Error creating zip for: {filename}", ex);
+            }
+        }
+
     }
 }

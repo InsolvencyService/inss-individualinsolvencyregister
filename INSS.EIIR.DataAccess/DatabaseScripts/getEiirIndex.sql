@@ -184,8 +184,8 @@ FROM #Cases c
     individual.indiv_no AS indivNo, 
 
     -- Individual details        
-    ISNULL(NULLIF(UPPER(individual.forenames),''), 'No Forenames Found') AS individualForenames, 
-    ISNULL(NULLIF(UPPER(individual.surname), ''), 'No Surname Found') AS individualSurname, 
+    ISNULL(NULLIF(individual.forenames,''), 'No Forenames Found') AS individualForenames, 
+    ISNULL(NULLIF(individual.surname, ''), 'No Surname Found') AS individualSurname, 
     ISNULL(NULLIF(individual.title, ''), 'No Title Found') AS individualTitle,
 
     CASE 
@@ -228,12 +228,29 @@ FROM #Cases c
     
 	individual.address_withheld_flag AS individualAddressWithheld, 
 
-	(SELECT 
-		CASE WHEN 
-		(SELECT STRING_AGG(UPPER(ci_other_name.surname) + ' ' + (UPPER(ci_other_name.forenames)), ', ') FROM ci_other_name  WHERE ci_other_name.case_no = snap.CaseNo AND ci_other_name.indiv_no = snap.IndivNo) IS NULL THEN 'No OtherNames Found'
-		ELSE
-		(SELECT STRING_AGG(UPPER(ci_other_name.surname) + ' ' + (UPPER(ci_other_name.forenames)), ', ') FROM ci_other_name  WHERE ci_other_name.case_no = snap.CaseNo AND ci_other_name.indiv_no = snap.IndivNo)
-	END) AS individualAlias,    
+    CASE
+	    WHEN EXISTS (
+        SELECT 1 
+        FROM ci_other_name n 
+        WHERE n.case_no = snap.CaseNo AND n.indiv_no = snap.IndivNo
+    )
+    THEN (
+        SELECT (
+            SELECT 
+                forenames AS Forenames,
+				surname AS Surname
+            FROM (
+                SELECT DISTINCT n1.* 
+                FROM ci_other_name n1 
+                INNER JOIN ci_other_name n2 ON n1.case_no = n2.case_no 
+                                        AND n1.indiv_no = n2.indiv_no 
+                WHERE n1.case_no = snap.CaseNo AND n1.indiv_no = snap.IndivNo 
+            ) AS ci_other_name_CTE
+            FOR XML PATH('OtherName'), ROOT('OtherNames')
+        )
+    )
+    ELSE 'No OtherNames Found'
+	END AS individualAlias,    
 	
 	ISNULL(CONVERT(VARCHAR(10), snap.Deceased, 103), '') AS deceasedDate,
 

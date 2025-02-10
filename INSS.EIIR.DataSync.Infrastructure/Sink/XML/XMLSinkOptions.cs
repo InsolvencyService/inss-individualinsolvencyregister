@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using INSS.EIIR.Models.SyncData;
 
 namespace INSS.EIIR.DataSync.Infrastructure.Sink.XML
 {
@@ -16,6 +12,6 @@ namespace INSS.EIIR.DataSync.Infrastructure.Sink.XML
 
         //The number of records to be written to BlobStorage at a time
         public int WriteToBlobRecordBufferSize { get; set; }
-
+        public SyncDataEnums.Datasource PermittedDataSources { get; set; }
     }
 }

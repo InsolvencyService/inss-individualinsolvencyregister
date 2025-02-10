@@ -1,20 +1,10 @@
-﻿using System.Collections.Concurrent;
-using System;
-using System.Diagnostics;
-using System.Globalization;
-using System.Numerics;
-using System.Reflection;
-using System.Security.Principal;
+﻿using System.Globalization;
 using System.Text;
 using System.Xml;
 using INSS.EIIR.DataSync.Application.UseCase.SyncData.Model;
 using INSS.EIIR.Models.CaseModels;
 using INSS.EIIR.Models.Constants;
-using Microsoft.IdentityModel.Abstractions;
-using Newtonsoft.Json.Linq;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
-using static System.Runtime.InteropServices.JavaScript.JSType;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using INSS.EIIR.Models;
 
 namespace INSS.EIIR.DataSync.Infrastructure.Sink.XML
 {
@@ -59,7 +49,7 @@ namespace INSS.EIIR.DataSync.Infrastructure.Sink.XML
 
                 }
 
-                if (model.RecordType == Models.CaseModels.IIRRecordType.BKT && model.IncludeCaseDetailsInXML)
+                if (model.IncludeCaseDetailsInXML(DateTime.Now))
                 {
                     writer.WriteStartElement(null, "CaseDetailsText", null);
                     writer.WriteString($"Insolvency Case Details");
@@ -195,11 +185,17 @@ namespace INSS.EIIR.DataSync.Infrastructure.Sink.XML
                 writer.WriteEndElement();
 
                 writer.WriteStartElement(null, "FirstName", null);
-                writer.WriteString($"{model.individualForenames}");
+                if (model.individualForenames == null || model.individualForenames == Common.NoForenames)
+                    writer.WriteString($"{model.individualForenames}");
+                else
+                    writer.WriteString($"{model.individualForenames.ToUpper()}");
                 writer.WriteEndElement();
 
                 writer.WriteStartElement(null, "Surname", null);
-                writer.WriteString($"{model.individualSurname}");
+                if (model.individualSurname == null || model.individualSurname == Common.NoSurname)
+                    writer.WriteString($"{model.individualSurname}");
+                else
+                    writer.WriteString($"{model.individualSurname.ToUpper()}");
                 writer.WriteEndElement();
 
                 writer.WriteStartElement(null, "Occupation", null);
@@ -218,15 +214,26 @@ namespace INSS.EIIR.DataSync.Infrastructure.Sink.XML
                 writer.WriteEndElement();
 
                 writer.WriteStartElement(null, "DateofBirth", null);
-                writer.WriteString($"{model.individualDOB}");
+                writer.WriteString($"{model.individualDOB.Trim()}");
                 writer.WriteEndElement();
+
+                if (!string.IsNullOrEmpty(model.deceasedDate))
+                {
+                    writer.WriteStartElement(null, "DeceasedDate", null);
+                    writer.WriteString($"{model.deceasedDate}");
+                    writer.WriteEndElement();
+                }
 
                 writer.WriteStartElement(null, "LastKnownAddress", null);
                 writer.WriteString($"{model.individualAddress}");
                 writer.WriteEndElement();
 
                 writer.WriteStartElement(null, "LastKnownPostCode", null);
-                writer.WriteString($"{model.individualPostcode}");
+                
+                if (string.IsNullOrWhiteSpace(model.individualPostcode))
+                    writer.WriteString(Common.NoLastKnownPostCode);
+                else
+                    writer.WriteString($"{model.individualPostcode}");
                 writer.WriteEndElement();
 
                 //OtherNames in getEiirIndex currently come accross as comma separated string e.g. "lastname firstname secondname, lastname firstname"
@@ -237,26 +244,17 @@ namespace INSS.EIIR.DataSync.Infrastructure.Sink.XML
 
                 if (model.individualAlias == Common.NoOtherNames)
                     writer.WriteString($"{model.individualAlias}");
+                //APP-5394 Othernames not currently output for IVAs
+                else if (model.RecordType == IIRRecordType.IVA)
+                    writer.WriteString(Common.NoOtherNames);
                 else 
                 {
-                    var othernames = model.individualAlias.Split(",", StringSplitOptions.TrimEntries & StringSplitOptions.RemoveEmptyEntries);
-
-                    foreach (var othername in othernames) 
+                    foreach (var othername in model.OtherNames.Names)
                     {
                         writer.WriteStartElement(null, "OtherName", null);
-
-                        var names = othername.Split(" ", StringSplitOptions.RemoveEmptyEntries);
-
-                        //write out forenames, there may not be any
-                        for (int i = 1; i < names.Length; i++) {
-                            writer.WriteString($"{names[i]} ");
-                        }
-                        //write out surname for which there will always be one
-                        writer.WriteString($"{names[0]}");
-
+                        writer.WriteString($"{(othername.Forenames ?? "").ToUpper()} {(othername.Surname ?? "").ToUpper()}".Trim());
                         writer.WriteEndElement();
-                    }
-                
+                    }               
                 }
 
                 writer.WriteEndElement();
@@ -284,18 +282,19 @@ namespace INSS.EIIR.DataSync.Infrastructure.Sink.XML
                 writer.WriteEndElement();
 
                 writer.WriteStartElement(null, "CaseName", null);
-                writer.WriteString($"{model.caseName}");
-                writer.WriteEndElement();
-
-                writer.WriteStartElement(null, "Court", null);
-                
-                //Known issue with DRRO and Court
-                if (model.RecordType == IIRRecordType.DRRO)
-                    writer.WriteString($"{model.courtName??$"(Court does not apply to DRO)"}");
+                if (model.caseName == null)
+                    writer.WriteString($"{model.caseName}");
                 else
-                    writer.WriteString($"{model.courtName}");
-
+                    writer.WriteString($"{model.caseName}");
                 writer.WriteEndElement();
+
+                //APP-5725 Donot output Court for DRRO for consitency with earlier behaviour
+                if (model.RecordType != IIRRecordType.DRRO)
+                { 
+                    writer.WriteStartElement(null, "Court", null);               
+                    writer.WriteString($"{model.courtName}");
+                    writer.WriteEndElement();
+                }
 
                 writer.WriteStartElement(null, "CaseType", null);
                 writer.WriteString($"{model.insolvencyType}");
@@ -329,12 +328,11 @@ namespace INSS.EIIR.DataSync.Infrastructure.Sink.XML
                     case IIRRecordType.DRO:
                     case IIRRecordType.DRRO:
                     case IIRRecordType.DRRU:
-                        writer.WriteString($"{Alter_DROStatusFormat(model.caseStatus)}");
+                        writer.WriteString($"{Alter_DROStatusFormat(model.insolvencyDate, model.caseStatus)}");
                         break;
                     default:
                         throw new Exception($"Unable to detemine recordtype for XML Extract for record: {model.caseNo}");
                 }
-                
                     
                 writer.WriteEndElement();
 
@@ -350,11 +348,21 @@ namespace INSS.EIIR.DataSync.Infrastructure.Sink.XML
                 }
 
                 writer.WriteStartElement(null, "CaseDescription", null);
-                writer.WriteString($"{model.caseDescription}");
+                if (model.caseDescription == null)
+                    writer.WriteString(Common.NoCaseDescription);
+                else
+                    writer.WriteString($"{model.caseDescription}");
                 writer.WriteEndElement();
 
+                if (!string.IsNullOrEmpty(model.deceasedDate))
+                {
+                    writer.WriteStartElement(null, "SpecialNote", null);
+                    writer.WriteString($"Please note that this person is deceased (Deceased Date {model.deceasedDate})");
+                    writer.WriteEndElement();
+                }
+
                 #region TradingNames
-                    writer.WriteStartElement(null, "TradingNames", null);
+                writer.WriteStartElement(null, "TradingNames", null);
 
                     if (model.Trading == null)
                         writer.WriteString($"No Trading Names Found");
@@ -363,7 +371,7 @@ namespace INSS.EIIR.DataSync.Infrastructure.Sink.XML
                         foreach (var td in model.Trading.TradingDetails)
                         {
                             writer.WriteStartElement(null, "TradingName", null);
-                            writer.WriteString($"{td.TradingName}");
+                            writer.WriteString($"{td.TradingName.Trim().ToUpper()}");
                             writer.WriteEndElement();
 
                             if (td != null) { 
@@ -385,14 +393,29 @@ namespace INSS.EIIR.DataSync.Infrastructure.Sink.XML
 
         //The following transformations are based on the document EIIR Data Properties a copy of which can be
         //found on APP-5332
-
-        private static object Alter_DROStatusFormat(string source)
+        private static object Alter_DROStatusFormat(string insolvencyDate, string source)
         {
-            if (source.StartsWith("Extended From"))
-                return $"Extended From {DateTime.ParseExact(source[14..24], "dd/MM/yyyy", CultureInfo.InvariantCulture).ToString("dd MMMM yyyy")}"
-                    + $" To {DateTime.ParseExact(source[28..38], "dd/MM/yyyy", CultureInfo.InvariantCulture).ToString("dd MMMM yyyy")}";
+            var endDate = DateTime.ParseExact(source[^10..^0], "dd/MM/yyyy", CultureInfo.InvariantCulture);
+            var returnValue = source[0..(source.Length - 10)] + DateTime.ParseExact(source[^10..^0], "dd/MM/yyyy", CultureInfo.InvariantCulture).ToString("dd MMMM yyyy");
 
-            return source[0..(source.Length - 10)] + DateTime.ParseExact(source[^10..^0], "dd/MM/yyyy", CultureInfo.InvariantCulture).ToString("dd MMMM yyyy");
+            DateTime dateResult;
+
+            //Following section only applies to approximately 10 of 40000 records
+            if (source.Contains("Moratorium Period"))
+            {
+                if (DateTime.TryParseExact(insolvencyDate, "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.AssumeLocal, out dateResult)) 
+                {
+                    var insolvencyDatePlus12 = dateResult.AddMonths(12);
+                    if ((endDate - insolvencyDatePlus12).Days > 1)
+                    {
+                        return returnValue
+                            + $" (Extended From {insolvencyDatePlus12.ToString("dd/MM/yyyy")}"
+                             + $" To {endDate.ToString("dd/MM/yyyy")})";
+                    }
+                }
+            }
+
+            return returnValue;
         }
 
         //Alters the IVA Status - typically date formats from dd/MM/yyyy to dd MMMM yyyy
@@ -414,14 +437,15 @@ namespace INSS.EIIR.DataSync.Infrastructure.Sink.XML
             if (source.StartsWith("Currently Bankrupt : Automatic Discharge", StringComparison.OrdinalIgnoreCase))
                 return $"Currently Bankrupt : Automatic Discharge  will be  {DateTime.ParseExact(source[^10..^0], "dd/MM/yyyy", CultureInfo.InvariantCulture).ToString("dd MMMM yyyy")}";
 
-            //This scenario current uses dd/MM/yyyy format for date element
+            //This scenario current uses dd/MM/yyyy format for date element - commented code left in on purpose should alternative formatting be requried
             //if (source.StartsWith("Discharge Suspended Indefinitely", StringComparison.OrdinalIgnoreCase))
             //    return $"Discharge Suspended Indefinitely (from {DateTime.ParseExact(source[39..49], "dd/MM/yyyy", CultureInfo.InvariantCulture).ToString("dd MMMM yyyy")})";
 
-            if (source.StartsWith("Discharge Fixed Length Suspension", StringComparison.OrdinalIgnoreCase))
-                return $"Discharge Fixed Length Suspension (from "
-                    + $"{DateTime.ParseExact(source[40..50], "dd/MM/yyyy", CultureInfo.InvariantCulture).ToString("dd MMMM yyyy")} to "
-                    + $"{DateTime.ParseExact(source[54..64], "dd/MM/yyyy", CultureInfo.InvariantCulture).ToString("dd MMMM yyyy")})";
+            //This scenario current uses dd/MM/yyyy format for date element - commented code left in on purpose should alternative formatting be requried
+            //if (source.StartsWith("Discharge Fixed Length Suspension", StringComparison.OrdinalIgnoreCase))
+            //    return $"Discharge Fixed Length Suspension (from "
+            //        + $"{DateTime.ParseExact(source[40..50], "dd/MM/yyyy", CultureInfo.InvariantCulture).ToString("dd MMMM yyyy")} to "
+            //        + $"{DateTime.ParseExact(source[54..64], "dd/MM/yyyy", CultureInfo.InvariantCulture).ToString("dd MMMM yyyy")})";
 
             if (source.Contains("(Early Discharge)"))
                 return $"Discharged On {DateTime.ParseExact(source[14..24], "dd/MM/yyyy", CultureInfo.InvariantCulture).ToString("dd MMMM yyyy")} (Early Discharge)";
@@ -465,7 +489,7 @@ namespace INSS.EIIR.DataSync.Infrastructure.Sink.XML
                 writer.WriteString($"{(model.restrictionsEndDate.HasValue ? model.restrictionsEndDate.Value.ToString("dd/MM/yyyy") : "")}");
                 writer.WriteEndElement();
 
-                if (!model.IncludeCaseDetailsInXML) 
+                if (!model.IncludeCaseDetailsInXML(DateTime.Now)) 
                 {
                     writer.WriteStartElement(null, "RestrictionsCourt", null);
                     writer.WriteString(model.courtName);

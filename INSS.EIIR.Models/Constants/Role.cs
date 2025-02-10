@@ -38,5 +38,12 @@ public static class Common
     public const string NoLastKnownTown = "No Last Known Town Found";
     public const string NoLastKnownPostCode = "No Last Known PostCode Found";
     public const string NoTradingNames = "<No Trading Names Found>";
+    public const string NoForenames = "No Forenames Found";
+    public const string NoSurname = "No Surname Found";
+    public const string NoCaseDescription = "No Case Description Found";
+}
 
+public static class SyncData
+{
+    public const string ContainsNonPermittedData = "contains-non-permitted-data";
 }

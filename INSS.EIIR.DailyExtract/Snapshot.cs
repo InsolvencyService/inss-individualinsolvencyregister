@@ -5,9 +5,10 @@ using Microsoft.Data.SqlClient;
 using Microsoft.SqlServer.Management.Smo;
 using Microsoft.SqlServer.Management.Common;
 using System.Net.Http;
-using System.IO;
-using System.Net;
 using Microsoft.Azure.Functions.Worker;
+using INSS.EIIR.Models.SyncData;
+using Newtonsoft.Json;
+
 
 namespace INSS.EIIR.DailyExtract
 {
@@ -31,31 +32,83 @@ namespace INSS.EIIR.DailyExtract
 
                 runProceedure("createeiirSnapshotTABLE");
                 _logger.LogInformation("createeiirSnapshotTABLE execution successfull");
-                
+
                 runProceedure("extr_avail_INS");
                 _logger.LogInformation("extr_avail_INS execution sucessfull");
 
-                Boolean useINSSightData = false;
-                Boolean.TryParse(Environment.GetEnvironmentVariable("INSSightDataFeedEnabled"), out useINSSightData);
+                SyncDataRequest syncDataRequestSettings = null;
+                string functionName = "";
 
-                if (useINSSightData)
-                {
-                    //start orchestration
-                    _logger.LogInformation("Calling SyncData - Using INSSight data feeds for BKTs & IVAs, ISCIS for DROs");
-                    callPostHttpFunction("SyncData");
-                }
-                else 
-                {
-                    //start orchestration
-                    _logger.LogInformation("Calling Start Orchestration - Using ISCIS data feeds for BKTs, IVAs & DROs");
-                    callPostHttpFunction("EiirOrchestrator_Start");
-                }
+                getSettings(out functionName, out syncDataRequestSettings);
+
+                callPostHttpFunction(functionName, syncDataRequestSettings);
+
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex.Message);
                 throw(new Exception(ex.Message));
             }
+        }
+
+        /// <summary>
+        /// Gets the function name to be called
+        /// and should it be SyncDataOrchestrator_Start the SyncDataRequest to be used based on current environment variables.
+        /// </summary>
+        /// <param name="settings">A SyncDataRequest object containing request body to be used in request</param>
+        /// <param name="functionName">The function to be called</param>
+        private void getSettings(out string functionName, out SyncDataRequest settings)
+        {
+            Boolean useSyncData = false;
+            Boolean.TryParse(Environment.GetEnvironmentVariable("SyncDataEnabled"), out useSyncData);
+
+            Boolean useFakeData = false;
+            Boolean.TryParse(Environment.GetEnvironmentVariable("UseFakedDataSources"), out useFakeData);
+
+            Boolean useINSSightData = false;
+            Boolean.TryParse(Environment.GetEnvironmentVariable("INSSightDataFeedEnabled"), out useINSSightData);
+
+            if (useSyncData)
+            {
+                functionName = "SyncDataOrchestrator_Start";
+
+                if (useFakeData)
+                {
+                    settings = new SyncDataRequest()
+                    {
+                        Modes = SyncDataEnums.Mode.Default,
+                        DataSources = SyncDataEnums.Datasource.FakeBKTandIVA | SyncDataEnums.Datasource.FakeDRO
+                    };
+                    _logger.LogInformation("Calling SyncData - Using Faked data from searchdata.json for BKTs & IVAs, ISCIS for DROs");
+                }
+                else if (useINSSightData)
+                {
+                    settings = new SyncDataRequest()
+                    {
+                        Modes = SyncDataEnums.Mode.Default,
+                        DataSources = SyncDataEnums.Datasource.InnSightBKTandIVA | SyncDataEnums.Datasource.IscisDRO
+                    };
+                    _logger.LogInformation("Calling SyncData - Using INSSight data feeds for BKTs & IVAs, ISCIS for DROs");
+                }
+                else
+                {
+                    settings = new SyncDataRequest()
+                    {
+                        Modes = SyncDataEnums.Mode.Default,
+                        DataSources = SyncDataEnums.Datasource.IscisBKTandIVA | SyncDataEnums.Datasource.IscisDRO
+                    };
+                    _logger.LogInformation("Calling SyncData - Using ISCIS data feeds for BKTs, IVAs & DROs");
+                }
+
+            }
+            else
+            {
+                functionName = "EiirOrchestrator_Start";
+                settings = null;
+
+                _logger.LogInformation("Calling Start Orchestration - Using ISCIS data feeds for BKTs, IVAs & DROs");
+            }
+
         }
 
         /*
@@ -98,7 +151,7 @@ namespace INSS.EIIR.DailyExtract
             }
         }
 
-        private async System.Threading.Tasks.Task callPostHttpFunction(string function)
+        private async System.Threading.Tasks.Task callPostHttpFunction(string function, object requestBody = null)
         {
             string functionURL = Environment.GetEnvironmentVariable("functionURL");
             string apiKey = Environment.GetEnvironmentVariable("functionAPIKey");
@@ -109,8 +162,10 @@ namespace INSS.EIIR.DailyExtract
                 // Setting the function key header
                 client.DefaultRequestHeaders.Add("x-functions-key", apiKey);
 
+                var body = requestBody != null ? JsonConvert.SerializeObject(requestBody): "";
+
                 // Making the POST request
-                var response = await client.PostAsync(functionEndpoint, new StringContent("", System.Text.Encoding.UTF8, "application/json"));
+                var response = await client.PostAsync(functionEndpoint, new StringContent(body, System.Text.Encoding.UTF8, "application/json"));
 
                 // Writing the responsefunctionEndpoint
                 if (response.IsSuccessStatusCode)

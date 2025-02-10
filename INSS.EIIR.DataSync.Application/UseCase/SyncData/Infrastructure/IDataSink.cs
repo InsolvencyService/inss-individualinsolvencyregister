@@ -1,16 +1,14 @@
 ﻿using INSS.EIIR.DataSync.Application.UseCase.SyncData.Model;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using INSS.EIIR.Models.SyncData;
 
 namespace INSS.EIIR.DataSync.Application.UseCase.SyncData.Infrastructure
 {
     public interface IDataSink<TSinkable>
     {
-        Task Start();
+        SyncDataEnums.Mode EnabledCheckBit { get; }
+        string Description { get; }
+        Task Start(SyncDataEnums.Datasource specifiedDataSources);
         Task<DataSinkResponse> Sink(TSinkable model);
-        Task<SinkCompleteResponse> Complete();
+        Task<SinkCompleteResponse> Complete(bool commit = true);
     }
 }

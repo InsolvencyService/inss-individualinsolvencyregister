@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using INSS.EIIR.Models.SyncData;
 
 namespace INSS.EIIR.DataSync.Application.UseCase.SyncData.Infrastructure
 {
@@ -10,5 +6,8 @@ namespace INSS.EIIR.DataSync.Application.UseCase.SyncData.Infrastructure
     {
         IAsyncEnumerable<T> GetInsolventIndividualRegistrationsAsync();
 
+        SyncDataEnums.Datasource Type { get; }
+
+        string Description { get; }
     }
 }

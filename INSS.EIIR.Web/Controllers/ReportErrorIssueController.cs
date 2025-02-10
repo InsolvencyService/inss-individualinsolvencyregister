@@ -6,6 +6,7 @@ using INSS.EIIR.Web.Constants;
 using INSS.EIIR.Web.Helper;
 using INSS.EIIR.Web.ViewModels;
 using Microsoft.AspNetCore.Mvc;
+using System.Globalization;
 
 namespace INSS.EIIR.Web.Controllers
 {
@@ -34,6 +35,13 @@ namespace INSS.EIIR.Web.Controllers
         {
             var caseDetails = await _caseService.GetCaseAsync(caseNo, indivNo);
 
+            DateTime? insolvencyDate = null;
+            DateTime aDate;
+            if (DateTime.TryParseExact(caseDetails.insolvencyDate, "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out aDate))
+            { 
+                insolvencyDate = new DateTime?(aDate);
+            }
+
             var model = new CreateFeedbackViewModel
             {
                 CaseNo = caseNo,
@@ -44,7 +52,8 @@ namespace INSS.EIIR.Web.Controllers
                 FromAdmin = fromAdmin,
                 CaseFeedback = new CreateCaseFeedback
                 {
-                    CaseId = caseDetails.caseNo
+                    CaseId = caseDetails.caseNo,
+                    InsolvencyDate = insolvencyDate,
                 },
                 SearchParameters = new SearchParameters
                 {
@@ -98,6 +107,10 @@ namespace INSS.EIIR.Web.Controllers
         public async Task<IActionResult> CreateFeedback([FromForm]CreateFeedbackViewModel feedback)
         {
             feedback.CaseFeedback.FeedbackDate = DateTime.Now;
+            feedback.CaseFeedback.InsolvencyType = feedback.Type[0..1];
+            feedback.CaseFeedback.CaseName = feedback.Name;
+            feedback.CaseFeedback.IndivNo = feedback.IndivNo;
+
 
             if(!string.IsNullOrEmpty(feedback.CaseFeedback.ReporterOrganisation))
             {

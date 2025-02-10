@@ -5,6 +5,10 @@ using Azure.Storage.Blobs;
 using Microsoft.Data.SqlClient;
 using Microsoft.SqlServer.Management.Smo;
 using Microsoft.SqlServer.Management.Common;
+using System.Threading.Tasks;
+using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Extensions;
+using AutoMapper.Configuration.Annotations;
+using System.Reflection.Metadata;
 
 
 
@@ -15,6 +19,9 @@ namespace INSS.EIIR.DailyExtract
         private string _name = string.Empty;
         private Stream _blob = null;
         private ILogger<EiiRDailyExtract> _log = null;
+
+        private const long defaultMaxFileSize = 50; 
+
 
         public ExtractSnapshot(string name, Stream blob, ILogger<EiiRDailyExtract> log) 
         {
@@ -85,6 +92,44 @@ namespace INSS.EIIR.DailyExtract
             if (Environment.GetEnvironmentVariable("DeleteSourceAfterCopy") == "1")
             {
                 await sourceClient.DeleteIfExistsAsync();
+            }
+        }
+
+        public bool WithinFileSizeLimits 
+        {
+            get {
+
+                var result = false;
+
+                BlobServiceClient sourceBlobServiceClient = new BlobServiceClient(Environment.GetEnvironmentVariable("SourceBlobConnectionString"));
+
+                BlobContainerClient sourceContainerClient = sourceBlobServiceClient.GetBlobContainerClient(Environment.GetEnvironmentVariable("SourceContainer"));
+
+                string maxFileSizeTxt = Environment.GetEnvironmentVariable("MaxEiirDailyExtractFileSize");
+                long maxFilesSize;
+
+                if (maxFileSizeTxt.IsNullOrWhiteSpace())
+                {
+                    _log.LogWarning($"MaxEiirDailyExtractFileSize is not set, default of {defaultMaxFileSize} MB set.");
+                    maxFileSizeTxt = $"{defaultMaxFileSize}";
+                }
+
+                if (!long.TryParse(maxFileSizeTxt, out maxFilesSize))
+                {
+                    _log.LogWarning($"Unable to parse MaxEiirDailyExtractFileSize, default of {defaultMaxFileSize} MB set.");
+                    maxFilesSize = defaultMaxFileSize;  
+                } 
+
+                BlobClient blob = sourceContainerClient.GetBlobClient(_name);
+                if (blob != null)
+                {
+                    var properties = (blob.GetProperties()).Value;
+
+                    return properties.ContentLength < maxFilesSize * 1000000;
+                }
+
+                return result;
+
             }
         }
     }

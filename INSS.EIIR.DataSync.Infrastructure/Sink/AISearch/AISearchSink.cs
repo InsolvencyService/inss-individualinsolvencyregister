@@ -7,6 +7,8 @@ using INSS.EIIR.AzureSearch.IndexMapper;
 using INSS.EIIR.DataSync.Application.UseCase.SyncData.Infrastructure;
 using INSS.EIIR.DataSync.Application.UseCase.SyncData.Model;
 using INSS.EIIR.Models.IndexModels;
+using INSS.EIIR.Models.SyncData;
+using INSS.EIIR.Models.Constants;
 using Microsoft.Extensions.Logging;
 
 namespace INSS.EIIR.DataSync.Infrastructure.Sink.AISearch
@@ -14,6 +16,7 @@ namespace INSS.EIIR.DataSync.Infrastructure.Sink.AISearch
     public class AISearchSink : IDataSink<InsolventIndividualRegisterModel>
     {
         public const string SEARCH_INDEX_BASE_NAME = "eiir-individuals";
+        public const string NON_PERMITTED_DATA = SyncData.ContainsNonPermittedData;
 
         private readonly ILogger<AISearchSink> _logger;
         private readonly SearchIndexClient _indexClient;
@@ -24,6 +27,10 @@ namespace INSS.EIIR.DataSync.Infrastructure.Sink.AISearch
         private SearchClient? _searchClient;
         private string? _newSearchIndex;
         private List<InsolventIndividualRegisterModel> _batch = new List<InsolventIndividualRegisterModel>();
+
+        public SyncDataEnums.Mode EnabledCheckBit => SyncDataEnums.Mode.DisableIndexRebuild;
+
+        public string Description => "New Azure AI Search Index being created";
 
         public AISearchSink(AISearchSinkOptions options, ISetIndexMapService indexMapSetter, ILogger<AISearchSink> logger) 
         {
@@ -43,11 +50,15 @@ namespace INSS.EIIR.DataSync.Infrastructure.Sink.AISearch
             _batchLimit = options.BatchLimit;
         }
 
-        public async Task Start() 
+        public async Task Start(SyncDataEnums.Datasource specifiedDataSources) 
         {
             _logger.LogInformation("Starting AI Search sink");
 
             _newSearchIndex = await IndexNameHelper.GetNewIndexName(_indexClient.GetIndexNamesAsync());
+
+            if (_options.PermittedDataSources != specifiedDataSources)
+                _newSearchIndex = $"{_newSearchIndex}-{NON_PERMITTED_DATA}";
+
             await CreateNewIndex(_newSearchIndex);
 
             _searchClient = new SearchClient(new Uri(_options.AISearchEndpoint), _newSearchIndex, new Azure.AzureKeyCredential(_options.AISearchKey), new SearchClientOptions()
@@ -76,7 +87,7 @@ namespace INSS.EIIR.DataSync.Infrastructure.Sink.AISearch
             return new DataSinkResponse() { IsError = false };
         }
 
-        public async Task<SinkCompleteResponse> Complete()
+        public async Task<SinkCompleteResponse> Complete(bool commit = true)
         {
             if (_batch.Count > 0)
             {
@@ -85,17 +96,23 @@ namespace INSS.EIIR.DataSync.Infrastructure.Sink.AISearch
 
             _logger.LogInformation("Completing AI Search sink");
 
-            if (_newSearchIndex != null)
+            if (commit)
             {
-                await _indexMapSetter.SetIndexName(_newSearchIndex);
+                if (_newSearchIndex != null)
+                {
+                    await _indexMapSetter.SetIndexName(_newSearchIndex);
+                    _logger.LogInformation($"Swapped alias to {_newSearchIndex}");
+
+                    await DeleteIndexes();
+                    _logger.LogInformation("Deleted old indexes");
+                }
+                else
+                    throw new ArgumentNullException("newSearchIndex cannot be null.");               
             }
-            else throw new ArgumentNullException("newSearchIndex cannot be null.");
-
-            _logger.LogInformation($"Swapped alias to {_newSearchIndex}");
-
-            await DeleteIndexes();
-
-            _logger.LogInformation("Deleted old indexes");
+            else 
+            {
+                _logger.LogWarning($"Index not swapped due to errors or testmode applied during SyncData");
+            }
 
             _logger.LogInformation("Completed AI Search sink");
 

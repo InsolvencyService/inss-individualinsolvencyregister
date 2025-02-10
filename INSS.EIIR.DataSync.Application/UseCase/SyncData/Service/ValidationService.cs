@@ -1,29 +1,17 @@
 ﻿using INSS.EIIR.DataSync.Application.UseCase.SyncData.Model;
 using INSS.EIIR.DataSync.Application.UseCase.SyncData.Validation;
-using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace INSS.EIIR.DataSync.Application.UseCase.SyncData.Service
 {
     public class ValidationService
     {
-        private readonly List<IValidationRule> _rules = new List<IValidationRule>();
+        private readonly IEnumerable<IValidationRule> _rules;
 
-        public ValidationService() 
+        public ValidationService(IEnumerable<IValidationRule> rules)
         {
-            // create instances of all validation rules..
-            Type[] iValidationRuleTypes = (from t in Assembly.GetExecutingAssembly().GetExportedTypes()
-                                 where !t.IsInterface && !t.IsAbstract
-                                 where typeof(IValidationRule).IsAssignableFrom(t)
-                                 select t).ToArray();
-            _rules = iValidationRuleTypes.Select(t => (IValidationRule)Activator.CreateInstance(t)).ToList();
+            _rules = rules;
         }
-        
+
         public async Task<ValidationResponse> Validate(InsolventIndividualRegisterModel model)
         {
             var validationResponse = new ValidationResponse()

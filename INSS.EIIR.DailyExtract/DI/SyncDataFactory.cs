@@ -1,10 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
+using System.Linq;
+using System.Windows.Markup;
 using AutoMapper;
 using INSS.EIIR.AzureSearch.IndexMapper;
 using INSS.EIIR.DataSync.Application.UseCase.SyncData;
 using INSS.EIIR.DataSync.Application.UseCase.SyncData.Infrastructure;
 using INSS.EIIR.DataSync.Application.UseCase.SyncData.Model;
+using INSS.EIIR.DataSync.Application.UseCase.SyncData.Validation;
 using INSS.EIIR.DataSync.Infrastructure.Fake.Source;
 using INSS.EIIR.DataSync.Infrastructure.Sink.AISearch;
 using INSS.EIIR.DataSync.Infrastructure.Sink.Failure;
@@ -12,11 +16,12 @@ using INSS.EIIR.DataSync.Infrastructure.Sink.XML;
 using INSS.EIIR.DataSync.Infrastructure.Source.AzureTable;
 using INSS.EIIR.DataSync.Infrastructure.Source.SQL;
 using INSS.EIIR.Interfaces.DataAccess;
+using INSS.EIIR.Models.SyncData;
 using INSS.EIIR.StubbedTestData;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
+
 
 namespace INSS.EIIR.DataSync.Functions.DI
 {
@@ -34,54 +39,81 @@ namespace INSS.EIIR.DataSync.Functions.DI
             var indexMapper = sp.GetRequiredService<ISetIndexMapService>();
             var extractRepo = sp.GetRequiredService<IExtractRepository>();
             var exBankruptcyService = sp.GetRequiredService<IExistingBankruptciesService>();
+            var validationRules = sp.GetRequiredService<IEnumerable<IValidationRule>>();
+            var transformRules = sp.GetRequiredService<IEnumerable<ITransformRule>>();
 
-            IEnumerable<IDataSourceAsync<InsolventIndividualRegisterModel>> sources;
 
-            var useFakeData = config.GetValue<Boolean>("UseFakedDataSources", false);
+            var permittedDataSources = GetPermittedDataSources(config);
 
-            if (useFakeData)
+            //Datasources and selected in SyncData via their Type property
+            IEnumerable<IDataSourceAsync<InsolventIndividualRegisterModel>> sources = new List<IDataSourceAsync<InsolventIndividualRegisterModel>>()
             {
-                sources = new List<IDataSourceAsync<InsolventIndividualRegisterModel>>()
-                {
-                    GetInsSightFakeDataSource(config, mapper),
-                    GetEIIRSQLSourceFake(config, mapper)
-                };
-            }
-            else
-            {
-                sources = new List<IDataSourceAsync<InsolventIndividualRegisterModel>>()
-                {
-                    GetINSSightSQLSource(config, mapper),
-                    GetEIIRSQLSource(config, mapper)
-                };
-            }
+                //Fake Data Sources
+                GetInsSightFakeDataSource(config, mapper),
+                GetEIIRSQLSourceFake(config, mapper),
+
+                //ISCIS Data Sources
+                GetEIIRSQLSource(config, mapper),
+                GetEIIRLocalSQLIVAB(config, mapper),
+
+                //INSSight Data Sources
+                GetINSSightSQLSource(config, mapper)
+            };
+
 
             IEnumerable<IDataSink<InsolventIndividualRegisterModel>> sinks = new List<IDataSink<InsolventIndividualRegisterModel>>()
             {
-                GetAISearchSink(config, mapper, indexMapper, factory.CreateLogger<AISearchSink>()),
-                GetXMLSink(config, extractRepo, exBankruptcyService)               
+                GetAISearchSink(config, mapper, indexMapper, factory.CreateLogger<AISearchSink>(), permittedDataSources),
+                GetXMLSink(config, extractRepo, exBankruptcyService, permittedDataSources)               
             };
 
-            IEnumerable<ITransformRule> transformRules = new List<ITransformRule>();           
-
             var failureSinkOptions = new FailureSinkOptions();
-            var failureSink = new FailureSink(failureSinkOptions);
+            var failureSink = new FailureSink(factory.CreateLogger<FailureSink>(), failureSinkOptions);
 
             var options = new SyncDataOptions()
             {
+                PermittedDataSources = permittedDataSources,
                 DataSources = sources,
                 DataSinks = sinks,
                 TransformRules = transformRules,
+                ValidationRules = validationRules,
                 FailureSink = failureSink
             };
 
-            return new SyncData(options, factory.CreateLogger<SyncData>());
+            return new SyncData(options, extractRepo, factory.CreateLogger<SyncData>());
         }
 
-        private static IDataSink<InsolventIndividualRegisterModel> GetXMLSink(IConfiguration config, IExtractRepository repo, IExistingBankruptciesService service)
+        /// <summary>
+        /// Converts a delimited ('|') string (also works just as well for an int)
+        /// trys parsing each element as SyncDataEnums.Datasource, failures => 0
+        /// Then applys 'bitwise or' to them all using Linq Aggregator returning a single bitwise value
+        /// Parses the likes of "FakeDRO|FakeBKTandIVA" => 3
+        /// </summary>
+        /// <param name="config"></param>
+        /// <returns>SyncDataEnums.Datasource</returns>
+        private static SyncDataEnums.Datasource GetPermittedDataSources(IConfiguration config)
+        {
+            var setting = config.GetValue<object>("PermittedDataSources", 0);
+
+            SyncDataEnums.Datasource value = 0;
+
+            if (!Enum.TryParse(setting.ToString(),true,out value))
+            {
+                value = setting.ToString().Split('|').ToList().Select(e =>
+                {
+                    SyncDataEnums.Datasource aDataSource;
+                    Enum.TryParse(e.Trim(), true, out aDataSource);
+                    return aDataSource;
+                }).Aggregate((accumulatedValue, nextValue) => accumulatedValue = accumulatedValue | nextValue);
+            }
+            return value;
+        }
+
+        private static IDataSink<InsolventIndividualRegisterModel> GetXMLSink(IConfiguration config, IExtractRepository repo, IExistingBankruptciesService service, SyncDataEnums.Datasource permittedDataSources)
         {
             var options = new XMLSinkOptions()
             {
+                PermittedDataSources = permittedDataSources,
                 StorageName = config.GetValue<String>("XmlContainer", null),
                 StoragePath = config.GetValue<String>("TargetBlobConnectionString", null),
                 WriteToBlobRecordBufferSize = config.GetValue<int>("SyncDataWriteXMLBufferSize", 500)
@@ -90,9 +122,10 @@ namespace INSS.EIIR.DataSync.Functions.DI
             return new XMLSink(options, repo, service);
         }
 
-        private static IDataSink<InsolventIndividualRegisterModel> GetAISearchSink(IConfiguration config, IMapper mapper, ISetIndexMapService indexMapper, ILogger<AISearchSink> logger)
+        private static IDataSink<InsolventIndividualRegisterModel> GetAISearchSink(IConfiguration config, IMapper mapper, ISetIndexMapService indexMapper, ILogger<AISearchSink> logger, SyncDataEnums.Datasource permittedDataSources)
         {
             var options = new AISearchSinkOptions();
+            options.PermittedDataSources = permittedDataSources;
             options.AISearchEndpoint = config.GetValue<string>(AI_SEARCH_ENDPOINT_SETTING);
             options.AISearchKey = config.GetValue<string>(AI_SEARCH_KEY_SETTING);
             options.BatchLimit = config.GetValue<int>(AI_SEARCH_BATCH_LIMIT_SETTING);
@@ -119,6 +152,17 @@ namespace INSS.EIIR.DataSync.Functions.DI
             var options = new SQLSourceOptions(mapper, config.GetValue<string>("database:connectionstring"));
 
             return new EiirSQLSource(options);
+        }
+
+        /// <summary>
+        /// Temporary method to allow localised testing of INSSight Integration functionality
+        /// To be removed once INSSight feed is available
+        /// </summary>
+        private static IDataSourceAsync<InsolventIndividualRegisterModel> GetEIIRLocalSQLIVAB(IConfiguration config, IMapper mapper)
+        {
+            var options = new SQLSourceOptions(mapper, config.GetValue<string>("database:connectionstring"));
+
+            return new EIIRLocalSQLIVAB(options);
         }
 
         private static IDataSourceAsync<InsolventIndividualRegisterModel> GetEIIRSQLSourceFake(IConfiguration config, IMapper mapper)

@@ -1,15 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using INSS.EIIR.DataSync.Application.UseCase.SyncData.Infrastructure;
+﻿using INSS.EIIR.DataSync.Application.UseCase.SyncData.Infrastructure;
 using INSS.EIIR.DataSync.Application.UseCase.SyncData.Model;
 using INSS.EIIR.Models.IndexModels;
 using INSS.EIIR.Models.Constants;
 using System.Text.Json;
 using AutoMapper;
 using INSS.EIIR.Models.CaseModels;
+using INSS.EIIR.Models.SyncData;
 
 
 namespace INSS.EIIR.StubbedTestData
@@ -23,6 +19,10 @@ namespace INSS.EIIR.StubbedTestData
         {
             _mapper = mapper;
         }
+
+        public SyncDataEnums.Datasource Type =>  SyncDataEnums.Datasource.FakeDRO;
+
+        public string Description => "Fake DRO Data from searchdata.json";
 
         public async IAsyncEnumerable<InsolventIndividualRegisterModel> GetInsolventIndividualRegistrationsAsync()
         {

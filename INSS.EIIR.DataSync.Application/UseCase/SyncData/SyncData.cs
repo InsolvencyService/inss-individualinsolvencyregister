@@ -1,72 +1,152 @@
 ﻿using INSS.EIIR.DataSync.Application.UseCase.SyncData.Infrastructure;
+using INSS.EIIR.DataSync.Application.UseCase.SyncData.Exceptions;
 using INSS.EIIR.DataSync.Application.UseCase.SyncData.Model;
 using INSS.EIIR.DataSync.Application.UseCase.SyncData.Service;
 using Microsoft.Extensions.Logging;
-using INSS.EIIR.Models.CaseModels;
-using System.Reflection;
+using INSS.EIIR.Interfaces.DataAccess;
+using INSS.EIIR.Models.SyncData;
 
 namespace INSS.EIIR.DataSync.Application.UseCase.SyncData
 {
-    public class SyncData : IResponseUseCase<SyncDataResponse>
+    public class SyncData : IRequestResponseUseCase<SyncDataRequest, SyncDataResponse>
     {
         private readonly SyncDataOptions _options;
         private readonly TransformService _transformService;
         private readonly ValidationService _validation;
         private readonly ILogger<SyncData> _logger;
+        private bool _swapIndexAndZipXml = true;
+        private bool _testModeNotActive = true;
+        private readonly IExtractRepository _eiirRepository;
 
-        public SyncData(SyncDataOptions options, ILogger<SyncData> logger)
+        public SyncData(SyncDataOptions options, IExtractRepository extractRepository, ILogger<SyncData> logger)
         {
             _options = options;
             _logger = logger;
             _transformService = new TransformService(_options.TransformRules);
-            _validation = new ValidationService();
+            _validation = new ValidationService(_options.ValidationRules);
+            _eiirRepository = extractRepository;
         }
 
-        public async Task<SyncDataResponse> Handle()
+        public async Task<SyncDataResponse> Handle(SyncDataRequest request)
         {
             int numErrors = 0;
 
-            foreach (IDataSink<InsolventIndividualRegisterModel> sink in _options.DataSinks)
+            await _options.FailureSink.Start(request.DataSources);
+
+            SyncDataResponse response = CheckPreconditions();
+
+            #region Pre-Conditions check
+            if (IgnorePreConditionChecks(request))
             {
-                await sink.Start();
+                _logger.LogWarning($"SyncData pre-condition checks ignored {(response.ErrorMessage != string.Empty ? "Error: " + response.ErrorMessage : "")}");
+            }
+            else
+            {
+                if (response.ErrorMessage != "")
+                {
+                    response.ErrorCount++;
+                    await SinkFailure("SyncData Initialisation Failure", response);
+                    return response;
+                }
+            }
+            #endregion Pre-Conditions check
+
+            //Check if no datasources have been specified 
+            if (AreNoDataSourceSpecified(request))
+            {
+                response = new SyncDataResponse() { ErrorCount = 1, ErrorMessage = "No DataSources detected when calling SyncData" };
+                await SinkFailure("SyncData Initialisation Failure", response);
+                return response;
             }
 
-            //Following line is commented out as FailureSink not fully implemented and will cause crash if deployed
-            //await _options.FailureSink.Start();
+            //Check if no sinks are enabled
+            if (AreNoSinksEnabled(request))
+            {
+                response = new SyncDataResponse() { ErrorCount = 1, ErrorMessage = "All data sinks disabled detected when calling SyncData" };
+                await SinkFailure("SyncData Initialisation Failure", response);
+                return response;
+            }
 
-            foreach (IDataSourceAsync<InsolventIndividualRegisterModel> source in  _options.DataSources) 
+            if (IsTestModeActive(request))
+            {
+                _testModeNotActive = false;
+                _logger.LogWarning("Test mode is active Zip file will not be created for XML Extract nor Search Index swapped");
+            }
+
+            if (_testModeNotActive) {
+
+                _logger.LogWarning($"Test mode is not active, Permitted DataSources are: {_options.PermittedDataSources}");
+
+                if (_options.PermittedDataSources != request.DataSources)
+                {
+                    response = new SyncDataResponse() { ErrorCount = 0, ErrorMessage = "SyncData terminated as specified data sources do not match permitted data sources\r\n" };
+
+                    var nonPermittedDataSources = GetNonPermittedSpecifiedDataSources(request);
+
+                    if (nonPermittedDataSources != SyncDataEnums.Datasource.None)
+                    {
+                        response.ErrorCount++;
+                        response.ErrorMessage = response.ErrorMessage + $"The following data sources are not permitted outside Test mode:{nonPermittedDataSources.ToString()}\r\n";
+                    }
+
+                    var nonSpecifiedPermittedDataSources = GetNonSpecifiedPermittedDataSources(request);
+
+                    if (nonSpecifiedPermittedDataSources != SyncDataEnums.Datasource.None)
+                    {
+                        response.ErrorCount++;
+                        response.ErrorMessage = response.ErrorMessage + $"The following data sources are required outside Test mode:{nonSpecifiedPermittedDataSources.ToString()}\r\n";
+                    }
+
+                    await SinkFailure("SyncData Initialisation Failure", response);
+                    return response;
+                }
+
+            }
+
+
+            foreach (IDataSink<InsolventIndividualRegisterModel> sink in GetEnabledDataSinks(request))
+            {
+                _logger.LogWarning(sink.Description);
+                await sink.Start(request.DataSources);
+            }
+
+            foreach (IDataSourceAsync<InsolventIndividualRegisterModel> source in GetSpecifiedDataSources(request))
             {
                 try
                 {
+                    _logger.LogWarning($"Processing DataSource for: {source.Description}");
                     await foreach (var model in source.GetInsolventIndividualRegistrationsAsync())
                     {
                         // validate
-                        var validationResponse = await _validation.Validate(model);
+                        var validationResponse = await ValidateModel(model);
 
                         // sink failure
                         if (!validationResponse.IsValid)
                         {
                             await SinkFailure(model.Id, validationResponse);
                             numErrors++;
+                            _swapIndexAndZipXml = false;
                             break; // skip to the next item.
                         }
 
                         // transform
-                        var transformResponse = await _transformService.Transform(model);
+                        var transformResponse = await TransformModel(model);
 
                         if (transformResponse.IsError)
                         {
-                            await SinkFailure(model.Id, transformResponse);                                                    
+                            await SinkFailure(model.Id, transformResponse);
                             numErrors++;
+                            _swapIndexAndZipXml = false;
                         }
                         else
                         {
-                            foreach (IDataSink<InsolventIndividualRegisterModel> sink in _options.DataSinks)
+                            foreach (IDataSink<InsolventIndividualRegisterModel> sink in GetEnabledDataSinks(request))
                             {
-                                var sinkResponse = await sink.Sink(transformResponse.Model);
+                                var sinkResponse = await SinkModel(transformResponse.Model, sink);
                                 if (sinkResponse.IsError)
                                 {
-                                    _logger.LogError($"Error sinking {model.Id} to {sink.GetType()}");
+                                    await SinkFailure(model.Id, sinkResponse);
+                                    _swapIndexAndZipXml = false;
                                 }
                             }
                         }
@@ -74,17 +154,17 @@ namespace INSS.EIIR.DataSync.Application.UseCase.SyncData
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError(ex, $"Unhandled error transforming and sinking item");
+                    _swapIndexAndZipXml = false;
+                    throw;
                 }
             }
 
-            foreach (IDataSink<InsolventIndividualRegisterModel> sink in _options.DataSinks)
+            foreach (IDataSink<InsolventIndividualRegisterModel> sink in GetEnabledDataSinks(request))
             {
-                await sink.Complete();
+                await sink.Complete(_swapIndexAndZipXml && _testModeNotActive);
             }
 
-            //Following line is commented out as FailureSink not fully implemented and will cause crash if deployed
-            //await _options.FailureSink.Complete();
+            await _options.FailureSink.Complete();
 
             if (numErrors > 0)
             {
@@ -97,6 +177,86 @@ namespace INSS.EIIR.DataSync.Application.UseCase.SyncData
             };
         }
 
+        private SyncDataEnums.Datasource GetNonSpecifiedPermittedDataSources(SyncDataRequest request)
+        {
+            return _options.PermittedDataSources ^ request.DataSources & _options.PermittedDataSources;
+        }
+
+        private SyncDataEnums.Datasource GetNonPermittedSpecifiedDataSources(SyncDataRequest request)
+        {
+            return ~_options.PermittedDataSources & request.DataSources;
+        }
+
+        private bool IsTestModeActive(SyncDataRequest request)
+        {
+            return (request.Modes & SyncDataEnums.Mode.Test) == SyncDataEnums.Mode.Test;
+        }
+
+        private IEnumerable<IDataSourceAsync<InsolventIndividualRegisterModel>> GetSpecifiedDataSources(SyncDataRequest request)
+        {
+            return _options.DataSources.Where(s => (s.Type & request.DataSources) == s.Type);
+        }
+
+        private IEnumerable<IDataSink<InsolventIndividualRegisterModel>> GetEnabledDataSinks(SyncDataRequest request)
+        {
+            return _options.DataSinks.Where(s => (s.EnabledCheckBit & ~request.Modes) == s.EnabledCheckBit);
+        }
+
+        private static bool AreNoSinksEnabled(SyncDataRequest request)
+        {
+            return (request.Modes & (SyncDataEnums.Mode.DisableXMLExtract | SyncDataEnums.Mode.DisableIndexRebuild))
+                                == (SyncDataEnums.Mode.DisableXMLExtract | SyncDataEnums.Mode.DisableIndexRebuild);
+        }
+
+        private bool AreNoDataSourceSpecified(SyncDataRequest request)
+        {
+            return request.DataSources == SyncDataEnums.Datasource.None || _options.DataSources.Where(s => (s.Type & request.DataSources) == s.Type).Count() == 0;
+        }
+
+        private static bool IgnorePreConditionChecks(SyncDataRequest request)
+        {
+            return (request.Modes & SyncDataEnums.Mode.IgnorePreConditionChecks) == SyncDataEnums.Mode.IgnorePreConditionChecks;
+        }
+
+        private async Task<DataSinkResponse> SinkModel(InsolventIndividualRegisterModel model, IDataSink<InsolventIndividualRegisterModel> sink)
+        {
+            try
+            {
+                return await sink.Sink(model);
+            }
+            //For when DataSink logic throws an unexpected exception, not when it gracefully finds errors
+            catch (Exception ex) 
+            { 
+                throw new DataSinkException($"Error sinking model for {model.Id} to sink {sink.GetType()}", ex);
+            }
+        }
+
+        private async Task<TransformResponse> TransformModel(InsolventIndividualRegisterModel model)
+        {
+            try
+            {
+                return await _transformService.Transform(model);
+            }
+            //For when Transform logic throws an unexpected exception, not when it gracefully finds errors
+            catch (Exception ex)
+            {
+                throw new TransformRuleException($"Exception transforming {model.Id}", ex);
+            }       
+        }
+
+        private async Task<ValidationResponse> ValidateModel(InsolventIndividualRegisterModel model)
+        {
+            try
+            {
+                return await _validation.Validate(model);
+            }
+            //For when Validation logic throws an unexpected exception, not when it gracefully finds errors
+            catch (Exception ex)
+            {
+                throw new ValidationRuleException($"Exception validating {model.Id}", ex);
+            }
+        }
+
         private async Task SinkFailure(string id, SyncFailure failure)
         {
             try
@@ -105,8 +265,43 @@ namespace INSS.EIIR.DataSync.Application.UseCase.SyncData
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"Error sinking {id} to failure sink {_options.FailureSink.GetType()}");
+                throw new DataSinkException($"Error sinking failure for {id} to sink {_options.FailureSink.GetType()}", ex);
             }
         }
+
+
+        private SyncDataResponse CheckPreconditions()
+        {
+            var response = new SyncDataResponse() { ErrorCount = 0, ErrorMessage = string.Empty };
+
+            var extractJob = _eiirRepository.GetExtractAvailable();
+
+            var today = DateOnly.FromDateTime(DateTime.Now);
+
+            var extractjobError = $"ExtractJob not found for today [{today}], IIR snapshot has not run";
+            var snapshotError = $"IIR Snapshot has not yet run today [{today}]";
+            var extractAlreadyExistsError = $"Subscriber xml / zip file creation has already ran successfully on [{today}]";
+
+            if (extractJob == null)
+            {
+                response.ErrorMessage = extractjobError;
+                return response;
+            }
+
+            if (extractJob.SnapshotCompleted?.ToLowerInvariant() == "n")
+            {
+                response.ErrorMessage = snapshotError;
+                return response;
+            }
+
+            if (extractJob.ExtractCompleted?.ToLowerInvariant() == "y")
+            { 
+                response.ErrorMessage = extractAlreadyExistsError;
+                return response;
+            }
+
+            return response;
+        }
+
     }
 }
