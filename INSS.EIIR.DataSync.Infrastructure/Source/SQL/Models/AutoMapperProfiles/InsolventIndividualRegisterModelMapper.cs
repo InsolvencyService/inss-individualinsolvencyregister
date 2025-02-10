@@ -1,8 +1,10 @@
 ﻿using AutoMapper;
 using INSS.EIIR.DataSync.Application.UseCase.SyncData.Model;
 using INSS.EIIR.Models.CaseModels;
+using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -19,7 +21,7 @@ namespace INSS.EIIR.DataSync.Infrastructure.Source.SQL.Models.AutoMapperProfiles
             .ForMember(dest => dest.individualTitle, opt => opt.MapFrom(src => src.IndividualTitle))
             .ForMember(dest => dest.individualAlias, opt => opt.MapFrom(src => src.IndividualAlias))
             .ForMember(dest => dest.individualGender, opt => opt.MapFrom(src => src.IndividualGender))
-            .ForMember(dest => dest.individualDOB, opt => opt.MapFrom(src => src.IndividualDob))
+            .ForMember(dest => dest.individualDOB, opt => opt.MapFrom(src => src.IndividualDob.Trim()))
             .ForMember(dest => dest.individualOccupation, opt => opt.MapFrom(src => src.IndividualOccupation))
             .ForMember(dest => dest.individualTown, opt => opt.MapFrom(src => src.IndividualTown))
             .ForMember(dest => dest.individualAddress, opt => opt.MapFrom(src => src.IndividualAddress))
@@ -32,9 +34,11 @@ namespace INSS.EIIR.DataSync.Infrastructure.Source.SQL.Models.AutoMapperProfiles
             .ForMember(dest => dest.insolvencyType, opt => opt.MapFrom(src => src.InsolvencyType))
             .ForMember(dest => dest.notificationDate, opt => opt.MapFrom(src => src.NotificationDate))
             .ForMember(dest => dest.caseStatus, opt => opt.MapFrom(src => src.CaseStatus))
+            .ForMember(dest => dest.annulDate, opt => opt.MapFrom(src => src.AnnulDate))
+            .ForMember(dest => dest.annulReason, opt => opt.MapFrom(src => src.AnnulReason))
             .ForMember(dest => dest.caseDescription, opt => opt.MapFrom(src => src.CaseDescription))
             .ForMember(dest => dest.tradingNames, opt => opt.MapFrom(src => src.TradingNames))
-            .ForMember(dest => dest.insolvencyDate, opt => opt.MapFrom(src => src.InsolvencyDate))
+            .ForMember(dest => dest.insolvencyDate, opt => opt.MapFrom(src => src.InsolvencyDate.HasValue ? src.InsolvencyDate.Value.ToString("dd/MM/yyyy"): null))
             .ForMember(dest => dest.hasRestrictions, opt => opt.MapFrom(src => src.HasRestrictions))
             .ForMember(dest => dest.restrictionsType, opt => opt.MapFrom(src => src.RestrictionsType))
             .ForMember(dest => dest.restrictionsStartDate, opt => opt.MapFrom(src => src.RestrictionsStartDate.HasValue ? src.RestrictionsStartDate.Value.ToDateTime(TimeOnly.MinValue):(DateTime?)null))
@@ -61,7 +65,8 @@ namespace INSS.EIIR.DataSync.Infrastructure.Source.SQL.Models.AutoMapperProfiles
             .ForPath(s => s.RestrictionsEndDate, opt => opt.MapFrom(src => src.restrictionsEndDate.HasValue ? DateOnly.FromDateTime(src.restrictionsEndDate.Value) : (DateOnly?)null))
             .ForPath(s => s.PrevInterimRestrictionsOrderStartDate, opt => opt.MapFrom(src => src.prevInterimRestrictionsOrderStartDate.HasValue ? DateOnly.FromDateTime(src.prevInterimRestrictionsOrderStartDate.Value) : (DateOnly?)null))
             .ForPath(s => s.PrevInterimRestrictionsOrderEndDate, opt => opt.MapFrom(src => src.prevInterimRestrictionsOrderEndDate.HasValue ? DateOnly.FromDateTime(src.prevInterimRestrictionsOrderEndDate.Value) : (DateOnly?)null))
-            .ForPath(s => s.DateOfPreviousOrder, opt => opt.MapFrom(src => src.dateOfPreviousOrder.HasValue ? DateOnly.FromDateTime(src.dateOfPreviousOrder.Value) : (DateOnly?)null));
+            .ForPath(s => s.DateOfPreviousOrder, opt => opt.MapFrom(src => src.dateOfPreviousOrder.HasValue ? DateOnly.FromDateTime(src.dateOfPreviousOrder.Value) : (DateOnly?)null))
+            .ForPath(s => s.InsolvencyDate, opt => opt.MapFrom(src => !src.insolvencyDate.IsNullOrEmpty() ? DateTime.ParseExact(src.insolvencyDate, "d/M/yyyy", CultureInfo.InvariantCulture) : (DateTime?)null));
         }
 
     }

@@ -14,12 +14,17 @@ namespace INSS.EIIR.Functions
 {
     public class FnHealthCheckPing
     {
+        private readonly ILogger<FnHealthCheckPing> _logger;
+
+        public FnHealthCheckPing(ILogger<FnHealthCheckPing> logger)
+        {
+            _logger = logger;
+        }
+
         [Function("FnHealthCheckPing")]
         public async Task<IActionResult> Run(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "Health/Ping")] HttpRequestData req,
-            ILogger log)
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "Health/Ping")] HttpRequestData req)
         {
-            log.LogInformation("Health Check Pinged");
             return new OkResult();
         }
     }

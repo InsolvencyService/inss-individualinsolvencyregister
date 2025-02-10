@@ -11,6 +11,7 @@ using INSS.EIIR.DataSync.Infrastructure.Sink.Failure;
 using INSS.EIIR.DataSync.Infrastructure.Sink.XML;
 using INSS.EIIR.DataSync.Infrastructure.Source.AzureTable;
 using INSS.EIIR.DataSync.Infrastructure.Source.SQL;
+using INSS.EIIR.Interfaces.DataAccess;
 using INSS.EIIR.StubbedTestData;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -31,6 +32,8 @@ namespace INSS.EIIR.DataSync.Functions.DI
             var config = sp.GetRequiredService<IConfiguration>();
             var mapper = sp.GetRequiredService<IMapper>();
             var indexMapper = sp.GetRequiredService<ISetIndexMapService>();
+            var extractRepo = sp.GetRequiredService<IExtractRepository>();
+            var exBankruptcyService = sp.GetRequiredService<IExistingBankruptciesService>();
 
             IEnumerable<IDataSourceAsync<InsolventIndividualRegisterModel>> sources;
 
@@ -55,10 +58,8 @@ namespace INSS.EIIR.DataSync.Functions.DI
 
             IEnumerable<IDataSink<InsolventIndividualRegisterModel>> sinks = new List<IDataSink<InsolventIndividualRegisterModel>>()
             {
-                //Following lines are required.. eventually, they are commented as XMLSink and AISearchSink are yet to be implemented
-                //and will crash calling function if deployed myself and Carl are actively working on this code in coming days
-                //GetXMLSink(config),
-                GetAISearchSink(config, mapper, indexMapper, factory.CreateLogger<AISearchSink>())
+                GetAISearchSink(config, mapper, indexMapper, factory.CreateLogger<AISearchSink>()),
+                GetXMLSink(config, extractRepo, exBankruptcyService)               
             };
 
             IEnumerable<ITransformRule> transformRules = new List<ITransformRule>();           
@@ -77,11 +78,16 @@ namespace INSS.EIIR.DataSync.Functions.DI
             return new SyncData(options, factory.CreateLogger<SyncData>());
         }
 
-        private static IDataSink<InsolventIndividualRegisterModel> GetXMLSink(IConfiguration config)
+        private static IDataSink<InsolventIndividualRegisterModel> GetXMLSink(IConfiguration config, IExtractRepository repo, IExistingBankruptciesService service)
         {
-            var options = new XMLSinkOptions();
+            var options = new XMLSinkOptions()
+            {
+                StorageName = config.GetValue<String>("XmlContainer", null),
+                StoragePath = config.GetValue<String>("TargetBlobConnectionString", null),
+                WriteToBlobRecordBufferSize = config.GetValue<int>("SyncDataWriteXMLBufferSize", 500)
+            };
 
-            return new XMLSink(options);
+            return new XMLSink(options, repo, service);
         }
 
         private static IDataSink<InsolventIndividualRegisterModel> GetAISearchSink(IConfiguration config, IMapper mapper, ISetIndexMapService indexMapper, ILogger<AISearchSink> logger)
@@ -110,7 +116,7 @@ namespace INSS.EIIR.DataSync.Functions.DI
 
         private static IDataSourceAsync<InsolventIndividualRegisterModel> GetEIIRSQLSource(IConfiguration config, IMapper mapper)
         {
-            var options = new SQLSourceOptions(mapper, config.GetConnectionString("InsSightSQLConnectionString"));
+            var options = new SQLSourceOptions(mapper, config.GetValue<string>("database:connectionstring"));
 
             return new EiirSQLSource(options);
         }

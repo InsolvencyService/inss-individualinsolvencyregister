@@ -19,7 +19,7 @@ public class IndividualSearchMapper : Profile
             .ForMember(dest => dest.Title, opt => opt.MapFrom(src => src.individualTitle))
             .ForMember(dest => dest.AlternativeNames, opt => opt.MapFrom(src => src.individualAlias))
             .ForMember(dest => dest.Gender, opt => opt.MapFrom(src => src.individualGender))
-            .ForMember(dest => dest.DateOfBirth, opt => opt.MapFrom(src => src.individualDOB))
+            .ForMember(dest => dest.DateOfBirth, opt => opt.MapFrom(src => src.individualDOB.Trim()))
             .ForMember(dest => dest.Occupation, opt => opt.MapFrom(src => src.individualOccupation))
             .ForMember(dest => dest.LastKnownTown, opt => opt.MapFrom(src => src.individualTown))
             .ForMember(dest => dest.LastKnownAddress, opt => opt.MapFrom(src => src.individualAddress))
@@ -60,12 +60,14 @@ public class IndividualSearchMapper : Profile
         .ForPath(s => s.Trading,
                 opt => opt.MapFrom(
                     src => (!string.IsNullOrEmpty(src.TradingData) && src.TradingData != "<No Trading Names Found>")
-                        ? src.TradingData : null));
+                        ? src.TradingData : null))
+        .ForPath(s => s.individualDOB, opt => opt.MapFrom(src => src.DateOfBirth.Trim()));
 
         CreateMap<IndividualSearch, SearchResult>()
             .ForMember(m => m.individualForenames, opt => opt.MapFrom(s => s.FirstName))
             .ForMember(m => m.individualSurname, opt => opt.MapFrom(s => s.FamilyName))
             .ForMember(m => m.individualAlias, opt => opt.MapFrom(s => s.AlternativeNames))
+            .ForMember(m => m.dateOfBirth, opt => opt.MapFrom(s => s.DateOfBirth))
             .ForMember(m => m.companyName, opt => opt.MapFrom(s => s.TradingData))
             .ForMember(m => m.individualTown, opt => opt.MapFrom(s => s.LastKnownTown))
             .ForMember(m => m.individualPostcode, opt => opt.MapFrom(s => s.LastKnownPostcode))

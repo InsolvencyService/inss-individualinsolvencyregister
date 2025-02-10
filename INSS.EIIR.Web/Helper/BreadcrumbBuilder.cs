@@ -15,6 +15,7 @@ namespace INSS.EIIR.Web.Helper
             bool showSubscriber = false,
             bool showErrorList = false,
             bool isAdmin = false,
+
             SubscriberParameters subscriberParameters = null,
             SearchParameters searchParameters = null,
             ErrorListParameters errorListParameters = null)

@@ -193,12 +193,7 @@ jobs:
                         "name": "AzureWebJobs.RebuildIndexes.Disabled",
                         "value": true,
                         "slotSetting": true                                     
-                      },                      
-                      {
-                        "name": "UseFakedDataSources",
-                        "value": "$(UseFakedDataSourcesFuncEiir)",
-                        "slotSetting": false
-                      },                      
+                      },                   
                       {
                         "name": "UseDynamicIndexName",
                         "value": "$(UseDynamicIndexName)",
@@ -378,17 +373,17 @@ jobs:
                       },
                       {
                         "name": "AISearchBatchLimit",
-                        "value": "10",
-                        "slotSetting": false
-                      },                      
-                      {
-                        "name": "UseFakedDataSources",
-                        "value": "$(UseFakedDataSourcesFuncEiirDailyExtract)",
+                        "value": "1000",
                         "slotSetting": false
                       },
                       {
                         "name": "INSSightDataFeedEnabled",
                         "value": "$(INSSightDataFeedEnabled)",
+                        "slotSetting": false
+                      },
+                      {                      
+                        "name": "InsSightSQLConnectionString",
+                        "value": "$(InsSightSQLConnectionString)",
                         "slotSetting": false
                       },
                       {
@@ -419,6 +414,11 @@ jobs:
                       {
                         "name": "database__databuffersize",
                         "value": "$(database__databuffersize)",
+                        "slotSetting": false
+                      },
+                      {
+                        "name": "XMLContainer",
+                        "value": "$(XMLContainer)",
                         "slotSetting": false
                       }
                     ]

@@ -14,6 +14,13 @@ using INSS.EIIR.Models.AutoMapperProfiles;
 using INSS.EIIR.DataSync.Application.UseCase.SyncData.AutoMapperProfiles;
 using INSS.EIIR.DataSync.Infrastructure.Source.SQL.Models.AutoMapperProfiles;
 using INSS.EIIR.AzureSearch.IndexMapper;
+using INSS.EIIR.DataSync.Infrastructure.Sink.XML;
+using INSS.EIIR.Interfaces.DataAccess;
+using INSS.EIIR.DataAccess;
+using INSS.EIIR.Models.Configuration;
+using Microsoft.Extensions.Configuration;
+using INSS.EIIR.Data.Models;
+using Microsoft.EntityFrameworkCore;
 
 var host = new HostBuilder()
     .ConfigureFunctionsWebApplication()
@@ -28,10 +35,16 @@ var host = new HostBuilder()
             TableStorageConnectionString = Environment.GetEnvironmentVariable("TableStorageConnectionString")
         });
 
+        services.AddExistingBankrupticesService(new ExistingBankruptciesOptions()
+        {
+            TableStorageConnectionString = Environment.GetEnvironmentVariable("TableStorageConnectionString")
+        });
+
         // Auto Mapper Configurations
         var mapperConfig = new MapperConfiguration(mc =>
         {
             mc.AddProfile(new IndividualSearchMapper());
+            mc.AddProfile(new ExtractMapper());
             mc.AddProfile(new INSS.EIIR.DataSync.Infrastructure.Source.SQL.Models.AutoMapperProfiles.InsolventIndividualRegisterModelMapper());
             mc.AddProfile(new INSS.EIIR.DataSync.Application.UseCase.SyncData.AutoMapperProfiles.InsolventIndividualRegisterModelMapper());
         });
@@ -44,7 +57,29 @@ var host = new HostBuilder()
             azureBuilder.AddBlobServiceClient(Environment.GetEnvironmentVariable("BlobStorageConnectionString"));
         });
 
+        var connectionString = Environment.GetEnvironmentVariable("database__connectionstring");
+        if (string.IsNullOrEmpty(connectionString))
+            throw new ArgumentNullException("database__connectionstring missing");
+
+        //Required for ExtractRepository
+        services.AddTransient(_ =>
+        {
+            return new EIIRContext(connectionString);
+        });
+
+        //Required for ExtractRepository
+        services.AddDbContext<EIIRExtractContext>(options => options.UseSqlServer(connectionString));
+
+        services.AddOptions<DatabaseConfig>()
+           .Configure<IConfiguration>((settings, configuration) =>
+           {
+               configuration.GetSection("database").Bind(settings);
+           });
+
+        services.AddScoped<IExtractRepository, ExtractRepository>();
+
         services.AddScoped<IResponseUseCase<SyncDataResponse>, SyncData>(SyncDataFactory.Get);
+        
     })
     .Build();
 
