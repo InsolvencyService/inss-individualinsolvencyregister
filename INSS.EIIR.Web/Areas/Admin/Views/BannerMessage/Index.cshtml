@@ -1,0 +1,70 @@
+﻿@model INSS.EIIR.Web.ViewModels.ModifyBannerMessageViewModel
+
+@{
+    var header = "Update banner message";
+    ViewData["Header"] = header;
+    ViewData["Title"] = header;
+}
+
+@section AdminBreadcrumb
+{
+    <partial name="~/Areas/Admin/Shared/_AdminBreadcrumb.cshtml" model="Model.Breadcrumbs" />
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <h1 class="govuk-heading-l">
+            @header
+        </h1>
+    </div>
+</div>
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-one-third">
+        <h2 class="govuk-heading-m">Editor</h2>
+        <form asp-area="admin" asp-controller="bannermessage" asp-action="UpdateBanner" method="post">
+
+            <textarea class="govuk-textarea" id="BannerText" asp-for="BannerText" rows="5" placeholder="Add message to display on home page here"></textarea>
+
+            <button class="govuk-button" data-module="govuk-button" type="submit">
+                Save and return to admin page
+            </button>
+                
+        </form>
+
+        <p class="govuk-body">
+            <a href="/admin/admin-area">Cancel</a>
+        </p>
+
+    </div>
+
+    <div class="govuk-grid-column-two-thirds">
+        <h2 class="govuk-heading-m">Preview</h2>
+
+        <div id="bannerPreview" class="@(!String.IsNullOrWhiteSpace(Model.BannerText) ? "govuk-!-display-inline" : "govuk-!-display-none")">
+            <p class="govuk-body">The following banner will be displayed on the Home page once saved.</p>
+
+            <div class="govuk-notification-banner" role="region" aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner">
+                <div class="govuk-notification-banner__header">
+                    <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">
+                        Important
+                    </h2>
+                </div>
+                <div class="govuk-notification-banner__content">
+                    <p id="BannerPreviewText" class="govuk-notification-banner__heading">
+                        @Model.BannerText
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div id="bannerNoPreview" class="@(String.IsNullOrWhiteSpace(Model.BannerText) ? "govuk-!-display-inline" : "govuk-!-display-none")">
+         <p class="govuk-body">No banner message, will be set once saved.</p>
+        </div>
+        
+    </div>
+</div>
+
+@section PageScripts {
+    <script src="~/js/bannerEdit.js" asp-append-version="true" type="module"></script>
+}

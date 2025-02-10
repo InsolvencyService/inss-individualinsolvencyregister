@@ -36,6 +36,9 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UsePathBase("/eiir");
+
 app.UseStaticFiles();
 
 app.UseRouting();
@@ -161,7 +164,8 @@ void ConfigureServices(IServiceCollection services)
     services.AddTransient<ISubscriberService, SubscriberService>();
     services.AddTransient<ISubscriberSearch, SubscriberSearch>();
     services.AddTransient<ICaseService, CaseService>();
-    services.AddTransient<IExtractService, ExtractService>();    
+    services.AddTransient<IExtractService, ExtractService>();
+    services.AddTransient<IBanner, BannerService>();
 }
 
 static bool IsAdminContext(RedirectContext<CookieAuthenticationOptions> context)

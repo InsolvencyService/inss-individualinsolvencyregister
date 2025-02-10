@@ -1,5 +1,6 @@
 trigger:
 - develop
+- release/*
   
 pool:
   vmImage: windows-latest
@@ -38,7 +39,7 @@ stages:
       steps:
       - task: UseDotNet@2
         inputs:
-          version: '6.0.x'
+          version: '8.0.x'
 
       - task: DotNetCoreCLI@2
         displayName: NuGet Restore
@@ -65,14 +66,14 @@ stages:
         env:
           MSBUILDSINGLELOADCONTEXT: '1'       
 
-#      - task: DotNetCoreCLI@2
-#        displayName: 'Run Tests'
-#        inputs:
-#          command: test
-#          projects: '**/*Tests/*.csproj'
-#          arguments: '--configuration $(buildConfiguration) --collect "Code coverage"'
-#        env:
-#            ASPNETCORE_ENVIRONMENT: 'Dev'
+      - task: DotNetCoreCLI@2
+        displayName: 'Run Tests'
+        inputs:
+          command: test
+          projects: '**/*Tests/*.csproj'
+          arguments: '--configuration $(buildConfiguration) --collect "Code coverage"'
+        env:
+            ASPNETCORE_ENVIRONMENT: 'Dev'
 
       - task: DotNetCoreCLI@2
         displayName: 'Publish Project'
@@ -91,11 +92,11 @@ stages:
         inputs:
           targetPath: '$(Build.ArtifactStagingDirectory)' 
           artifactName: 'INSS.EIIR'
-        condition: succeeded()
+        condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
 
 - stage: DeployDev
   displayName: 'Deploy to Dev'
-  condition: succeeded()
+  condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
   variables:
     - group: EIIR-Dev
   jobs:
@@ -109,7 +110,7 @@ stages:
 
 - stage: DeploySit
   displayName: 'Deploy to Sit'
-  condition: and(succeeded(), eq(variables['Build.SourceBranchName'], 'develop'))
+  condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
   variables:
     - group: EIIR-Sit
   jobs:
@@ -120,60 +121,6 @@ stages:
         deployWebapp: ${{ parameters.deployWebapp }}
         deployfuncapp: ${{ parameters.deployfuncapp }}
         deployDailyExtract: ${{ parameters.deployDailyExtract }}
-
-- stage: RunIntTest
-  displayName: 'Int Tests'
-  condition: and(succeeded(), eq(variables['Build.SourceBranchName'], 'develop'))
-  variables:
-    - group: EIIR-int-test-Sit
-  jobs:
-  - job: RunTest
-    steps:
-      - ${{ if eq(parameters.RunIntTest, true) }}:
-
-        - task: DownloadPipelineArtifact@2
-          inputs:
-            artifact: 'INSS.EIIR'
-            patterns: '**/*QA*.zip'
-
-        - task: ExtractFiles@1
-          inputs:
-            archiveFilePatterns: '$(Pipeline.Workspace)/*QA*.zip'
-            destinationFolder: $(Pipeline.Workspace)
-            cleanDestinationFolder: false
-            overwriteExistingFiles: true
-
-        - task: qetza.replacetokens.replacetokens-task.replacetokens@3
-          displayName: Replace Tokens
-          inputs:
-            targetFiles: |
-              $(Pipeline.Workspace)/appsettings-template.json
-            encoding: 'auto'
-            verbosity: 'detailed'
-            actionOnMissing: 'log warning'
-            keepToken: false
-            tokenPrefix: '__'
-            tokenSuffix: '__'
-            useLegacyPattern: false
-
-        - task: VSTest@2
-          displayName: Execute Tests
-          inputs:
-            testSelector: 'testAssemblies'
-            testAssemblyVer2: |
-              INSS.EIIR.QA.Automation.dll
-            searchFolder: '$(Pipeline.Workspace)'
-            codeCoverageEnabled: true
-            platform: '$(buildPlatform)'
-            configuration: '$(buildConfiguration)'
-          continueOnError: true
-
-        - task: PublishTestResults@2
-          displayName: 'Publish Test Results'
-          inputs:
-            testResultsFormat: VSTest
-            testResultsFiles: '*.trx'
-            searchFolder: '$(Agent.TempDirectory)\TestResults'
 
 - stage: DeployPreProd
   displayName: 'Deploy to PreProd'

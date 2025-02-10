@@ -1,12 +1,18 @@
 {
-    "version": "2.0",
-    "logging": {
-        "applicationInsights": {
-            "samplingSettings": {
-                "isEnabled": true,
-                "excludedTypes": "Request"
-            },
-            "enableLiveMetricsFilters": true
-        }
+  "version": "2.0",
+  "extensions": {
+    "durableTask": {
+      "hubName": "syncdatafunctaskhub"
     }
+  },
+  "logging": {
+    "applicationInsights": {
+      "samplingSettings": {
+        "isEnabled": true,
+        "excludedTypes": "Request"
+      },
+      "enableLiveMetricsFilters": true
+    }
+  },
+  "functionTimeout": "00:30:00"
 }

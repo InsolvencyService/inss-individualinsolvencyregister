@@ -119,7 +119,7 @@ jobs:
                         "value": "$(database__commandtimeout)",
                         "slotSetting": false
                       },
-                    {
+                      {
                         "name": "servicebus__publisherconnectionstring",
                         "value": "$(servicebus__publisherconnectionstring)",
                         "slotSetting": false
@@ -158,7 +158,42 @@ jobs:
                         "name": "extractjobtimercron",
                         "value": "$(extractjobtimercron)",
                         "slotSetting": false
-                      }
+                      },
+                      {
+                        "name": "WEBSITE_TIME_ZONE",
+                        "value": "GMT Standard Time",
+                        "slotSetting": false
+                      },
+                      {
+                        "name": "AzureWebJobs.ExtractJobScheduler.Disabled",
+                        "value": true,
+                        "slotSetting": true
+                      },
+                      {
+                        "name": "AzureWebJobs.ExtractJobNotificationTrigger.Disabled",
+                        "value": true,
+                        "slotSetting": true
+                      },
+                      {
+                        "name": "AzureWebJobs.ExtractJobServiceTrigger.Disabled",
+                        "value": true,
+                        "slotSetting": true
+                      },
+                      {
+                        "name": "AzureWebJobs.EiirOrchestrator.Disabled",
+                        "value": true,
+                        "slotSetting": true
+                      },
+                      {
+                        "name": "AzureWebJobs.RebuildIndexes.Disabled",
+                        "value": true,
+                        "slotSetting": true                                     
+                      },                   
+                      {
+                        "name": "UseDynamicIndexName",
+                        "value": "$(UseDynamicIndexName)",
+                        "slotSetting": false
+                      }      
                     ]
 
               - task: AzureAppServiceManage@0
@@ -248,12 +283,12 @@ jobs:
                     [  
                       {
                         "name": "functionURL",
-                        "value": "$(functionBaseUrl)",
+                        "value": "$(extractfunctionBaseUrl)",
                         "slotSetting": false
                       },
                       {
                         "name": "functionAPIKey",
-                        "value": "$(functionapikey)",
+                        "value": "$(extractfunctionapikey)",
                         "slotSetting": false
                       },                 
                       {
@@ -297,9 +332,104 @@ jobs:
                         "slotSetting": false
                       },
                       {
-                        "name": "FUNCTIONS_WORKER_RUNTIME",
-                        "value": "dotnet",
+                        "name": "WEBSITE_TIME_ZONE",
+                        "value": "GMT Standard Time",
                         "slotSetting": false
+                      },
+                      {
+                        "name": "AzureWebJobs.Snapshot.Disabled",
+                        "value": true,
+                        "slotSetting": true
+                      },
+                      {
+                        "name": "AzureWebJobs.EiiRDailyExtract.Disabled",
+                        "value": true,
+                        "slotSetting": true                                            
+                      },                      
+                      {
+                        "name": "TableStorageConnectionString",
+                        "value": "$(storageconnectionstring)",
+                        "slotSetting": false
+                      },
+                      {
+                        "name": "AISearchEndpoint",
+                        "value": "$(EIIRIndexUrl)",
+                        "slotSetting": false
+                      },
+                      {
+                        "name": "AISearchKey",
+                        "value": "$(EIIRApiKey)",
+                        "slotSetting": false
+                      },
+                      {
+                        "name": "AISearchBatchLimit",
+                        "value": "1000",
+                        "slotSetting": false
+                      },
+                      {
+                        "name": "INSSightDataFeedEnabled",
+                        "value": "$(INSSightDataFeedEnabled)",
+                        "slotSetting": false
+                      },
+                      {                      
+                        "name": "InsSightSQLConnectionString",
+                        "value": "$(InsSightSQLConnectionString)",
+                        "slotSetting": false
+                      },
+                      {
+                        "name": "database__connectionstring",
+                        "value": "$(database__connectionstring)",
+                        "slotSetting": false
+                      },
+                      {
+                        "name": "database__commandtimeout",
+                        "value": "$(database__commandtimeout)",
+                        "slotSetting": false
+                      },
+                      {
+                        "name": "database__getxmldataprocedure",
+                        "value": "$(database__getxmldataprocedure)",
+                        "slotSetting": false
+                      },
+                      {
+                        "name": "database__getextractavailableprocedure",
+                        "value": "$(database__getextractavailableprocedure)",
+                        "slotSetting": false
+                      },
+                      {
+                        "name": "database__updateextractavailableprocedure",
+                        "value": "$(database__updateextractavailableprocedure)",
+                        "slotSetting": false
+                      },
+                      {
+                        "name": "database__databuffersize",
+                        "value": "$(database__databuffersize)",
+                        "slotSetting": false
+                      },
+                      {
+                        "name": "XMLContainer",
+                        "value": "$(XMLContainer)",
+                        "slotSetting": false
+                      },
+                      {
+                        "name": "AzureWebJobs.SyncData.Disabled",
+                        "value": true,
+                        "slotSetting": true
+                      },
+                      {
+                        "name": "AzureWebJobs.SyncDataOrchestrator_Start.Disabled",
+                        "value": true,
+                        "slotSetting": true                                     
+                      },                   
+                      {
+                        "name": "AzureWebJobs.SyncDataOrchestrator.Disabled",
+                        "value": true,
+                        "slotSetting": true
+                      },
+                      {
+                        "name": "PermittedDataSources",
+                        "value": "$(PermittedDataSources)",
+                        "slotSetting": false                                     
                       }
                     ]
 

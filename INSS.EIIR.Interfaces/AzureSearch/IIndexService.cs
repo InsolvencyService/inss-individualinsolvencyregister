@@ -10,6 +10,6 @@ public interface IIndexService
 
     Task PopulateIndexAsync(ILogger logger);
 
-    Task UploadSynonymMapAsync(ILogger logger);
+    
 
 }

@@ -1,50 +1,106 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using Azure.Search.Documents.Indexes;
+using INSS.EIIR.Models.Constants;
+using INSS.EIIR.Models.CaseModels;
+using System.Xml;
+using System.Xml.Serialization;
+using System.Linq;
 
 namespace INSS.EIIR.Models.IndexModels;
 
 [ExcludeFromCodeCoverage]
 public class IndividualSearch
 {
-    [SearchableField(IsSortable = true, IsKey = true)]
+
+    [SimpleField(IsKey = true)]
+    public string Case_Indiv_No
+    {
+        get 
+        {
+            return $"{CaseNumber}_{IndividualNumber}";
+        }    
+    }
+
+    [SimpleField]
     public string CaseNumber { get; set; }
 
-    [SearchableField(IsSortable = true)]
+    [SimpleField]
     public string IndividualNumber { get; set; }
 
-    [SearchableField(IsSortable = true)]
-    public string FullName
+    /// <summary>
+    /// Contains searchablefields which are not part of Forenames, Surnames or Tradenames
+    /// </summary>
+    [SearchableField]
+    public string GlobalSearchField
     {
         get
         {
-            string fullName = $"{FirstName?.Trim()} {MiddleName?.Trim()} {FamilyName?.Trim()}";
-            return string.Join(" ", fullName.Split(default(string[]), StringSplitOptions.RemoveEmptyEntries));
+            string globalSearchField = $"{CaseNumber} {IndividualNumber}" +
+                                        $" {(LastKnownTown == Common.NoLastKnownTown ? "" : LastKnownTown)}" +
+                                        $" {(LastKnownPostcode == Common.NoLastKnownPostCode ? "" : LastKnownPostcode)}";
+
+            return string.Join(" ", globalSearchField.Split(default(string[]), StringSplitOptions.RemoveEmptyEntries));
         }
     }
 
-    [SearchableField(IsSortable = true)]
-    public string CombinedName
+    [SearchableField]
+    public string TradeNamesSearchField
     {
         get
         {
-            string combinedName = $"{FirstName?.Trim()} {FamilyName?.Trim()}";
-            return string.Join(" ", combinedName.Split(default(string[]), StringSplitOptions.RemoveEmptyEntries));
+            return $"{string.Join(" ", TradingNames.Split(",", StringSplitOptions.RemoveEmptyEntries))}";
         }
     }
 
-    [SearchableField(IsSortable = true)]
+    /// <summary>
+    /// Contains lastnames from Family name and any surname from alternative names with no duplicates which would biase results
+    /// </summary>
+    [SearchableField]
+    public string LastNamesSearchField
+    {
+        get
+        {
+            //Split FamilyName into an array of strings
+            var lastnames = FamilyName?.Split(" ", StringSplitOptions.RemoveEmptyEntries) ?? new string[0];
+            
+            //Add alternative surname names
+            lastnames = lastnames.Union(OtherSurnames).ToArray();
+
+            //Select distinct values which are not null/empty
+            return lastnames.Where(s => !string.IsNullOrEmpty(s)).Count() == 0 ? null : string.Join(" ", lastnames.Where(s => !string.IsNullOrEmpty(s)).Distinct(StringComparer.CurrentCultureIgnoreCase));
+        }
+    }
+
+    /// <summary>
+    /// Contains names from Firstname and any forenames from alternative names with no duplicates which would biase results
+    /// </summary>
+    [SearchableField]
+    public string ForeNamesSearchField
+    {
+        get
+        {
+            //Split FirstName into an array of strings
+            var combinedFirstnames = FirstName?.Split(" ", StringSplitOptions.RemoveEmptyEntries) ?? new string [0];
+
+            //Add alternative forenames
+            combinedFirstnames = combinedFirstnames.Union(OtherForenames).ToArray();
+
+            //Select distinct values which are not null/empty
+            return combinedFirstnames.Where(s => !string.IsNullOrEmpty(s)).Count() == 0 ? null : string.Join(" ", combinedFirstnames.Where(s => !string.IsNullOrEmpty(s)).Distinct(StringComparer.CurrentCultureIgnoreCase));
+        }
+    }
+
+
+    [SimpleField]
     public string FirstName { get; set; }
 
     [SimpleField]
-    public string MiddleName { get; set; }
-
-    [SearchableField(IsSortable = true)]
     public string FamilyName { get; set; }
 
     [SimpleField]
     public string Title { get; set; }
 
-    [SearchableField(IsSortable = true)]
+    [SimpleField]
     public string AlternativeNames { get; set; }
 
     [SimpleField]
@@ -53,13 +109,13 @@ public class IndividualSearch
     [SimpleField]
     public string Occupation { get; set; }
 
-    [SearchableField(IsSortable = true)]
+    [SimpleField]
     public string LastKnownTown { get; set; }
 
     [SimpleField]
     public string LastKnownAddress { get; set; }
 
-    [SearchableField(IsSortable = true)]
+    [SimpleField]
     public string LastKnownPostcode { get; set; }
 
     [SimpleField]
@@ -74,7 +130,7 @@ public class IndividualSearch
     [SimpleField(IsFilterable = true)]
     public string Court { get; set; }
 
-    [SimpleField(IsFilterable = true, IsSortable = true)]
+    [SimpleField(IsFilterable = true)]
     public string CourtNumber { get; set; }
 
     [SimpleField]
@@ -83,19 +139,18 @@ public class IndividualSearch
     [SimpleField(IsFilterable = true)]
     public string InsolvencyType { get; set; }
 
+    /// <summary>
+    /// InsolvencyDate contains the date in text form dd/MM/yyyy
+    /// At time of writing June 2024 there were no records on the register without an insolvency_date
+    /// </summary>
     [SimpleField(IsSortable = true)]
-    public DateTime StartDate { get; set; }
-
-    [SimpleField]
-    public DateTime EndDate { get; set; }
-
-    [SimpleField]
     public String InsolvencyDate { get; set; }
 
-
+    /// <summary>
+    /// Applies to IVAs
+    /// </summary>
     [SimpleField]
     public DateTime NotificationDate { get; set; }
-
 
     [SimpleField(IsFilterable = true)]
     public string CaseStatus { get; set; }
@@ -103,14 +158,163 @@ public class IndividualSearch
     [SimpleField]
     public string CaseDescription { get; set; }
 
-    [SearchableField(IsSortable = true)]
-    public string TradingName { get; set; }
+    /// <summary>
+    /// Contains an XML fragment with following structure
+    /// <Trading><TradingDetails><TradingName></TradingName><TradingAddress></TradingAddress></TradingDetails></Trading>
+    /// Where
+    ///     TradingName contains a value
+    ///     TradingAddress contains as value
+    ///     There can be mulitple <TradingDetails> elements - i.e muliptle names and addresses
+    /// OR
+    /// <No //Trading Names Found> //Don't know why but need to include "//" before Trading earlier in this comment line
+    /// </summary>
 
     [SimpleField]
-    public string TradingAddress { get; set; }
+    public string TradingData { get; set; }
+
+
+    /// <summary>
+    /// Returns any TradingNames in TradingData XML or and empty string
+    /// </summary>
+    public string TradingNames {
+
+        get 
+        {
+            if (TradingData == Common.NoTradingNames || string.IsNullOrEmpty(TradingData)) return "";
+
+            Trading trading; 
+
+            try
+            {
+                var serializer = new XmlSerializer(typeof(Trading));
+
+                using (TextReader reader = new StringReader(TradingData))
+                {
+                    trading = (Trading)serializer.Deserialize(reader);
+                }
+
+            }
+            catch (InvalidOperationException ex) 
+            {
+                if (ex.InnerException is XmlException)
+                    return "";
+
+                throw;           
+            }
+            
+            return string.Join(",",  trading.TradingDetails.Select(td => td.TradingName).ToArray());
+        }
+
+    }
+
+
+    /// <summary>
+    /// Returns any other Forenames in AlertativeNames XML or an empty array
+    /// </summary>
+    public IEnumerable<string> OtherForenames
+    {
+        get
+        {
+            if (AlternativeNames == Common.NoOtherNames || string.IsNullOrWhiteSpace(AlternativeNames)) return new string[] { };
+
+            OtherNames othernames;
+
+            try
+            {
+                var serializer = new XmlSerializer(typeof(OtherNames));
+
+                using (TextReader reader = new StringReader(AlternativeNames))
+                {
+                    othernames = (OtherNames)serializer.Deserialize(reader);
+                }
+
+            }
+            catch (InvalidOperationException ex)
+            {
+                if (ex.InnerException is XmlException)
+                    return new string[]{ };
+
+                throw;
+            }
+
+            return othernames.Names.Where(x => x.Forenames != null).Select(on => on.Forenames.Split(" ", StringSplitOptions.RemoveEmptyEntries)).SelectMany(x => x);
+        }
+
+    }
+
+
+    /// <summary>
+    /// Returns any other Surnames in AlertativeNames XML or an empty array
+    /// </summary>
+    public IEnumerable<string> OtherSurnames
+    {
+        get
+        {
+            if (AlternativeNames == Common.NoOtherNames || string.IsNullOrWhiteSpace(AlternativeNames)) return new string[] { };
+
+            OtherNames othernames;
+
+            try
+            {
+                var serializer = new XmlSerializer(typeof(OtherNames));
+
+                using (TextReader reader = new StringReader(AlternativeNames))
+                {
+                    othernames = (OtherNames)serializer.Deserialize(reader);
+                }
+
+            }
+            catch (InvalidOperationException ex)
+            {
+                if (ex.InnerException is XmlException)
+                    return new string[] { };
+
+                throw;
+            }
+
+            return othernames.Names.Where(x => x.Surname != null).Select(on => on.Surname.Split(" ", StringSplitOptions.RemoveEmptyEntries)).SelectMany(x => x);
+        }
+
+    }
+
+
+    /*          Restriction related fields - Start            */
 
     [SimpleField]
-    public string TradingPostcode { get; set; }
+    public Boolean HasRestrictions { get; set; }
+
+    /// <summary>
+    /// Expected values null, Interim Order, Order, Undertaking 
+    /// </summary>
+    [SimpleField]
+    public string RestrictionsType { get; set; }
+
+    [SimpleField]
+    public DateTime? RestrictionsStartDate { get; set; }
+
+    [SimpleField]
+    public DateTime? RestrictionsEndDate { get; set; }
+
+    /// <summary>
+    /// Whether the individual had a previous Interim Restrictions Order for their current Restrictions Order
+    /// Practically only applies to BROs
+    /// </summary>
+    [SimpleField]
+    public Boolean HasPrevInterimRestrictionsOrder { get; set; }
+
+    /// <summary>
+    /// The start date of their previous Interim Restrictions Order
+    /// </summary>
+    [SimpleField]
+    public DateTime? PrevInterimRestrictionsOrderStartDate { get; set; }
+
+    /// <summary>
+    /// The end date of their previous Interim Restrictions Order
+    /// </summary>
+    [SimpleField]
+    public DateTime? PrevInterimRestrictionsOrderEndDate { get; set; }
+
+    /*          Restriction related fields - End            */
 
     [SimpleField]
     public string PractitionerName { get; set; }
@@ -140,10 +344,10 @@ public class IndividualSearch
 
     [SimpleField]
     public string InsolvencyServiceTelephone { get; set; }
-
-    [SearchableField(IsSortable = true)]
-    public string InsolvencyTradeName { get; set; }
-
+ 
     [SimpleField]
-    public string InsolvencyTradeNameAddress { get; set; }
+    public DateTime? DateOfPreviousOrder { get; set; }
+    [SimpleField]
+    public string? DeceasedDate { get; set; }
+
 }

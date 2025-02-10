@@ -2,8 +2,10 @@ using INSS.EIIR.Interfaces.Services;
 using INSS.EIIR.Models.NotificationModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Azure.WebJobs;
-using Microsoft.Azure.WebJobs.Extensions.Http;
+
+using Microsoft.Azure.Functions.Worker;
+using Microsoft.Azure.Functions.Worker.Http;
+
 using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Attributes;
 using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Enums;
 using Microsoft.Extensions.Logging;
@@ -28,13 +30,13 @@ namespace INSS.EIIR.Functions.Functions
             _notificationService = notificationService;
         }
 
-        [FunctionName("send-notification")]
+        [Function("send-notification")]
         [OpenApiOperation(operationId: "Run", tags: new[] { "Notifications" })]
         [OpenApiSecurity("apikeyheader_auth", SecuritySchemeType.ApiKey, In = OpenApiSecurityLocationType.Header, Name = "x-functions-key")]
         [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(NotifcationDetail), Description = "The NotifcationDetail details", Required = true)]
         [OpenApiResponseWithoutBody(statusCode: HttpStatusCode.OK, Description = "The OK response")]
         public async Task<IActionResult> Run(
-            [HttpTrigger(AuthorizationLevel.Function, "post", Route = "notifications/send")] HttpRequest req)
+            [HttpTrigger(AuthorizationLevel.Function, "post", Route = "notifications/send")] HttpRequestData req)
         {
             _logger.LogInformation($"HTTP trigger function processed a request for {req.Body}.");
 

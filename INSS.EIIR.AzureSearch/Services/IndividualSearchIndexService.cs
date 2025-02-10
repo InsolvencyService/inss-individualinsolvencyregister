@@ -13,9 +13,6 @@ namespace INSS.EIIR.AzureSearch.Services;
 public class IndividualSearchIndexService : BaseIndexService<IndividualSearch>
 {
     protected override string IndexName => SearchIndexes.EiirIndividuals;
-    private const string FirstNameSynonymMapName = "firstname-synonym-map";
-    private const string FirstNameSynonymsFilename = @"SynonymMaps\FirstName-Synonyms.txt";
-    private const string FamilyNameScoringProfileName = "familynameprofile";
  
     private const int PageSize = 2000;
 
@@ -40,7 +37,6 @@ public class IndividualSearchIndexService : BaseIndexService<IndividualSearch>
 
             if (index != null)
             {
-                await _searchClient.DeleteSynonymMapAsync(FirstNameSynonymMapName);
                 index.Value.ScoringProfiles.Clear();
                 await _searchClient.DeleteIndexAsync(index);
             }
@@ -77,55 +73,4 @@ public class IndividualSearchIndexService : BaseIndexService<IndividualSearch>
         }
     }
 
-    public override async Task UploadSynonymMapAsync(ILogger logger)
-    {
-        var assemblyInfo = new FileInfo(Assembly.GetExecutingAssembly().Location);
-        string path = assemblyInfo.Directory.Parent.FullName;
-        var synonymMapContent = File.ReadAllText(Path.Combine(path, FirstNameSynonymsFilename));
-
-        var synonymMap = new SynonymMap(FirstNameSynonymMapName, synonymMapContent);
-
-        await _searchClient.CreateOrUpdateSynonymMapAsync(synonymMap);
-        var index = await AddSynonymMapsToFieldsAsync();
-        AddScoringProfile(index);
-
-        await _searchClient.CreateOrUpdateIndexAsync(index);
-    }
-
-    private static void AddScoringProfile(SearchIndex? index)
-    {
-        if (index != null)
-        {
-            index.ScoringProfiles.Add(new ScoringProfile(FamilyNameScoringProfileName)
-            {
-                TextWeights = new TextWeights(new Dictionary<string, double>()
-                {
-                    {  "CombinedName",50 },
-                    {  "FullName", 30 },
-                    {  "LastKnownPostcode", 20 },
-                    {  "FamilyName", 6 },
-                    {  "CaseNumber", 5 },
-                    {  "IndividualNumber", 5 },
-                    {  "FirstName", 5 },
-                    {  "LastKnownTown", 5 },
-                    {  "TradingName", 5 },
-                    {  "InsolvencyTradeName", 5 },
-                    {  "AlternativeNames", 4 },
-                })
-            });
-
-            index.DefaultScoringProfile = FamilyNameScoringProfileName;           
-        }
-    }
-
-    private async Task<SearchIndex?> AddSynonymMapsToFieldsAsync()
-    {
-        var response = await _searchClient.GetIndexAsync(IndexName);
-        if (response?.Value != null)
-        {
-            response.Value.Fields.First(f => f.Name == "FirstName").SynonymMapNames.Add(FirstNameSynonymMapName);
-            return response.Value;
-        }
-        return null;
-    }
 }
