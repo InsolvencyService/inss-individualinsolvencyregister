@@ -2,7 +2,6 @@
 using AutoMapper;
 using Azure.Search.Documents.Indexes;
 using INSS.EIIR.AzureSearch.IndexMapper;
-using INSS.EIIR.AzureSearch.Services.Constants;
 using INSS.EIIR.Interfaces.AzureSearch;
 using INSS.EIIR.Models;
 using INSS.EIIR.Models.CaseModels;
