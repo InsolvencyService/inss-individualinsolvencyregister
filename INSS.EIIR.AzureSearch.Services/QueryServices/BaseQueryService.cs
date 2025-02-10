@@ -4,6 +4,7 @@ using Azure.Search.Documents.Indexes;
 using Azure.Search.Documents.Models;
 using INSS.EIIR.Interfaces.AzureSearch;
 using INSS.EIIR.Models.CaseModels;
+using INSS.EIIR.Models.Helpers;
 
 namespace INSS.EIIR.AzureSearch.Services.QueryServices;
 
@@ -15,8 +16,6 @@ public abstract class BaseQueryService
     private readonly ISearchCleaningService _searchCleaningService;
 
     protected const string Concatenation = " and ";
-
-    protected abstract string IndexName { get; }
 
     protected BaseQueryService(
         IMapper mapper,
@@ -35,10 +34,15 @@ public abstract class BaseQueryService
         return new SearchOptions
         {
             QueryType = SearchQueryType.Full,
-            SearchMode = SearchMode.Any,
+            SearchMode = SearchMode.All,
             IncludeTotalCount = true,
             Size = 10000
         };
+    }
+
+    protected virtual async Task<string> GetIndexName()
+    {
+        return "";
     }
 
     protected string FormatSearchTerm(string searchTerm)
@@ -53,9 +57,11 @@ public abstract class BaseQueryService
 
     public async Task<IEnumerable<TR>> SearchIndexAsync<T, TR>(string searchTerm, SearchOptions options)
     {
-        searchTerm = FormatSearchTerm(CleanSearchString(searchTerm));
 
-        var searchClient = _indexClient.GetSearchClient(IndexName);
+        //APP-5144 Base64 decode searchterm as certain characters were causing Barracuda WAF issues
+        searchTerm = FormatSearchTerm(CleanSearchString(searchTerm.Base64Decode()));
+
+        var searchClient = _indexClient.GetSearchClient(await GetIndexName());
         var result = await searchClient.SearchAsync<T>(searchTerm, options);
 
         var mappedResults = result.Value.GetResults().Select(r => r.Document)
@@ -67,7 +73,7 @@ public abstract class BaseQueryService
     public async Task<TR> SearchIndexDetailAsync<T, TR>(CaseRequest caseModel, SearchOptions options)
     {
         var searchTerm = String.Format("(CaseNumber eq {0}) + (IndividualNumber eq {1})", caseModel.CaseNo, caseModel.IndivNo);
-        var searchClient = _indexClient.GetSearchClient(IndexName);
+        var searchClient = _indexClient.GetSearchClient(await GetIndexName());
         var result = await searchClient.SearchAsync<T>(searchTerm, options);
 
         var mappedResults = result.Value.GetResults().Select(r => r.Document)
@@ -78,7 +84,7 @@ public abstract class BaseQueryService
 
     public async Task<TR> GetAsync<T, TR>(string key)
     {
-        var searchClient = _indexClient.GetSearchClient(IndexName);
+        var searchClient = _indexClient.GetSearchClient(await GetIndexName());
         var result = await searchClient.GetDocumentAsync<T>(key);
 
         var mappedResults = _mapper.Map<T, TR>(result);

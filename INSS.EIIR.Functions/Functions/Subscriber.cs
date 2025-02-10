@@ -3,8 +3,11 @@ using INSS.EIIR.Models.Configuration;
 using INSS.EIIR.Models.SubscriberModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Azure.WebJobs;
-using Microsoft.Azure.WebJobs.Extensions.Http;
+
+using Microsoft.Azure.Functions.Worker;
+using Microsoft.Azure.Functions.Worker.Http;
+
+
 using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Attributes;
 using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Enums;
 using Microsoft.Extensions.Logging;
@@ -29,13 +32,13 @@ public class Subscriber
         _subscriberDataProvider = subscriberDataProvider;   
     }
 
-    [FunctionName("Subscriber")]
+    [Function("Subscriber")]
     [OpenApiOperation(operationId: "Run", tags: new[] { "Subscriber" })]
     [OpenApiSecurity("apikeyheader_auth", SecuritySchemeType.ApiKey, In = OpenApiSecurityLocationType.Header, Name = "x-functions-key")]
     [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(PagingParameters), Required = false, Description = "The Paging Model")]
     [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "text/plain", bodyType: typeof(SubscriberWithPaging), Description = "A list of subscribers with the paging model")]
     public async Task<IActionResult> GetSubscribers(
-        [HttpTrigger(AuthorizationLevel.Function, "post", Route = "subscribers")] HttpRequest req)
+        [HttpTrigger(AuthorizationLevel.Function, "post", Route = "subscribers")] HttpRequestData req)
     {
         _logger.LogInformation("Subscriber trigger function retrieving all subscribers.");
 
@@ -45,13 +48,13 @@ public class Subscriber
         return new OkObjectResult(subscribers);
     }
 
-    [FunctionName("SubscriberById")]
+    [Function("SubscriberById")]
     [OpenApiOperation(operationId: "Run", tags: new[] { "Subscriber" })]
     [OpenApiSecurity("apikeyheader_auth", SecuritySchemeType.ApiKey, In = OpenApiSecurityLocationType.Header, Name = "x-functions-key")]
     [OpenApiParameter(name: "subscriberId", In = ParameterLocation.Path, Required = true, Type = typeof(string), Description = "The subscriber Id")]
     [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "text/plain", bodyType: typeof(Models.SubscriberModels.Subscriber), Description = "Subscriber details for the Id specified")]
     public async Task<IActionResult> GetSubscriberById(
-        [HttpTrigger(AuthorizationLevel.Function, "get", Route = "subscribers/{subscriberId}")] HttpRequest req, string subscriberId)
+        [HttpTrigger(AuthorizationLevel.Function, "get", Route = "subscribers/{subscriberId}")] HttpRequestData req, string subscriberId)
     {
         if (string.IsNullOrEmpty(subscriberId))
         {
@@ -73,13 +76,13 @@ public class Subscriber
         return new OkObjectResult(subscriber);
     }
 
-    [FunctionName("active-subscribers")]
+    [Function("active-subscribers")]
     [OpenApiOperation(operationId: "Run", tags: new[] { "Subscriber" })]
     [OpenApiSecurity("apikeyheader_auth", SecuritySchemeType.ApiKey, In = OpenApiSecurityLocationType.Header, Name = "x-functions-key")]
     [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(PagingParameters), Required = false, Description = "The Paging Model")]
     [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "text/plain", bodyType: typeof(SubscriberWithPaging), Description = "A list of active subscribers with the paging model")]
     public async Task<IActionResult> GetActiveSubscribers(
-        [HttpTrigger(AuthorizationLevel.Function, "post", Route = "subscribers/active")] HttpRequest req)
+        [HttpTrigger(AuthorizationLevel.Function, "post", Route = "subscribers/active")] HttpRequestData req)
     {
         _logger.LogInformation("Subscriber trigger function retrieving active subscribers.");
 
@@ -89,13 +92,13 @@ public class Subscriber
         return new OkObjectResult(subscribers);
     }
 
-    [FunctionName("inactive-subscribers")]
+    [Function("inactive-subscribers")]
     [OpenApiOperation(operationId: "Run", tags: new[] { "Subscriber" })]
     [OpenApiSecurity("apikeyheader_auth", SecuritySchemeType.ApiKey, In = OpenApiSecurityLocationType.Header, Name = "x-functions-key")]
     [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(PagingParameters), Required = false, Description = "The Paging Model")]
     [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "text/plain", bodyType: typeof(SubscriberWithPaging), Description = "A list of inactive subscribers with the paging model")]
     public async Task<IActionResult> GetInactiveSubscribers(
-        [HttpTrigger(AuthorizationLevel.Function, "post", Route = "subscribers/inactive")] HttpRequest req)
+        [HttpTrigger(AuthorizationLevel.Function, "post", Route = "subscribers/inactive")] HttpRequestData req)
     {
         _logger.LogInformation("Subscriber trigger function retrieving inactive subscribers.");
 
@@ -105,13 +108,13 @@ public class Subscriber
         return new OkObjectResult(subscribers);
     }
 
-    [FunctionName("subscriber-create")]
+    [Function("subscriber-create")]
     [OpenApiOperation(operationId: "Run", tags: new[] { "Subscriber" })]
     [OpenApiSecurity("apikeyheader_auth", SecuritySchemeType.ApiKey, In = OpenApiSecurityLocationType.Header, Name = "x-functions-key")]
     [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(CreateUpdateSubscriber), Description = "The subscriber details to create", Required = true)]
     [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "text/json", bodyType: typeof(string), Description = "Subscriber details for new subscriber")]
     public async Task<IActionResult> CreateSubscriber(
-        [HttpTrigger(AuthorizationLevel.Function, "post", Route = "subscribers/create")] HttpRequest req)
+        [HttpTrigger(AuthorizationLevel.Function, "post", Route = "subscribers/create")] HttpRequestData req)
     {
         string json = await req.ReadAsStringAsync();
         if (!string.IsNullOrEmpty(json))
@@ -128,14 +131,14 @@ public class Subscriber
         return new BadRequestObjectResult(error);
     }
 
-    [FunctionName("subscriber-update")]
+    [Function("subscriber-update")]
     [OpenApiOperation(operationId: "Run", tags: new[] { "Subscriber" })]
     [OpenApiSecurity("apikeyheader_auth", SecuritySchemeType.ApiKey, In = OpenApiSecurityLocationType.Header, Name = "x-functions-key")]
     [OpenApiParameter(name: "subscriberId", In = ParameterLocation.Path, Required = true, Type = typeof(string), Description = "The subscriber Id")]
     [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(CreateUpdateSubscriber), Description = "The subscriber details to edit", Required = true)]
     [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "text/json", bodyType: typeof(string), Description = "Subscriber details to update")]
     public async Task<IActionResult> UpdateSubscriber(
-    [HttpTrigger(AuthorizationLevel.Function, "put", Route = "subscribers/{subscriberId}/update")] HttpRequest req, string subscriberId)
+    [HttpTrigger(AuthorizationLevel.Function, "put", Route = "subscribers/{subscriberId}/update")] HttpRequestData req, string subscriberId)
     {
         if (string.IsNullOrEmpty(subscriberId))
         {
@@ -159,12 +162,14 @@ public class Subscriber
         return new BadRequestObjectResult(error);
     }
 
-    private async Task<PagingParameters> GetPagingParameters(HttpRequest request)
+    private async Task<PagingParameters> GetPagingParameters(HttpRequestData request)
     {
         PagingParameters pagingParameters = new();
-        if (request?.Body.Length > 0)
+
+        var content = await request.ReadAsStringAsync();
+
+        if (content.Length > 0)
         {
-            var content = await new StreamReader(request.Body).ReadToEndAsync();
             pagingParameters = JsonConvert.DeserializeObject<PagingParameters>(content);
             var info = $"Subscriber trigger function: Paging model parameters {pagingParameters}.";
             _logger.LogInformation(info);

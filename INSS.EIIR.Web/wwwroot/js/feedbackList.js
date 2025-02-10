@@ -30,7 +30,7 @@
     }
 
     callController(insolvency, organisation, status) {
-        window.location.href = `/admin/errors-or-issues/1/${insolvency}/${organisation}/${status}`;
+        window.location.href = `/eiir/admin/errors-or-issues/1/${insolvency}/${organisation}/${status}`;
     }
 }
 

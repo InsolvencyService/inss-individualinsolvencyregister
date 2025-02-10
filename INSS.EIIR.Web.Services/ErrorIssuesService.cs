@@ -48,7 +48,7 @@ public class ErrorIssuesService : IErrorIssuesService
 
     public async Task UpdateStatusAsync(int feedbackId, bool viewed)
     {
-        var apiRoot = $"eiir/feedback/{feedbackId}/viewed/{viewed}";
+        var apiRoot = $"eiir/feedback/{feedbackId}/viewed/{viewed.ToString().ToLower()}";
         await _settings.BaseUrl
         .AppendPathSegment(apiRoot)
             .WithHeader("x-functions-key", _settings.ApiKey)

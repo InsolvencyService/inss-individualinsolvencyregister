@@ -92,46 +92,33 @@ CREATE TABLE #discharge (
 	discharge_type varchar(1),
 	discharge_date datetime,
 	suspension_date datetime,
-	suspension_end_date datetime
+	suspension_end_date datetime,
+	previous_order_date datetime,
+	previous_order_status varchar(1)
 )
 
 INSERT INTO #discharge
-	SELECT case_no, indiv_no, discharge_type, discharge_date, suspension_date, suspension_end_date 
+	SELECT  case_no, indiv_no, discharge_type, discharge_date, suspension_date, suspension_end_date,previous_order_date, previous_order_status
 	FROM	ci_indiv_discharge 
 	LEFT JOIN #Cases c on case_no = c.CaseNo AND indiv_no = c.IndivNo
 
-CREATE TABLE #prevIBRO (
+CREATE TABLE #prevInterimRestrictionsOrder (
 	case_id int, 
 	subj_refno int,
 	ibro_order_date datetime,
 	ibro_end_date datetime
 ) 
 
-INSERT INTO #prevIBRO
+INSERT INTO #prevInterimRestrictionsOrder
 	SELECT case_id, subj_refno,	ibro_order_date, ibro_end_date
 	FROM	subject_ibro 
-	LEFT JOIN #Cases c on case_id = c.CaseNo AND subj_refno = c.IndivNo
+	INNER JOIN #Cases c on case_id = c.CaseNo AND subj_refno = c.IndivNo
 	AND	(ibro_order_date IS NOT NULL
 	AND      ibro_app_filed_date IS NOT NULL
 	AND      ibro_hearing_date IS NOT NULL
 	AND      ibro_discharge_date IS NULL
 	AND      ibro_end_date IS NOT NULL)
 
-CREATE TABLE #prevIDRRO (
-	case_id int, 
-	subj_refno int,
-	ibro_order_date datetime,
-	ibro_end_date datetime
-)
-INSERT INTO #prevIDRRO 
-SELECT case_id, subj_refno, ibro_order_date, ibro_end_date
-	FROM subject_ibro 
-	LEFT JOIN #Cases c on case_id = c.CaseNo AND subj_refno = c.IndivNo
-	AND	(ibro_order_date IS NOT NULL
-	AND      ibro_app_filed_date IS NOT NULL
-	AND      ibro_hearing_date IS NOT NULL
-	AND      ibro_discharge_date IS NULL
-	AND      ibro_end_date IS NOT NULL)
 
 CREATE TABLE #caseParams (
     caseNo int,
@@ -143,16 +130,15 @@ CREATE TABLE #caseParams (
 	hasBru varchar(1),
 	hasBro varchar(1),
 	hasiBro varchar(1),
-	PrevIBRONote varchar(1),
-	PrevIDRRONote varchar(1),
+	PrevIRONote varchar(1),
+	PrevIROStartDate datetime,
+	PrevIROEndDate datetime,
 	BROStartDate datetime,
 	BROEndDate datetime,
 	BRUStartDate datetime,
 	BRUEndDate datetime,
 	IBROStartDate datetime,
 	IBROEndDate datetime,
-	IDRROStartDate datetime,
-	IDRROEndDate datetime,
 	BROPrintCaseDetails varchar(1),
 	MoratoriumPeriodEndingDate datetime, 
 	RevokedDate datetime
@@ -168,16 +154,15 @@ SELECT c.CaseNo, c.IndivNo,
 	(ISNULL((SELECT 'Y' FROM #broDetails  WHERE case_id = c.CaseNo and subj_refno = c.IndivNo), 'N')) AS hasBro,
 	(ISNULL((SELECT 'Y' FROM #ibroDetails WHERE case_id = c.CaseNo and subj_refno = c.IndivNo), 'N')) AS hasiBro,
 	
-	(ISNULL((SELECT 'Y' FROM #prevIBRO where case_id = c.CaseNo and subj_refno = c.IndivNo), 'N')) as PrevIBRONote,
-	(ISNULL((SELECT 'Y' FROM #prevIDRRO where case_id = c.CaseNo and subj_refno = c.IndivNo), 'N')) as PrevIDRRONote,
+	(ISNULL((SELECT 'Y' FROM #prevInterimRestrictionsOrder where case_id = c.CaseNo and subj_refno = c.IndivNo), 'N')) as PrevIRONote,
+	(ISNULL((SELECT ibro_order_date from #prevInterimRestrictionsOrder where case_id = c.CaseNo and subj_refno = c.IndivNo), NULL)) as PrevIROStartDate,
+	(ISNULL((SELECT ibro_end_date from #prevInterimRestrictionsOrder where case_id = c.CaseNo and subj_refno = c.IndivNo), NULL)) as PrevIROEndDate,
 	(ISNULL((SELECT bro_order_date from #broDetails where case_id = c.CaseNo and subj_refno = c.IndivNo), NULL)) as BROStartDate,
 	(ISNULL((SELECT bro_end_date from #broDetails where case_id = c.CaseNo and subj_refno = c.IndivNo), NULL)) as BROEndDate,
 	(ISNULL((SELECT bru_accpt_date from #bruDetails where case_id = c.CaseNo and subj_refno = c.IndivNo), NULL)) as BRUStartDate,
 	(ISNULL((SELECT bro_end_date from #bruDetails where case_id = c.CaseNo and subj_refno = c.IndivNo), NULL)) as BRUEndDate,
-	(ISNULL((SELECT ibro_order_date from #prevIBRO where case_id = c.CaseNo and subj_refno = c.IndivNo), NULL)) as IBROStartDate,
-	(ISNULL((SELECT ibro_end_date from #prevIBRO where case_id = c.CaseNo and subj_refno = c.IndivNo), NULL)) as IBROEndDate,
-	(ISNULL((SELECT ibro_order_date from #prevIDRRO where case_id = c.CaseNo and subj_refno = c.IndivNo), NULL)) as IDRROStartDate,
-	(ISNULL((SELECT ibro_end_date from #prevIDRRO where case_id = c.CaseNo and subj_refno = c.IndivNo), NULL)) as IDRROEndDate,
+	(ISNULL((SELECT ibro_order_date from #ibroDetails where case_id = c.CaseNo and subj_refno = c.IndivNo), NULL)) as IBROStartDate,
+	(ISNULL((SELECT ibro_end_date from #ibroDetails where case_id = c.CaseNo and subj_refno = c.IndivNo), NULL)) as IBROEndDate,
 	
 	(SELECT (CASE 
 		WHEN ((c.InsolvencyType = 'B' AND (((ISNULL((SELECT 'Y' FROM #broDetails WHERE case_id = c.CaseNo and subj_refno = c.IndivNo), 'N')) = 'Y' OR
@@ -210,7 +195,15 @@ FROM #Cases c
     END AS individualGender,
         
     ISNULL(NULLIF(CONVERT(CHAR(30), individual.date_of_birth, 103), ''), 'No Date of Birth Found') AS individualDOB, 
-    ISNULL(NULLIF(individual.job_title, ''), 'No Occupation Found') AS individualOccupation,
+	CASE 
+	  WHEN individual.job_title IS NULL OR individual.job_title = ''
+		  THEN 'No Occupation Found'
+	  WHEN CHARINDEX('-', individual.job_title, 1) > 1
+		  THEN (SELECT  STRING_AGG(job_title , ' ') job from (select trim(value) job_title FROM STRING_SPLIT(individual.job_title, '-')  ORDER BY (SELECT NULL) OFFSET 1 ROWS ) tbl)
+	  ELSE
+		  individual.job_title
+
+	END AS individualOccupation,
 
 	CASE WHEN wflag = 'Y' 
 		THEN '(Sorry - this Address has been withheld)'
@@ -220,19 +213,17 @@ FROM #Cases c
     CASE WHEN wflag = 'Y' 
         THEN '(Sorry - this Address has been withheld)'
         ELSE  
-            (SELECT CASE 
-               WHEN CHARINDEX(',',REVERSE(REPLACE(TRIM(CONCAT(individual.address_line_1, ', ', individual.address_line_2, ', ', individual.address_line_3, ', ', individual.address_line_4, ' ', individual.address_line_5)), ' ,', '')))=1 
-			   THEN 
-					LEFT(REPLACE(TRIM(CONCAT(individual.address_line_1, ', ', individual.address_line_2, ', ', individual.address_line_3, ', ', individual.address_line_4, ', ', individual.address_line_5)), ' ,', ''),
-					LEN(REPLACE(TRIM(CONCAT(individual.address_line_1, ', ', individual.address_line_2, ', ', individual.address_line_3, ', ', individual.address_line_4, ', ', individual.address_line_5)), ' ,', ''))-1) 
-               ELSE 
-					REPLACE(TRIM(CONCAT(individual.address_line_1, ', ', individual.address_line_2, ', ', individual.address_line_3, ', ', individual.address_line_4, ', ', individual.address_line_5)), ' ,', '')
-           END)             
+            STUFF ('' + CASE TRIM(COALESCE(individual.address_line_1, '')) WHEN '' THEN '' ELSE ', ' + TRIM(individual.address_line_1) END 
+				+ CASE TRIM(COALESCE(individual.address_line_2, '')) WHEN '' THEN '' ELSE ', ' + TRIM(individual.address_line_2) END
+				+ CASE TRIM(COALESCE(individual.address_line_3, '')) WHEN '' THEN '' ELSE ', ' + TRIM(individual.address_line_3) END
+				+ CASE TRIM(COALESCE(individual.address_line_4, '')) WHEN '' THEN '' ELSE ', ' + TRIM(individual.address_line_4) END
+				+ CASE TRIM(COALESCE(individual.address_line_5, '')) WHEN '' THEN '' ELSE ', ' + TRIM(individual.address_line_5) END
+			,1,2, '')             
     END AS individualAddress,
 
 	CASE WHEN wflag = 'Y' 
 		THEN '(Sorry - this Address has been withheld)'
-		ELSE  ISNULL(individual.postcode, 'No Last Known PostCode Found')
+		ELSE  ISNULL(CAST(individual.postcode as VARCHAR(30)), 'No Last Known PostCode Found')
 	END AS individualPostcode, 
     
 	individual.address_withheld_flag AS individualAddressWithheld, 
@@ -244,16 +235,17 @@ FROM #Cases c
 		(SELECT STRING_AGG(UPPER(ci_other_name.surname) + ' ' + (UPPER(ci_other_name.forenames)), ', ') FROM ci_other_name  WHERE ci_other_name.case_no = snap.CaseNo AND ci_other_name.indiv_no = snap.IndivNo)
 	END) AS individualAlias,    
 	
-	ISNULL(CONVERT(CHAR(10), snap.Deceased, 103), '') AS deceasedDate,
+	ISNULL(CONVERT(VARCHAR(10), snap.Deceased, 103), '') AS deceasedDate,
 
     --  Insolvency case details
     inscase.case_name AS caseName, 
 
+	--APP-5018 following string aggregation on courtname appears unnecessary, DISTINCT required on court name as current duplicate records in ci_court where court='ADJ'
 	CASE
 		WHEN insolvency_type = 'I' OR insolvency_type = 'B'
-			THEN (SELECT STRING_AGG( ISNULL(court_name, ' '), ', ' )  FROM ci_court WHERE court = inscase.court)
+			THEN (SELECT STRING_AGG( ISNULL(tbl.court_name, ' '), ', ' )  FROM (SELECT DISTINCT court_name FROM ci_court WHERE court = inscase.court) tbl)
 		WHEN insolvency_type = 'D' AND cp.hasBro = 'Y'
-			THEN (SELECT STRING_AGG( ISNULL(court_name, ' '), ', ' )  FROM ci_court WHERE court = inscase.court)
+			THEN (SELECT STRING_AGG( ISNULL(tbl.court_name, ' '), ', ' )  FROM (SELECT DISTINCT court_name FROM ci_court WHERE court = inscase.court) tbl)
 		ELSE '(Court does not apply to DRO)'
 	END AS courtName,
 
@@ -288,24 +280,25 @@ FROM #Cases c
     ivaCase.date_of_notification AS notificationDate,
     ISNULL(CONVERT(CHAR(10), inscase.insolvency_date, 103), '') AS insolvencyDate,
         	
-	CASE WHEN cp.BROPrintCaseDetails = 'Y' AND insolvency_type = 'D' AND cp.RevokedDate IS NULL AND cp.MoratoriumPeriodEndingDate > GETDATE()
+	CASE
+		--Debt Relief Orders
+		WHEN cp.BROPrintCaseDetails = 'Y' AND insolvency_type = 'D' AND cp.RevokedDate IS NULL AND cp.MoratoriumPeriodEndingDate > GETDATE()
 			THEN TRIM((select TRIM(SelectionValue) from #StatusCodes WHERE SelectionCode = 'DRO1') + ' will end on ' + CONVERT(CHAR(10), cp.MoratoriumPeriodEndingDate, 103))
 		WHEN cp.BROPrintCaseDetails = 'Y' AND insolvency_type = 'D' AND cp.RevokedDate IS NULL AND cp.MoratoriumPeriodEndingDate <= GETDATE()
 			THEN TRIM((select TRIM(SelectionValue) from #StatusCodes WHERE SelectionCode = 'DRO1') + ' ended on ' + CONVERT(CHAR(10), cp.MoratoriumPeriodEndingDate, 103))
 		WHEN cp.BROPrintCaseDetails = 'Y' AND insolvency_type = 'D' AND cp.RevokedDate IS NOT NULL 
-			THEN TRIM((select TRIM(SelectionValue) from #StatusCodes WHERE SelectionCode = 'DRO2') + ' on ' + CONVERT(CHAR(10), cp.MoratoriumPeriodEndingDate, 103))
-		
+			THEN TRIM((select TRIM(SelectionValue) from #StatusCodes WHERE SelectionCode = 'DRO2') + ' on ' + CONVERT(CHAR(10), cp.RevokedDate, 103))
 		WHEN cp.BROPrintCaseDetails = 'Y' AND insolvency_type = 'D' AND DateofOrder IS NOT NULL AND cp.MoratoriumPeriodEndingDate IS NOT NULL
 			AND  DateDiff(day, DATEADD(month, 12, DateofOrder), cp.MoratoriumPeriodEndingDate) > 1 
 			THEN  TRIM(('Extended From ' + CONVERT(CHAR(10), (DATEADD(month, 12, DateofOrder))) + ' To ' + CONVERT(CHAR(10), cp.MoratoriumPeriodEndingDate, 103)))		
 		
+		--Individual Voluntary Arrangements
 		WHEN cp.BROPrintCaseDetails = 'Y' AND insolvency_type = 'I' AND ivaCase.date_of_failure IS NOT NULL 
 			THEN  TRIM((SELECT TRIM(SelectionValue) from #StatusCodes WHERE SelectionCode = 'F') + ' On ' + CONVERT(CHAR(10), ivaCase.date_of_failure, 103))
 		WHEN cp.BROPrintCaseDetails = 'Y' AND insolvency_type = 'I' AND ivaCase.date_of_completion IS NOT NULL 
 			THEN  TRIM((SELECT TRIM(SelectionValue) from #StatusCodes WHERE SelectionCode = 'C') + ' On ' + CONVERT(CHAR(10), ivaCase.date_of_completion, 103))
 		WHEN cp.BROPrintCaseDetails = 'Y' AND insolvency_type = 'I' AND ivaCase. date_of_revocation IS NOT NULL 
 			THEN  TRIM((SELECT TRIM(SelectionValue) from #StatusCodes WHERE SelectionCode = 'R') + ' On ' + CONVERT(CHAR(10), ivaCase.date_of_revocation, 103))
-
 		WHEN cp.BROPrintCaseDetails = 'Y' AND insolvency_type = 'I' AND ivaCase.date_of_suspension IS NOT NULL AND ivaCase.date_suspension_lifted IS NULL
 			THEN  TRIM((SELECT TRIM(SelectionValue) from #StatusCodes WHERE SelectionCode = 'O5') + ' On ' + CONVERT(CHAR(10), ivaCase.date_of_suspension, 103))
 		WHEN cp.BROPrintCaseDetails = 'Y' AND insolvency_type = 'I' AND ivaCase.date_of_suspension IS NOT NULL AND ivaCase.date_suspension_lifted IS NOT NULL
@@ -313,28 +306,7 @@ FROM #Cases c
 		WHEN cp.BROPrintCaseDetails = 'Y' AND insolvency_type = 'I'
 			THEN TRIM((select TRIM(SelectionValue) from #StatusCodes WHERE SelectionCode = 'O1'))
 
-		WHEN (cp.BROPrintCaseDetails = 'Y' AND insolvency_type = 'B' AND CONVERT(CHAR(10), DateofOrder, 103) >= '01/04/2004'
-			AND AnnulmentTypeCASE = '' AND cp.dischargeDate <= GETDATE() 
-			AND cp.dischargeDate < (DATEADD(month, 12, DateofOrder)))
-			THEN TRIM('Discharge Suspended Indefinitely (from ' + CONVERT(CHAR(10), cp.suspensionDate, 103) + ') (Early Discharge)')
-
-		WHEN (cp.BROPrintCaseDetails = 'Y' AND insolvency_type = 'B' AND cp.suspensionDate IS NOT NULL AND cp.suspensionEndDate IS NOT NULL
-			AND ISNULL(CONVERT(CHAR(10), cp.suspensionEndDate, 103), '') = '31/12/2099')
-			THEN TRIM('Discharge Suspended Indefinitely (from ' + CONVERT(CHAR(10), cp.suspensionDate, 103) + ')')
-
-		WHEN (cp.BROPrintCaseDetails = 'Y' AND insolvency_type = 'B' AND cp.dischargeDate IS NULL 
-			AND cp.suspensionDate IS NOT NULL AND cp.suspensionEndDate IS NOT NULL)
-			THEN TRIM('Discharge Fixed Length Suspension (from ' + CONVERT(CHAR(10), cp.suspensionDate, 103) + ' to ' +  CONVERT(CHAR(10), cp.suspensionEndDate, 103) + ')')
-
-		WHEN (cp.BROPrintCaseDetails = 'Y' AND insolvency_type = 'B' AND AnnulmentTypeCASE = '' AND cp.dischargeDate <= GETDATE())
-			THEN TRIM((select TRIM(SelectionValue) from #StatusCodes WHERE SelectionCode = 'D') + ' On ' + CONVERT(CHAR(10), cp.dischargeDate, 103))
-		WHEN (cp.BROPrintCaseDetails = 'Y' AND insolvency_type = 'B' AND AnnulmentTypeCASE = '' AND cp.dischargeDate > GETDATE())
-			THEN TRIM((select TRIM(SelectionValue) from #StatusCodes WHERE SelectionCode = 'O2') + ' will be ' + CONVERT(CHAR(10), cp.dischargeDate, 103))
-		WHEN (cp.BROPrintCaseDetails = 'Y' AND insolvency_type = 'B' AND cp.dischargeDate IS NULL AND cp.dischargeType = 'A')
-			THEN TRIM((select TRIM(SelectionValue) from #StatusCodes WHERE SelectionCode = 'O3')) 
-		WHEN (cp.BROPrintCaseDetails = 'Y' AND insolvency_type = 'B' AND cp.dischargeDate IS NULL AND cp.dischargeType = 'G')
-			THEN TRIM((select TRIM(SelectionValue) from #StatusCodes WHERE SelectionCode = 'O4')) 
-
+		--Bankruptcy Annulments
 		WHEN (cp.BROPrintCaseDetails = 'Y' AND insolvency_type = 'B' AND AnnulmentTypeCASE = 'P')
 			THEN TRIM((select TRIM(SelectionValue) from #StatusCodes WHERE SelectionCode = 'A1') + ' On ' + CONVERT(CHAR(10), AnnulmentDateCASE, 103))
 		WHEN (cp.BROPrintCaseDetails = 'Y' AND insolvency_type = 'B' AND AnnulmentTypeCASE = 'V')
@@ -345,12 +317,33 @@ FROM #Cases c
 			THEN TRIM((select TRIM(SelectionValue) from #StatusCodes WHERE SelectionCode = 'A4') + ' On ' + + CONVERT(CHAR(10), AnnulmentDateCASE, 103))
 		WHEN (cp.BROPrintCaseDetails = 'Y' AND insolvency_type = 'B' AND AnnulmentTypePARTNER = 'P')
 			THEN TRIM((select TRIM(SelectionValue) from #StatusCodes WHERE SelectionCode = 'A1') + ' On ' + CONVERT(CHAR(10), AnnulmentDatePARTNER, 103))
-		WHEN (cp.BROPrintCaseDetails = 'Y' AND insolvency_type = 'B' AND AnnulmentTypeCASE = 'V')
+		WHEN (cp.BROPrintCaseDetails = 'Y' AND insolvency_type = 'B' AND AnnulmentTypePARTNER = 'V')
 			THEN TRIM((select TRIM(SelectionValue) from #StatusCodes WHERE SelectionCode = 'A2') + ' On ' + CONVERT(CHAR(10), AnnulmentDatePARTNER, 103))
-		WHEN (cp.BROPrintCaseDetails = 'Y' AND insolvency_type = 'B' AND AnnulmentTypeCASE = 'R')
+		WHEN (cp.BROPrintCaseDetails = 'Y' AND insolvency_type = 'B' AND AnnulmentTypePARTNER = 'R')
 			THEN TRIM((select TRIM(SelectionValue) from #StatusCodes WHERE SelectionCode = 'A3') + ' On ' + CONVERT(CHAR(10), AnnulmentDatePARTNER, 103))
-		WHEN (cp.BROPrintCaseDetails = 'Y' AND insolvency_type = 'B' AND AnnulmentTypeCASE = 'A')
+		WHEN (cp.BROPrintCaseDetails = 'Y' AND insolvency_type = 'B' AND AnnulmentTypePARTNER = 'A')
 			THEN TRIM((select TRIM(SelectionValue) from #StatusCodes WHERE SelectionCode = 'A4') + ' On ' + CONVERT(CHAR(10), AnnulmentDatePARTNER, 103))
+
+		--Bankruptcy Discharges and Suspensions
+		WHEN (cp.BROPrintCaseDetails = 'Y' AND insolvency_type = 'B' AND CONVERT(CHAR(10), DateofOrder, 103) >= '01/04/2004'
+			AND AnnulmentTypeCASE = '' AND cp.dischargeDate <= GETDATE() 
+			AND cp.dischargeDate < (DATEADD(month, 12, DateofOrder)))
+			THEN 'Discharged On ' + CONVERT(CHAR(10), cp.dischargeDate, 103) + ' (Early Discharge)'
+		WHEN (cp.BROPrintCaseDetails = 'Y' AND insolvency_type = 'B' AND cp.suspensionDate IS NOT NULL AND cp.suspensionEndDate IS NOT NULL
+			AND ISNULL(CONVERT(CHAR(10), cp.suspensionEndDate, 103), '') = '31/12/2099')
+			THEN 'Discharge Suspended Indefinitely (from ' + CONVERT(CHAR(10), cp.suspensionDate, 103) + ')'
+		WHEN (cp.BROPrintCaseDetails = 'Y' AND insolvency_type = 'B' AND cp.dischargeDate IS NULL 
+			AND cp.suspensionDate IS NOT NULL AND cp.suspensionEndDate IS NOT NULL)
+			THEN 'Discharge Fixed Length Suspension (from ' + CONVERT(CHAR(10), cp.suspensionDate, 103) + ' to ' +  CONVERT(CHAR(10), cp.suspensionEndDate, 103) + ')'
+		WHEN (cp.BROPrintCaseDetails = 'Y' AND insolvency_type = 'B' AND AnnulmentTypeCASE = '' AND cp.dischargeDate <= GETDATE())
+			THEN TRIM((select TRIM(SelectionValue) from #StatusCodes WHERE SelectionCode = 'D') + ' On ' + CONVERT(CHAR(10), cp.dischargeDate, 103))
+		WHEN (cp.BROPrintCaseDetails = 'Y' AND insolvency_type = 'B' AND AnnulmentTypeCASE = '' AND cp.dischargeDate > GETDATE())
+			THEN TRIM((select TRIM(SelectionValue) from #StatusCodes WHERE SelectionCode = 'O2') + ' will be ' + CONVERT(CHAR(10), cp.dischargeDate, 103))
+		WHEN (cp.BROPrintCaseDetails = 'Y' AND insolvency_type = 'B' AND cp.dischargeDate IS NULL AND cp.dischargeType = 'A')
+			THEN TRIM((select TRIM(SelectionValue) from #StatusCodes WHERE SelectionCode = 'O3')) 
+		WHEN (cp.BROPrintCaseDetails = 'Y' AND insolvency_type = 'B' AND cp.dischargeDate IS NULL AND cp.dischargeType = 'G')
+			THEN TRIM((select TRIM(SelectionValue) from #StatusCodes WHERE SelectionCode = 'O4')) 
+
 	END AS caseStatus,
 
 	CASE WHEN (cp.BROPrintCaseDetails = 'Y' AND insolvency_type = 'B' AND AnnulmentTypeCASE <> '')
@@ -383,55 +376,85 @@ FROM #Cases c
 		WHEN address_withheld_flag = 'Y' THEN '(Case Description withheld as Individual Address has been withheld)'
         WHEN insolvency_type = 'I' THEN '(Case Description does not apply to IVA)'
         ELSE 
-		STUFF((SELECT CONCAT(ci_case_desc.case_desc_line, '')
-			FROM ci_case_desc
-			WHERE  ci_case_desc.case_no = snap.CaseNo
-			for XML path ('')),1,0,'')
+			(SELECT (STRING_AGG(TRIM(REPLACE(REPLACE(REPLACE(d.case_desc_line,CHAR(10),' '),CHAR(13),' '),CHAR(9),' ')), '') WITHIN GROUP ( ORDER BY case_desc_line_no ASC ))			
+			FROM ci_case_desc d
+			WHERE d.case_no = snap.CaseNo
+			)
     END AS caseDescription,
 
-    CASE WHEN (SELECT 
-		CASE WHEN 
-			ci_trade.trading_name IS NULL THEN 'No Trading Names Found'
-		ELSE ci_trade.trading_name
-		END AS TradingName,       
-        
-		CASE 
-			WHEN ci_trade.trading_name is NULL THEN NULL
-			ELSE REPLACE(TRIM(CONCAT(ci_trade.address_line_1,  ', ', ci_trade.address_line_2,  ', ', ci_trade.address_line_3,  ', ', ci_trade.address_line_4,  ', ', ci_trade.address_line_5, ', ', ci_trade.postcode)), ' ,', '') 
-			END AS TradingAddress
+    CASE
+	    WHEN EXISTS (
+        SELECT 1 
+        FROM ci_trade 
+        WHERE ci_trade.case_no = snap.CaseNo 
+          AND trading_name IS NOT NULL
+    )
+    THEN (
+        SELECT (
+            SELECT 
+                trading_name AS TradingName,
+                ISNULL(
+					STUFF ('' + CASE TRIM(COALESCE(ci_trade_CTE.address_line_1, '')) WHEN '' THEN '' ELSE ', ' + TRIM(ci_trade_CTE.address_line_1) END 
+								+ CASE TRIM(COALESCE(ci_trade_CTE.address_line_2, '')) WHEN '' THEN '' ELSE ', ' + TRIM(ci_trade_CTE.address_line_2) END
+								+ CASE TRIM(COALESCE(ci_trade_CTE.address_line_3, '')) WHEN '' THEN '' ELSE ', ' + TRIM(ci_trade_CTE.address_line_3) END
+								+ CASE TRIM(COALESCE(ci_trade_CTE.address_line_4, '')) WHEN '' THEN '' ELSE ', ' + TRIM(ci_trade_CTE.address_line_4) END
+								+ CASE TRIM(COALESCE(ci_trade_CTE.address_line_5, '')) WHEN '' THEN '' ELSE ', ' + TRIM(ci_trade_CTE.address_line_5) END
+								+ CASE TRIM(COALESCE(ci_trade_CTE.postcode, '')) WHEN '' THEN '' ELSE ', ' + TRIM(ci_trade_CTE.postcode) END
+					,1,2, ''), 
+                    ''
+                ) AS TradingAddress 
+            FROM (
+                SELECT cit1.* 
+                FROM ci_trade cit1  
+                INNER JOIN ci_trade cit2 ON cit1.trading_no = cit2.trading_no 
+                                        AND cit1.case_no = cit2.case_no 
+                WHERE cit1.case_no = snap.CaseNo
+            ) AS ci_trade_CTE
+            FOR XML PATH('TradingDetails'), ROOT('Trading')
+        )
+    )
+    ELSE '<No Trading Names Found>'
+END AS tradingNames,
 
-		FROM ci_trade 
-		where ci_trade.case_no = snap.CaseNo
-		FOR XML PATH('')) IS NULL THEN 'No Trading Names Found'
-
-	ELSE (SELECT 
-		CASE WHEN 
-			ci_trade.trading_name IS NULL THEN 'No Trading Names Found'
-		ELSE ci_trade.trading_name
-		END AS TradingName,       
-        
-		CASE 
-			WHEN ci_trade.trading_name is NULL THEN NULL
-			ELSE REPLACE(TRIM(CONCAT(ci_trade.address_line_1,  ', ', ci_trade.address_line_2,  ', ', ci_trade.address_line_3,  ', ', ci_trade.address_line_4,  ', ', ci_trade.address_line_5, ', ', ci_trade.postcode)), ' ,', '')  
-			END AS TradingAddress
-
-		FROM ci_trade 
-		where ci_trade.case_no = snap.CaseNo
-		FOR XML PATH('')) 
-	END AS tradingNames,
+	CAST(CASE WHEN cp.hasBro = 'Y' OR cp.hasBru = 'Y' OR cp.hasiBro = 'Y' THEN 1 ELSE 0 END as bit) as hasRestrictions,
+	CASE WHEN cp.hasBro = 'Y' THEN 'Order'
+			WHEN cp.hasBru = 'Y' THEN 'Undertaking'
+			WHEN cp.hasiBro = 'Y' THEN 'Interim Order'
+			ELSE null END as restrictionsType,
+	CAST(CASE 
+		WHEN cp.hasBro = 'Y' THEN cp.BROStartDate 
+		WHEN cp.hasBru = 'Y' THEN cp.BRUStartDate
+		WHEN cp.hasiBro = 'Y' THEN cp.IBROStartDate
+		ELSE null END as datetime) as restrictionsStartDate,
+	CAST(CASE  
+		WHEN cp.hasBro = 'Y' THEN cp.BROEndDate
+		WHEN cp.hasBru = 'Y' THEN cp.BRUEndDate
+		WHEN cp.hasiBro = 'Y' THEN cp.IBROEndDate
+		ELSE null END as datetime) as restrictionsEndDate,
+	--previous Interim Restriction Orders are not currently used for DRRO, though technically the schema could support it
+	--in practice you can have prevIBRO, but prevIDRRO do not occur
+	CAST(CASE WHEN cp.PrevIRONote = 'Y' AND cp.hasBro = 'Y' THEN 1 ELSE 0 END as bit) as hasaPrevInterimRestrictionsOrder,
+	CAST(CASE WHEN cp.PrevIRONote = 'Y' AND cp.hasBro = 'Y' THEN cp.PrevIROStartDate ELSE null END as datetime) as prevInterimRestrictionsOrderStartDate, 
+	CAST(CASE WHEN cp.PrevIRONote = 'Y' AND cp.hasBro = 'Y' THEN cp.PrevIROEndDate ELSE null END as datetime) as prevInterimRestrictionsOrderEndDate, 
 
     --  Insolvency practitioner contact details
-    TRIM((SELECT STRING_AGG( ISNULL(ci_ip.forenames +' '+ ci_ip.surname, ' '), ', ' ) FROM ci_ip  WHERE ci_ip.ip_no = insolvencyAppointment.ip_no and insolvencyAppointment.ip_appt_type = 'M' and insolvencyAppointment.appt_end_date IS NULL)) AS insolvencyPractitionerName,
-    TRIM((SELECT TOP 1 ip_firm_name FROM ci_ip_address WHERE ci_ip_address.ip_no = insolvencyAppointment.ip_no and insolvencyAppointment.ip_appt_type = 'M' and insolvencyAppointment.appt_end_date IS NULL)) AS insolvencyPractitionerFirmName,
+    TRIM((SELECT STRING_AGG( ISNULL(ci_ip.forenames +' '+ ci_ip.surname, ' '), ', ' ) FROM ci_ip  WHERE ci_ip.ip_no = insolvencyAppointment.ip_no and insolvencyAppointment.ip_appt_type = 'M' and insolvencyAppointment.appt_end_date IS NULL and insolvencyAppointment.case_no = inscase.case_no)) AS insolvencyPractitionerName,
+    TRIM((SELECT TOP 1 ip_firm_name FROM ci_ip_address WHERE ci_ip_address.ip_no = insolvencyAppointment.ip_no and insolvencyAppointment.ip_appt_type = 'M' and insolvencyAppointment.appt_end_date IS NULL and insolvencyAppointment.ip_address_no = ci_ip_address.ip_address_no and insolvencyAppointment.case_no = inscase.case_no)) AS insolvencyPractitionerFirmName,
 
-	CASE 
-           WHEN CHARINDEX(',',REVERSE(TRIM((SELECT TOP 1 REPLACE(TRIM(CONCAT(ci_ip_address.address_line_1,  ', ', ci_ip_address.address_line_2,  ', ', ci_ip_address.address_line_3, ', ',  ci_ip_address.address_line_4,  ', ', ci_ip_address.address_line_5)), ' ,', '') FROM ci_ip_address WHERE ci_ip_address.ip_no = insolvencyAppointment.ip_no and insolvencyAppointment.ip_appt_type = 'M' and insolvencyAppointment.appt_end_date IS NULL)))) = 1 
-           THEN LEFT(TRIM((SELECT TOP 1 REPLACE(TRIM(CONCAT(TRIM(ci_ip_address.address_line_1),  ', ', TRIM(ci_ip_address.address_line_2),  ', ', TRIM(ci_ip_address.address_line_3), ', ',  TRIM(ci_ip_address.address_line_4),  ', ', TRIM(ci_ip_address.address_line_5))), ' ,', '') FROM ci_ip_address WHERE ci_ip_address.ip_no = insolvencyAppointment.ip_no and insolvencyAppointment.ip_appt_type = 'M' and insolvencyAppointment.appt_end_date IS NULL)),LEN(TRIM((SELECT TOP 1 REPLACE(TRIM(CONCAT(TRIM(ci_ip_address.address_line_1),  ', ', TRIM(ci_ip_address.address_line_2),  ', ', TRIM(ci_ip_address.address_line_3), ', ',  TRIM(ci_ip_address.address_line_4),  ', ', TRIM(ci_ip_address.address_line_5))), ' ,', '')  FROM ci_ip_address WHERE ci_ip_address.ip_no = insolvencyAppointment.ip_no and insolvencyAppointment.ip_appt_type = 'M' and insolvencyAppointment.appt_end_date IS NULL)))-1) 
-           ELSE TRIM((SELECT TOP 1 REPLACE(TRIM(CONCAT(TRIM(ci_ip_address.address_line_1),  ', ', TRIM(ci_ip_address.address_line_2),  ', ', TRIM(ci_ip_address.address_line_3), ', ',  TRIM(ci_ip_address.address_line_4),  ', ', TRIM(ci_ip_address.address_line_5))), ' ,', '') FROM ci_ip_address WHERE ci_ip_address.ip_no = insolvencyAppointment.ip_no and insolvencyAppointment.ip_appt_type = 'M' and insolvencyAppointment.appt_end_date IS NULL)) 
-    END insolvencyPractitionerAddress,
+	(SELECT STUFF ('' + CASE TRIM(COALESCE(ci_ip_address.address_line_1, '')) WHEN '' THEN '' ELSE ', ' + TRIM(ci_ip_address.address_line_1) END 
+								+ CASE TRIM(COALESCE(ci_ip_address.address_line_2, '')) WHEN '' THEN '' ELSE ', ' + TRIM(ci_ip_address.address_line_2) END
+								+ CASE TRIM(COALESCE(ci_ip_address.address_line_3, '')) WHEN '' THEN '' ELSE ', ' + TRIM(ci_ip_address.address_line_3) END
+								+ CASE TRIM(COALESCE(ci_ip_address.address_line_4, '')) WHEN '' THEN '' ELSE ', ' + TRIM(ci_ip_address.address_line_4) END
+								+ CASE TRIM(COALESCE(ci_ip_address.address_line_5, '')) WHEN '' THEN '' ELSE ', ' + TRIM(ci_ip_address.address_line_5) END
+					,1,2, '')
+	FROM ci_ip_address WHERE ci_ip_address.ip_no = insolvencyAppointment.ip_no 
+			and insolvencyAppointment.ip_appt_type = 'M' 
+			and insolvencyAppointment.appt_end_date IS NULL 
+			and insolvencyAppointment.ip_address_no = ci_ip_address.ip_address_no 
+			and insolvencyAppointment.case_no = inscase.case_no) as insolvencyPractitionerAddress,
 
-    TRIM((SELECT TOP 1 postcode FROM ci_ip_address WHERE ci_ip_address.ip_no = insolvencyAppointment.ip_no and insolvencyAppointment.ip_appt_type = 'M' and insolvencyAppointment.appt_end_date IS NULL))  AS insolvencyPractitionerPostcode,
-    TRIM((SELECT TOP 1 phone FROM ci_ip_address WHERE ci_ip_address.ip_no = insolvencyAppointment.ip_no and insolvencyAppointment.ip_appt_type = 'M' and insolvencyAppointment.appt_end_date IS NULL)) AS insolvencyPractitionerTelephone, 
+    TRIM((SELECT TOP 1 postcode FROM ci_ip_address WHERE ci_ip_address.ip_no = insolvencyAppointment.ip_no and insolvencyAppointment.ip_appt_type = 'M' and insolvencyAppointment.appt_end_date IS NULL and insolvencyAppointment.ip_address_no = ci_ip_address.ip_address_no and insolvencyAppointment.case_no = inscase.case_no))  AS insolvencyPractitionerPostcode,
+    TRIM((SELECT TOP 1 phone FROM ci_ip_address WHERE ci_ip_address.ip_no = insolvencyAppointment.ip_no and insolvencyAppointment.ip_appt_type = 'M' and insolvencyAppointment.appt_end_date IS NULL and insolvencyAppointment.ip_address_no = ci_ip_address.ip_address_no and insolvencyAppointment.case_no = inscase.case_no)) AS insolvencyPractitionerTelephone, 
 
     --  Insolvency Service contact details   
 	CASE WHEN insolvency_type = 'D' THEN 
@@ -463,10 +486,14 @@ FROM #Cases c
 		ISNULL((SELECT phone from ci_office where office_name LIKE 'DRO%'), '')
 		ELSE 
 		(insolvencyService.phone)
-	END AS insolvencyServicePhone
+	END AS insolvencyServicePhone,
+	CASE WHEN 
+		discharge.previous_order_status IN ('D', '', NULL) AND discharge.previous_order_date BETWEEN DATEADD(YEAR, -6, inscase.insolvency_date) AND inscase.insolvency_date 
+	THEN 
+		discharge.previous_order_date ELSE NULL END AS dateOfPreviousOrder
 
     FROM  #Cases cases
-	INNER JOIN eiirSnapshotTABLE snap on cases.CaseNo = snap.CaseNo
+	INNER JOIN eiirSnapshotTABLE snap on cases.CaseNo = snap.CaseNo AND cases.IndivNo = snap.IndivNo
     INNER JOIN ci_individual individual on individual.indiv_no = snap.IndivNo and individual.case_no = snap.CaseNo 
 	INNER JOIN extract_availability ea on ea.extract_id = Convert(CHAR(8),GETDATE(),112)
 	LEFT JOIN #caseParams cp on cp.caseNo = snap.CaseNo AND cp.indivNo = snap.IndivNo
@@ -476,6 +503,7 @@ FROM #Cases c
 	LEFT JOIN ci_ip cip ON insolvencyAppointment.ip_no = cip.ip_no
 	LEFT JOIN ci_ip_address cipa ON insolvencyAppointment.ip_no = cipa.ip_no
     LEFT JOIN ci_iva_case ivaCase ON ivaCase.case_no = inscase.case_no
+	LEFT JOIN #discharge discharge ON discharge.case_no = cases.CaseNo AND discharge.indiv_no = cases.IndivNo  
 
 If(OBJECT_ID('tempdb..#Temp') Is Not Null)
 Begin
@@ -505,13 +533,9 @@ If(OBJECT_ID('tempdb..#discharge') Is Not Null)
 Begin
 	DROP TABLE #discharge
 End
-If(OBJECT_ID('tempdb..#prevIBRO') Is Not Null)
+If(OBJECT_ID('tempdb..#prevInterimRestrictionsOrder') Is Not Null)
 Begin
-	DROP TABLE #prevIBRO
-End
-If(OBJECT_ID('tempdb..#prevIDRRO') Is Not Null)
-Begin
-	DROP TABLE #prevIDRRO
+	DROP TABLE #prevInterimRestrictionsOrder
 End
 If(OBJECT_ID('tempdb..#caseParams') Is Not Null)
 Begin

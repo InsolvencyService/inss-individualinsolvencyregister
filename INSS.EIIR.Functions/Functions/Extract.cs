@@ -4,11 +4,14 @@ using INSS.EIIR.Models.ExtractModels;
 using INSS.EIIR.Models.SubscriberModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Azure.WebJobs;
-using Microsoft.Azure.WebJobs.Extensions.Http;
+
+
+using Microsoft.Azure.Functions.Worker;
+
 using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Attributes;
 using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Enums;
 using Microsoft.Extensions.Logging;
+
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
 using System.IO;
@@ -34,7 +37,7 @@ namespace INSS.EIIR.Functions.Functions
             _extractDataProvider = extractDataProvider;
         }
 
-        [FunctionName("extracts")]
+        [Function("extracts")]
         [OpenApiOperation(operationId: "Run", tags: new[] { "Extract" })]
         [OpenApiSecurity("apikeyheader_auth", SecuritySchemeType.ApiKey, In = OpenApiSecurityLocationType.Header, Name = "x-functions-key")]
         [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(PagingParameters), Required = false, Description = "The Paging Model")]
@@ -50,7 +53,7 @@ namespace INSS.EIIR.Functions.Functions
             return new OkObjectResult(extractFiles);
         }
 
-        [FunctionName("extract-download")]
+        [Function("extract-download")]
         [OpenApiOperation(operationId: "Run", tags: new[] { "Extract" })]
         [OpenApiSecurity("apikeyheader_auth", SecuritySchemeType.ApiKey, In = OpenApiSecurityLocationType.Header, Name = "x-functions-key")]
         [OpenApiParameter(name: "subscriberId", In = ParameterLocation.Path, Required = true, Type = typeof(string), Description = "The subscriber Id")]

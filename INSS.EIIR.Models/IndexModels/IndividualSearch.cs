@@ -1,50 +1,114 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using Azure.Search.Documents.Indexes;
+using INSS.EIIR.Models.Constants;
+using INSS.EIIR.Models.CaseModels;
+using System.Xml;
+using System.Xml.Serialization;
+using System.Linq;
 
 namespace INSS.EIIR.Models.IndexModels;
 
 [ExcludeFromCodeCoverage]
 public class IndividualSearch
 {
-    [SearchableField(IsSortable = true, IsKey = true)]
+
+    [SimpleField(IsKey = true)]
+    public string Case_Indiv_No
+    {
+        get 
+        {
+            return $"{CaseNumber}_{IndividualNumber}";
+        }    
+    }
+
+    [SimpleField]
     public string CaseNumber { get; set; }
 
-    [SearchableField(IsSortable = true)]
+    [SimpleField]
     public string IndividualNumber { get; set; }
 
-    [SearchableField(IsSortable = true)]
-    public string FullName
+    /// <summary>
+    /// Contains searchablefields which are not part of Forenames, Surnames or Tradenames
+    /// </summary>
+    [SearchableField]
+    public string GlobalSearchField
     {
         get
         {
-            string fullName = $"{FirstName?.Trim()} {MiddleName?.Trim()} {FamilyName?.Trim()}";
-            return string.Join(" ", fullName.Split(default(string[]), StringSplitOptions.RemoveEmptyEntries));
+            string globalSearchField = $"{CaseNumber} {IndividualNumber}" +
+                                        $" {(LastKnownTown == Common.NoLastKnownTown ? "" : LastKnownTown)}" +
+                                        $" {(LastKnownPostcode == Common.NoLastKnownPostCode ? "" : LastKnownPostcode)}";
+
+            return string.Join(" ", globalSearchField.Split(default(string[]), StringSplitOptions.RemoveEmptyEntries));
         }
     }
 
-    [SearchableField(IsSortable = true)]
-    public string CombinedName
+    [SearchableField]
+    public string TradeNamesSearchField
     {
         get
         {
-            string combinedName = $"{FirstName?.Trim()} {FamilyName?.Trim()}";
-            return string.Join(" ", combinedName.Split(default(string[]), StringSplitOptions.RemoveEmptyEntries));
+            return $"{string.Join(" ", TradingNames.Split(",", StringSplitOptions.RemoveEmptyEntries))}";
         }
     }
 
-    [SearchableField(IsSortable = true)]
+    /// <summary>
+    /// Contains lastnames from Family name and any surname from alternative names with no duplicates which would biase results
+    /// </summary>
+    [SearchableField]
+    public string LastNamesSearchField
+    {
+        get
+        {
+            //Combine surname with alternatnames (which is comma seperated list of "lastname firstname"
+            var lastnameFirstnamesString = $"{FamilyName?.Trim()},{(AlternativeNames == Common.NoOtherNames ? "" : AlternativeNames)}";
+
+            var lastnameFirstnames = lastnameFirstnamesString.Split(",", StringSplitOptions.RemoveEmptyEntries);
+
+            //Get the first non empty element from each lastnamefirstname => lastname
+            var lastnames = lastnameFirstnames.Select(s => s.Split(" ", StringSplitOptions.RemoveEmptyEntries)).Select(n => n.Count() != 0 ? n.First(f => !string.IsNullOrEmpty(f)) : null);
+
+            //Select distinct values which are not null/empty
+            return lastnames.Where(s => !string.IsNullOrEmpty(s)).Count() == 0 ? null : string.Join(" ", lastnames.Where(s => !string.IsNullOrEmpty(s)).Distinct(StringComparer.CurrentCultureIgnoreCase));
+        }
+    }
+
+    /// <summary>
+    /// Contains names from Firstname and any firstnames from alternative names with no duplicates which would biase results
+    /// </summary>
+    [SearchableField]
+    public string ForeNamesSearchField
+    {
+        get
+        {
+            //Get alternatnames (which is comma seperated list of "lastname firstname"
+            var altLastnameFirstnamesString = $"{(AlternativeNames == Common.NoOtherNames ? "" : AlternativeNames)}";
+
+            var altLastnameFirstnamesArray = altLastnameFirstnamesString.Split(",", StringSplitOptions.RemoveEmptyEntries);
+
+            //Get the 2+ non empty element from each lastnamefirstname => forenames
+            var altFirstnames = altLastnameFirstnamesArray.Select(s => s.Split(" ", StringSplitOptions.RemoveEmptyEntries)).Select(n => n.Count() > 1 ? string.Join(" ", n.Skip(1)) : "");
+
+            //Combine Firstnames with alternative first names
+            var combinedFirstnames = string.IsNullOrWhiteSpace(FirstName) ? new string[] { } : FirstName.Trim().Split(" ").Select(s=>s);
+            combinedFirstnames = combinedFirstnames.Concat(altFirstnames.Where(x => !string.IsNullOrWhiteSpace(x)).Select(a => a.Split(" ")).SelectMany(x => x));
+
+            //Select distinct values which are not null/empty
+            return combinedFirstnames?.Any() != true ? null : string.Join(" ", combinedFirstnames.Distinct(StringComparer.CurrentCultureIgnoreCase).Where(s => !string.IsNullOrEmpty(s)));
+        }
+    }
+
+
+    [SimpleField]
     public string FirstName { get; set; }
 
     [SimpleField]
-    public string MiddleName { get; set; }
-
-    [SearchableField(IsSortable = true)]
     public string FamilyName { get; set; }
 
     [SimpleField]
     public string Title { get; set; }
 
-    [SearchableField(IsSortable = true)]
+    [SimpleField]
     public string AlternativeNames { get; set; }
 
     [SimpleField]
@@ -53,13 +117,13 @@ public class IndividualSearch
     [SimpleField]
     public string Occupation { get; set; }
 
-    [SearchableField(IsSortable = true)]
+    [SimpleField]
     public string LastKnownTown { get; set; }
 
     [SimpleField]
     public string LastKnownAddress { get; set; }
 
-    [SearchableField(IsSortable = true)]
+    [SimpleField]
     public string LastKnownPostcode { get; set; }
 
     [SimpleField]
@@ -74,7 +138,7 @@ public class IndividualSearch
     [SimpleField(IsFilterable = true)]
     public string Court { get; set; }
 
-    [SimpleField(IsFilterable = true, IsSortable = true)]
+    [SimpleField(IsFilterable = true)]
     public string CourtNumber { get; set; }
 
     [SimpleField]
@@ -83,19 +147,18 @@ public class IndividualSearch
     [SimpleField(IsFilterable = true)]
     public string InsolvencyType { get; set; }
 
+    /// <summary>
+    /// InsolvencyDate contains the date in text form dd/MM/yyyy
+    /// At time of writing June 2024 there were no records on the register without an insolvency_date
+    /// </summary>
     [SimpleField(IsSortable = true)]
-    public DateTime StartDate { get; set; }
-
-    [SimpleField]
-    public DateTime EndDate { get; set; }
-
-    [SimpleField]
     public String InsolvencyDate { get; set; }
 
-
+    /// <summary>
+    /// Applies to IVAs
+    /// </summary>
     [SimpleField]
     public DateTime NotificationDate { get; set; }
-
 
     [SimpleField(IsFilterable = true)]
     public string CaseStatus { get; set; }
@@ -103,14 +166,92 @@ public class IndividualSearch
     [SimpleField]
     public string CaseDescription { get; set; }
 
-    [SearchableField(IsSortable = true)]
-    public string TradingName { get; set; }
+    /// <summary>
+    /// Contains an XML fragment with following structure
+    /// <Trading><TradingDetails><TradingName></TradingName><TradingAddress></TradingAddress></TradingDetails></Trading>
+    /// Where
+    ///     TradingName contains a value
+    ///     TradingAddress contains as value
+    ///     There can be mulitple <TradingDetails> elements - i.e muliptle names and addresses
+    /// OR
+    /// <No //Trading Names Found> //Don't know why but need to include "//" before Trading earlier in this comment line
+    /// </summary>
 
     [SimpleField]
-    public string TradingAddress { get; set; }
+    public string TradingData { get; set; }
+
+
+    /// <summary>
+    /// Returns any TradingNames in TradingData XML or and empty string
+    /// </summary>
+    public string TradingNames {
+
+        get 
+        {
+            if (TradingData == Common.NoTradingNames || string.IsNullOrEmpty(TradingData)) return "";
+
+            Trading trading; 
+
+            try
+            {
+                var serializer = new XmlSerializer(typeof(Trading));
+
+                using (TextReader reader = new StringReader(TradingData))
+                {
+                    trading = (Trading)serializer.Deserialize(reader);
+                }
+
+            }
+            catch (InvalidOperationException ex) 
+            {
+                if (ex.InnerException is XmlException)
+                    return "";
+
+                throw;           
+            }
+            
+            return string.Join(",",  trading.TradingDetails.Select(td => td.TradingName).ToArray());
+        }
+
+    }
+
+    /*          Restriction related fields - Start            */
 
     [SimpleField]
-    public string TradingPostcode { get; set; }
+    public Boolean HasRestrictions { get; set; }
+
+    /// <summary>
+    /// Expected values null, Interim Order, Order, Undertaking 
+    /// </summary>
+    [SimpleField]
+    public string RestrictionsType { get; set; }
+
+    [SimpleField]
+    public DateTime? RestrictionsStartDate { get; set; }
+
+    [SimpleField]
+    public DateTime? RestrictionsEndDate { get; set; }
+
+    /// <summary>
+    /// Whether the individual had a previous Interim Restrictions Order for their current Restrictions Order
+    /// Practically only applies to BROs
+    /// </summary>
+    [SimpleField]
+    public Boolean HasPrevInterimRestrictionsOrder { get; set; }
+
+    /// <summary>
+    /// The start date of their previous Interim Restrictions Order
+    /// </summary>
+    [SimpleField]
+    public DateTime? PrevInterimRestrictionsOrderStartDate { get; set; }
+
+    /// <summary>
+    /// The end date of their previous Interim Restrictions Order
+    /// </summary>
+    [SimpleField]
+    public DateTime? PrevInterimRestrictionsOrderEndDate { get; set; }
+
+    /*          Restriction related fields - End            */
 
     [SimpleField]
     public string PractitionerName { get; set; }
@@ -140,10 +281,10 @@ public class IndividualSearch
 
     [SimpleField]
     public string InsolvencyServiceTelephone { get; set; }
-
-    [SearchableField(IsSortable = true)]
-    public string InsolvencyTradeName { get; set; }
-
+ 
     [SimpleField]
-    public string InsolvencyTradeNameAddress { get; set; }
+    public DateTime? DateOfPreviousOrder { get; set; }
+    [SimpleField]
+    public string? DeceasedDate { get; set; }
+
 }

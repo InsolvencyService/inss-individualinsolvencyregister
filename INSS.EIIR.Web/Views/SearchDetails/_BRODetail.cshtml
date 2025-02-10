@@ -1,0 +1,72 @@
+﻿@using INSS.EIIR.Web.Constants
+@using INSS.EIIR.Web.Extensions
+@model INSS.EIIR.Models.CaseModels.CaseResult
+
+
+@{
+
+    <dl class="govuk-summary-list govuk-summary-list--no-border">
+
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key"> Type </dt>
+            <dd class="govuk-summary-list__value"> Bankruptcy Restrictions Order </dd>
+        </div>
+
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key"> Start date </dt>
+            <dd class="govuk-summary-list__value"> @Html.DisplayFor(model => model.restrictionsStartDate) </dd>
+        </div>
+
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key"> End date </dt>
+            <dd class="govuk-summary-list__value"> @Html.DisplayFor(model => model.restrictionsEndDate) </dd>
+        </div>
+
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key"> Duration </dt>
+            <dd class="govuk-summary-list__value"> @(Model.restrictionsStartDate.Duration(Model.restrictionsEndDate)) </dd>
+        </div>
+
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key"> Court </dt>
+            <dd class="govuk-summary-list__value"> @Html.DisplayFor(model => Model.courtName) </dd>
+        </div>
+
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key"> Number </dt>
+            <dd class="govuk-summary-list__value"> @Html.DisplayFor(model => Model.courtNumber) </dd>
+        </div>
+
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key"> Year </dt>
+            <dd class="govuk-summary-list__value"> @Html.DisplayFor(model => Model.caseYear) </dd>
+        </div>
+
+        @if (Model.hasaPrevInterimRestrictionsOrder)
+        {
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key"> NOTE </dt>
+                <dd class="govuk-summary-list__value"> This Bankruptcy Restrictions Order was preceded by an Interim Bankruptcy Restrictions Order, details shown below </dd>
+            </div>
+
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key"> Previous start date </dt>
+                <dd class="govuk-summary-list__value"> @Html.DisplayFor(model => model.prevInterimRestrictionsOrderStartDate) </dd>
+            </div>
+
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key"> Previous end date </dt>
+                <dd class="govuk-summary-list__value"> @Html.DisplayFor(model => model.prevInterimRestrictionsOrderEndDate) </dd>
+            </div>
+
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key"> Previous duration </dt>
+                <dd class="govuk-summary-list__value"> @(Model.prevInterimRestrictionsOrderStartDate.Duration(Model.prevInterimRestrictionsOrderEndDate)) </dd>
+            </div>
+
+        }
+
+
+    </dl>
+
+}

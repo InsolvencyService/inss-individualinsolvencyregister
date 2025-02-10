@@ -3,8 +3,9 @@ using INSS.EIIR.Interfaces.Messaging;
 using INSS.EIIR.Models.ExtractModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Azure.WebJobs;
-using Microsoft.Azure.WebJobs.Extensions.Http;
+
+using Microsoft.Azure.Functions.Worker;
+
 using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Attributes;
 using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Enums;
 using Microsoft.Extensions.Logging;
@@ -31,7 +32,7 @@ public class ExtractJobTrigger
         _eiirRepository = eiirRepository;
     }
 
-    [FunctionName("ExtractJobTrigger")]
+    [Function("ExtractJobTrigger")]
     [OpenApiOperation(operationId: "Run", tags: new[] { "Extract" })]
     [OpenApiSecurity("apikeyheader_auth", SecuritySchemeType.ApiKey, In = OpenApiSecurityLocationType.Header, Name = "x-functions-key")]
     [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "text/plain", bodyType: typeof(string), Description = "The OK response")]
