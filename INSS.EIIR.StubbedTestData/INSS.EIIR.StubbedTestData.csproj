@@ -8,9 +8,13 @@
 
   <ItemGroup>
     <None Remove="searchdata.json" />
+    <None Remove="searchdata_withValidationFaults.json" />
   </ItemGroup>
 
   <ItemGroup>
+    <Content Include="searchdata_withValidationFaults.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="searchdata.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -20,10 +24,6 @@
     <ProjectReference Include="..\INSS.EIIR.DataSync.Application\INSS.EIIR.DataSync.Application.csproj" />
     <ProjectReference Include="..\INSS.EIIR.DataSync.Infrastructure\INSS.EIIR.DataSync.Infrastructure.csproj" />
     <ProjectReference Include="..\INSS.EIIR.Interfaces\INSS.EIIR.Interfaces.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Source\" />
   </ItemGroup>
 
 </Project>
