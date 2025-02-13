@@ -102,4 +102,26 @@
 
     </dl>
 
+    @if (Model.Trading != null && Model.IncludeCaseDetailsInXML(DateTime.Now))
+    {
+        <table class="govuk-table">
+            <caption class="govuk-table__caption govuk-table__caption--m">Trading details</caption>
+            <thead class="govuk-table__head">
+                <tr class="govuk-table__row">
+                    <th scope="col" class="govuk-table__header">Trading name</th>
+                    <th scope="col" class="govuk-table__header">Address</th>
+                </tr>
+            </thead>
+            <tbody class="govuk-table__body">
+                @foreach (var tradingDetail in Model.Trading.TradingDetails)
+                {
+                    <tr class="govuk-table__row">
+                        <td scope="row" class="govuk-table__cell"> @tradingDetail.TradingName</td>
+                        <td class="govuk-table__cell"> @tradingDetail.TradingAddress</td>
+                    </tr>
+                }
+
+        </table>
+    }
+
 }
