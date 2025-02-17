@@ -59,8 +59,6 @@ namespace INSS.EIIR.DailyExtract
         /// <param name="functionName">The function to be called</param>
         private void getSettings(out string functionName, out SyncDataRequest settings)
         {
-            Boolean useSyncData = false;
-            Boolean.TryParse(Environment.GetEnvironmentVariable("SyncDataEnabled"), out useSyncData);
 
             Boolean useFakeData = false;
             Boolean.TryParse(Environment.GetEnvironmentVariable("UseFakedDataSources"), out useFakeData);
@@ -68,46 +66,36 @@ namespace INSS.EIIR.DailyExtract
             Boolean useINSSightData = false;
             Boolean.TryParse(Environment.GetEnvironmentVariable("INSSightDataFeedEnabled"), out useINSSightData);
 
-            if (useSyncData)
+            functionName = "SyncDataOrchestrator_Start";
+
+            if (useFakeData)
             {
-                functionName = "SyncDataOrchestrator_Start";
-
-                if (useFakeData)
+                settings = new SyncDataRequest()
                 {
-                    settings = new SyncDataRequest()
-                    {
-                        Modes = SyncDataEnums.Mode.Default,
-                        DataSources = SyncDataEnums.Datasource.FakeBKTandIVA | SyncDataEnums.Datasource.FakeDRO
-                    };
-                    _logger.LogInformation("Calling SyncData - Using Faked data from searchdata.json for BKTs & IVAs, ISCIS for DROs");
-                }
-                else if (useINSSightData)
+                    Modes = SyncDataEnums.Mode.Default,
+                    DataSources = SyncDataEnums.Datasource.FakeBKTandIVA | SyncDataEnums.Datasource.FakeDRO
+                };
+                _logger.LogInformation("Calling SyncData - Using Faked data from searchdata.json for BKTs & IVAs, ISCIS for DROs");
+            }
+            else if (useINSSightData)
+            {
+                settings = new SyncDataRequest()
                 {
-                    settings = new SyncDataRequest()
-                    {
-                        Modes = SyncDataEnums.Mode.Default,
-                        DataSources = SyncDataEnums.Datasource.INSSightBKTandIVA | SyncDataEnums.Datasource.IscisDRO
-                    };
-                    _logger.LogInformation("Calling SyncData - Using INSSight data feeds for BKTs & IVAs, ISCIS for DROs");
-                }
-                else
-                {
-                    settings = new SyncDataRequest()
-                    {
-                        Modes = SyncDataEnums.Mode.Default,
-                        DataSources = SyncDataEnums.Datasource.IscisBKTandIVA | SyncDataEnums.Datasource.IscisDRO
-                    };
-                    _logger.LogInformation("Calling SyncData - Using ISCIS data feeds for BKTs, IVAs & DROs");
-                }
-
+                    Modes = SyncDataEnums.Mode.Default,
+                    DataSources = SyncDataEnums.Datasource.INSSightBKTandIVA | SyncDataEnums.Datasource.IscisDRO
+                };
+                _logger.LogInformation("Calling SyncData - Using INSSight data feeds for BKTs & IVAs, ISCIS for DROs");
             }
             else
             {
-                functionName = "EiirOrchestrator_Start";
-                settings = null;
-
-                _logger.LogInformation("Calling Start Orchestration - Using ISCIS data feeds for BKTs, IVAs & DROs");
+                settings = new SyncDataRequest()
+                {
+                    Modes = SyncDataEnums.Mode.Default,
+                    DataSources = SyncDataEnums.Datasource.IscisBKTandIVA | SyncDataEnums.Datasource.IscisDRO
+                };
+                _logger.LogInformation("Calling SyncData - Using ISCIS data feeds for BKTs, IVAs & DROs");
             }
+
 
         }
 

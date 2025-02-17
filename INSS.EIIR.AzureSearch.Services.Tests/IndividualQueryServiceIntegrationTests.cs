@@ -6,7 +6,6 @@ using Azure.Search.Documents;
 using Azure.Search.Documents.Indexes;
 using Azure.Search.Documents.Models;
 using FluentAssertions;
-using INSS.EIIR.AzureSearch.Services.Constants;
 using INSS.EIIR.AzureSearch.Services.ODataFilters;
 using INSS.EIIR.AzureSearch.Services.QueryServices;
 using INSS.EIIR.Interfaces.AzureSearch;
@@ -15,11 +14,13 @@ using Moq;
 using Xunit;
 using INSS.EIIR.Models.Helpers;
 using Microsoft.Extensions.Configuration;
+using INSS.EIIR.AzureSearch.IndexMapper;
 
 namespace INSS.EIIR.AzureSearch.Services.Tests;
 
 public class IndividualQueryServiceIntegrationTests
 {
+
     [Fact]
     public async Task ApplyFilter()
     {
@@ -68,9 +69,12 @@ public class IndividualQueryServiceIntegrationTests
                             responseMock.Object),
                         responseMock.Object)));
 
-        var indexClientMock = new Mock<SearchIndexClient>();
-        indexClientMock.Setup(m => m.GetSearchClient(SearchIndexes.EiirIndividuals)).Returns(searchClientMock.Object);
 
+        var getIndexMapServiceMock = new Mock<IGetIndexMapService>();
+        getIndexMapServiceMock.Setup(m => m.GetIndexName()).Returns(Task.FromResult("WhoFlungDung"));
+
+        var indexClientMock = new Mock<SearchIndexClient>();
+        indexClientMock.Setup(m => m.GetSearchClient("WhoFlungDung")).Returns(searchClientMock.Object);
         
         var formattingServiceMock = new Mock<ISearchTermFormattingService>();
         formattingServiceMock.Setup(m => m.FormatSearchTerm(searchTerm.Base64Decode())).Returns(searchTerm.Base64Decode());
@@ -82,9 +86,14 @@ public class IndividualQueryServiceIntegrationTests
 
         var configMock = new Mock<IConfiguration>();
 
-        var service = new IndividualQueryService(mapperMock.Object, indexClientMock.Object, formattingServiceMock.Object, cleaningServiceMock.Object, GetFilters(cleaningServiceMock.Object), null, configMock.Object);
+        var service = new IndividualQueryService(mapperMock.Object, indexClientMock.Object, formattingServiceMock.Object, cleaningServiceMock.Object, GetFilters(cleaningServiceMock.Object), getIndexMapServiceMock.Object, configMock.Object);
 
         var result  = (await service.SearchIndexAsync(searchModel));
+
+        searchClientMock.Verify(expression: m => m.SearchAsync<IndividualSearch>(It.Is<string>(arg => true),
+                                                   It.Is<SearchOptions>(arg => arg.Filter == $"{courtFilter} and {courtNameFilter}"),
+                                                   It.IsAny<CancellationToken>()),
+                                                   times: Times.Once);
 
         result.Results.Count.Should().Be(1);
         result.Results.First().caseNo.Should().Be("12345");

@@ -7,10 +7,6 @@
     //Controls the DataSources which can be used outside of SyncData test mode
     "PermittedDataSources": "FakeDRO|FakeBKTandIVA",
 
-    //Controls whether new SyncData method is used or old two stored proc/RebuildIndexes/ExtractJobServiceTrigger
-    //Should be short lived removedby April 2025, as later should be removed as redundant
-    "SyncDataEnabled": true,
-
     //Controls whether faked datasources are used, defaults to false if not specified
     "UseFakedDataSources": true,
 

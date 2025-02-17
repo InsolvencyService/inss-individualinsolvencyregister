@@ -2,7 +2,6 @@
 using AutoMapper;
 using Azure.Search.Documents.Indexes;
 using INSS.EIIR.AzureSearch.IndexMapper;
-using INSS.EIIR.AzureSearch.Services.Constants;
 using INSS.EIIR.Interfaces.AzureSearch;
 using INSS.EIIR.Models;
 using INSS.EIIR.Models.CaseModels;
@@ -31,16 +30,11 @@ public class IndividualQueryService : BaseQueryService, IIndividualQueryService
     {
         _filters = filters;
         _getIndexMapService = getIndexMapService;
-        _useDynamicIndexName = Convert.ToBoolean(config["UseDynamicIndexName"]);
     }
 
     protected override async Task<string> GetIndexName()
     {
-        if (_useDynamicIndexName)
-        {
-            return await _getIndexMapService.GetIndexName();
-        }
-        else return SearchIndexes.EiirIndividuals;
+        return await _getIndexMapService.GetIndexName();
     }
 
     public async Task<SearchResults> SearchIndexAsync(IndividualSearchModel searchModel)
