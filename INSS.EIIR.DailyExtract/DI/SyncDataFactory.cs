@@ -51,6 +51,7 @@ namespace INSS.EIIR.DataSync.Functions.DI
                 //Fake Data Sources
                 GetInsSightFakeDataSource(config, mapper),
                 GetEIIRSQLSourceFake(config, mapper),
+                GetInsSightFakeDataSource_withValidationFaults(config, mapper),
 
                 //ISCIS Data Sources
                 GetEIIRSQLSource(config, mapper),
@@ -81,6 +82,11 @@ namespace INSS.EIIR.DataSync.Functions.DI
             };
 
             return new SyncData(options, extractRepo, factory.CreateLogger<SyncData>());
+        }
+
+        private static IDataSourceAsync<InsolventIndividualRegisterModel> GetInsSightFakeDataSource_withValidationFaults(IConfiguration config, IMapper mapper)
+        {
+            return new InsSightSQLSourceFake_withValidationFaults(mapper);
         }
 
         /// <summary>

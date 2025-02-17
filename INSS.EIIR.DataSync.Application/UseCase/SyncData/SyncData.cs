@@ -103,6 +103,10 @@ namespace INSS.EIIR.DataSync.Application.UseCase.SyncData
 
             }
 
+            if (AreValidationsEnabled(request))
+            {
+                _logger.LogWarning("Validation Rules are enabled, any Validation failures will be logged and cause Zip file not to be created for XML Extract nor Search Index swapped");
+            }
 
             foreach (IDataSink<InsolventIndividualRegisterModel> sink in GetEnabledDataSinks(request))
             {
@@ -118,15 +122,17 @@ namespace INSS.EIIR.DataSync.Application.UseCase.SyncData
                     await foreach (var model in source.GetInsolventIndividualRegistrationsAsync())
                     {
                         // validate
-                        var validationResponse = await ValidateModel(model);
+                        if (AreValidationsEnabled(request)) { 
+                            var validationResponse = await ValidateModel(model);
 
-                        // sink failure
-                        if (!validationResponse.IsValid)
-                        {
-                            await SinkFailure(model.Id, validationResponse);
-                            numErrors++;
-                            _swapIndexAndZipXml = false;
-                            continue;
+                            // sink failure
+                            if (!validationResponse.IsValid)
+                            {
+                                await SinkFailure(model.Id, validationResponse);
+                                numErrors++;
+                                _swapIndexAndZipXml = false;
+                                continue;
+                            }
                         }
 
                         // transform
@@ -175,6 +181,11 @@ namespace INSS.EIIR.DataSync.Application.UseCase.SyncData
             {
                 ErrorCount = numErrors
             };
+        }
+
+        private bool AreValidationsEnabled(SyncDataRequest request)
+        {
+            return (request.Modes & SyncDataEnums.Mode.EnableValidations) == SyncDataEnums.Mode.EnableValidations;
         }
 
         private SyncDataEnums.Datasource GetNonSpecifiedPermittedDataSources(SyncDataRequest request)
