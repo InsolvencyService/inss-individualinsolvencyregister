@@ -149,8 +149,6 @@ var host = new HostBuilder()
         services.AddScoped<INotificationService, NotificationService>();
         services.AddScoped<IFeedbackDataProvider, FeedbackDataProvider>();
 
-        services.AddTransient<IIndexService, IndividualSearchIndexService>();
-        services.AddTransient<IIndividualRepository, IndividualRepository>();
 
         Boolean useFakeData = false;
         Boolean.TryParse(Environment.GetEnvironmentVariable("UseFakedDataSources"), out useFakeData);
@@ -158,10 +156,6 @@ var host = new HostBuilder()
             services.AddTransient<IIndividualQueryService, IndividualQueryServiceStubbed>();
         else
             services.AddTransient<IIndividualQueryService, IndividualQueryService>();
-
-
-        services.AddTransient<ISearchDataProvider, SearchDataProvider>();
-
 
 
         services.AddTransient<IIndiviualSearchFilter, IndividualSearchCourtFilter>();
