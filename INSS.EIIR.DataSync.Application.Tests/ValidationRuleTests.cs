@@ -144,5 +144,35 @@ namespace INSS.EIIR.DataSync.Application.Tests
             Assert.True(response.IsValid);
         }
 
+        [Theory]
+        [MemberData(nameof(InvalidData.InvalidBKTStatusData), MemberType = typeof(InvalidData))]
+        public async Task Given_InvalidBKTStatusData_BKTStatusValidationRule_fails(InsolventIndividualRegisterModel model)
+        {
+            // arrange
+            var sut = new BKTStatusValidationRule();
+
+            // act
+            var response = await sut.Validate(model);
+
+            // assert
+            Assert.False(response.IsValid);
+        }
+
+
+        [Theory]
+        [MemberData(nameof(ValidData.ValidBKTStatusData), MemberType = typeof(ValidData))]
+        public async Task Given_ValidBKTStatusData_BKTStatusValidationRule_passes(InsolventIndividualRegisterModel model)
+        {
+            // arrange
+            var sut = new BKTStatusValidationRule();
+
+            // act
+            var response = await sut.Validate(model);
+
+            // assert
+            Assert.True(response.IsValid);
+        }
+
+
     }
 }

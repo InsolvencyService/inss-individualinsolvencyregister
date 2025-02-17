@@ -40,8 +40,7 @@ namespace INSS.EIIR.DataSync.Application.Tests.FakeData
             {
                 individualAlias = "<OtherNames><OtherName><Forenames>John Scott</Forenames><Surname>Macdonald</Surname></OtherName></OtherNames>"
             };
-        }
-        #endregion Valid Alias Data
+        }      
 
         public static IEnumerable<object[]> ValidAliasData()
         {
@@ -49,6 +48,8 @@ namespace INSS.EIIR.DataSync.Application.Tests.FakeData
             yield return new object[] { AliasNo_Other_Names_Found() };
             yield return new object[] { Alias_Valid_Xml() };
         }
+        #endregion Valid Alias Data
+
 
         #region Valid TradingNames Data
 
@@ -186,6 +187,46 @@ namespace INSS.EIIR.DataSync.Application.Tests.FakeData
         }
 
         #endregion Valid Restrictions Data
+
+        #region Valid BKT Status Data
+
+        public static InsolventIndividualRegisterModel ValidBKTStatus_CurrentBKT_DateAtEnd()
+        {
+            return new InsolventIndividualRegisterModel()
+            {
+                insolvencyType = "Bankruptcy",
+                caseStatus = "Currently Bankrupt : Automatic Discharge  will be  20/11/2025"
+            };
+        }
+
+        public static InsolventIndividualRegisterModel ValidBKTStatus_DischargedOn_DateAtEnd()
+        {
+            return new InsolventIndividualRegisterModel()
+            {
+                insolvencyType = "Bankruptcy",
+                caseStatus = "Discharged On 20/11/2025"
+            };
+        }
+
+        public static InsolventIndividualRegisterModel ValidBKTStatus_ANNULLED_DateAtEnd()
+        {
+            return new InsolventIndividualRegisterModel()
+            {
+                insolvencyType = "Bankruptcy",
+                caseStatus = "ANNULLED (Order Revoked) On 20/11/2025"
+            };
+        }
+
+
+        public static IEnumerable<object[]> ValidBKTStatusData()
+        {
+            yield return new object[] { ValidBKTStatus_CurrentBKT_DateAtEnd() };
+            yield return new object[] { ValidBKTStatus_DischargedOn_DateAtEnd() };
+            yield return new object[] { ValidBKTStatus_ANNULLED_DateAtEnd() };
+        }
+
+        #endregion Valid BKT Status Data
+
     }
 
     public class InvalidData
@@ -339,6 +380,76 @@ namespace INSS.EIIR.DataSync.Application.Tests.FakeData
             yield return new object[] { InvalidData.InvalidRestrictions_StartDate_noRestrictionType_noHasRestictions() };
         }
         #endregion Invalid Restrictions Data
+
+        #region Invalid BKT Status Data
+
+        public static InsolventIndividualRegisterModel InvalidBKTStatus_CurrentBKT_DateAtEnd()
+        {
+            return new InsolventIndividualRegisterModel()
+            {
+                insolvencyType = "Bankruptcy",
+                caseStatus = "Currently Bankrupt : Automatic Discharge  will be  20/11/2025 "
+            };
+        }
+
+        public static InsolventIndividualRegisterModel InvalidBKTStatus_DischargedOn_DateAtEnd()
+        {
+            return new InsolventIndividualRegisterModel()
+            {
+                insolvencyType = "Bankruptcy",
+                caseStatus = "Discharged On 20/11/2025 "
+            };
+        }
+
+        public static InsolventIndividualRegisterModel InvalidBKTStatus_ANNULLED_DateAtEnd()
+        {
+            return new InsolventIndividualRegisterModel()
+            {
+                insolvencyType = "Bankruptcy",
+                caseStatus = "ANNULLED (Order Revoked) On 20/11/2025 "
+            };
+        }
+
+        public static InsolventIndividualRegisterModel InvalidBKTStatus_CurrentBKT_DateAtEnd_US()
+        {
+            return new InsolventIndividualRegisterModel()
+            {
+                insolvencyType = "Bankruptcy",
+                caseStatus = "Currently Bankrupt : Automatic Discharge  will be  11/20/2025"
+            };
+        }
+
+        public static InsolventIndividualRegisterModel InvalidBKTStatus_DischargedOn_DateAtEnd_US()
+        {
+            return new InsolventIndividualRegisterModel()
+            {
+                insolvencyType = "Bankruptcy",
+                caseStatus = "Discharged On 11/20/2025"
+            };
+        }
+
+        public static InsolventIndividualRegisterModel InvalidBKTStatus_ANNULLED_DateAtEnd_US()
+        {
+            return new InsolventIndividualRegisterModel()
+            {
+                insolvencyType = "Bankruptcy",
+                caseStatus = "ANNULLED (Order Revoked) On 11/20/2025"
+            };
+        }
+
+
+        public static IEnumerable<object[]> InvalidBKTStatusData()
+        {
+            yield return new object[] { InvalidBKTStatus_CurrentBKT_DateAtEnd() };
+            yield return new object[] { InvalidBKTStatus_DischargedOn_DateAtEnd() };
+            yield return new object[] { InvalidBKTStatus_ANNULLED_DateAtEnd() };
+            yield return new object[] { InvalidBKTStatus_CurrentBKT_DateAtEnd_US() };
+            yield return new object[] { InvalidBKTStatus_DischargedOn_DateAtEnd_US() };
+            yield return new object[] { InvalidBKTStatus_ANNULLED_DateAtEnd_US() };
+        }
+
+
+        #endregion Invalid BKT Status Data
 
 
     }
