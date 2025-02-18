@@ -144,5 +144,64 @@ namespace INSS.EIIR.DataSync.Application.Tests
             Assert.True(response.IsValid);
         }
 
+        [Theory]
+        [MemberData(nameof(InvalidData.InvalidBKTStatusData), MemberType = typeof(InvalidData))]
+        public async Task Given_InvalidBKTStatusData_BKTStatusValidationRule_fails(InsolventIndividualRegisterModel model)
+        {
+            // arrange
+            var sut = new BKTStatusValidationRule();
+
+            // act
+            var response = await sut.Validate(model);
+
+            // assert
+            Assert.False(response.IsValid);
+        }
+
+
+        [Theory]
+        [MemberData(nameof(ValidData.ValidBKTStatusData), MemberType = typeof(ValidData))]
+        public async Task Given_ValidBKTStatusData_BKTStatusValidationRule_passes(InsolventIndividualRegisterModel model)
+        {
+            // arrange
+            var sut = new BKTStatusValidationRule();
+
+            // act
+            var response = await sut.Validate(model);
+
+            // assert
+            Assert.True(response.IsValid);
+        }
+
+        [Theory]
+        [MemberData(nameof(InvalidData.InvalidRestrictionEndDateData), MemberType = typeof(InvalidData))]
+        public async Task Given_InvalidRestrictionEndDate_RestrictionEndDateValidationRule_fails(InsolventIndividualRegisterModel model)
+        {
+            // arrange
+            var sut = new RestrictionEndDateValidationRule();
+
+            // act
+            var response = await sut.Validate(model);
+
+            // assert
+            Assert.False(response.IsValid);
+        }
+
+
+        [Theory]
+        [MemberData(nameof(ValidData.ValidRestrictionEndDateData), MemberType = typeof(ValidData))]
+        public async Task Given_ValidRestrictionEndDateData_RestrictionEndDateValidationRule_passes(InsolventIndividualRegisterModel model)
+        {
+            // arrange
+            var sut = new RestrictionEndDateValidationRule();
+
+            // act
+            var response = await sut.Validate(model);
+
+            // assert
+            Assert.True(response.IsValid);
+        }
+
+
     }
 }
