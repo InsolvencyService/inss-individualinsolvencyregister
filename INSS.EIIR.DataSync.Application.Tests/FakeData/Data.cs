@@ -227,6 +227,44 @@ namespace INSS.EIIR.DataSync.Application.Tests.FakeData
 
         #endregion Valid BKT Status Data
 
+        #region Valid Restriction End Date
+
+        public static InsolventIndividualRegisterModel ValidRestriction_EndDate()
+        {
+            return new InsolventIndividualRegisterModel()
+            {
+                hasRestrictions = true,
+                restrictionsEndDate = DateTime.Now.AddDays(10)
+            };
+        }
+
+        public static InsolventIndividualRegisterModel ValidRestriction_EndDate_null()
+        {
+            return new InsolventIndividualRegisterModel()
+            {
+                hasRestrictions = true,
+                restrictionsEndDate = null
+            };
+        }
+
+        public static InsolventIndividualRegisterModel ValidRestriction_EndDate_false_null()
+        {
+            return new InsolventIndividualRegisterModel()
+            {
+                hasRestrictions = true,
+                restrictionsEndDate = null
+            };
+        }
+
+        public static IEnumerable<object[]> ValidRestrictionEndDateData()
+        {
+            yield return new object[] { ValidRestriction_EndDate() };
+            yield return new object[] { ValidRestriction_EndDate_null() };
+            yield return new object[] { ValidRestriction_EndDate_false_null() };
+        }
+
+        #endregion Valid Restriction End Date
+
     }
 
     public class InvalidData
@@ -451,7 +489,33 @@ namespace INSS.EIIR.DataSync.Application.Tests.FakeData
 
         #endregion Invalid BKT Status Data
 
+        #region Invalid Restriction End Date
 
+        public static InsolventIndividualRegisterModel InvalidRestriction_EndDate()
+        {
+            return new InsolventIndividualRegisterModel()
+            {
+                hasRestrictions = true,
+                restrictionsEndDate = new DateTime(2005, 12, 11)
+            };
+        }
+
+        public static InsolventIndividualRegisterModel InvalidRestriction_EndDate_false_value()
+        {
+            return new InsolventIndividualRegisterModel()
+            {
+                hasRestrictions = false,
+                restrictionsEndDate = new DateTime(2005, 12, 11)
+            };
+        }
+
+        public static IEnumerable<object[]> InvalidRestrictionEndDateData()
+        {
+            yield return new object[] { InvalidRestriction_EndDate() };
+            yield return new object[] { InvalidRestriction_EndDate_false_value() };
+        }
+
+        #endregion Invalid Restriction End Date
     }
 
 }
