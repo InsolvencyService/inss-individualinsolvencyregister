@@ -90,6 +90,8 @@ var host = new HostBuilder()
         services.AddTransient<IValidationRule, TradingNamesValidationRule>();
         services.AddTransient<IValidationRule, RestrictionsTypeValidationRule>();
         services.AddTransient<IValidationRule, RestrictionValidationRule>();
+        services.AddTransient<IValidationRule, BKTStatusValidationRule>();
+        services.AddTransient<IValidationRule, RestrictionEndDateValidationRule>();
 
         services.AddTransient<ITransformRule, AliasTransformRule>();
         services.AddTransient<ITransformRule, RestrictionsTypeTransformRule>();
