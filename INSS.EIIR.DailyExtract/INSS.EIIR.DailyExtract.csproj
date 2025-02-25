@@ -33,6 +33,7 @@
     <PackageReference Include="System.Data.SqlClient" Version="4.8.6" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\INSS.EIIR.AzureSearch.Services\INSS.EIIR.AzureSearch.Services.csproj" />
     <ProjectReference Include="..\INSS.EIIR.DataAccess\INSS.EIIR.DataAccess.csproj" />
     <ProjectReference Include="..\INSS.EIIR.AzureSearch.IndexMapper\INSS.EIIR.AzureSearch.IndexMapper.csproj" />
     <ProjectReference Include="..\INSS.EIIR.DataSync.Application\INSS.EIIR.DataSync.Application.csproj" />

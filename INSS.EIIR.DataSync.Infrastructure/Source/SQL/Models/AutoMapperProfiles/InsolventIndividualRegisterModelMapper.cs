@@ -39,7 +39,7 @@ namespace INSS.EIIR.DataSync.Infrastructure.Source.SQL.Models.AutoMapperProfiles
             .ForMember(dest => dest.annulReason, opt => opt.MapFrom(src => src.AnnulReason))
             .ForMember(dest => dest.caseDescription, opt => opt.MapFrom(src => src.CaseDescription))
             .ForMember(dest => dest.tradingNames, opt => opt.MapFrom(src => src.TradingNames))
-            .ForMember(dest => dest.insolvencyDate, opt => opt.MapFrom(src => src.InsolvencyDate.HasValue ? src.InsolvencyDate.Value.ToString("dd/MM/yyyy"): null))
+            .ForMember(dest => dest.insolvencyDate, opt => opt.MapFrom(src => src.InsolvencyDate.HasValue ? src.InsolvencyDate.Value.ToString("dd/MM/yyyy") : null))
             .ForMember(dest => dest.hasRestrictions, opt => opt.MapFrom(src => src.HasRestrictions))
             .ForMember(dest => dest.restrictionsType, opt => opt.MapFrom(src => src.RestrictionsType))
             .ForMember(dest => dest.restrictionsStartDate, opt => opt.MapFrom(src => src.RestrictionsStartDate.HasValue ? src.RestrictionsStartDate.Value.ToDateTime(TimeOnly.MinValue):(DateTime?)null))
@@ -58,16 +58,17 @@ namespace INSS.EIIR.DataSync.Infrastructure.Source.SQL.Models.AutoMapperProfiles
             .ForMember(dest => dest.insolvencyServicePostcode, opt => opt.MapFrom(src => src.InsolvencyServicePostcode))
             .ForMember(dest => dest.insolvencyServicePhone, opt => opt.MapFrom(src => src.InsolvencyServicePhone))
             .ForMember(dest => dest.caseNo, opt => opt.MapFrom(src => src.CaseNo))
-            .ForMember(dest => dest.indivNo, opt => opt.MapFrom(src => src.IndivNo))
-            .ForMember(dest => dest.dateOfPreviousOrder, opt => opt.MapFrom(src => src.DateOfPreviousOrder.HasValue ? src.DateOfPreviousOrder.Value.ToDateTime(TimeOnly.MinValue) : (DateTime?)null))
-            .ForMember(dest => dest.deceasedDate, opt => opt.MapFrom(src => src.DeceasedDate))
+            .ForMember(dest => dest.caseNo, opt => opt.MapFrom(src => src.CaseNo.HasValue ? src.CaseNo : -1))
+            .ForMember(dest => dest.indivNo, opt => opt.MapFrom(src => src.IndivNo.HasValue ? src.IndivNo : -1))
+            .ForMember(dest => dest.dateOfPreviousOrder, opt => opt.MapFrom(src => src.DateOfPreviousOrder))
+            .ForMember(dest => dest.deceasedDate, opt => opt.MapFrom(src => src.DeceasedDate.HasValue ? src.DeceasedDate.Value.ToString("dd/MM/yyyy") : ""))
             .ReverseMap()
             .ForPath(s => s.RestrictionsStartDate, opt => opt.MapFrom(src => src.restrictionsStartDate.HasValue ? DateOnly.FromDateTime(src.restrictionsStartDate.Value) : (DateOnly?)null))
             .ForPath(s => s.RestrictionsEndDate, opt => opt.MapFrom(src => src.restrictionsEndDate.HasValue ? DateOnly.FromDateTime(src.restrictionsEndDate.Value) : (DateOnly?)null))
             .ForPath(s => s.PrevInterimRestrictionsOrderStartDate, opt => opt.MapFrom(src => src.prevInterimRestrictionsOrderStartDate.HasValue ? DateOnly.FromDateTime(src.prevInterimRestrictionsOrderStartDate.Value) : (DateOnly?)null))
             .ForPath(s => s.PrevInterimRestrictionsOrderEndDate, opt => opt.MapFrom(src => src.prevInterimRestrictionsOrderEndDate.HasValue ? DateOnly.FromDateTime(src.prevInterimRestrictionsOrderEndDate.Value) : (DateOnly?)null))
             .ForPath(s => s.DateOfPreviousOrder, opt => opt.MapFrom(src => src.dateOfPreviousOrder.HasValue ? DateOnly.FromDateTime(src.dateOfPreviousOrder.Value) : (DateOnly?)null))
-            .ForPath(s => s.InsolvencyDate, opt => opt.MapFrom(src => !src.insolvencyDate.IsNullOrEmpty() ? DateTime.ParseExact(src.insolvencyDate, "d/M/yyyy", CultureInfo.InvariantCulture) : (DateTime?)null));
+            .ForPath(s => s.DeceasedDate, opt => opt.MapFrom(src => !src.deceasedDate.IsNullOrEmpty() ? DateTime.ParseExact(src.deceasedDate, "d/M/yyyy", CultureInfo.InvariantCulture) : (DateTime?)null));
         }
 
     }
