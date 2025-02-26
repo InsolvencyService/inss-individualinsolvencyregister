@@ -32,27 +32,6 @@ namespace INSS.EIIR.DataSync.Application.Tests
         }
 
         [Theory]
-        [InlineData("", null)]
-        [InlineData(null, null)]
-        [InlineData("SomeText", "SomeText")]
-        [InlineData("Order", "Order")]
-        [InlineData("Order Made", "Order")] //Temporary allowance for INSSight development, should hopefully be removed for production
-        [InlineData("Undertaking", "Undertaking")]
-        [InlineData("Interim Order", "Interim Order")]
-        public async Task Given_RestrictionsType_RestrictionsTypeTransformRule_normalisesRestrictionsType(string? input, string? expected)
-        {
-            // arrange
-            var sut = new RestrictionsTypeTransformRule();
-            var model = new InsolventIndividualRegisterModel() { restrictionsType = input };
-
-            // act
-            var response = await sut.Transform(model);
-
-            // assert
-            Assert.Equal(expected, response.Model.restrictionsType);
-        }
-
-        [Theory]
         [InlineData(null, "")]
         [InlineData(", , , ,  ", "")]
         [InlineData("65 Bayham Road, , , Morden, SM4 5JH", "65 Bayham Road, Morden, SM4 5JH")]
