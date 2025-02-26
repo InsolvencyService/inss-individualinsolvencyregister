@@ -57,7 +57,6 @@ namespace INSS.EIIR.DataSync.Infrastructure.Source.SQL.Models.AutoMapperProfiles
             .ForMember(dest => dest.insolvencyServiceAddress, opt => opt.MapFrom(src => src.InsolvencyServiceAddress))
             .ForMember(dest => dest.insolvencyServicePostcode, opt => opt.MapFrom(src => src.InsolvencyServicePostcode))
             .ForMember(dest => dest.insolvencyServicePhone, opt => opt.MapFrom(src => src.InsolvencyServicePhone))
-            .ForMember(dest => dest.caseNo, opt => opt.MapFrom(src => src.CaseNo))
             .ForMember(dest => dest.caseNo, opt => opt.MapFrom(src => src.CaseNo.HasValue ? src.CaseNo : -1))
             .ForMember(dest => dest.indivNo, opt => opt.MapFrom(src => src.IndivNo.HasValue ? src.IndivNo : -1))
             .ForMember(dest => dest.dateOfPreviousOrder, opt => opt.MapFrom(src => src.DateOfPreviousOrder))
