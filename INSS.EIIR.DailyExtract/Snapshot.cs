@@ -8,6 +8,7 @@ using System.Net.Http;
 using Microsoft.Azure.Functions.Worker;
 using INSS.EIIR.Models.SyncData;
 using Newtonsoft.Json;
+using System.Linq;
 
 
 namespace INSS.EIIR.DailyExtract
@@ -66,13 +67,17 @@ namespace INSS.EIIR.DailyExtract
             Boolean useINSSightData = false;
             Boolean.TryParse(Environment.GetEnvironmentVariable("INSSightDataFeedEnabled"), out useINSSightData);
 
+            SyncDataEnums.Mode syncDataMode = SyncDataEnums.Mode.Default;
+            GetSyncDataMode(Environment.GetEnvironmentVariable("SyncDataMode"), ref syncDataMode);
+
+
             functionName = "SyncDataOrchestrator_Start";
 
             if (useFakeData)
             {
                 settings = new SyncDataRequest()
                 {
-                    Modes = SyncDataEnums.Mode.Default,
+                    Modes = syncDataMode,
                     DataSources = SyncDataEnums.Datasource.FakeBKTandIVA | SyncDataEnums.Datasource.FakeDRO
                 };
                 _logger.LogInformation("Calling SyncData - Using Faked data from searchdata.json for BKTs & IVAs, ISCIS for DROs");
@@ -81,7 +86,7 @@ namespace INSS.EIIR.DailyExtract
             {
                 settings = new SyncDataRequest()
                 {
-                    Modes = SyncDataEnums.Mode.Default,
+                    Modes = syncDataMode,
                     DataSources = SyncDataEnums.Datasource.INSSightBKTandIVA | SyncDataEnums.Datasource.IscisDRO
                 };
                 _logger.LogInformation("Calling SyncData - Using INSSight data feeds for BKTs & IVAs, ISCIS for DROs");
@@ -90,7 +95,7 @@ namespace INSS.EIIR.DailyExtract
             {
                 settings = new SyncDataRequest()
                 {
-                    Modes = SyncDataEnums.Mode.Default,
+                    Modes = syncDataMode,
                     DataSources = SyncDataEnums.Datasource.IscisBKTandIVA | SyncDataEnums.Datasource.IscisDRO
                 };
                 _logger.LogInformation("Calling SyncData - Using ISCIS data feeds for BKTs, IVAs & DROs");
@@ -167,5 +172,31 @@ namespace INSS.EIIR.DailyExtract
             }
 
         }
+
+        /// <summary>
+        /// Converts a delimited ('|') string (also works just as well for an int)
+        /// trys parsing each element as SyncDataEnums.Mode, failures => 0
+        /// Then applys 'bitwise or' to them all using Linq Aggregator returning a single bitwise value
+        /// Parses the likes of "DisableXMLExtract|EnableValidations" => 4 + 16 => 20
+        /// </summary>
+        /// <param name="config"></param>
+        /// <returns>SyncDataEnums.Datasource</returns>
+        private static void GetSyncDataMode(string setting, ref SyncDataEnums.Mode value)
+        {
+            if (setting != null)
+            { 
+                if (!Enum.TryParse(setting, true, out value))
+                {
+                    value = setting.Split('|').ToList().Select(e =>
+                    {
+                        SyncDataEnums.Mode aMode;
+                        Enum.TryParse(e.Trim(), true, out aMode);
+                        return aMode;
+                    }).Aggregate((accumulatedValue, nextValue) => accumulatedValue = accumulatedValue | nextValue);
+                }
+            }
+        }
+
+
     }
 }
