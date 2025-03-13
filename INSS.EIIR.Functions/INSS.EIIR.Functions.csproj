@@ -35,7 +35,7 @@
 	</ItemGroup>
 	<ItemGroup>
 		<ProjectReference Include="..\INSS.EIIR.AzureSearch.IndexMapper\INSS.EIIR.AzureSearch.IndexMapper.csproj" />
-		<ProjectReference Include="..\INSS.EIIR.AzureSearch\INSS.EIIR.AzureSearch.csproj" />
+		<ProjectReference Include="..\INSS.EIIR.AzureSearch.Services\INSS.EIIR.AzureSearch.Services.csproj" />
 		<ProjectReference Include="..\INSS.EIIR.BusinessData.Application\INSS.EIIR.BusinessData.Application.csproj" />
 		<ProjectReference Include="..\INSS.EIIR.BusinessData.Infrastructure\INSS.EIIR.BusinessData.Infrastructure.csproj" />
 		<ProjectReference Include="..\INSS.EIIR.DataAccess\INSS.EIIR.DataAccess.csproj" />

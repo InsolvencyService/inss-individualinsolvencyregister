@@ -18,4 +18,8 @@
     <ProjectReference Include="..\INSS.EIIR.Services\INSS.EIIR.Services.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Services\" />
+  </ItemGroup>
+
 </Project>

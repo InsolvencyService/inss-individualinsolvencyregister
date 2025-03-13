@@ -10,9 +10,10 @@ namespace INSS.EIIR.DataSync.Infrastructure.Source.SQL.Models;
 public partial class VwEiir
 {
     [Column("caseNo")]
-    public long? CaseNo { get; set; }
+    public int? CaseNo { get; set; }
 
-    public long? IndivNo { get; set; }
+    [Column("indivNo")]
+    public int? IndivNo { get; set; }
 
     [Column("individualForenames")]
     [StringLength(8000)]
@@ -72,7 +73,7 @@ public partial class VwEiir
     [Column("deceasedDate")]
     [StringLength(8000)]
     [Unicode(false)]
-    public string? DeceasedDate { get; set; }
+    public DateTime? DeceasedDate { get; set; }
 
     [Column("caseName")]
     [StringLength(8000)]

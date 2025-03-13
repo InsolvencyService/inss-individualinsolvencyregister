@@ -7,15 +7,16 @@
     //Controls the DataSources which can be used outside of SyncData test mode
     "PermittedDataSources": "FakeDRO|FakeBKTandIVA",
 
-    //Controls whether new SyncData method is used or old two stored proc/RebuildIndexes/ExtractJobServiceTrigger
-    //Should be short lived removedby April 2025, as later should be removed as redundant
-    "SyncDataEnabled": true,
-
     //Controls whether faked datasources are used, defaults to false if not specified
     "UseFakedDataSources": true,
 
     //Controls whether INSSight data feed is used to BKTs and IVAs, defaults to false if not specified
     "INSSightDataFeedEnabled": true,
+
+    //Optional configuration item, controls the mode sent through to SyncData.  Defaults to "Default" => 0 if not supplied
+    //Documentation on Confluence under "Manually Triggering SyncData" can take text values separated by vertical bar e.g. "DisableXMLExtract|EnableValidations" => 20
+    //Or numeric equivalent
+    "SyncDataMode": "Default",
 
     //Connection string for running Snapshot
     "SQLConnectionString": "Server=yourmachine\\yourinstance;database=yourdatabase;Integrated Security=true;TrustServerCertificate=True;",

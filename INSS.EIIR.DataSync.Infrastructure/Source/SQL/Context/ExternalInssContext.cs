@@ -25,7 +25,7 @@ public partial class ExternalInssContext : DbContext
     {
         modelBuilder.Entity<VwEiir>(entity =>
         {
-            entity.ToView("vw_eiir");
+            entity.ToView("vw_eiir", schema:"ext");
 
             entity.Property(e => e.AnnulDate).IsFixedLength();
             entity.Property(e => e.CaseDescription).UseCollation("Latin1_General_100_BIN2_UTF8");
