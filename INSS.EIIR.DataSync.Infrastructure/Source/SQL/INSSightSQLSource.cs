@@ -21,7 +21,7 @@ namespace INSS.EIIR.DataSync.Infrastructure.Source.SQL
             this._options = options;
         }
 
-        public SyncDataEnums.Datasource Type =>  SyncDataEnums.Datasource.InnSightBKTandIVA;
+        public SyncDataEnums.Datasource Type =>  SyncDataEnums.Datasource.INSSightBKTandIVA;
 
         public string Description => "INSSight Bankruptcies and IVAs";
 

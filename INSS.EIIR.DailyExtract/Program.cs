@@ -20,6 +20,9 @@ using INSS.EIIR.Data.Models;
 using Microsoft.EntityFrameworkCore;
 using INSS.EIIR.DataSync.Application.UseCase.SyncData.Validation;
 using INSS.EIIR.Models.SyncData;
+using INSS.EIIR.DataSync.Application.UseCase.SyncData.Infrastructure;
+using INSS.EIIR.DataSync.Application.UseCase.SyncData.Transformation;
+
 
 
 var host = new HostBuilder()
@@ -81,7 +84,17 @@ var host = new HostBuilder()
            });
 
         services.AddScoped<IExtractRepository, ExtractRepository>();
+
         services.AddTransient<IValidationRule, IdValidationRule>();
+        services.AddTransient<IValidationRule, AliasValidationRule>();
+        services.AddTransient<IValidationRule, TradingNamesValidationRule>();
+        services.AddTransient<IValidationRule, RestrictionsTypeValidationRule>();
+        services.AddTransient<IValidationRule, RestrictionValidationRule>();
+        services.AddTransient<IValidationRule, BKTStatusValidationRule>();
+        services.AddTransient<IValidationRule, RestrictionEndDateValidationRule>();
+
+        services.AddTransient<ITransformRule, AliasTransformRule>();
+        services.AddTransient<ITransformRule, AddressTransformRule>();
 
         services.AddScoped<IRequestResponseUseCase<SyncDataRequest, SyncDataResponse>, SyncData>(SyncDataFactory.Get);
         
