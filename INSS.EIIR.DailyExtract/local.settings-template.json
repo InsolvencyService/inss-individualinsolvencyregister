@@ -1,7 +1,10 @@
 {
   "IsEncrypted": false,
   "Values": {
+    //The storage account to be used by the function app
     "AzureWebJobsStorage": "UseDevelopmentStorage=true",
+
+    //Required as the function app is using the isolated worker model rather the legacy in-process model
     "FUNCTIONS_WORKER_RUNTIME": "dotnet-isolated",
 
     //Controls the DataSources which can be used outside of SyncData test mode
@@ -24,12 +27,13 @@
     //Connection string for connecting to INSSight
     "InsSightSQLConnectionString": "__InsSightSQLConnectionString__",
 
+    //The time when the Snapshot function will be triggered
     "snapshotTimercron": "15 7 * * *",
 
     //template to for.sql file
     "BlobContainer": "eiir/{name}",
 
-    //settings to copy .sql from drop folder to archive folder, and XML Extact via SyncData //**
+    //Settings to copy .sql from drop folder to archive folder, and XML Extact via SyncData //**
     "SourceBlobConnectionString": "UseDevelopmentStorage=true",
     "TargetBlobConnectionString": "UseDevelopmentStorage=true", //**
     "SourceContainer": "eiir",
@@ -39,18 +43,24 @@
     //Location of Subscriber XML file to be created
     "XmlContainer": "eiirdailyextracts",
 
-    //Existing bankruptcites json file
+    //Existing bankruptcites json file, and Azure Container and file name which records bankruptcies
+    //which have previously appears in the Subscriber extract
     "ExistingBankruptciesContainer": "existingbankruptcies",
     "ExistingBankruptciesFile": "existingbankruptcies.json",
 
     //settings to call either orchestrator (ISCIS all record types) or SyncData (INSSight for BKTs and IVAs)
-    //If INSSightDataFeedEnabled = true then settings need to point to func-eiir-daily-extract
-    //anything else nothing, false then setting neeed to point to func-eiir
+    //If INSSightDataFeedEnabled = true then settings need to point to INSS.EIIR.DailyExtract
+    //anything else nothing, false then setting need to point to INSS.EIIR.Functions
     "functionURL": "http://localhost:7071/api/",
     "functionAPIKey": "you do not need to set this when running locally",
 
+    //The endpoint of an Azure AI Search resource
     "AISearchEndpoint": "__AISearchEndpoint__",
+    
+    //The key for the aboved resourece
     "AISearchKey": "__AISearchKey__",
+
+    //The number of records SyncData function will load into AI Search with any one request
     "AISearchBatchLimit": "__AISearchBatchLimit__",
 
     //Parameters for ExtractRepository
