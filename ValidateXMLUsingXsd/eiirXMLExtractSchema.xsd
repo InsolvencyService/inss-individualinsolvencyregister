@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2011 (http://www.altova.com) by Leena Gupte (Inss) -->
+<!-- file origin eiirXMLExtractSchema16DEC2010 sourced from (https://github.com/InsolvencyService/eIIR/blob/master/XML%20Schema) -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+	<xs:element name="ReportDetails">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="ExtractVolumes"/>
+				<xs:element ref="Disclaimer"/>
+				<xs:element ref="ReportRequest" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="ExtractVolumes">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="TotalEntries"/>
+				<xs:element ref="TotalBanks"/>
+				<xs:element ref="TotalIVAs"/>
+				<xs:element ref="NewBanks"/>
+				<xs:element ref="TotalDros"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="TotalEntries" type="xs:integer"/>
+	<xs:element name="TotalBanks" type="xs:integer"/>
+	<xs:element name="TotalIVAs" type="xs:integer"/>
+	<xs:element name="NewBanks" type="xs:integer"/>
+	<xs:element name="TotalDros" type="xs:integer"/>
+	<xs:element name="Disclaimer" type="xs:string"/>
+	<xs:element name="ReportRequest">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="ExtractDate"/>
+				<xs:element ref="CaseNoReportRequest"/>
+				<xs:element ref="IndividualDetailsText"/>
+				<xs:element ref="IndividualDetails"/>
+				<xs:choice minOccurs="0">
+					<xs:element ref="BankruptcyRestrictionsDetails"/>
+					<xs:element ref="DebtReliefRestrictionsDetails"/>
+				</xs:choice>
+				<xs:sequence minOccurs="0">
+					<xs:element ref="CaseDetailsText"/>
+					<xs:element ref="CaseDetails"/>
+				</xs:sequence>
+				<xs:sequence minOccurs="0" maxOccurs="unbounded">
+					<xs:element ref="InsolvencyPractitionerText"/>
+					<xs:element ref="IP"/>
+				</xs:sequence>
+				<xs:element ref="InsolvencyContactText"/>
+				<xs:element ref="InsolvencyContact"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="ExtractDate" type="xs:string"/>
+	<xs:element name="CaseNoReportRequest" type="xs:integer"/>
+	<xs:element name="IndividualDetailsText" type="xs:string"/>
+	<xs:element name="IndividualDetails">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="CaseNoIndividual"/>
+				<xs:element ref="Title"/>
+				<xs:element ref="Gender"/>
+				<xs:element ref="FirstName"/>
+				<xs:element ref="Surname"/>
+				<xs:element ref="Occupation"/>
+				<xs:element ref="DateofBirth"/>
+				<xs:element ref="DeceasedDate" minOccurs="0"/>
+				<xs:element ref="LastKnownAddress"/>
+				<xs:element ref="LastKnownPostCode"/>
+				<xs:element ref="OtherNames"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="CaseNoIndividual" type="xs:integer"/>
+	<xs:element name="Title" type="xs:string"/>
+	<xs:element name="Gender" type="xs:string"/>
+	<xs:element name="FirstName" type="xs:string"/>
+	<xs:element name="Surname" type="xs:string"/>
+	<xs:element name="Occupation" type="xs:string"/>
+	<xs:element name="DateofBirth" type="xs:string"/>
+	<xs:element name="DeceasedDate" type="xs:string"/>
+	<xs:element name="LastKnownAddress" type="xs:string"/>
+	<xs:element name="LastKnownPostCode" type="xs:string"/>
+	<xs:element name="OtherNames">
+		<xs:complexType mixed="true">
+			<xs:sequence>
+				<xs:element ref="OtherName" minOccurs="0" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="OtherName" type="xs:string"/>
+	<xs:element name="BankruptcyRestrictionsDetails">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="RestrictionsType" minOccurs="0"/>
+				<xs:element ref="RestrictionsStartDate" minOccurs="0"/>
+				<xs:element ref="RestrictionsEndDate" minOccurs="0"/>
+				<xs:element ref="RestrictionsCourt" minOccurs="0"/>
+				<xs:element ref="RestrictionsCourtNo" minOccurs="0"/>
+				<xs:element ref="RestrictionsCaseYear" minOccurs="0"/>
+				<xs:element ref="PreviousIBRO" minOccurs="0"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="RestrictionsType" type="xs:string"/>
+	<xs:element name="RestrictionsStartDate" type="xs:string"/>
+	<xs:element name="RestrictionsEndDate" type="xs:string"/>
+	<xs:element name="RestrictionsCourt" type="xs:string"/>
+	<xs:element name="RestrictionsCourtNo" type="xs:int"/>
+	<xs:element name="RestrictionsCaseYear" type="xs:int"/>
+	<xs:element name="PreviousIBRO">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="PreviousIBRONote"/>
+				<xs:element ref="PreviousIBROStartDate"/>
+				<xs:element ref="PreviousIBROEndDate"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="PreviousIBRONote" type="xs:string"/>
+	<xs:element name="PreviousIBROStartDate" type="xs:string"/>
+	<xs:element name="PreviousIBROEndDate" type="xs:string"/>
+	<xs:element name="DebtReliefRestrictionsDetails">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="DRORestrictionsType" minOccurs="0"/>
+				<xs:element ref="DRORestrictionsStartDate" minOccurs="0"/>
+				<xs:element ref="DRORestrictionsEndDate" minOccurs="0"/>
+				<xs:element ref="PreviousIDRRO" minOccurs="0"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="DRORestrictionsType" type="xs:string"/>
+	<xs:element name="DRORestrictionsStartDate" type="xs:string"/>
+	<xs:element name="DRORestrictionsEndDate" type="xs:string"/>
+	<xs:element name="PreviousIDRRO">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="PreviousIDRRONote"/>
+				<xs:element ref="PreviousIDRROStartDate"/>
+				<xs:element ref="PreviousIDRROEndDate"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="PreviousIDRRONote" type="xs:string"/>
+	<xs:element name="PreviousIDRROStartDate" type="xs:string"/>
+	<xs:element name="PreviousIDRROEndDate" type="xs:string"/>
+	<xs:element name="CaseDetailsText" type="xs:string"/>
+	<xs:element name="CaseDetails">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="CaseNoCase"/>
+				<xs:sequence minOccurs="0">
+					<xs:element ref="CaseName"/>
+					<xs:element ref="Court"/>
+					<xs:element ref="CaseType"/>
+					<xs:element ref="CourtNumber"/>
+					<xs:element ref="CaseYear"/>
+					<xs:element ref="StartDate"/>
+				</xs:sequence>
+				<xs:element ref="Status"/>
+				<xs:element ref="AnnulDate" minOccurs="0"/>
+				<xs:element ref="AnnulReason" minOccurs="0"/>
+				<xs:element ref="CaseDescription"/>
+				<xs:element ref="SpecialNote" minOccurs="0"/>
+				<xs:element ref="TradingNames"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="CaseNoCase" type="xs:integer"/>
+	<xs:element name="CaseName" type="xs:string"/>
+	<xs:element name="Court" type="xs:string"/>
+	<xs:element name="CaseType" type="xs:string"/>
+	<xs:element name="CourtNumber" type="xs:string"/>
+	<xs:element name="CaseYear" type="xs:string"/>
+	<xs:element name="StartDate" type="xs:string"/>
+	<xs:element name="Status" type="xs:string"/>
+	<xs:element name="AnnulDate" type="xs:string"/>
+	<xs:element name="AnnulReason" type="xs:string"/>
+	<xs:element name="CaseDescription" type="xs:string"/>
+	<xs:element name="SpecialNote" type="xs:string"/>
+	<xs:element name="TradingNames">
+		<xs:complexType mixed="true">
+			<xs:choice minOccurs="0" maxOccurs="unbounded">
+				<xs:element ref="TradingAddress"/>
+				<xs:element ref="TradingName"/>
+			</xs:choice>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="TradingAddress" type="xs:string"/>
+	<xs:element name="TradingName" type="xs:string"/>
+	<xs:element name="InsolvencyPractitionerText" type="xs:string"/>
+	<xs:element name="IP">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="CaseNoIP"/>
+				<xs:element ref="MainIP"/>
+				<xs:element ref="MainIPFirm"/>
+				<xs:element ref="MainIPFirmAddress"/>
+				<xs:element ref="MainIPFirmPostCode"/>
+				<xs:element ref="MainIPFirmTelephone"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="CaseNoIP" type="xs:integer"/>
+	<xs:element name="MainIP" type="xs:string"/>
+	<xs:element name="MainIPFirm" type="xs:string"/>
+	<xs:element name="MainIPFirmAddress" type="xs:string"/>
+	<xs:element name="MainIPFirmPostCode" type="xs:string"/>
+	<xs:element name="MainIPFirmTelephone" type="xs:string"/>
+	<xs:element name="InsolvencyContactText" type="xs:string"/>
+	<xs:element name="InsolvencyContact">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="CaseNoContact"/>
+				<xs:element ref="InsolvencyServiceOffice"/>
+				<xs:element ref="Contact"/>
+				<xs:element ref="ContactAddress"/>
+				<xs:element ref="ContactPostCode"/>
+				<xs:element ref="ContactTelephone"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="CaseNoContact" type="xs:integer"/>
+	<xs:element name="InsolvencyServiceOffice" type="xs:string"/>
+	<xs:element name="Contact" type="xs:string"/>
+	<xs:element name="ContactAddress" type="xs:string"/>
+	<xs:element name="ContactPostCode" type="xs:string"/>
+	<xs:element name="ContactTelephone" type="xs:string"/>
+</xs:schema>
+
