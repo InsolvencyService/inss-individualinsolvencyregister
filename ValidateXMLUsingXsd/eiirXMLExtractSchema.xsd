@@ -153,7 +153,7 @@
 				<xs:element ref="CaseNoCase"/>
 				<xs:sequence minOccurs="0">
 					<xs:element ref="CaseName"/>
-					<xs:element ref="Court"/>
+					<xs:element ref="Court" minOccurs="0"/>
 					<xs:element ref="CaseType"/>
 					<xs:element ref="CourtNumber"/>
 					<xs:element ref="CaseYear"/>
