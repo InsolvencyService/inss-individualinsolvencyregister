@@ -31,7 +31,7 @@ else
     var sourcefilename = args[0];
 
     XmlSchemaSet schema = new XmlSchemaSet();
-    schema.Add("", Path.Combine(path, "eiirXMLExtractSchema.xsd"));
+    schema.Add("", Path.Combine(path, "eiirXMLExtractSchema_current.xsd"));
     XmlReader rd = XmlReader.Create(sourcefilename);
     XDocument doc = XDocument.Load(rd);
     doc.Validate(schema, ValidationEventHandler);
