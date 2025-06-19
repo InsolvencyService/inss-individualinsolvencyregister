@@ -11,7 +11,7 @@
     <None Update="eiirXMLExtractSchema_current.xsd">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="PublishedVersions\eiirXMLExtractSchema29JUN2025.xsd">
+    <None Update="PublishedVersions\eiirXMLExtractSchema19JUN2025.xsd">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </None>
   </ItemGroup>
