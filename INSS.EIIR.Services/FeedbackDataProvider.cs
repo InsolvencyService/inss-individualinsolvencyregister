@@ -1,5 +1,6 @@
 ﻿using INSS.EIIR.Interfaces.DataAccess;
 using INSS.EIIR.Interfaces.Services;
+using INSS.EIIR.Interfaces;
 using INSS.EIIR.Models.FeedbackModels;
 using INSS.EIIR.Models.Helpers;
 
@@ -8,10 +9,12 @@ namespace INSS.EIIR.Services
     public class FeedbackDataProvider : IFeedbackDataProvider
     {
         private readonly IFeedbackRepository _feedbackRepository;
+        private readonly ISystemDateTime _systemDateTime;   
 
-        public FeedbackDataProvider(IFeedbackRepository feedbackRepository)
+        public FeedbackDataProvider(IFeedbackRepository feedbackRepository, ISystemDateTime systemDateTime)
         {
             _feedbackRepository = feedbackRepository;
+            _systemDateTime = systemDateTime;
         }
 
         public async Task<FeedbackWithPaging> GetFeedbackAsync(FeedbackBody feedbackBody)
@@ -30,11 +33,15 @@ namespace INSS.EIIR.Services
             }
             var organisation = feedbackBody?.Filters?.Organisation;
             var insolvencyType = feedbackBody?.Filters?.InsolvencyType;
+            var softDeleteDays = feedbackBody?.Filters?.SoftDeleteViewedRecordsAfterDays ?? 30;
+
+            var softDeleteCutOff = _systemDateTime.Now.AddDays(-1 * (softDeleteDays + 1)).Date;
 
             var totalFeedback = (await _feedbackRepository.GetFeedbackAsync())
                                     .Where(x => x.Viewed.Equals(viewedStatus) || viewedStatus is null)
                                     .Where(x => x.ReporterOrganisation.Equals(organisation) || string.IsNullOrEmpty(organisation))
-                                    .Where(x => x.InsolvencyType.Equals(insolvencyType) || string.IsNullOrEmpty(insolvencyType)).ToList();
+                                    .Where(x => x.InsolvencyType.Equals(insolvencyType) || string.IsNullOrEmpty(insolvencyType))
+                                    .Where(x => x.Viewed.Equals(false) || (x.Viewed.Equals(true) && x.ViewedDate > softDeleteCutOff)).ToList();
 
             var pagedFeedback = totalFeedback
                                     .Skip(feedbackBody.PagingModel.Skip)

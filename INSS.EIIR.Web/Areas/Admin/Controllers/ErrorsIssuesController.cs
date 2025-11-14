@@ -7,6 +7,7 @@ using INSS.EIIR.Web.Helper;
 using INSS.EIIR.Web.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using NuGet.Frameworks;
 
 namespace INSS.EIIR.Web.Areas.Admin.Controllers
 {
@@ -15,10 +16,12 @@ namespace INSS.EIIR.Web.Areas.Admin.Controllers
     public class ErrorsIssuesController : Controller
     {
         private readonly IErrorIssuesService _errorIssuesService;
+        private readonly IConfiguration _config;
 
-        public ErrorsIssuesController(IErrorIssuesService errorIssuesService)
+        public ErrorsIssuesController(IConfiguration config, IErrorIssuesService errorIssuesService)
         {
             _errorIssuesService = errorIssuesService;
+            _config = config;
         }
 
         [HttpGet(AreaNames.Admin + "/errors-or-issues/{page?}/{insolvencyType?}/{organisation?}/{status?}")]
@@ -50,7 +53,7 @@ namespace INSS.EIIR.Web.Areas.Admin.Controllers
             return RedirectToAction("Index", new { page = 1, insolvencyType, organisation, status });
         }
 
-        private static FeedbackBody CreateParameters(int page, string insolvencyType, int organisation, int status)
+        private FeedbackBody CreateParameters(int page, string insolvencyType, int organisation, int status)
         {
             var parameters = new FeedbackBody
             {
@@ -58,7 +61,9 @@ namespace INSS.EIIR.Web.Areas.Admin.Controllers
                 {
                     InsolvencyType = insolvencyType == "A" ? string.Empty : insolvencyType,
                     Organisation = organisation == 0 ? string.Empty : FeedbackFilters.OrganisationFilters[organisation],
-                    Status = status == 1 ? "Unviewed" : FeedbackFilters.StatusFilters[status]
+                    Status = status == 1 ? "Unviewed" : FeedbackFilters.StatusFilters[status],
+                    SoftDeleteViewedRecordsAfterDays = this.GetSoftDeleteDays()
+
                 },
                 PagingModel = new PagingParameters
                 {
@@ -68,6 +73,20 @@ namespace INSS.EIIR.Web.Areas.Admin.Controllers
             };
 
             return parameters;
+        }
+
+        private int GetSoftDeleteDays()
+        {
+            var setting = _config.GetValue<object>("SoftDeleteViewedRecordsAfterDays", 30);
+
+            int value = 30;
+
+            if (int.TryParse(setting.ToString(), out int result))
+            { 
+                value = result;
+            }
+
+            return value;
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using FluentAssertions;
+﻿using AutoMapper.Configuration.Annotations;
+using FluentAssertions;
 using INSS.EIIR.Data.Models;
 using INSS.EIIR.Interfaces.DataAccess;
 using INSS.EIIR.Models.Configuration;
@@ -13,34 +14,39 @@ namespace INSS.EIIR.Services.Tests
     public class FeedbackDataProviderTests
     {
         [Theory]
-        [InlineData("All", null, null)]
-        [InlineData("Viewed", null, null)]
-        [InlineData("Unviewed", null, null)]
-        [InlineData("All", "Member of the public", null)]
-        [InlineData("Viewed", "Financial services", null)]
-        [InlineData("Unviewed", "Government department", null)]
-        [InlineData("All", "Member of the public", "I")]
-        [InlineData("Viewed", "Financial services", "B")]
-        [InlineData("Unviewed", "Government department", "D")]
-        public async Task GetFeedback_WithFilters(string viewedStatus, string organisation, string insolvencyType)
+        [InlineData("All", null, null, 6, 8)]
+        [InlineData("Viewed", null, null, 6, 1)]
+        [InlineData("Unviewed", null, null, 6, 7)]
+        [InlineData("All", "Member of the public", null, 6, 3)]
+        [InlineData("Viewed", "Financial services", null, 6, 0)]
+        [InlineData("Unviewed", "Government department", null, 6, 2)]
+        [InlineData("All", "Member of the public", "I", 6, 1)]
+        [InlineData("Viewed", "Financial services", "B", 6, 0)]
+        [InlineData("Unviewed", "Government department", "D", 6, 1)]
+        public async Task GetFeedback_WithFilters(string viewedStatus, string organisation, string insolvencyType, int softDelete, int recordCount)
         {
             var expectedResult = GetCaseFeedback();
             var feedbackBody = new FeedbackBody() { 
                 PagingModel = new PagingParameters { PageNumber = 1, PageSize = 10 }, 
-                Filters = new FeedbackFilterModel { Status = viewedStatus, Organisation = organisation, InsolvencyType = insolvencyType } 
+                Filters = new FeedbackFilterModel { Status = viewedStatus, Organisation = organisation, InsolvencyType = insolvencyType, SoftDeleteViewedRecordsAfterDays = softDelete } 
             };
             var repositoryMock = new Mock<IFeedbackRepository>();
             repositoryMock
                 .Setup(m => m.GetFeedbackAsync())
                 .ReturnsAsync(expectedResult);
 
-            var service = new FeedbackDataProvider(repositoryMock.Object);
+            var systemDateTimeMock = new Mock<Interfaces.ISystemDateTime>();
+            systemDateTimeMock
+                .Setup(m => m.Now)
+                .Returns(new DateTime(2022, 10, 30, 14, 25, 10));
+
+            var service = new FeedbackDataProvider(repositoryMock.Object, systemDateTimeMock.Object);
 
             var result = (await service.GetFeedbackAsync(feedbackBody)).Feedback.ToList();
 
             repositoryMock.Verify(m => m.GetFeedbackAsync(), Times.Once);
 
-            result.Count.Should().Be(result.Count);
+            result.Count.Should().Be(recordCount);
         }
 
         [Fact]
@@ -48,10 +54,11 @@ namespace INSS.EIIR.Services.Tests
         {
             var data = new CreateCaseFeedback();
             var repositoryMock = new Mock<IFeedbackRepository>();
+            var systemDateTimeMock = new Mock<Interfaces.ISystemDateTime>();    
 
             repositoryMock.Setup(m => m.CreateFeedback(data));
 
-            var service = new FeedbackDataProvider(repositoryMock.Object);
+            var service = new FeedbackDataProvider(repositoryMock.Object, systemDateTimeMock.Object);
 
             service.CreateFeedback(data);
 
@@ -65,12 +72,13 @@ namespace INSS.EIIR.Services.Tests
             var viewedStatus = true;
             var expectedResult = new CaseFeedback() { CaseId = 12345, FeedbackDate = DateTime.Now };
             var repositoryMock = new Mock<IFeedbackRepository>();
+            var systemDateTimeMock = new Mock<Interfaces.ISystemDateTime>();
             var contextMock = new Mock<EIIRContext>();
             contextMock.Setup(x => x.Add(expectedResult));
 
             repositoryMock.Setup(m => m.UpdateFeedbackStatus(feedbackId, viewedStatus)).Returns(true);
 
-            var service = new FeedbackDataProvider(repositoryMock.Object);
+            var service = new FeedbackDataProvider(repositoryMock.Object, systemDateTimeMock.Object);
 
             var result = service.UpdateFeedbackStatus(feedbackId, viewedStatus);
 

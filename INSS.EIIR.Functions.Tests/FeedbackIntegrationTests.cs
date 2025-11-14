@@ -5,6 +5,7 @@ using INSS.EIIR.DataAccess;
 using INSS.EIIR.Functions.Functions;
 using INSS.EIIR.Interfaces.DataAccess;
 using INSS.EIIR.Interfaces.Services;
+using INSS.EIIR.Interfaces;
 using INSS.EIIR.Models.Configuration;
 using INSS.EIIR.Models.FeedbackModels;
 using INSS.EIIR.Services;
@@ -34,6 +35,7 @@ namespace INSS.EIIR.Functions.Tests
         private readonly EIIRContext _context;
         private readonly FeedbackRepository _feedbackRepository;
         private readonly FeedbackDataProvider _feedbackDataProvider;
+        private readonly ISystemDateTime _systemDateTime;
         private readonly IMapper _mapper;
 
         public FeedbackIntegrationTests()
@@ -55,7 +57,8 @@ namespace INSS.EIIR.Functions.Tests
             _connectionString = config.GetConnectionString("iirwebdbContextConnectionString");
             _context = new EIIRContext(_connectionString);
             _feedbackRepository = new FeedbackRepository(_context, _mapper);
-            _feedbackDataProvider = new FeedbackDataProvider(_feedbackRepository);
+            _systemDateTime = new SystemDateTime();
+            _feedbackDataProvider = new FeedbackDataProvider(_feedbackRepository, _systemDateTime);
         }
 
         [Fact (Skip = "Expensive integration test, dependency on appsettings.json .. which perhaps not available in github")]
