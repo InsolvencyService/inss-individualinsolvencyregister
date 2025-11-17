@@ -5,6 +5,7 @@ using INSS.EIIR.Models.CaseModels;
 using System.Xml;
 using System.Xml.Serialization;
 using System.Linq;
+using Azure.Search.Documents.Indexes.Models;
 
 namespace INSS.EIIR.Models.IndexModels;
 
@@ -43,7 +44,7 @@ public class IndividualSearch
         }
     }
 
-    [SearchableField]
+    [SearchableField(AnalyzerName = LexicalAnalyzerName.Values.StandardAsciiFoldingLucene)]
     public string TradeNamesSearchField
     {
         get
@@ -55,7 +56,7 @@ public class IndividualSearch
     /// <summary>
     /// Contains lastnames from Family name and any surname from alternative names with no duplicates which would biase results
     /// </summary>
-    [SearchableField]
+    [SearchableField(AnalyzerName = LexicalAnalyzerName.Values.StandardAsciiFoldingLucene)]
     public string LastNamesSearchField
     {
         get
@@ -74,7 +75,7 @@ public class IndividualSearch
     /// <summary>
     /// Contains names from Firstname and any forenames from alternative names with no duplicates which would biase results
     /// </summary>
-    [SearchableField]
+    [SearchableField(AnalyzerName = LexicalAnalyzerName.Values.StandardAsciiFoldingLucene)]
     public string ForeNamesSearchField
     {
         get
