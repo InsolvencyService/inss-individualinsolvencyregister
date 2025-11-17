@@ -5,7 +5,7 @@ namespace INSS.EIIR.Models.FeedbackModels
 {
     public class FeedbackFilterModel
     {
-        private int _softDeleteViewedAfterDays = Feedback.SoftDeleteFeedbackAfterDays;
+        private int _softDeleteViewedAfterDays = Feedback.SoftDeleteFeedbackAfterDaysDefault;
 
         public string Status { get; set; }
 

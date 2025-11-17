@@ -77,9 +77,9 @@ namespace INSS.EIIR.Web.Areas.Admin.Controllers
 
         private int GetSoftDeleteDays()
         {
-            var setting = _config.GetValue<object>("SoftDeleteViewedRecordsAfterDays", Feedback.SoftDeleteFeedbackAfterDays);
+            var setting = _config.GetValue<object>("SoftDeleteViewedRecordsAfterDays", Feedback.SoftDeleteFeedbackAfterDaysDefault);
 
-            int value = Feedback.SoftDeleteFeedbackAfterDays;
+            int value = Feedback.SoftDeleteFeedbackAfterDaysDefault;
 
             if (int.TryParse(setting.ToString(), out int result))
             { 

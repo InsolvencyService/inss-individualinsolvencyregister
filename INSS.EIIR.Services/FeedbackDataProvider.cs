@@ -34,7 +34,7 @@ namespace INSS.EIIR.Services
             }
             var organisation = feedbackBody?.Filters?.Organisation;
             var insolvencyType = feedbackBody?.Filters?.InsolvencyType;
-            var softDeleteDays = feedbackBody?.Filters?.SoftDeleteViewedRecordsAfterDays ?? Feedback.SoftDeleteFeedbackAfterDays;
+            var softDeleteDays = feedbackBody?.Filters?.SoftDeleteViewedRecordsAfterDays ?? Feedback.SoftDeleteFeedbackAfterDaysDefault;
 
             var softDeleteCutOff = _systemDateTime.Now.AddDays(-1 * (softDeleteDays + 1)).Date;
 
