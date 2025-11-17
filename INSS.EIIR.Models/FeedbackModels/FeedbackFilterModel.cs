@@ -1,10 +1,11 @@
 ﻿using System.Runtime.Serialization;
+using INSS.EIIR.Models.Constants;   
 
 namespace INSS.EIIR.Models.FeedbackModels
 {
     public class FeedbackFilterModel
     {
-        private int _softDeleteViewedAfterDays = 30;
+        private int _softDeleteViewedAfterDays = Feedback.SoftDeleteFeedbackAfterDays;
 
         public string Status { get; set; }
 

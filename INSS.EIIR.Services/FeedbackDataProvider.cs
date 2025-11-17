@@ -3,6 +3,7 @@ using INSS.EIIR.Interfaces.Services;
 using INSS.EIIR.Interfaces;
 using INSS.EIIR.Models.FeedbackModels;
 using INSS.EIIR.Models.Helpers;
+using INSS.EIIR.Models.Constants;
 
 namespace INSS.EIIR.Services
 {
@@ -33,7 +34,7 @@ namespace INSS.EIIR.Services
             }
             var organisation = feedbackBody?.Filters?.Organisation;
             var insolvencyType = feedbackBody?.Filters?.InsolvencyType;
-            var softDeleteDays = feedbackBody?.Filters?.SoftDeleteViewedRecordsAfterDays ?? 30;
+            var softDeleteDays = feedbackBody?.Filters?.SoftDeleteViewedRecordsAfterDays ?? Feedback.SoftDeleteFeedbackAfterDays;
 
             var softDeleteCutOff = _systemDateTime.Now.AddDays(-1 * (softDeleteDays + 1)).Date;
 
