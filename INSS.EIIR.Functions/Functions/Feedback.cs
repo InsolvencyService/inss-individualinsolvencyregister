@@ -6,8 +6,6 @@ using Microsoft.AspNetCore.Mvc;
 
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
-
-
 using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Attributes;
 using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Enums;
 using Microsoft.Extensions.Logging;
@@ -18,7 +16,7 @@ using System;
 using System.IO;
 using System.Net;
 using System.Threading.Tasks;
-//using Castle.Core.Configuration;
+
 
 namespace INSS.EIIR.Functions.Functions
 {
