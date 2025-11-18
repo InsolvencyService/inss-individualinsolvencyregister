@@ -14,6 +14,7 @@ using INSS.EIIR.Interfaces.DataAccess;
 using INSS.EIIR.Interfaces.Messaging;
 using INSS.EIIR.Interfaces.Services;
 using INSS.EIIR.Interfaces.Storage;
+using INSS.EIIR.Interfaces;
 using INSS.EIIR.Models.AutoMapperProfiles;
 using INSS.EIIR.Models.Configuration;
 using INSS.EIIR.Services;
@@ -148,6 +149,7 @@ var host = new HostBuilder()
         services.AddScoped<ISubscriberDataProvider, SubscriberDataProvider>();
         services.AddScoped<INotificationService, NotificationService>();
         services.AddScoped<IFeedbackDataProvider, FeedbackDataProvider>();
+        services.AddSingleton<ISystemDateTime, SystemDateTime>();
 
 
         Boolean useFakeData = false;
