@@ -58,6 +58,9 @@
     "functionapikey": "__functionapikey__",
 
     //The taskhub name for durable function - likely to be redundant as responsible durable function migrate to INSS.EIIR.DailyExtract
-    "eiirFuncTaskHub": "__taskhubname__"
+    "eiirFuncTaskHub": "__taskhubname__",
+
+    //Timer trigger for the feedback hard delete function
+    "feedbackHardDeleteTimercron": "30 6 * * *"
   }
 }

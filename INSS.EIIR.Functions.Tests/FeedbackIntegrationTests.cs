@@ -35,8 +35,9 @@ namespace INSS.EIIR.Functions.Tests
         private readonly EIIRContext _context;
         private readonly FeedbackRepository _feedbackRepository;
         private readonly FeedbackDataProvider _feedbackDataProvider;
-        private readonly ISystemDateTime _systemDateTime;
+        private readonly TimeProvider _systemDateTime;
         private readonly IMapper _mapper;
+        private readonly IConfiguration _config;
 
         public FeedbackIntegrationTests()
         {
@@ -52,12 +53,12 @@ namespace INSS.EIIR.Functions.Tests
                 .SetBasePath(Directory.GetCurrentDirectory())
                 .AddJsonFile("appsettings.json");
 
-            var config = configuration.Build();
+            _config = configuration.Build();
 
-            _connectionString = config.GetConnectionString("iirwebdbContextConnectionString");
+            _connectionString = _config.GetConnectionString("iirwebdbContextConnectionString");
             _context = new EIIRContext(_connectionString);
-            _feedbackRepository = new FeedbackRepository(_context, _mapper);
-            _systemDateTime = new SystemDateTime();
+            _systemDateTime = TimeProvider.System;
+            _feedbackRepository = new FeedbackRepository(_context, _mapper, _systemDateTime);
             _feedbackDataProvider = new FeedbackDataProvider(_feedbackRepository, _systemDateTime);
         }
 
@@ -66,7 +67,7 @@ namespace INSS.EIIR.Functions.Tests
         {
             //Arrange
             var logger = Mock.Of<ILogger<Feedback>>();
-            var feedbackFunc = new Feedback(logger, _feedbackDataProvider);
+            var feedbackFunc = new Feedback(logger, _feedbackDataProvider, _config);
             var feedbackBody = new FeedbackBody()
             {
                 PagingModel = new PagingParameters { PageNumber = 1, PageSize = 10 },

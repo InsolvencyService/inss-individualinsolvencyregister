@@ -35,10 +35,10 @@ namespace INSS.EIIR.Services.Tests
                 .Setup(m => m.GetFeedbackAsync())
                 .ReturnsAsync(expectedResult);
 
-            var systemDateTimeMock = new Mock<Interfaces.ISystemDateTime>();
+            var systemDateTimeMock = new Mock<TimeProvider>();
             systemDateTimeMock
-                .Setup(m => m.Now)
-                .Returns(new DateTime(2022, 10, 30, 14, 25, 10));
+                .Setup(m => m.GetUtcNow())
+                .Returns(new DateTimeOffset(new DateTime(2022, 10, 30, 14, 25, 10)));
 
             var service = new FeedbackDataProvider(repositoryMock.Object, systemDateTimeMock.Object);
 
@@ -54,7 +54,7 @@ namespace INSS.EIIR.Services.Tests
         {
             var data = new CreateCaseFeedback();
             var repositoryMock = new Mock<IFeedbackRepository>();
-            var systemDateTimeMock = new Mock<Interfaces.ISystemDateTime>();    
+            var systemDateTimeMock = new Mock<TimeProvider>();    
 
             repositoryMock.Setup(m => m.CreateFeedback(data));
 
@@ -72,7 +72,7 @@ namespace INSS.EIIR.Services.Tests
             var viewedStatus = true;
             var expectedResult = new CaseFeedback() { CaseId = 12345, FeedbackDate = DateTime.Now };
             var repositoryMock = new Mock<IFeedbackRepository>();
-            var systemDateTimeMock = new Mock<Interfaces.ISystemDateTime>();
+            var systemDateTimeMock = new Mock<TimeProvider>();
             var contextMock = new Mock<EIIRContext>();
             contextMock.Setup(x => x.Add(expectedResult));
 

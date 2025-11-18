@@ -149,7 +149,7 @@ var host = new HostBuilder()
         services.AddScoped<ISubscriberDataProvider, SubscriberDataProvider>();
         services.AddScoped<INotificationService, NotificationService>();
         services.AddScoped<IFeedbackDataProvider, FeedbackDataProvider>();
-        services.AddSingleton<ISystemDateTime, SystemDateTime>();
+        services.AddSingleton(_ =>  TimeProvider.System);
 
 
         Boolean useFakeData = false;

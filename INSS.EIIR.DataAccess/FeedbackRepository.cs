@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using INSS.EIIR.Data.Models;
+using INSS.EIIR.Interfaces;
 using INSS.EIIR.Interfaces.DataAccess;
 using INSS.EIIR.Models.FeedbackModels;
 using Microsoft.EntityFrameworkCore;
@@ -10,13 +11,16 @@ namespace INSS.EIIR.DataAccess
     {
         private readonly EIIRContext _context;
         private readonly IMapper _mapper;
+        private readonly TimeProvider _systemDateTime;
 
         public FeedbackRepository(
             EIIRContext eiirContext,
-            IMapper mapper)
+            IMapper mapper, 
+            TimeProvider systemDateTime)
         {
             _context = eiirContext;
             _mapper = mapper;
+            _systemDateTime = systemDateTime;
         }
 
         public async Task<IEnumerable<CaseFeedback>> GetFeedbackAsync()
@@ -57,5 +61,16 @@ namespace INSS.EIIR.DataAccess
             _context.SaveChanges();
             return true;           
         }
+
+        public int DeleteViewedRecords(int hardDeleteMonths)
+        {
+            var hardDeleteCutOff = _systemDateTime.GetUtcNow().ToLocalTime().DateTime.AddMonths(-1 * hardDeleteMonths).Date;
+            var toDelete = _context.CiCaseFeedback
+                            .Where(x => x.Viewed == true && x.ViewedDate <= hardDeleteCutOff)
+                            .ToList();
+            _context.CiCaseFeedback.RemoveRange(toDelete);
+            int deletedCount = _context.SaveChanges();
+            return deletedCount;
+        }   
     }
 }
