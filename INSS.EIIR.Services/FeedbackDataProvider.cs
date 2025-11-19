@@ -10,9 +10,9 @@ namespace INSS.EIIR.Services
     public class FeedbackDataProvider : IFeedbackDataProvider
     {
         private readonly IFeedbackRepository _feedbackRepository;
-        private readonly ISystemDateTime _systemDateTime;   
+        private readonly TimeProvider _systemDateTime;   
 
-        public FeedbackDataProvider(IFeedbackRepository feedbackRepository, ISystemDateTime systemDateTime)
+        public FeedbackDataProvider(IFeedbackRepository feedbackRepository, TimeProvider systemDateTime)
         {
             _feedbackRepository = feedbackRepository;
             _systemDateTime = systemDateTime;
@@ -36,7 +36,7 @@ namespace INSS.EIIR.Services
             var insolvencyType = feedbackBody?.Filters?.InsolvencyType;
             var softDeleteDays = feedbackBody?.Filters?.SoftDeleteViewedRecordsAfterDays ?? Feedback.SoftDeleteFeedbackAfterDaysDefault;
 
-            var softDeleteCutOff = _systemDateTime.Now.AddDays(-1 * (softDeleteDays + 1)).Date;
+            var softDeleteCutOff = _systemDateTime.GetUtcNow().ToLocalTime().AddDays(-1 * (softDeleteDays + 1)).Date;
 
             var totalFeedback = (await _feedbackRepository.GetFeedbackAsync())
                                     .Where(x => x.Viewed.Equals(viewedStatus) || viewedStatus is null)
@@ -65,6 +65,11 @@ namespace INSS.EIIR.Services
         public bool UpdateFeedbackStatus(int feedbackId, bool status)
         {
             return _feedbackRepository.UpdateFeedbackStatus(feedbackId, status);   
+        }
+
+        public int HardDeleteViewedRecords(int hardDeleteMonths)
+        {
+            return _feedbackRepository.DeleteViewedRecords(hardDeleteMonths);
         }
     }
 }

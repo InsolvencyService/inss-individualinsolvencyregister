@@ -51,4 +51,5 @@ public static class SyncData
 public static class Feedback
 {
     public const int SoftDeleteFeedbackAfterDaysDefault = 30;
+    public const int HardDeleteFeedbackAfterMonthsDefault = 6;
 }
