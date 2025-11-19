@@ -35,11 +35,12 @@ namespace INSS.EIIR.Web.Controllers
         {
             var caseDetails = await _caseService.GetCaseAsync(caseNo, indivNo);
 
-            DateTime? insolvencyDate = null;
+            //In accordance with INSSight => IIR data spec insolvencyDate is not null, setting default here to current state just in case
+            DateTime insolvencyDate = DateTime.Now;
             DateTime aDate;
             if (DateTime.TryParseExact(caseDetails.insolvencyDate, "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out aDate))
             { 
-                insolvencyDate = new DateTime?(aDate);
+                insolvencyDate = aDate;
             }
 
             var model = new CreateFeedbackViewModel
@@ -48,7 +49,7 @@ namespace INSS.EIIR.Web.Controllers
                 IndivNo = indivNo,
                 Name = caseDetails.caseName,
                 Type = caseDetails.insolvencyType,
-                ArrangementDate = DateTime.Now,
+                ArrangementDate = insolvencyDate,
                 FromAdmin = fromAdmin,
                 CaseFeedback = new CreateCaseFeedback
                 {
