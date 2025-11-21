@@ -8,6 +8,7 @@ namespace INSS.EIIR.DataSync.Infrastructure.Sink.AISearch
     {
         public const string EiirIndividuals = "eiir_individuals";
         public const string NON_PERMITTED_DATA = SyncData.ContainsNonPermittedData;
+        public const char Separator = '-';
 
         public static async Task<string> GetNewIndexName(AsyncPageable<string> indexNames)
         {
@@ -16,16 +17,12 @@ namespace INSS.EIIR.DataSync.Infrastructure.Sink.AISearch
 
             if (await indexNames.AnyAsync(n => n.StartsWith(todaysIndexName)))
             {
-                var todaysLastIndex = await indexNames.Where(i => i.StartsWith(todaysIndexName)).OrderBy(x => x).LastAsync();
+                var counterIndexPosition = AISearchSink.SEARCH_INDEX_BASE_NAME.Split(Separator).Length + 3;
 
-                //Remove NON_PERMITTED_DATA if it exists
-                if (todaysLastIndex.EndsWith(NON_PERMITTED_DATA))
-                    todaysLastIndex = todaysLastIndex.Substring(0, todaysLastIndex.Length - NON_PERMITTED_DATA.Length - 1);
+                var todaysIndexes = indexNames.Where(i => i.StartsWith(todaysIndexName)).Select(x => Convert.ToInt32(x.Split(Separator)[counterIndexPosition]));
+                var maxAttemptNumber = await todaysIndexes.OrderBy(x => x).LastAsync();
 
-                var startOfAttempt = todaysLastIndex.LastIndexOf("-") + 1;
-
-                int attemptNumber = Convert.ToInt32(todaysLastIndex.Substring(startOfAttempt));
-                todaysIndexAttempt = $"{todaysIndexName}-{attemptNumber + 1}";
+                todaysIndexAttempt = $"{todaysIndexName}-{maxAttemptNumber + 1}";
             }
 
             return todaysIndexAttempt;
