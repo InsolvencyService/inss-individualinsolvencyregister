@@ -20,8 +20,6 @@
     "OpenApi__DocVersion": "1.0.0",
     "OpenApi__DocTitle": "Swagger EIIR Services",
 
-    //Azure service bus connectionstring
-    "servicebus__publisherconnectionstring": "__servicebus:publisherconnectionstring__",
     //Queue where comms out of IIR (think emails are sent)
     "servicebus__notifyqueue": "__servicebus:notifyqueue__",
 
@@ -39,26 +37,12 @@
     //Another service bus connection string 
     "notify__connectionstring": "__notify__connectionstring__",
 
-    //Legacy - connection string and queue was used in ExtractJobServiceTrigger - requires removing
-    "servicebussubscriberconnectionstring": "__servicebus:subscriberconnectionstring__",
-    "servicebusextractjobqueue": "__servicebus:extractjobqueue__",
-
     //Function app connection string
     "storageconnectionstring": "UseDevelopmentStorage=true",
 
     //Name of container where XML extracts are created - may be redundant as responsible function moved to INSS.EIIR.DailyExtract,
     //though likely still used in the download of extracts
     "blobcontainername": "__containername__",
-
-    //Redundant values related to deprecated functions of generating subscriber XML
-    "extractjobserviceurl": "__extractjobserviceurl__",
-    "extractjobtimercron": "__extractjobtimercron__",
-
-    //Possibly redundant key
-    "functionapikey": "__functionapikey__",
-
-    //The taskhub name for durable function - likely to be redundant as responsible durable function migrate to INSS.EIIR.DailyExtract
-    "eiirFuncTaskHub": "__taskhubname__",
 
     //Timer trigger for the feedback hard delete function
     "feedbackHardDeleteTimercron": "30 6 * * *"

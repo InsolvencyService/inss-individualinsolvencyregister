@@ -74,9 +74,6 @@ var host = new HostBuilder()
         if (string.IsNullOrEmpty(connectionString))
             throw new ArgumentNullException("database__connectionstring missing");
 
-        var serviceBusPubConnectionString = Environment.GetEnvironmentVariable("servicebus__publisherconnectionstring");
-        if (string.IsNullOrEmpty(serviceBusPubConnectionString))
-            throw new ArgumentNullException("servicebus__publisherconnectionstring is missing");
 
         var notifyConnectionString = Environment.GetEnvironmentVariable("notify__connectionstring");
         if (string.IsNullOrEmpty(notifyConnectionString))
@@ -122,13 +119,6 @@ var host = new HostBuilder()
         services.AddAzureClients(clientsBuilder =>
         {
             clientsBuilder.AddTableServiceClient(storageConnectionString);
-
-            clientsBuilder.AddServiceBusClient(serviceBusPubConnectionString)
-              .WithName("ServiceBusPublisher_ExtractJob")
-              .ConfigureOptions(options =>
-              {
-                  options.TransportType = ServiceBusTransportType.AmqpWebSockets;
-              });
 
             clientsBuilder.AddServiceBusClient(notifyConnectionString)
               .WithName("ServiceBusPublisher_Notify")
