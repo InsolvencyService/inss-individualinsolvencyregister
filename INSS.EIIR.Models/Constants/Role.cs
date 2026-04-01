@@ -47,3 +47,9 @@ public static class SyncData
 {
     public const string ContainsNonPermittedData = "contains-non-permitted-data";
 }
+
+public static class Feedback
+{
+    public const int SoftDeleteFeedbackAfterDaysDefault = 30;
+    public const int HardDeleteFeedbackAfterMonthsDefault = 6;
+}

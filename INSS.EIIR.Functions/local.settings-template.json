@@ -8,31 +8,43 @@
     //Controls whether faked datasources are used, defaults to false if not specified
     "UseFakedDataSources": true,
 
+    //Legacy setting was applicable before (release 57 March 2025).. it is no more
     "UseDynamicIndexName": true,
 
+    //URL and APIKey to the instance of Azure AI Search used by IIR
     "EIIRIndexUrl": "__EIIRIndexUrl__",
     "EIIRApiKey": "__EIIRKey__",
 
+    //Swagger stuff - no changes required
     "OpenApi__Version": "v3",
     "OpenApi__DocVersion": "1.0.0",
     "OpenApi__DocTitle": "Swagger EIIR Services",
-    "servicebus__publisherconnectionstring": "__servicebus:publisherconnectionstring__",
+
+    //Queue where comms out of IIR (think emails are sent)
     "servicebus__notifyqueue": "__servicebus:notifyqueue__",
+
+    //Still used in ExtractRepository via the ExtractDataProvider for downloads etc in INSS.EIIR.Functions
     "database__connectionstring": "__database:connectionstring__",
     "database__commandtimeout": 0,
     "database__getxmldataprocedure": "__database:getxmldataprocedure__",
     "database__getextractavailableprocedure": "__database:getextractavailableprocedure__",
     "database__updateextractavailableprocedure": "__database:updateextractavailableprocedure__",
     "database__databuffersize": 4194304,
+
+    //TemplateId for sending subscriber emails via gov UK notify service
     "notify__subscriberEmailTemplateId": "__notify:subscriberEmailTemplateId__",
+
+    //Another service bus connection string 
     "notify__connectionstring": "__notify__connectionstring__",
-    "servicebussubscriberconnectionstring": "__servicebus:subscriberconnectionstring__",
-    "servicebusextractjobqueue": "__servicebus:extractjobqueue__",
+
+    //Function app connection string
     "storageconnectionstring": "UseDevelopmentStorage=true",
+
+    //Name of container where XML extracts are created - may be redundant as responsible function moved to INSS.EIIR.DailyExtract,
+    //though likely still used in the download of extracts
     "blobcontainername": "__containername__",
-    "extractjobserviceurl": "__extractjobserviceurl__",
-    "extractjobtimercron": "__extractjobtimercron__",
-    "functionapikey": "__functionapikey__",
-    "eiirFuncTaskHub": "__taskhubname__"
+
+    //Timer trigger for the feedback hard delete function
+    "feedbackHardDeleteTimercron": "30 6 * * *"
   }
 }

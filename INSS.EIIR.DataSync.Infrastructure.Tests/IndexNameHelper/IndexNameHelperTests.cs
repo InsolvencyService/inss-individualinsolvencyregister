@@ -30,5 +30,7 @@ namespace INSS.EIIR.DataSync.Infrastructure.Tests.IndexNameHelper
             // assert
             Assert.Equal(expected, list);
         }
+
+
     }
 }

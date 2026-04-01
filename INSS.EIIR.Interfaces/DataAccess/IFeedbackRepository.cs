@@ -9,5 +9,7 @@ namespace INSS.EIIR.Interfaces.DataAccess
         void CreateFeedback(CreateCaseFeedback feedback);
 
         bool UpdateFeedbackStatus(int feedbackId, bool status);
+
+        int DeleteViewedRecords(int hardDeleteMonths);
     }
 }

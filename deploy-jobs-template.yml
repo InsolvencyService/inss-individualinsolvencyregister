@@ -193,7 +193,12 @@ jobs:
                         "name": "UseDynamicIndexName",
                         "value": "$(UseDynamicIndexName)",
                         "slotSetting": false
-                      }      
+                      },
+                      {
+                        "name": "feedbackHardDeleteTimercron",
+                        "value": "$(FbHardDeleteTimerCron)",
+                        "slotSetting": false                                     
+                      }
                     ]
 
               - task: AzureAppServiceManage@0
