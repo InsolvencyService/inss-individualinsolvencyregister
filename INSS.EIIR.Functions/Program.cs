@@ -14,6 +14,7 @@ using INSS.EIIR.Interfaces.DataAccess;
 using INSS.EIIR.Interfaces.Messaging;
 using INSS.EIIR.Interfaces.Services;
 using INSS.EIIR.Interfaces.Storage;
+using INSS.EIIR.Interfaces;
 using INSS.EIIR.Models.AutoMapperProfiles;
 using INSS.EIIR.Models.Configuration;
 using INSS.EIIR.Services;
@@ -73,9 +74,6 @@ var host = new HostBuilder()
         if (string.IsNullOrEmpty(connectionString))
             throw new ArgumentNullException("database__connectionstring missing");
 
-        var serviceBusPubConnectionString = Environment.GetEnvironmentVariable("servicebus__publisherconnectionstring");
-        if (string.IsNullOrEmpty(serviceBusPubConnectionString))
-            throw new ArgumentNullException("servicebus__publisherconnectionstring is missing");
 
         var notifyConnectionString = Environment.GetEnvironmentVariable("notify__connectionstring");
         if (string.IsNullOrEmpty(notifyConnectionString))
@@ -122,13 +120,6 @@ var host = new HostBuilder()
         {
             clientsBuilder.AddTableServiceClient(storageConnectionString);
 
-            clientsBuilder.AddServiceBusClient(serviceBusPubConnectionString)
-              .WithName("ServiceBusPublisher_ExtractJob")
-              .ConfigureOptions(options =>
-              {
-                  options.TransportType = ServiceBusTransportType.AmqpWebSockets;
-              });
-
             clientsBuilder.AddServiceBusClient(notifyConnectionString)
               .WithName("ServiceBusPublisher_Notify")
               .ConfigureOptions(options =>
@@ -148,6 +139,7 @@ var host = new HostBuilder()
         services.AddScoped<ISubscriberDataProvider, SubscriberDataProvider>();
         services.AddScoped<INotificationService, NotificationService>();
         services.AddScoped<IFeedbackDataProvider, FeedbackDataProvider>();
+        services.AddSingleton(_ =>  TimeProvider.System);
 
 
         Boolean useFakeData = false;

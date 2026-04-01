@@ -1,20 +1,22 @@
 using INSS.EIIR.Interfaces.Services;
 using INSS.EIIR.Models.FeedbackModels;
+using INSS.EIIR.Models.Constants;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
-
-
 using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Attributes;
 using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Enums;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Configuration;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
+using System;
 using System.IO;
 using System.Net;
 using System.Threading.Tasks;
+
 
 namespace INSS.EIIR.Functions.Functions
 {
@@ -22,13 +24,16 @@ namespace INSS.EIIR.Functions.Functions
     {
         private readonly ILogger<Feedback> _logger;
         private readonly IFeedbackDataProvider _feedbackDataProvider;
+        private readonly IConfiguration _config;
 
         public Feedback(
             ILogger<Feedback> log,
-            IFeedbackDataProvider feedbackDataProvider)
+            IFeedbackDataProvider feedbackDataProvider, 
+            IConfiguration config)
         {
             _logger = log;
             _feedbackDataProvider = feedbackDataProvider;
+            _config = config;
         }
 
         [Function("feedback")]
@@ -99,6 +104,16 @@ namespace INSS.EIIR.Functions.Functions
             return new NotFoundObjectResult(error);
         }
 
+        [Function("feedback-hard-delete-viewed-records")]
+        public void Run([TimerTrigger("%feedbackHardDeleteTimercron%")] TimerInfo myTimer)
+        {
+
+            var deletedRecords = _feedbackDataProvider.HardDeleteViewedRecords(GetHardDeleteMonths());
+            _logger.LogInformation($"Feedback Hard Delete Viewed Records function deleted {deletedRecords} records.");
+
+        }
+
+
         private async Task<FeedbackBody> GetBodyParameters(HttpRequestData request)
         {
             FeedbackBody feedbackBody = new();
@@ -112,6 +127,20 @@ namespace INSS.EIIR.Functions.Functions
                 _logger.LogInformation(info);
             }
             return feedbackBody;
+        }
+
+        private int GetHardDeleteMonths()
+        {
+            var setting = _config.GetValue<object>("HardDeleteViewedRecordsAfterMonths", Models.Constants.Feedback.HardDeleteFeedbackAfterMonthsDefault);
+
+            int value = Models.Constants.Feedback.HardDeleteFeedbackAfterMonthsDefault;
+
+            if (int.TryParse(setting.ToString(), out int result))
+            {
+                value = result;
+            }
+
+            return value;
         }
     }
 }

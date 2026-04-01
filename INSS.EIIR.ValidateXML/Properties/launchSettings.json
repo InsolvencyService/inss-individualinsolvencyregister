@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "ValidateXMLUsingXsd": {
+      "commandName": "Project",
+      "commandLineArgs": "D:\\Data\\APP-4920\\20250617\\020482U8_paasPROD.xml"
+    }
+  }
+}

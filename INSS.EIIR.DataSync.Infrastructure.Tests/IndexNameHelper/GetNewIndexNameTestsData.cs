@@ -15,6 +15,7 @@ namespace INSS.EIIR.DataSync.Infrastructure.Tests.IndexNameHelper
             yield return NoNames();
             yield return Yesterdays();
             yield return AlreadyHasTodays();
+            yield return DuplicateIndexProblem();
         }
 
         public static object[] NoNames()
@@ -59,5 +60,26 @@ namespace INSS.EIIR.DataSync.Infrastructure.Tests.IndexNameHelper
 
             return new object[] { pages, expectedValue };
         }
+
+        public static object[] DuplicateIndexProblem()
+        {
+            var page = Page<string>.FromValues(new List<string>
+            {
+               $"{INDEX_BASE_NAME}-{DateTime.Today.ToString(DATETIME_TOSTRING)}-10-{NON_PERMITTED_DATA}",
+               $"{INDEX_BASE_NAME}-{DateTime.Today.ToString(DATETIME_TOSTRING)}-9-{NON_PERMITTED_DATA}",
+               $"{INDEX_BASE_NAME}-{DateTime.Today.ToString(DATETIME_TOSTRING)}-2-{NON_PERMITTED_DATA}",
+               $"{INDEX_BASE_NAME}-{DateTime.Today.ToString(DATETIME_TOSTRING)}-1",
+               $"{INDEX_BASE_NAME}-{DateTime.Today.AddDays(-1).ToString(DATETIME_TOSTRING)}-1"
+            }, continuationToken: null, new Mock<Response>().Object);
+
+            var pages = AsyncPageable<string>.FromPages(new[] { page });
+
+            var expectedValue = $"{INDEX_BASE_NAME}-{DateTime.Today.ToString(DATETIME_TOSTRING)}-11";
+
+            return new object[] { pages, expectedValue };
+        }
+
+
+
     }
 }

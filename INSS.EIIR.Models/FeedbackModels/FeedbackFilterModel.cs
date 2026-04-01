@@ -1,14 +1,30 @@
 ﻿using System.Runtime.Serialization;
+using INSS.EIIR.Models.Constants;   
 
 namespace INSS.EIIR.Models.FeedbackModels
 {
     public class FeedbackFilterModel
     {
+        private int _softDeleteViewedAfterDays = Feedback.SoftDeleteFeedbackAfterDaysDefault;
+
         public string Status { get; set; }
 
         public string Organisation { get; set; }   
         
         public string InsolvencyType { get; set; }
+
+        public int SoftDeleteViewedRecordsAfterDays
+        {
+            get
+            { 
+                return _softDeleteViewedAfterDays;
+            }
+
+            set 
+            {
+                _softDeleteViewedAfterDays = value;
+            } 
+        }
     }
 
     public enum ViewFilter
